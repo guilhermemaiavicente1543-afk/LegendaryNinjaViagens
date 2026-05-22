@@ -20,6 +20,7 @@ body {
   grid-template-columns: 370px 1fr;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
 }
 
 .panel {
@@ -29,6 +30,13 @@ body {
   border-right: 1px solid #374151;
   z-index: 1000;
   overflow-y: auto;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .panel h1 {
@@ -125,4 +133,83 @@ body {
 
 .leaflet-control-attribution {
   display: none;
+}
+
+.mobileConfigButton,
+.mobileCloseButton,
+.panelBackdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .app {
+    display: block;
+    height: 100dvh;
+    width: 100vw;
+  }
+
+  .mapArea {
+    height: 100dvh;
+    width: 100vw;
+  }
+
+  .mobileConfigButton {
+    display: block;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 2000;
+    border: 0;
+    border-radius: 999px;
+    background: #f97316;
+    color: white;
+    font-weight: bold;
+    padding: 10px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(88vw, 370px);
+    height: 100dvh;
+    border-right: 1px solid #374151;
+    transform: translateX(-105%);
+    transition: transform 180ms ease;
+    box-shadow: 12px 0 30px rgba(0, 0, 0, 0.45);
+    padding-bottom: 90px;
+  }
+
+  .panel.panelOpen {
+    transform: translateX(0);
+  }
+
+  .mobileCloseButton {
+    display: block;
+    width: auto !important;
+    min-width: 42px;
+    background: #374151 !important;
+    padding: 8px 12px !important;
+  }
+
+  .panelBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    border: 0;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0;
+  }
+
+  .panel h1 {
+    font-size: 24px;
+  }
+
+  .panel select,
+  .panel button,
+  .panel input {
+    font-size: 16px;
+  }
 }

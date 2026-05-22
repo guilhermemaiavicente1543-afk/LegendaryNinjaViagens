@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css";
 import "./App.css";
 
 /*
-  Mapa com grade enviado por você:
+  Mapa com grade:
   largura: 1080px
   altura: 903px
 
@@ -251,6 +251,7 @@ export default function App() {
   const [showOverlayGrid, setShowOverlayGrid] = useState(true);
   const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.35);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const gridLines = useMemo(() => buildGridLines(showSmallGrid), [showSmallGrid]);
 
@@ -275,8 +276,36 @@ export default function App() {
 
   return (
     <main className="app">
-      <aside className="panel">
-        <h1>Mapa RPG</h1>
+      <button
+        className="mobileConfigButton"
+        onClick={() => setIsPanelOpen(true)}
+        type="button"
+      >
+        ☰ Configurações
+      </button>
+
+      {isPanelOpen && (
+        <button
+          className="panelBackdrop"
+          onClick={() => setIsPanelOpen(false)}
+          aria-label="Fechar configurações"
+          type="button"
+        />
+      )}
+
+      <aside className={`panel ${isPanelOpen ? "panelOpen" : ""}`}>
+        <div className="panelHeader">
+          <h1>Mapa RPG</h1>
+
+          <button
+            className="mobileCloseButton"
+            onClick={() => setIsPanelOpen(false)}
+            type="button"
+            aria-label="Fechar painel"
+          >
+            ✕
+          </button>
+        </div>
 
         <p>
           Selecione o meio de locomoção e clique em dois pontos para calcular
@@ -333,7 +362,9 @@ export default function App() {
           <span>{Math.round(gridOpacity * 100)}%</span>
         </label>
 
-        <button onClick={() => setPoints([])}>Limpar pontos</button>
+        <button onClick={() => setPoints([])} type="button">
+          Limpar pontos
+        </button>
 
         {points.length > 0 && (
           <div className="info">

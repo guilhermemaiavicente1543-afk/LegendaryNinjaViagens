@@ -1,6 +1,6 @@
-# RPG Grid Map — Sistema de Viagem
+# RPG Grid Map — Versão mobile
 
-Este pacote adiciona cálculo de tempo de viagem por meio de locomoção.
+Esta versão corrige o problema do celular: o painel de configurações fica fechado por padrão em telas pequenas e abre por um botão flutuante.
 
 ## Regras implementadas
 
@@ -10,20 +10,7 @@ Este pacote adiciona cálculo de tempo de viagem por meio de locomoção.
 - Aquático: cada 5 pés = 9 horas
 - Terrestre: cada 5 pés = 12 horas
 
-## Dimensões detectadas
-
-- Largura: 1080px
-- Altura: 903px
-- Arquivo usado pelo app: `public/mapa-coordenado.jpg`
-
-## Sistema de coordenadas
-
-- Colunas grandes: A-J
-- Linhas grandes: 1-10
-- Cada bloco grande tem 5 x 5 subquadrados
-- Formato da coordenada: `C4-3,2`
-
-## Substituir no projeto
+## Arquivos
 
 Copie estes arquivos para dentro do seu projeto Vite `rpg-grid-map`:
 
@@ -32,9 +19,7 @@ Copie estes arquivos para dentro do seu projeto Vite `rpg-grid-map`:
 - `src/index.css`
 - `public/mapa-coordenado.jpg`
 
-## Rodar
-
-Dentro da pasta do projeto:
+## Rodar localmente
 
 ```bash
 cd /home/Maia/rpg-grid-map
@@ -42,8 +27,10 @@ npm install leaflet react-leaflet
 npm run dev
 ```
 
-Depois abra:
+## Atualizar no GitHub/Vercel depois de copiar
 
-```text
-http://localhost:5173/
+```bash
+git add .
+git commit -m "Corrige layout mobile"
+git push
 ```
