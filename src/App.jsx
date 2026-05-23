@@ -67,6 +67,9 @@ const TRAVEL_MODES = {
   },
 };
 
+const MAP_IMAGE_WITH_GRID = "/mapa-coordenado.jpg";
+const MAP_IMAGE_CLEAN = "/mapa-limpo.png";
+
 const imageBounds = [
   [0, 0],
   [MAP_HEIGHT, MAP_WIDTH],
@@ -385,6 +388,7 @@ function dbTravelToAppTravel(row) {
 export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
+  const [showImageGrid, setShowImageGrid] = useState(true);
   const [showOverlayGrid, setShowOverlayGrid] = useState(true);
   const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.35);
@@ -597,6 +601,8 @@ export default function App() {
     );
   }
 
+  const activeMapImage = showImageGrid ? MAP_IMAGE_WITH_GRID : MAP_IMAGE_CLEAN;
+
   const gridLines = useMemo(() => buildGridLines(showSmallGrid), [showSmallGrid]);
 
   function handleMapClick(latlng) {
@@ -746,6 +752,22 @@ export default function App() {
           Diagonal = {DIAGONAL_COST}
           <br />1 subquadrado = {UNIT_PER_SMALL_SQUARE} {UNIT_NAME}
         </div>
+
+        <button
+          type="button"
+          className="gridToggleButton imageGridToggleButton"
+          onClick={() => setShowImageGrid((current) => !current)}
+        >
+          {showImageGrid ? "Usar mapa limpo" : "Usar mapa com grade"}
+        </button>
+
+        <button
+          type="button"
+          className="gridToggleButton"
+          onClick={() => setShowOverlayGrid((current) => !current)}
+        >
+          {showOverlayGrid ? "Ocultar grade do sistema" : "Mostrar grade do sistema"}
+        </button>
 
         <label className="checkboxRow">
           <input
@@ -936,7 +958,7 @@ export default function App() {
         >
           <FitMapToBounds />
 
-          <ImageOverlay url="/mapa-coordenado.jpg" bounds={imageBounds} />
+          <ImageOverlay url={activeMapImage} bounds={imageBounds} />
 
           {showOverlayGrid &&
             gridLines.map((line, index) => (

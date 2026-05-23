@@ -1695,3 +1695,16 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.gridToggleButton {
+  margin-top: 14px;
+  background: #2563eb !important;
+}
+
+.gridToggleButton:hover {
+  filter: brightness(1.12);
+}
+
+.imageGridToggleButton {
+  background: #16a34a !important;
+}
