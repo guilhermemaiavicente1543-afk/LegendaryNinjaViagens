@@ -12,11 +12,7 @@ import {
 import { CRS, divIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
-import MyNinjaPage from "./components/MyNinjaPage";
-import AuthPage from "./components/auth/AuthPage";
-import AdminPanel from "./components/admin/AdminPanel";
-import SkillTreePage from "./components/SkillTreePage";
-import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
+import CharactersPage from "./components/CharactersPage";
 
 /*
   Mapa com grade:
@@ -363,25 +359,6 @@ function createCharacterIcon(travel, progress) {
   });
 }
 
-function dbTravelToAppTravel(row) {
-  return {
-    id: row.id,
-    characterId: row.character_id,
-    characterName: row.character_name || "Ninja sem nome",
-    travelMode: row.travel_mode,
-    modeLabel: row.mode_label,
-    startCoord: row.start_coord,
-    endCoord: row.end_coord,
-    startCenter: row.start_center,
-    endCenter: row.end_center,
-    durationHours: Number(row.duration_hours),
-    durationDays: Number(row.duration_days),
-    distanceFeet: Number(row.distance_feet),
-    startedAt: row.started_at,
-    arrivalAt: row.arrival_at,
-  };
-}
-
 export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
@@ -389,75 +366,12 @@ export default function App() {
   const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.35);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [activePage, setActivePage] = useState("my-ninja");
+  const [activePage, setActivePage] = useState("map");
   const [travelCharacters, setTravelCharacters] = useState(() => readSavedCharacters());
   const [selectedTravelCharacterId, setSelectedTravelCharacterId] = useState("");
   const [travels, setTravels] = useState(() => readSavedTravels());
   const [now, setNow] = useState(Date.now());
-  const [session, setSession] = useState(null);
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  const [isAuthLoading, setIsAuthLoading] = useState(isSupabaseConfigured);
 
-
-
-  useEffect(() => {
-    if (!isSupabaseConfigured || !supabase) {
-      setIsAuthLoading(false);
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setIsAuthLoading(false);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, currentSession) => {
-        setSession(currentSession);
-        setIsAuthLoading(false);
-      }
-    );
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
-
-  async function handleLogout() {
-    if (isSupabaseConfigured && supabase) {
-      await supabase.auth.signOut();
-    }
-
-    setSession(null);
-    setIsDemoMode(false);
-    setActivePage("my-ninja");
-  }
-
-  async function loadOnlineTravels() {
-    if (!isSupabaseConfigured || !supabase || !session?.user) {
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("travels")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Erro ao carregar viagens:", error.message);
-      return;
-    }
-
-    const mappedTravels = data.map(dbTravelToAppTravel);
-    setTravels(mappedTravels);
-    localStorage.setItem(TRAVEL_STORAGE_KEY, JSON.stringify(mappedTravels));
-  }
-
-  useEffect(() => {
-    if (session?.user) {
-      loadOnlineTravels();
-    }
-  }, [session?.user?.id]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -493,7 +407,7 @@ export default function App() {
     setTravelCharacters(readSavedCharacters());
   }
 
-  async function startCharacterTravel() {
+  function startCharacterTravel() {
     if (!selectedTravelCharacter) {
       alert("Selecione um personagem para iniciar a viagem.");
       return;
@@ -527,48 +441,6 @@ export default function App() {
       arrivalAt,
     };
 
-    if (isSupabaseConfigured && supabase && session?.user) {
-      const payload = {
-        character_id: selectedTravelCharacter.id,
-        user_id: session.user.id,
-        character_name: selectedTravelCharacter.characterName,
-        travel_mode: travelMode,
-        mode_label: travelData.modeLabel,
-        start_coord: points[0],
-        end_coord: points[1],
-        start_center: getSmallCellCenter(points[0]),
-        end_center: getSmallCellCenter(points[1]),
-        duration_hours: travelData.hours,
-        duration_days: travelData.days,
-        distance_feet: travelData.feet,
-        started_at: startedAt,
-        arrival_at: arrivalAt,
-      };
-
-      const { data, error } = await supabase
-        .from("travels")
-        .insert(payload)
-        .select()
-        .single();
-
-      if (error) {
-        alert(`Erro ao salvar viagem online: ${error.message}`);
-        return;
-      }
-
-      const savedTravel = dbTravelToAppTravel(data);
-
-      setTravels((currentTravels) => [
-        savedTravel,
-        ...currentTravels.filter(
-          (travel) => travel.characterId !== selectedTravelCharacter.id
-        ),
-      ]);
-
-      setPoints([]);
-      return;
-    }
-
     setTravels((currentTravels) => [
       newTravel,
       ...currentTravels.filter(
@@ -579,19 +451,7 @@ export default function App() {
     setPoints([]);
   }
 
-  async function cancelTravel(travelId) {
-    if (isSupabaseConfigured && supabase && session?.user) {
-      const { error } = await supabase
-        .from("travels")
-        .delete()
-        .eq("id", travelId);
-
-      if (error) {
-        alert(`Erro ao remover viagem: ${error.message}`);
-        return;
-      }
-    }
-
+  function cancelTravel(travelId) {
     setTravels((currentTravels) =>
       currentTravels.filter((travel) => travel.id !== travelId)
     );
@@ -618,29 +478,6 @@ export default function App() {
   const travel =
     points.length === 2 ? calculateTravel(points[0], points[1], travelMode) : null;
 
-  if (isAuthLoading) {
-    return (
-      <main className="auth-page">
-        <section className="auth-card">
-          <p className="eyebrow">LN Digital</p>
-          <h1>Carregando...</h1>
-          <p>Verificando sessão do jogador.</p>
-        </section>
-      </main>
-    );
-  }
-
-  if (!session && !isDemoMode) {
-    return (
-      <AuthPage
-        onDemoEnter={() => {
-          setIsDemoMode(true);
-          setActivePage("my-ninja");
-        }}
-      />
-    );
-  }
-
   return (
     <main className="app">
       <button
@@ -662,7 +499,7 @@ export default function App() {
 
       <aside className={`panel ${isPanelOpen ? "panelOpen" : ""}`}>
         <div className="panelHeader">
-          <h1>LN Digital</h1>
+          <h1>Mapa RPG</h1>
 
           <button
             className="mobileCloseButton"
@@ -678,25 +515,8 @@ export default function App() {
           Selecione o meio de locomoção e clique em dois pontos para calcular
           distância e tempo de viagem.
         </p>
-        <div className="ln-current-user">
-          <strong>{session?.user?.email || "Modo demonstração"}</strong>
-          <button type="button" onClick={handleLogout}>
-            Sair
-          </button>
-        </div>
 
         <div className="navigationTabs">
-          <button
-            type="button"
-            className={activePage === "my-ninja" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("my-ninja");
-              setIsPanelOpen(false);
-            }}
-          >
-            Meu Ninja
-          </button>
-
           <button
             type="button"
             className={activePage === "map" ? "activeTab" : ""}
@@ -704,27 +524,16 @@ export default function App() {
           >
             Mapa
           </button>
-          <button
-            type="button"
-            className={activePage === "skills" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("skills");
-              setIsPanelOpen(false);
-            }}
-          >
-            Teia
-          </button>
-
 
           <button
             type="button"
-            className={activePage === "admin" ? "activeTab" : ""}
+            className={activePage === "characters" ? "activeTab" : ""}
             onClick={() => {
-              setActivePage("admin");
+              setActivePage("characters");
               setIsPanelOpen(false);
             }}
           >
-            ADM
+            Personagens
           </button>
         </div>
 
@@ -1027,18 +836,8 @@ export default function App() {
           })}
 
         </MapContainer>
-        ) : activePage === "skills" ? (
-          <SkillTreePage />
-        ) : activePage === "admin" ? (
-          <AdminPanel
-            now={now}
-            getCoordinate={getCoordinate}
-            getTravelCurrentPoint={getTravelCurrentPoint}
-            getTravelProgress={getTravelProgress}
-            formatTime={formatTime}
-          />
         ) : (
-          <MyNinjaPage
+          <CharactersPage
             travels={travels}
             now={now}
             getCoordinate={getCoordinate}

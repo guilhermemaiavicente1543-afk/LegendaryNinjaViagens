@@ -15,7 +15,6 @@ import "./App.css";
 import MyNinjaPage from "./components/MyNinjaPage";
 import AuthPage from "./components/auth/AuthPage";
 import AdminPanel from "./components/admin/AdminPanel";
-import SkillTreePage from "./components/SkillTreePage";
 import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
 
 /*
@@ -363,25 +362,6 @@ function createCharacterIcon(travel, progress) {
   });
 }
 
-function dbTravelToAppTravel(row) {
-  return {
-    id: row.id,
-    characterId: row.character_id,
-    characterName: row.character_name || "Ninja sem nome",
-    travelMode: row.travel_mode,
-    modeLabel: row.mode_label,
-    startCoord: row.start_coord,
-    endCoord: row.end_coord,
-    startCenter: row.start_center,
-    endCenter: row.end_center,
-    durationHours: Number(row.duration_hours),
-    durationDays: Number(row.duration_days),
-    distanceFeet: Number(row.distance_feet),
-    startedAt: row.started_at,
-    arrivalAt: row.arrival_at,
-  };
-}
-
 export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
@@ -433,32 +413,6 @@ export default function App() {
     setActivePage("my-ninja");
   }
 
-  async function loadOnlineTravels() {
-    if (!isSupabaseConfigured || !supabase || !session?.user) {
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("travels")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Erro ao carregar viagens:", error.message);
-      return;
-    }
-
-    const mappedTravels = data.map(dbTravelToAppTravel);
-    setTravels(mappedTravels);
-    localStorage.setItem(TRAVEL_STORAGE_KEY, JSON.stringify(mappedTravels));
-  }
-
-  useEffect(() => {
-    if (session?.user) {
-      loadOnlineTravels();
-    }
-  }, [session?.user?.id]);
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       setNow(Date.now());
@@ -493,7 +447,7 @@ export default function App() {
     setTravelCharacters(readSavedCharacters());
   }
 
-  async function startCharacterTravel() {
+  function startCharacterTravel() {
     if (!selectedTravelCharacter) {
       alert("Selecione um personagem para iniciar a viagem.");
       return;
@@ -527,48 +481,6 @@ export default function App() {
       arrivalAt,
     };
 
-    if (isSupabaseConfigured && supabase && session?.user) {
-      const payload = {
-        character_id: selectedTravelCharacter.id,
-        user_id: session.user.id,
-        character_name: selectedTravelCharacter.characterName,
-        travel_mode: travelMode,
-        mode_label: travelData.modeLabel,
-        start_coord: points[0],
-        end_coord: points[1],
-        start_center: getSmallCellCenter(points[0]),
-        end_center: getSmallCellCenter(points[1]),
-        duration_hours: travelData.hours,
-        duration_days: travelData.days,
-        distance_feet: travelData.feet,
-        started_at: startedAt,
-        arrival_at: arrivalAt,
-      };
-
-      const { data, error } = await supabase
-        .from("travels")
-        .insert(payload)
-        .select()
-        .single();
-
-      if (error) {
-        alert(`Erro ao salvar viagem online: ${error.message}`);
-        return;
-      }
-
-      const savedTravel = dbTravelToAppTravel(data);
-
-      setTravels((currentTravels) => [
-        savedTravel,
-        ...currentTravels.filter(
-          (travel) => travel.characterId !== selectedTravelCharacter.id
-        ),
-      ]);
-
-      setPoints([]);
-      return;
-    }
-
     setTravels((currentTravels) => [
       newTravel,
       ...currentTravels.filter(
@@ -579,19 +491,7 @@ export default function App() {
     setPoints([]);
   }
 
-  async function cancelTravel(travelId) {
-    if (isSupabaseConfigured && supabase && session?.user) {
-      const { error } = await supabase
-        .from("travels")
-        .delete()
-        .eq("id", travelId);
-
-      if (error) {
-        alert(`Erro ao remover viagem: ${error.message}`);
-        return;
-      }
-    }
-
+  function cancelTravel(travelId) {
     setTravels((currentTravels) =>
       currentTravels.filter((travel) => travel.id !== travelId)
     );
@@ -704,17 +604,6 @@ export default function App() {
           >
             Mapa
           </button>
-          <button
-            type="button"
-            className={activePage === "skills" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("skills");
-              setIsPanelOpen(false);
-            }}
-          >
-            Teia
-          </button>
-
 
           <button
             type="button"
@@ -1027,16 +916,8 @@ export default function App() {
           })}
 
         </MapContainer>
-        ) : activePage === "skills" ? (
-          <SkillTreePage />
         ) : activePage === "admin" ? (
-          <AdminPanel
-            now={now}
-            getCoordinate={getCoordinate}
-            getTravelCurrentPoint={getTravelCurrentPoint}
-            getTravelProgress={getTravelProgress}
-            formatTime={formatTime}
-          />
+          <AdminPanel />
         ) : (
           <MyNinjaPage
             travels={travels}
