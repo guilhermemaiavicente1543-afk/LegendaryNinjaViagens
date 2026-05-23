@@ -1573,3 +1573,125 @@ body {
     width: auto;
   }
 }
+
+.admin-profile-view {
+  margin: 26px 0;
+  padding: 22px;
+  border-radius: 20px;
+  background: #111827;
+  border: 1px solid #f97316;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+}
+
+.admin-profile-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.admin-profile-header h2 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.admin-profile-header p {
+  margin: 8px 0 0;
+}
+
+.admin-profile-header button,
+.admin-action-button {
+  border: 0;
+  border-radius: 12px;
+  background: #f97316;
+  color: white;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-profile-grid article {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+.admin-profile-grid strong,
+.admin-profile-section h3,
+.admin-region-presences strong {
+  color: #fed7aa;
+}
+
+.admin-profile-grid span,
+.admin-profile-section p,
+.admin-region-presences span {
+  color: #d1d5db;
+  line-height: 1.6;
+}
+
+.admin-profile-section {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+.admin-profile-section h3 {
+  margin-top: 0;
+}
+
+.admin-traits-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-traits-list span {
+  border-radius: 999px;
+  background: #1e3a8a;
+  color: #bfdbfe;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-region-presences {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #0f172a;
+  border: 1px solid #374151;
+}
+
+.admin-row.ninja-row {
+  grid-template-columns: 1.4fr 1fr 0.5fr 0.7fr;
+}
+
+@media (max-width: 900px) {
+  .admin-profile-header {
+    flex-direction: column;
+  }
+
+  .admin-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-row.ninja-row {
+    grid-template-columns: 1fr;
+  }
+}

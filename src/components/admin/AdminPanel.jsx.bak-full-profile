@@ -30,12 +30,6 @@ function formatDateTime(value) {
   }).format(new Date(value));
 }
 
-function getTraitList(character) {
-  return Array.isArray(character?.selected_traits)
-    ? character.selected_traits
-    : [];
-}
-
 export default function AdminPanel({
   now = Date.now(),
   getCoordinate,
@@ -47,7 +41,6 @@ export default function AdminPanel({
   const [profiles, setProfiles] = useState([]);
   const [characters, setCharacters] = useState([]);
   const [travels, setTravels] = useState([]);
-  const [selectedCharacterId, setSelectedCharacterId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -87,21 +80,11 @@ export default function AdminPanel({
         return;
       }
 
-      const [profilesResult, charactersResult, travelsResult] =
-        await Promise.all([
-          supabase
-            .from("profiles")
-            .select("*")
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("characters")
-            .select("*")
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("travels")
-            .select("*")
-            .order("created_at", { ascending: false })
-        ]);
+      const [profilesResult, charactersResult, travelsResult] = await Promise.all([
+        supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+        supabase.from("characters").select("*").order("created_at", { ascending: false }),
+        supabase.from("travels").select("*").order("created_at", { ascending: false })
+      ]);
 
       if (profilesResult.error) {
         setMessage(profilesResult.error.message);
@@ -147,7 +130,6 @@ export default function AdminPanel({
   const travelRows = useMemo(() => {
     return travels.map((travel) => {
       const progress = getTravelProgress ? getTravelProgress(travel, now) : 0;
-
       const currentPoint = getTravelCurrentPoint
         ? getTravelCurrentPoint(travel, now)
         : null;
@@ -197,27 +179,6 @@ export default function AdminPanel({
 
     return Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
   }, [travelRows]);
-
-  const selectedCharacter = useMemo(() => {
-    return characters.find((character) => character.id === selectedCharacterId);
-  }, [characters, selectedCharacterId]);
-
-  const selectedOwner = selectedCharacter
-    ? profileById[selectedCharacter.user_id]
-    : null;
-
-  const selectedTravel = selectedCharacter
-    ? travelRows.find((travel) => travel.characterId === selectedCharacter.id)
-    : null;
-
-  const selectedRegionPresences =
-    selectedTravel?.currentCoord?.macroLabel
-      ? travelRows.filter(
-          (travel) =>
-            travel.currentCoord?.macroLabel === selectedTravel.currentCoord.macroLabel &&
-            travel.characterId !== selectedCharacter.id
-        )
-      : [];
 
   if (isLoading) {
     return (
@@ -277,167 +238,6 @@ export default function AdminPanel({
           </article>
         </div>
 
-        {selectedCharacter && (
-          <div className="admin-profile-view">
-            <div className="admin-profile-header">
-              <div>
-                <p className="eyebrow">Perfil completo</p>
-                <h2>{selectedCharacter.character_name}</h2>
-                <p>
-                  Player:{" "}
-                  {selectedOwner?.display_name ||
-                    selectedOwner?.email ||
-                    "Desconhecido"}
-                </p>
-              </div>
-
-              <button type="button" onClick={() => setSelectedCharacterId("")}>
-                Fechar perfil
-              </button>
-            </div>
-
-            <div className="admin-profile-grid">
-              <article>
-                <strong>Idade</strong>
-                <span>{selectedCharacter.age || "Não informada"}</span>
-              </article>
-
-              <article>
-                <strong>Aldeia/Organização</strong>
-                <span>
-                  {selectedCharacter.village_or_organization || "Não informada"}
-                </span>
-              </article>
-
-              <article>
-                <strong>Clã/Parentesco</strong>
-                <span>{selectedCharacter.clan_or_kinship || "Não informado"}</span>
-              </article>
-
-              <article>
-                <strong>Kekkei Genkai/Hiden</strong>
-                <span>{selectedCharacter.kekkei_genkai_or_hiden || "Nenhum"}</span>
-              </article>
-
-              <article>
-                <strong>Estilo Ninja</strong>
-                <span>{selectedCharacter.ninja_style || "Não definido"}</span>
-              </article>
-
-              <article>
-                <strong>Criado em</strong>
-                <span>{formatDateTime(selectedCharacter.created_at)}</span>
-              </article>
-            </div>
-
-            <div className="admin-profile-section">
-              <h3>Aparência</h3>
-              <p>{selectedCharacter.appearance || "Não informada."}</p>
-            </div>
-
-            <div className="admin-profile-section">
-              <h3>História</h3>
-              <p>{selectedCharacter.history || "Não informada."}</p>
-            </div>
-
-            <div className="admin-profile-section">
-              <h3>Equipamentos</h3>
-              <p>{selectedCharacter.equipment || "Nenhum equipamento informado."}</p>
-            </div>
-
-            <div className="admin-profile-section">
-              <h3>Traços Únicos</h3>
-
-              {getTraitList(selectedCharacter).length === 0 ? (
-                <p>Nenhum traço selecionado.</p>
-              ) : (
-                <div className="admin-traits-list">
-                  {getTraitList(selectedCharacter).map((trait) => (
-                    <span key={trait.id || trait.name}>{trait.name}</span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="admin-profile-section">
-              <h3>Localização e Viagem</h3>
-
-              {!selectedTravel ? (
-                <p>Este ninja não possui viagem ativa registrada.</p>
-              ) : (
-                <div className="admin-profile-grid">
-                  <article>
-                    <strong>Status</strong>
-                    <span>
-                      {selectedTravel.arrived ? "Chegou ao destino" : "Em viagem"}
-                    </span>
-                  </article>
-
-                  <article>
-                    <strong>Região atual</strong>
-                    <span>{selectedTravel.currentCoord?.macroLabel || "-"}</span>
-                  </article>
-
-                  <article>
-                    <strong>Coordenada atual</strong>
-                    <span>{selectedTravel.currentCoord?.label || "-"}</span>
-                  </article>
-
-                  <article>
-                    <strong>Progresso</strong>
-                    <span>{selectedTravel.progressPercent}%</span>
-                  </article>
-
-                  <article>
-                    <strong>Rota</strong>
-                    <span>
-                      {selectedTravel.startCoord?.label} →{" "}
-                      {selectedTravel.endCoord?.label}
-                    </span>
-                  </article>
-
-                  <article>
-                    <strong>Chegada prevista</strong>
-                    <span>{formatDateTime(selectedTravel.arrivalAt)}</span>
-                  </article>
-
-                  <article>
-                    <strong>Tempo restante</strong>
-                    <span>
-                      {selectedTravel.arrived
-                        ? "Viagem concluída"
-                        : formatTime
-                          ? formatTime(
-                              selectedTravel.durationHours *
-                                (1 - selectedTravel.progress)
-                            )
-                          : "-"}
-                    </span>
-                  </article>
-
-                  <article>
-                    <strong>Presenças reais na região</strong>
-                    <span>{selectedRegionPresences.length}</span>
-                  </article>
-                </div>
-              )}
-
-              {selectedRegionPresences.length > 0 && (
-                <div className="admin-region-presences">
-                  <strong>Outros personagens na mesma região:</strong>
-
-                  {selectedRegionPresences.map((presence) => (
-                    <span key={presence.id}>
-                      {presence.characterName} —{" "}
-                      {presence.currentCoord?.macroLabel || "-"}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
         <div className="admin-section">
           <h2>Ninjas cadastrados</h2>
 
@@ -449,7 +249,7 @@ export default function AdminPanel({
                 const owner = profileById[character.user_id];
 
                 return (
-                  <article key={character.id} className="admin-row ninja-row">
+                  <article key={character.id} className="admin-row">
                     <div>
                       <strong>{character.character_name}</strong>
                       <span>
@@ -460,24 +260,16 @@ export default function AdminPanel({
 
                     <div>
                       <small>Player</small>
-                      <span>
-                        {owner?.display_name || owner?.email || "Desconhecido"}
-                      </span>
+                      <span>{owner?.display_name || owner?.email || "Desconhecido"}</span>
                     </div>
 
                     <div>
                       <small>Traços</small>
-                      <span>{getTraitList(character).length}</span>
-                    </div>
-
-                    <div>
-                      <button
-                        type="button"
-                        className="admin-action-button"
-                        onClick={() => setSelectedCharacterId(character.id)}
-                      >
-                        Ver perfil
-                      </button>
+                      <span>
+                        {Array.isArray(character.selected_traits)
+                          ? character.selected_traits.length
+                          : 0}
+                      </span>
                     </div>
                   </article>
                 );
