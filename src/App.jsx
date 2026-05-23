@@ -82,12 +82,12 @@ const smallCellHeight = macroCellHeight / SUBDIVISIONS;
 function FitMapToBounds() {
   const map = useMap();
 
-  setTimeout(() => {
+  useEffect(() => {
     map.fitBounds(imageBounds, {
       padding: [10, 10],
       animate: false,
     });
-  }, 0);
+  }, [map]);
 
   return null;
 }
