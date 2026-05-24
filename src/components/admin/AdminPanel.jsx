@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import SkillTreeEditor from "./SkillTreeEditor";
 
 function dbTravelToAppTravel(row) {
   return {
@@ -43,6 +44,7 @@ export default function AdminPanel({
   getTravelProgress,
   formatTime
 }) {
+  const [adminView, setAdminView] = useState("overview");
   const [currentProfile, setCurrentProfile] = useState(null);
   const [profiles, setProfiles] = useState([]);
   const [characters, setCharacters] = useState([]);
@@ -243,6 +245,39 @@ export default function AdminPanel({
     );
   }
 
+  if (adminView === "tree-editor") {
+    return (
+      <section className="admin-page">
+        <div className="admin-card admin-card-wide">
+          <p className="eyebrow">Painel do Mestre</p>
+          <h1>Editor da Teia</h1>
+          <p>
+            Crie, mova, conecte e edite as habilidades da teia principal do LN Digital.
+          </p>
+
+          <div className="admin-mode-tabs">
+            <button
+              type="button"
+              onClick={() => setAdminView("overview")}
+            >
+              Visão Geral
+            </button>
+
+            <button
+              type="button"
+              className="active"
+              onClick={() => setAdminView("tree-editor")}
+            >
+              Editor da Teia
+            </button>
+          </div>
+        </div>
+
+        <SkillTreeEditor />
+      </section>
+    );
+  }
+
   return (
     <section className="admin-page">
       <div className="admin-card">
@@ -252,6 +287,24 @@ export default function AdminPanel({
           Área do mestre para visualizar ninjas cadastrados, players, viagens
           ativas e localização real dos personagens.
         </p>
+
+        <div className="admin-mode-tabs">
+          <button
+            type="button"
+            className={adminView === "overview" ? "active" : ""}
+            onClick={() => setAdminView("overview")}
+          >
+            Visão Geral
+          </button>
+
+          <button
+            type="button"
+            className={adminView === "tree-editor" ? "active" : ""}
+            onClick={() => setAdminView("tree-editor")}
+          >
+            Editor da Teia
+          </button>
+        </div>
 
         {message && <p className="auth-message">{message}</p>}
 

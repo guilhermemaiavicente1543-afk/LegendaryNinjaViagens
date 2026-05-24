@@ -1,284 +1,309 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
   MiniMap,
-  MarkerType
+  Handle,
+  Position,
+  MarkerType,
+  ConnectionLineType
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 
-const initialNodes = [
-  {
-    id: "chakra-base",
-    position: { x: 0, y: 260 },
-    data: {
-      label: (
-        <div className="skill-node unlocked">
-          <strong>Controle de Chakra</strong>
-          <span>Base inicial</span>
-        </div>
-      )
-    },
-    type: "default"
-  },
-  {
-    id: "ninjutsu-01",
-    position: { x: 280, y: 80 },
-    data: {
-      label: (
-        <div className="skill-node available">
-          <strong>Ninjutsu I</strong>
-          <span>Disponível</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "taijutsu-01",
-    position: { x: 280, y: 260 },
-    data: {
-      label: (
-        <div className="skill-node available">
-          <strong>Taijutsu I</strong>
-          <span>Disponível</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "genjutsu-01",
-    position: { x: 280, y: 440 },
-    data: {
-      label: (
-        <div className="skill-node locked">
-          <strong>Genjutsu I</strong>
-          <span>Bloqueado</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "mestre-selos",
-    position: { x: 620, y: 20 },
-    data: {
-      label: (
-        <div className="skill-node locked">
-          <strong>Mestre de Selos</strong>
-          <span>Requer Ninjutsu I</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "elemental",
-    position: { x: 620, y: 140 },
-    data: {
-      label: (
-        <div className="skill-node locked">
-          <strong>Elemental</strong>
-          <span>Requer Ninjutsu II</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "meditacao",
-    position: { x: 620, y: 320 },
-    data: {
-      label: (
-        <div className="skill-node locked">
-          <strong>Meditação</strong>
-          <span>Requer Taijutsu I</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "memoria-muscular",
-    position: { x: 620, y: 440 },
-    data: {
-      label: (
-        <div className="skill-node locked">
-          <strong>Memória Muscular</strong>
-          <span>Requer Taijutsu I</span>
-        </div>
-      )
-    }
-  },
-  {
-    id: "chakra-sombrio",
-    position: { x: 620, y: 580 },
-    data: {
-      label: (
-        <div className="skill-node locked">
-          <strong>Chakra Sombrio</strong>
-          <span>Requer Genjutsu II</span>
-        </div>
-      )
-    }
-  }
-];
+function slugify(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
-const initialEdges = [
-  {
-    id: "chakra-ninjutsu",
-    source: "chakra-base",
-    target: "ninjutsu-01",
-    animated: true,
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "chakra-taijutsu",
-    source: "chakra-base",
-    target: "taijutsu-01",
-    animated: true,
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "chakra-genjutsu",
-    source: "chakra-base",
-    target: "genjutsu-01",
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "ninjutsu-mestre-selos",
-    source: "ninjutsu-01",
-    target: "mestre-selos",
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "ninjutsu-elemental",
-    source: "ninjutsu-01",
-    target: "elemental",
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "taijutsu-meditacao",
-    source: "taijutsu-01",
-    target: "meditacao",
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "taijutsu-memoria",
-    source: "taijutsu-01",
-    target: "memoria-muscular",
-    markerEnd: { type: MarkerType.ArrowClosed }
-  },
-  {
-    id: "genjutsu-chakra-sombrio",
-    source: "genjutsu-01",
-    target: "chakra-sombrio",
-    markerEnd: { type: MarkerType.ArrowClosed }
-  }
-];
+function getNodeInitials(name) {
+  return String(name || "H")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
 
-const skillDetails = {
-  "chakra-base": {
-    name: "Controle de Chakra",
-    status: "Desbloqueado",
-    description:
-      "Base inicial para a progressão ninja. Serve como ponto de partida para vários estilos."
-  },
-  "ninjutsu-01": {
-    name: "Ninjutsu I",
-    status: "Disponível",
-    description:
-      "Primeiro nível do caminho de Ninjutsu. Libera técnicas básicas e pré-requisitos para ramos elementais."
-  },
-  "taijutsu-01": {
-    name: "Taijutsu I",
-    status: "Disponível",
-    description:
-      "Primeiro nível do caminho corporal. Serve como base para técnicas físicas, resistência e meditação."
-  },
-  "genjutsu-01": {
-    name: "Genjutsu I",
-    status: "Bloqueado",
-    description:
-      "Primeiro nível do caminho ilusório. Será desbloqueado conforme os requisitos definidos pelo mestre."
-  },
-  "mestre-selos": {
-    name: "Mestre de Selos",
-    status: "Bloqueado",
-    description:
-      "Reduz a exigência de selos manuais e melhora a execução de técnicas de Ninjutsu."
-  },
-  elemental: {
-    name: "Elemental",
-    status: "Bloqueado",
-    description:
-      "Aprimora afinidades elementais e reduz custos relacionados a elementos."
-  },
-  meditacao: {
-    name: "Meditação",
-    status: "Bloqueado",
-    description:
-      "Permite recuperar recursos através de concentração e treinamento corporal."
-  },
-  "memoria-muscular": {
-    name: "Memória Muscular",
-    status: "Bloqueado",
-    description:
-      "Permite assimilar técnicas corporais observando sua execução."
-  },
-  "chakra-sombrio": {
-    name: "Chakra Sombrio",
-    status: "Bloqueado",
-    description:
-      "Manifestação aterrorizante de chakra ligada a efeitos mentais e medo."
-  }
+function normalizeNodes(nodes) {
+  return nodes.map((node) => ({
+    ...node,
+    type: "skill",
+    data: {
+      name: node.data?.name || node.data?.label || "Habilidade",
+      category: node.data?.category || "Híbrido",
+      cost: Number(node.data?.cost || 0),
+      requirements: node.data?.requirements || "",
+      description: node.data?.description || "",
+      source: node.data?.source || "Manual",
+      nodeSize: node.data?.nodeSize || "medium",
+      imageUrl: node.data?.imageUrl || "",
+      requirementMode: node.data?.requirementMode || "all"
+    }
+  }));
+}
+
+function SkillNode({ data, selected }) {
+  const categoryClass = `category-${slugify(data.category || "hibrido")}`;
+  const sizeClass = `size-${data.nodeSize || "medium"}`;
+  const imageUrl = String(data.imageUrl || "").trim();
+
+  return (
+    <div
+      className={`ln-circle-skill-node ${categoryClass} ${sizeClass} ${
+        selected ? "selected" : ""
+      }`}
+    >
+      <Handle type="target" position={Position.Top} />
+
+      <div className="circle-skill-name">{data.name || "Habilidade"}</div>
+
+      <div className="circle-skill-body">
+        <div className="circle-skill-ring">
+          {imageUrl ? (
+            <img src={imageUrl} alt={data.name || "Habilidade"} />
+          ) : (
+            <span>{getNodeInitials(data.name)}</span>
+          )}
+        </div>
+      </div>
+
+      <div className="circle-skill-category">{data.category || "Híbrido"}</div>
+
+      <div
+        className={`circle-requirement-mode ${
+          data.requirementMode === "any" ? "any" : "all"
+        }`}
+      >
+        {data.requirementMode === "any" ? "OU" : "E"}
+      </div>
+
+      <Handle type="source" position={Position.Bottom} />
+    </div>
+  );
+}
+
+const nodeTypes = {
+  skill: SkillNode
 };
 
 export default function SkillTreePage() {
-  const [selectedSkillId, setSelectedSkillId] = useState("chakra-base");
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
+  const [selectedNodeId, setSelectedNodeId] = useState("");
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const selectedSkill = useMemo(() => {
-    return skillDetails[selectedSkillId] || skillDetails["chakra-base"];
-  }, [selectedSkillId]);
+  const flowInstanceRef = useRef(null);
+  const didSetInitialViewport = useRef(false);
+
+  const selectedNode = useMemo(() => {
+    return nodes.find((node) => node.id === selectedNodeId) || null;
+  }, [nodes, selectedNodeId]);
+
+  const displayEdges = useMemo(() => {
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+    return edges.map((edge) => {
+      const targetNode = nodeById.get(edge.target);
+      const mode = targetNode?.data?.requirementMode || "all";
+
+      if (mode === "any") {
+        return {
+          ...edge,
+          type: "smoothstep",
+          animated: true,
+          markerEnd: edge.markerEnd || { type: MarkerType.ArrowClosed },
+          style: {
+            stroke: "#38bdf8",
+            strokeWidth: 3,
+            strokeDasharray: "7 6"
+          }
+        };
+      }
+
+      return {
+        ...edge,
+        type: "smoothstep",
+        markerEnd: edge.markerEnd || { type: MarkerType.ArrowClosed },
+        style: {
+          stroke: "#f97316",
+          strokeWidth: 3
+        }
+      };
+    });
+  }, [edges, nodes]);
+
+  function focusTreeView(zoom = 1.05) {
+    if (!flowInstanceRef.current || nodes.length === 0) {
+      return;
+    }
+
+    const minX = Math.min(...nodes.map((node) => node.position.x));
+    const minY = Math.min(...nodes.map((node) => node.position.y));
+
+    flowInstanceRef.current.setViewport(
+      {
+        x: 150 - minX * zoom,
+        y: 120 - minY * zoom,
+        zoom
+      },
+      { duration: 300 }
+    );
+  }
+
+  useEffect(() => {
+    async function loadSkillTree() {
+      if (!isSupabaseConfigured || !supabase) {
+        setMessage("Supabase não está configurado.");
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("skill_trees")
+        .select("*")
+        .eq("name", "Teia Principal")
+        .maybeSingle();
+
+      if (error) {
+        setMessage(error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!data || !Array.isArray(data.nodes) || data.nodes.length === 0) {
+        setMessage("Nenhuma teia salva pelo ADM ainda.");
+        setIsLoading(false);
+        return;
+      }
+
+      setNodes(normalizeNodes(data.nodes));
+      setEdges(Array.isArray(data.edges) ? data.edges : []);
+      setIsLoading(false);
+    }
+
+    loadSkillTree();
+  }, []);
+
+  useEffect(() => {
+    if (
+      !isLoading &&
+      nodes.length > 0 &&
+      flowInstanceRef.current &&
+      !didSetInitialViewport.current
+    ) {
+      didSetInitialViewport.current = true;
+      window.setTimeout(() => focusTreeView(1.05), 120);
+    }
+  }, [isLoading, nodes.length]);
 
   return (
-    <section className="skill-tree-page">
-      <div className="skill-tree-toolbar">
+    <section className="skill-tree-page player-skill-tree-page">
+      <div className="skill-tree-toolbar player-skill-tree-toolbar">
         <div>
           <p className="eyebrow">LN Digital</p>
           <h1>Teia de Habilidades</h1>
           <p>
-            Visualize os caminhos de evolução do seu ninja. Esta versão é de
-            visualização; o editor do mestre será criado no Painel ADM.
+            Visualize a teia principal criada pelo ADM. Esta página não altera a
+            posição nem a estrutura da árvore.
           </p>
         </div>
 
         <div className="skill-legend">
-          <span className="legend unlocked">Desbloqueado</span>
-          <span className="legend available">Disponível</span>
-          <span className="legend locked">Bloqueado</span>
+          <span className="legend unlocked">E = todos os requisitos</span>
+          <span className="legend available">OU = qualquer requisito</span>
+
+          <button
+            type="button"
+            className="player-tree-focus-button"
+            onClick={() => focusTreeView(1.05)}
+          >
+            Centralizar visão
+          </button>
         </div>
       </div>
 
-      <div className="skill-tree-stage">
-        <ReactFlow
-          nodes={initialNodes}
-          edges={initialEdges}
-          fitView
-          nodesDraggable={false}
-          nodesConnectable={false}
-          elementsSelectable
-          onNodeClick={(_, node) => setSelectedSkillId(node.id)}
-        >
-          <Background />
-          <Controls />
-          <MiniMap pannable zoomable />
-        </ReactFlow>
+      {message && <p className="auth-message">{message}</p>}
 
-        <aside className="skill-inspector">
-          <p className="eyebrow">Habilidade</p>
-          <h2>{selectedSkill.name}</h2>
-          <span className={`skill-status ${selectedSkill.status.toLowerCase()}`}>
-            {selectedSkill.status}
-          </span>
-          <p>{selectedSkill.description}</p>
-        </aside>
+      <div className="player-skill-tree-stage">
+        {isLoading ? (
+          <div className="tree-editor-loading">
+            <p className="eyebrow">Carregando</p>
+            <h2>Buscando teia salva...</h2>
+          </div>
+        ) : (
+          <>
+            <ReactFlow
+              nodes={nodes}
+              edges={displayEdges}
+              nodeTypes={nodeTypes}
+              nodesDraggable={false}
+              nodesConnectable={false}
+              elementsSelectable
+              onNodeClick={(_, node) => setSelectedNodeId(node.id)}
+              onPaneClick={() => setSelectedNodeId("")}
+              connectionLineType={ConnectionLineType.SmoothStep}
+              defaultEdgeOptions={{
+                type: "smoothstep",
+                markerEnd: { type: MarkerType.ArrowClosed }
+              }}
+              defaultViewport={{ x: 120, y: 100, zoom: 1.05 }}
+              minZoom={0.2}
+              maxZoom={2}
+              onInit={(instance) => {
+                flowInstanceRef.current = instance;
+              }}
+            >
+              <Background color="#334155" gap={24} />
+              <Controls />
+              <MiniMap pannable zoomable />
+            </ReactFlow>
+
+            <aside className="player-skill-inspector">
+              {!selectedNode ? (
+                <>
+                  <p className="eyebrow">Habilidade</p>
+                  <h2>Selecione uma habilidade</h2>
+                  <p>
+                    Clique em um círculo da teia para ver categoria, requisitos e
+                    descrição.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="eyebrow">{selectedNode.data.category}</p>
+                  <h2>{selectedNode.data.name}</h2>
+
+                  <div className="player-skill-meta">
+                    <span>
+                      Modo:{" "}
+                      {selectedNode.data.requirementMode === "any"
+                        ? "OU / qualquer requisito"
+                        : "E / todos os requisitos"}
+                    </span>
+
+                    {selectedNode.data.requirements && (
+                      <span>Req: {selectedNode.data.requirements}</span>
+                    )}
+                  </div>
+
+                  <p>
+                    {selectedNode.data.description ||
+                      "Nenhuma descrição cadastrada."}
+                  </p>
+                </>
+              )}
+            </aside>
+          </>
+        )}
       </div>
     </section>
   );
