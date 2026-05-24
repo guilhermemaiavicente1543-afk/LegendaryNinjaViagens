@@ -648,7 +648,7 @@ export default function App() {
   }
 
   return (
-    <main className="app">
+    <main className={`app app-${activePage}`}>
       <button
         className="mobileConfigButton"
         onClick={() => setIsPanelOpen(true)}
