@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import SkillTreeEditor from "./SkillTreeEditor";
 import CouponManager from "./CouponManager";
+import AppearanceManager from "./AppearanceManager";
 import AdminWorldMap from "./AdminWorldMap";
 
 function dbTravelToAppTravel(row) {
@@ -282,6 +283,50 @@ export default function AdminPanel({
     );
   }
 
+  if (adminView === "appearances") {
+    return (
+      <section className="admin-page">
+        <div className="admin-card admin-card-wide">
+          <p className="eyebrow">Painel do Mestre</p>
+          <h1>Aparências</h1>
+
+          <div className="admin-mode-tabs">
+            <button
+              type="button"
+              onClick={() => setAdminView("overview")}
+            >
+              Visão Geral
+            </button>
+
+            <button
+              type="button"
+              className="active"
+              onClick={() => setAdminView("appearances")}
+            >
+              Aparências
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAdminView("coupons")}
+            >
+              Cupons
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAdminView("tree-editor")}
+            >
+              Editor da Teia
+            </button>
+          </div>
+        </div>
+
+        <AppearanceManager />
+      </section>
+    );
+  }
+
   if (adminView === "coupons") {
     return (
       <section className="admin-page">
@@ -376,6 +421,14 @@ export default function AdminPanel({
             onClick={() => setAdminView("overview")}
           >
             Visão Geral
+          </button>
+
+          <button
+            type="button"
+            className={adminView === "appearances" ? "active" : ""}
+            onClick={() => setAdminView("appearances")}
+          >
+            Aparências
           </button>
 
           <button

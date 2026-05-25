@@ -5228,3 +5228,166 @@ main.app:not(.app-map) > section {
     flex-direction: column;
   }
 }
+
+/* Aba ADM: Aparências dos personagens */
+.appearance-manager {
+  display: grid;
+  gap: 16px;
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 22px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.appearance-manager-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.appearance-manager-header h2 {
+  margin: 0;
+  color: #f9fafb;
+}
+
+.appearance-manager-header p {
+  margin: 6px 0 0;
+  color: #d1d5db;
+}
+
+.appearance-manager-header button {
+  border: 0;
+  border-radius: 999px;
+  background: #f97316;
+  color: #fff;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.appearance-search-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 16px;
+  background: #0f172a;
+  border: 1px solid #374151;
+}
+
+.appearance-search-box input {
+  width: 100%;
+  border: 1px solid #4b5563;
+  border-radius: 12px;
+  background: #020617;
+  color: #f9fafb;
+  padding: 12px 14px;
+  font-size: 15px;
+}
+
+.appearance-search-box span {
+  color: #fed7aa;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.appearance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.appearance-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+.appearance-card header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.appearance-card header img,
+.appearance-avatar-fallback {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid #f97316;
+  flex: 0 0 auto;
+}
+
+.appearance-avatar-fallback {
+  display: grid;
+  place-items: center;
+  background: #7c2d12;
+  color: #fed7aa;
+  font-weight: 950;
+}
+
+.appearance-card h3 {
+  margin: 0;
+  color: #f9fafb;
+}
+
+.appearance-card header span {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.appearance-meta {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #111827;
+  color: #d1d5db;
+  font-size: 13px;
+}
+
+.appearance-meta strong {
+  color: #fed7aa;
+}
+
+.appearance-text {
+  display: grid;
+  gap: 6px;
+}
+
+.appearance-text strong {
+  color: #fed7aa;
+}
+
+.appearance-text p {
+  margin: 0;
+  color: #e5e7eb;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 800px) {
+  .appearance-manager {
+    padding: 12px;
+  }
+
+  .appearance-manager-header {
+    flex-direction: column;
+  }
+
+  .appearance-search-box {
+    grid-template-columns: 1fr;
+  }
+
+  .appearance-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -398,6 +398,24 @@ function createCharacterIcon(travel, progress) {
   });
 }
 
+function dedupeTravelsByCharacter(travels) {
+  const map = new Map();
+
+  for (const travel of travels) {
+    if (!travel?.characterId) continue;
+
+    const current = map.get(travel.characterId);
+    const travelTime = new Date(travel.startedAt || 0).getTime();
+    const currentTime = current ? new Date(current.startedAt || 0).getTime() : -1;
+
+    if (!current || travelTime >= currentTime) {
+      map.set(travel.characterId, travel);
+    }
+  }
+
+  return Array.from(map.values());
+}
+
 function dbTravelToAppTravel(row) {
   return {
     id: row.id,
@@ -657,6 +675,11 @@ export default function App() {
     saveCharacterLocation(selectedTravelCharacter.id, endCoord);
 
     if (isSupabaseConfigured && supabase && session?.user) {
+      await supabase
+        .from("travels")
+        .delete()
+        .eq("character_id", selectedTravelCharacter.id);
+
       const payload = {
         character_id: selectedTravelCharacter.id,
         user_id: session.user.id,
