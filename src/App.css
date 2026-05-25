@@ -5093,3 +5093,138 @@ main.app:not(.app-map) > section {
     overflow-y: auto !important;
   }
 }
+
+.unique-traits-accordion {
+  border: 1px solid #374151;
+  border-radius: 16px;
+  background: #111827;
+  padding: 0;
+  overflow: hidden;
+}
+
+.unique-traits-accordion summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  padding: 14px 16px;
+  color: #fed7aa;
+  font-weight: 950;
+  list-style: none;
+}
+
+.unique-traits-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.unique-traits-accordion summary span {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.unique-traits-accordion[open] {
+  padding-bottom: 14px;
+}
+
+.unique-traits-accordion[open] .trait-filters,
+.unique-traits-accordion[open] .trait-results,
+.unique-traits-accordion[open] .selected-traits {
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+.unique-traits-accordion {
+  border: 1px solid #374151;
+  border-radius: 16px;
+  background: #111827;
+  padding: 0;
+  overflow: hidden;
+}
+
+.unique-traits-accordion summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  padding: 14px 16px;
+  color: #fed7aa;
+  font-weight: 950;
+  list-style: none;
+}
+
+.unique-traits-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.unique-traits-accordion summary span {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.unique-traits-accordion[open] {
+  padding-bottom: 14px;
+}
+
+.unique-traits-accordion[open] .trait-filters,
+.unique-traits-accordion[open] .trait-results,
+.unique-traits-accordion[open] .selected-traits {
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+/* Traços Únicos retráteis na ficha */
+.unique-traits-accordion {
+  border: 1px solid #374151;
+  border-radius: 16px;
+  background: #111827;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.unique-traits-accordion summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  padding: 14px 16px;
+  color: #fed7aa;
+  font-weight: 950;
+  list-style: none;
+}
+
+.unique-traits-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.unique-traits-accordion summary span {
+  font-size: 16px;
+}
+
+.unique-traits-accordion summary small {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.unique-traits-accordion[open] {
+  padding-bottom: 14px !important;
+}
+
+.unique-traits-accordion[open] .trait-filters,
+.unique-traits-accordion[open] .trait-results,
+.unique-traits-accordion[open] .selected-traits {
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+@media (max-width: 700px) {
+  .unique-traits-accordion summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

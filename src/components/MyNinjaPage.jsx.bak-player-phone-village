@@ -6,14 +6,6 @@ import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
-const villageOptions = [
-  "Vila da Folha",
-  "Vila da Névoa",
-  "Vila da Nuvem",
-  "Vila da Areia",
-  "Vila da Pedra"
-];
-
 const ninjaStyles = [
   "Ninjutsu",
   "Taijutsu",
@@ -30,10 +22,7 @@ const ninjaStyles = [
 ];
 
 const initialForm = {
-  playerName: "",
-  phoneNumber: "",
   characterName: "",
-  villageChoice: "",
   iconUrl: "",
   age: "",
   appearance: "",
@@ -47,14 +36,8 @@ const initialForm = {
 };
 
 function dbToForm(character) {
-  const savedVillage = character.village_or_organization || "";
-  const isKnownVillage = villageOptions.includes(savedVillage);
-
   return {
-    playerName: character.player_name || "",
-    phoneNumber: character.phone_number || "",
     characterName: character.character_name || "",
-    villageChoice: isKnownVillage ? savedVillage : savedVillage ? "Outros" : "",
     iconUrl: character.icon_url || "",
     age: character.age || "",
     appearance: character.appearance || "",
@@ -73,8 +56,6 @@ function dbToForm(character) {
 function dbToLocalCharacter(character) {
   return {
     id: character.id,
-    playerName: character.player_name || "",
-    phoneNumber: character.phone_number || "",
     characterName: character.character_name || "",
     iconUrl: character.icon_url || "",
     age: character.age || "",
@@ -103,22 +84,15 @@ function syncCharacterToLocalStorage(character) {
 }
 
 function buildPayload(form, userId) {
-  const village =
-    form.villageChoice === "Outros"
-      ? form.villageOrOrganization.trim()
-      : form.villageChoice;
-
   return {
     user_id: userId,
-    player_name: form.playerName.trim(),
-    phone_number: form.phoneNumber.trim(),
     character_name: form.characterName.trim(),
     icon_url: form.iconUrl,
     age: form.age,
     appearance: form.appearance,
     clan_or_kinship: form.clanOrKinship,
     history: form.history,
-    village_or_organization: village,
+    village_or_organization: form.villageOrOrganization,
     kekkei_genkai_or_hiden: form.kekkeiGenkaiOrHiden,
     equipment: form.equipment,
     ninja_style: form.ninjaStyle,
@@ -402,24 +376,6 @@ export default function MyNinjaPage({
         </p>
 
         <label>
-          Nome do Player
-          <input
-            value={form.playerName}
-            onChange={(event) => updateField("playerName", event.target.value)}
-            placeholder="Ex: Guilherme"
-          />
-        </label>
-
-        <label>
-          Número de telefone
-          <input
-            value={form.phoneNumber}
-            onChange={(event) => updateField("phoneNumber", event.target.value)}
-            placeholder="Ex: (35) 99999-9999"
-          />
-        </label>
-
-        <label>
           Nome do Personagem
           <input
             value={form.characterName}
@@ -475,39 +431,14 @@ export default function MyNinjaPage({
 
         <label>
           Aldeia ou Organização
-          <select
-            value={form.villageChoice}
-            onChange={(event) => {
-              const value = event.target.value;
-              updateField("villageChoice", value);
-
-              if (value !== "Outros") {
-                updateField("villageOrOrganization", "");
-              }
-            }}
-          >
-            <option value="">Selecione uma opção</option>
-            {villageOptions.map((village) => (
-              <option key={village} value={village}>
-                {village}
-              </option>
-            ))}
-            <option value="Outros">Outros</option>
-          </select>
+          <input
+            value={form.villageOrOrganization}
+            onChange={(event) =>
+              updateField("villageOrOrganization", event.target.value)
+            }
+            placeholder="Ex: Vila Oculta da Folha, Akatsuki, organização própria..."
+          />
         </label>
-
-        {form.villageChoice === "Outros" && (
-          <label>
-            Informe a vila ou organização
-            <input
-              value={form.villageOrOrganization}
-              onChange={(event) =>
-                updateField("villageOrOrganization", event.target.value)
-              }
-              placeholder="Ex: Akatsuki, organização própria..."
-            />
-          </label>
-        )}
 
         <label>
           Kekkei Genkai ou Hiden
@@ -544,13 +475,10 @@ export default function MyNinjaPage({
           </select>
         </label>
 
-        <details className="trait-selector unique-traits-accordion">
-          <summary>
-            <span>Traços Únicos</span>
-            <small>Clique para abrir/fechar a lista de traços.</small>
-          </summary>
+        <div className="trait-selector">
+          <h3>Traços Únicos</h3>
 
-<div className="trait-filters">
+          <div className="trait-filters">
             <input
               value={traitSearch}
               onChange={(event) => setTraitSearch(event.target.value)}
@@ -582,9 +510,7 @@ export default function MyNinjaPage({
 
           <div className="trait-results">
             {filteredTraits.map((trait) => (
-              
-
-<button
+              <button
                 type="button"
                 key={trait.id}
                 className="trait-result"
@@ -615,7 +541,7 @@ export default function MyNinjaPage({
               ))
             )}
           </div>
-        </details>
+        </div>
 
         <button className="save-character-button" type="submit">
           {character ? "Salvar Alterações" : "Criar Meu Ninja"}
