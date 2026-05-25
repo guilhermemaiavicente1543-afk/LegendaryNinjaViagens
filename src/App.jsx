@@ -16,6 +16,7 @@ import MyNinjaPage from "./components/MyNinjaPage";
 import AuthPage from "./components/auth/AuthPage";
 import AdminPanel from "./components/admin/AdminPanel";
 import SkillTreePage from "./components/SkillTreePage";
+import EntryHall from "./components/EntryHall";
 import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
 
 /*
@@ -26,12 +27,12 @@ import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
   Sistema:
   - Colunas grandes: A-J
   - Linhas grandes: 1-10
-  - Cada bloco grande: 5 x 5 subquadrados
+  - Cada bloco grande: 5 x 5 províncias
   - Distância: diagonal = 1.41
-  - 1 subquadrado = 5 pés
-  - Aéreo: 5 pés = 6 horas
-  - Aquático: 5 pés = 9 horas
-  - Terrestre: 5 pés = 12 horas
+  - 1 província = 5 províncias
+  - Aéreo: 5 províncias = 6 horas
+  - Aquático: 5 províncias = 9 horas
+  - Terrestre: 5 províncias = 12 horas
 */
 
 const MAP_WIDTH = 1080;
@@ -48,8 +49,8 @@ const SUBDIVISIONS = 5;
 
 const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
-const UNIT_PER_SMALL_SQUARE = 5;
-const UNIT_NAME = "pés";
+const UNIT_PER_SMALL_SQUARE = 1;
+const UNIT_NAME = "província";
 const DIAGONAL_COST = 1.41;
 
 const TRAVEL_MODES = {
@@ -64,6 +65,10 @@ const TRAVEL_MODES = {
   terrestre: {
     label: "Terrestre",
     hoursPerFiveFeet: 12,
+  },
+  teletransporte: {
+    label: "Teletransporte",
+    hoursPerFiveFeet: 0,
   },
 };
 
@@ -134,6 +139,16 @@ function getCoordinate(latlng) {
   const globalSmallCol = macroCol * SUBDIVISIONS + (subCol - 1);
   const globalSmallRow = macroRow * SUBDIVISIONS + (subRow - 1);
 
+  // Ajuste visual do rótulo da linha:
+  // a grade do mapa está uma linha abaixo do cálculo bruto.
+  const displayMacroRow = Math.max(1, macroRow);
+
+  // Cada região possui 25 províncias.
+  // Pela orientação visual adotada no mapa:
+  // antigo 1,5 = P1; 2,5 = P2; 3,5 = P3...
+  const provinceNumber =
+    (SUBDIVISIONS - subRow) * SUBDIVISIONS + subCol;
+
   return {
     x,
     y,
@@ -141,10 +156,12 @@ function getCoordinate(latlng) {
     macroRow,
     subCol,
     subRow,
+    provinceNumber,
     globalSmallCol,
     globalSmallRow,
-    label: `${LETTERS[macroCol]}${macroRow + 1}-${subCol},${subRow}`,
-    macroLabel: `${LETTERS[macroCol]}${macroRow + 1}`,
+    label: `${LETTERS[macroCol]}${displayMacroRow}-P${provinceNumber}`,
+    macroLabel: `${LETTERS[macroCol]}${displayMacroRow}`,
+    provinceLabel: `P${provinceNumber}`,
   };
 }
 
@@ -355,14 +372,29 @@ function formatDateTime(value) {
   }).format(new Date(value));
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function createCharacterIcon(travel, progress) {
   const statusClass = progress >= 1 ? "arrived" : "moving";
+  const iconUrl = travel.characterIconUrl || travel.iconUrl || "";
+  const characterName = travel.characterName || "Ninja";
+
+  const content = iconUrl
+    ? `<img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(characterName)}" />`
+    : "忍";
 
   return divIcon({
     className: "characterMapIconWrapper",
-    html: `<div class="characterMapIcon ${statusClass}">忍</div>`,
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
+    html: `<div class="characterMapIcon ${statusClass}">${content}</div>`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
   });
 }
 
@@ -371,6 +403,7 @@ function dbTravelToAppTravel(row) {
     id: row.id,
     characterId: row.character_id,
     characterName: row.character_name || "Ninja sem nome",
+    characterIconUrl: row.character_icon_url || "",
     travelMode: row.travel_mode,
     modeLabel: row.mode_label,
     startCoord: row.start_coord,
@@ -393,7 +426,7 @@ export default function App() {
   const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.35);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [activePage, setActivePage] = useState("my-ninja");
+  const [activePage, setActivePage] = useState("hall");
   const [travelCharacters, setTravelCharacters] = useState(() => readSavedCharacters());
   const [selectedTravelCharacterId, setSelectedTravelCharacterId] = useState("");
   const [travels, setTravels] = useState(() => readSavedTravels());
@@ -434,7 +467,7 @@ export default function App() {
 
     setSession(null);
     setIsDemoMode(false);
-    setActivePage("my-ninja");
+    setActivePage("hall");
   }
 
   async function loadOnlineTravels() {
@@ -493,6 +526,39 @@ export default function App() {
     [selectedTravelCharacterId, travelCharacters]
   );
 
+  function getCenterCoordinate() {
+    return getCoordinate({
+      lat: GRID_TOP + gridHeight / 2,
+      lng: GRID_LEFT + gridWidth / 2
+    });
+  }
+
+  function getCurrentCoordinateForCharacter(characterId) {
+    const existingTravel = travels.find(
+      (travel) => travel.characterId === characterId
+    );
+
+    if (!existingTravel) {
+      return getCenterCoordinate();
+    }
+
+    const currentPoint = getTravelCurrentPoint(existingTravel, now);
+
+    return getCoordinate({
+      lat: currentPoint[0],
+      lng: currentPoint[1]
+    });
+  }
+
+  function isSameProvince(a, b) {
+    return (
+      a &&
+      b &&
+      a.macroLabel === b.macroLabel &&
+      a.provinceNumber === b.provinceNumber
+    );
+  }
+
   function refreshTravelCharacters() {
     setTravelCharacters(readSavedCharacters());
   }
@@ -508,6 +574,22 @@ export default function App() {
       return;
     }
 
+    const currentLocation = getCurrentCoordinateForCharacter(
+      selectedTravelCharacter.id
+    );
+
+    if (!currentLocation) {
+      alert("Não foi possível determinar a localização atual do personagem.");
+      return;
+    }
+
+    if (!isSameProvince(points[0], currentLocation)) {
+      alert(
+        `Seu personagem está em ${currentLocation.label}. A viagem precisa começar nessa província.`
+      );
+      return;
+    }
+
     const travelData = calculateTravel(points[0], points[1], travelMode);
     const startedAt = new Date().toISOString();
     const arrivalAt = new Date(
@@ -518,6 +600,10 @@ export default function App() {
       id: crypto.randomUUID(),
       characterId: selectedTravelCharacter.id,
       characterName: selectedTravelCharacter.characterName,
+      characterIconUrl:
+        selectedTravelCharacter.iconUrl ||
+        selectedTravelCharacter.icon_url ||
+        "",
       travelMode,
       modeLabel: travelData.modeLabel,
       startCoord: points[0],
@@ -536,6 +622,10 @@ export default function App() {
         character_id: selectedTravelCharacter.id,
         user_id: session.user.id,
         character_name: selectedTravelCharacter.characterName,
+        character_icon_url:
+          selectedTravelCharacter.iconUrl ||
+          selectedTravelCharacter.icon_url ||
+          "",
         travel_mode: travelMode,
         mode_label: travelData.modeLabel,
         start_coord: points[0],
@@ -641,11 +731,39 @@ export default function App() {
       <AuthPage
         onDemoEnter={() => {
           setIsDemoMode(true);
-          setActivePage("my-ninja");
+          setActivePage("hall");
         }}
       />
     );
   }
+
+  const selectedMapTravel =
+    travels.find((item) => item.characterId === selectedTravelCharacterId) || null;
+
+  const selectedInitialCoord =
+    selectedTravelCharacter && !selectedMapTravel ? getCenterCoordinate() : null;
+
+
+  const selectedMapPresence = selectedMapTravel
+    ? (() => {
+        const currentPoint = getTravelCurrentPoint(selectedMapTravel, now);
+        const currentCoord = getCoordinate({
+          lat: currentPoint[0],
+          lng: currentPoint[1]
+        });
+        const unknownPresences = getUnknownPresencesCount(
+          selectedMapTravel,
+          travels,
+          now
+        );
+
+        return {
+          currentCoord,
+          unknownPresences,
+          text: formatUnknownPresences(unknownPresences)
+        };
+      })()
+    : null;
 
   return (
     <main className={`app app-${activePage}`}>
@@ -656,6 +774,19 @@ export default function App() {
       >
         ☰ Configurações
       </button>
+
+      {activePage !== "hall" && (
+        <button
+          className="hallReturnButton"
+          type="button"
+          onClick={() => {
+            setActivePage("hall");
+            setIsPanelOpen(false);
+          }}
+        >
+          ← Hall
+        </button>
+      )}
 
       {isPanelOpen && (
         <button
@@ -740,9 +871,10 @@ export default function App() {
             value={travelMode}
             onChange={(e) => setTravelMode(e.target.value)}
           >
-            <option value="terrestre">Terrestre — 5 pés = 12 horas</option>
-            <option value="aquatico">Aquático — 5 pés = 9 horas</option>
-            <option value="aereo">Aéreo — 5 pés = 6 horas</option>
+            <option value="terrestre">Terrestre — 1 província = 12 horas</option>
+            <option value="aquatico">Aquático — 1 província = 9 horas</option>
+            <option value="aereo">Aéreo — 1 província = 6 horas</option>
+            <option value="teletransporte">Teletransporte — imediato</option>
           </select>
         </label>
 
@@ -750,7 +882,7 @@ export default function App() {
           <strong>Regra ativa:</strong>
           <br />
           Diagonal = {DIAGONAL_COST}
-          <br />1 subquadrado = {UNIT_PER_SMALL_SQUARE} {UNIT_NAME}
+          <br />1 província = {UNIT_PER_SMALL_SQUARE} {UNIT_NAME}
         </div>
 
         <button
@@ -784,7 +916,7 @@ export default function App() {
             checked={showSmallGrid}
             onChange={(e) => setShowSmallGrid(e.target.checked)}
           />
-          Mostrar subquadrados
+          Mostrar províncias
         </label>
 
         <label>
@@ -839,6 +971,21 @@ export default function App() {
           </p>
         </div>
 
+        <div className={`map-presence-card ${selectedMapPresence ? "active" : "inactive"}`}>
+          <strong>Presenças na região</strong>
+          <span>
+            {selectedMapPresence
+              ? selectedMapPresence.text
+              : "Selecione um personagem com viagem ativa para verificar presenças."}
+          </span>
+
+          {selectedMapPresence?.currentCoord && (
+            <small>
+              Região atual: {selectedMapPresence.currentCoord.macroLabel || "-"}
+            </small>
+          )}
+        </div>
+
         {points.length > 0 && (
           <div className="info">
             <strong>Ponto A:</strong>{" "}
@@ -853,11 +1000,9 @@ export default function App() {
           <div className="result">
             <strong>Viagem {travel.modeLabel}</strong>
             <br />
-            Distância: {travel.smallSquares.toFixed(2)} subquadrados
+            Distância: {travel.smallSquares.toFixed(2)} províncias
             <br />
-            Blocos grandes: {travel.macroBlocks.toFixed(2)}
-            <br />
-            Distância em pés: {travel.feet.toFixed(2)} {UNIT_NAME}
+            Regiões atravessadas: {travel.macroBlocks.toFixed(2)}
             <br />
             Tempo: {formatTime(travel.hours)}
             <br />
@@ -873,7 +1018,7 @@ export default function App() {
             <br />
             Retas: {travel.straights} × 1
             <br />
-            Cada 5 pés por {travel.modeLabel.toLowerCase()} ={" "}
+            Cada província por {travel.modeLabel.toLowerCase()} ={" "}
             {travel.hoursPerFiveFeet} horas
           </div>
         )}
@@ -936,14 +1081,22 @@ export default function App() {
           <br />
           C4 = bloco grande.
           <br />
-          3,2 = subquadrado interno.
+          3,2 = província interno.
           <br />
           <strong>Imagem:</strong> 1080 × 903px
         </div>
       </aside>
 
       <section className="mapArea">
-        {activePage === "map" ? (
+        {activePage === "hall" ? (
+          <EntryHall
+            userEmail={session?.user?.email}
+            onOpenMyNinja={() => setActivePage("my-ninja")}
+            onOpenMap={() => setActivePage("map")}
+            onOpenAdmin={() => setActivePage("admin")}
+            onLogout={handleLogout}
+          />
+        ) : activePage === "map" ? (
         <MapContainer
           crs={CRS.Simple}
           bounds={imageBounds}
@@ -1048,6 +1201,33 @@ export default function App() {
             );
           })}
 
+          {selectedInitialCoord && (
+            <Marker
+              key={`initial-${selectedTravelCharacter.id}`}
+              position={getSmallCellCenter(selectedInitialCoord)}
+              icon={createCharacterIcon(
+                {
+                  characterName: selectedTravelCharacter.characterName,
+                  characterIconUrl:
+                    selectedTravelCharacter.iconUrl ||
+                    selectedTravelCharacter.icon_url ||
+                    ""
+                },
+                1
+              )}
+            >
+              <Tooltip direction="top">
+                <strong>{selectedTravelCharacter.characterName}</strong>
+                <br />
+                Localização inicial
+                <br />
+                Região: {selectedInitialCoord.macroLabel}
+                <br />
+                Província: {selectedInitialCoord.provinceLabel}
+              </Tooltip>
+            </Marker>
+          )}
+
         </MapContainer>
         ) : activePage === "skills" ? (
           <SkillTreePage />
@@ -1070,6 +1250,29 @@ export default function App() {
             getUnknownPresencesCount={getUnknownPresencesCount}
             formatUnknownPresences={formatUnknownPresences}
             formatTime={formatTime}
+            points={points}
+            travel={travel}
+            travelMode={travelMode}
+            setTravelMode={setTravelMode}
+            activeMapImage={activeMapImage}
+            imageBounds={imageBounds}
+            showImageGrid={showImageGrid}
+            setShowImageGrid={setShowImageGrid}
+            showOverlayGrid={showOverlayGrid}
+            setShowOverlayGrid={setShowOverlayGrid}
+            showSmallGrid={showSmallGrid}
+            setShowSmallGrid={setShowSmallGrid}
+            gridOpacity={gridOpacity}
+            setGridOpacity={setGridOpacity}
+            gridLines={gridLines}
+            setPoints={setPoints}
+            selectedTravelCharacterId={selectedTravelCharacterId}
+            setSelectedTravelCharacterId={setSelectedTravelCharacterId}
+            travelCharacters={travelCharacters}
+            refreshTravelCharacters={refreshTravelCharacters}
+            startCharacterTravel={startCharacterTravel}
+            handleMapClick={handleMapClick}
+            getSmallCellCenter={getSmallCellCenter}
           />
         )}
       </section>

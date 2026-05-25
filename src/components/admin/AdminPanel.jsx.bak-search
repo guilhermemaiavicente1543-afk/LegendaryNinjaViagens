@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import SkillTreeEditor from "./SkillTreeEditor";
-import CouponManager from "./CouponManager";
-import AdminWorldMap from "./AdminWorldMap";
 
 function dbTravelToAppTravel(row) {
   return {
@@ -52,7 +50,6 @@ export default function AdminPanel({
   const [characters, setCharacters] = useState([]);
   const [travels, setTravels] = useState([]);
   const [selectedCharacterId, setSelectedCharacterId] = useState("");
-  const [characterSearch, setCharacterSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -171,7 +168,6 @@ export default function AdminPanel({
         ...travel,
         progress,
         progressPercent: Math.round(progress * 100),
-        currentPoint,
         currentCoord,
         character,
         owner: character ? profileById[character.user_id] : null,
@@ -225,39 +221,6 @@ export default function AdminPanel({
         )
       : [];
 
-  const filteredCharacters = useMemo(() => {
-    const search = characterSearch.trim().toLowerCase();
-
-    if (!search) {
-      return characters;
-    }
-
-    return characters.filter((character) => {
-      const owner = profileById[character.user_id];
-
-      const traitsText = getTraitList(character)
-        .map((trait) => trait.name)
-        .join(" ");
-
-      const searchableText = [
-        character.character_name,
-        character.village_or_organization,
-        character.clan_or_kinship,
-        character.kekkei_genkai_or_hiden,
-        character.ninja_style,
-        character.age,
-        owner?.display_name,
-        owner?.email,
-        traitsText
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      return searchableText.includes(search);
-    });
-  }, [characters, characterSearch, profileById]);
-
   if (isLoading) {
     return (
       <section className="admin-page">
@@ -282,43 +245,6 @@ export default function AdminPanel({
     );
   }
 
-  if (adminView === "coupons") {
-    return (
-      <section className="admin-page">
-        <div className="admin-card admin-card-wide">
-          <p className="eyebrow">Painel do Mestre</p>
-          <h1>Cupons de Pontos</h1>
-
-          <div className="admin-mode-tabs">
-            <button
-              type="button"
-              onClick={() => setAdminView("overview")}
-            >
-              Visão Geral
-            </button>
-
-            <button
-              type="button"
-              className="active"
-              onClick={() => setAdminView("coupons")}
-            >
-              Cupons
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setAdminView("tree-editor")}
-            >
-              Editor da Teia
-            </button>
-          </div>
-        </div>
-
-        <CouponManager />
-      </section>
-    );
-  }
-
   if (adminView === "tree-editor") {
     return (
       <section className="admin-page">
@@ -335,13 +261,6 @@ export default function AdminPanel({
               onClick={() => setAdminView("overview")}
             >
               Visão Geral
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setAdminView("coupons")}
-            >
-              Cupons
             </button>
 
             <button
@@ -380,14 +299,6 @@ export default function AdminPanel({
 
           <button
             type="button"
-            className={adminView === "coupons" ? "active" : ""}
-            onClick={() => setAdminView("coupons")}
-          >
-            Cupons
-          </button>
-
-          <button
-            type="button"
             className={adminView === "tree-editor" ? "active" : ""}
             onClick={() => setAdminView("tree-editor")}
           >
@@ -418,8 +329,6 @@ export default function AdminPanel({
             <span>Regiões ocupadas</span>
           </article>
         </div>
-
-        <AdminWorldMap travelRows={travelRows} />
 
         {selectedCharacter && (
           <div className="admin-profile-view">
@@ -585,25 +494,11 @@ export default function AdminPanel({
         <div className="admin-section">
           <h2>Ninjas cadastrados</h2>
 
-          <div className="admin-search-box">
-            <input
-              value={characterSearch}
-              onChange={(event) => setCharacterSearch(event.target.value)}
-              placeholder="Pesquisar por ninja, player, aldeia, clã, estilo, kekkei genkai ou traço..."
-            />
-
-            <span>
-              {filteredCharacters.length} de {characters.length} ninjas
-            </span>
-          </div>
-
           {characters.length === 0 ? (
             <p className="empty-message">Nenhum ninja criado ainda.</p>
-          ) : filteredCharacters.length === 0 ? (
-            <p className="empty-message">Nenhum ninja encontrado para essa busca.</p>
           ) : (
             <div className="admin-table">
-              {filteredCharacters.map((character) => {
+              {characters.map((character) => {
                 const owner = profileById[character.user_id];
 
                 return (

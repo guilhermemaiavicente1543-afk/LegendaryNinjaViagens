@@ -23,7 +23,6 @@ const ninjaStyles = [
 
 const initialForm = {
   characterName: "",
-  iconUrl: "",
   age: "",
   appearance: "",
   clanOrKinship: "",
@@ -38,7 +37,6 @@ const initialForm = {
 function dbToForm(character) {
   return {
     characterName: character.character_name || "",
-    iconUrl: character.icon_url || "",
     age: character.age || "",
     appearance: character.appearance || "",
     clanOrKinship: character.clan_or_kinship || "",
@@ -57,7 +55,6 @@ function dbToLocalCharacter(character) {
   return {
     id: character.id,
     characterName: character.character_name || "",
-    iconUrl: character.icon_url || "",
     age: character.age || "",
     appearance: character.appearance || "",
     clanOrKinship: character.clan_or_kinship || "",
@@ -87,7 +84,6 @@ function buildPayload(form, userId) {
   return {
     user_id: userId,
     character_name: form.characterName.trim(),
-    icon_url: form.iconUrl,
     age: form.age,
     appearance: form.appearance,
     clan_or_kinship: form.clanOrKinship,
@@ -119,29 +115,7 @@ export default function MyNinjaPage({
   getRemainingTravelHours,
   getUnknownPresencesCount,
   formatUnknownPresences,
-  formatTime,
-  points,
-  travelMode,
-  setTravelMode,
-  activeMapImage,
-  showImageGrid,
-  setShowImageGrid,
-  showOverlayGrid,
-  setShowOverlayGrid,
-  showSmallGrid,
-  setShowSmallGrid,
-  gridOpacity,
-  setGridOpacity,
-  gridLines,
-  setPoints,
-  selectedTravelCharacterId,
-  setSelectedTravelCharacterId,
-  travelCharacters,
-  refreshTravelCharacters,
-  startCharacterTravel,
-  handleMapClick,
-  getSmallCellCenter,
-  imageBounds,
+  formatTime
 }) {
   const [user, setUser] = useState(null);
   const [character, setCharacter] = useState(null);
@@ -385,15 +359,6 @@ export default function MyNinjaPage({
         </label>
 
         <label>
-          Ícone do personagem no mapa
-          <input
-            value={form.iconUrl}
-            onChange={(event) => updateField("iconUrl", event.target.value)}
-            placeholder="Cole uma URL de imagem para o ícone do mapa"
-          />
-        </label>
-
-        <label>
           Idade do Personagem
           <input
             value={form.age}
@@ -574,18 +539,6 @@ export default function MyNinjaPage({
         </div>
 
         <div className="profile-field">
-          <strong>Ícone do mapa</strong>
-          {character.icon_url ? (
-            <span className="map-icon-preview">
-              <img src={character.icon_url} alt={character.character_name} />
-              Personalizado
-            </span>
-          ) : (
-            <span>Padrão</span>
-          )}
-        </div>
-
-        <div className="profile-field">
           <strong>Idade</strong>
           <span>{character.age || "Não informada"}</span>
         </div>
@@ -675,116 +628,87 @@ export default function MyNinjaPage({
   }
 
   function renderLocationTab() {
-    if (!character) {
+    if (!character) return null;
+
+    if (!characterTravel || !location) {
       return (
-        <div className="profile-tab-content location-tab-content">
-          <p className="empty-message">Crie seu ninja antes de acessar a localização.</p>
+        <div className="profile-tab-content">
+          <div className="location-status-card stopped">
+            <strong>Status</strong>
+            <span>Sem viagem ativa registrada.</span>
+          </div>
+
+          <p className="empty-message">
+            Vá até o Mapa de Viagem, clique em origem e destino, selecione seu
+            ninja e inicie uma viagem.
+          </p>
         </div>
       );
     }
 
-    const hasActiveTravel = !!characterTravel && !!location;
-    const arrived = hasActiveTravel ? location.progress >= 1 : false;
+    const arrived = location.progress >= 1;
 
-    const presenceText = hasActiveTravel
-      ? formatUnknownPresences
-        ? formatUnknownPresences(location.unknownPresences)
-        : `Há ${location.unknownPresences} presenças desconhecidas nesta região.`
-      : "Nenhuma presença detectada porque não há viagem ativa.";
+    const presenceText = formatUnknownPresences
+      ? formatUnknownPresences(location.unknownPresences)
+      : `Há ${location.unknownPresences} presenças desconhecidas nesta região.`;
 
     return (
-      <div className="profile-tab-content location-tab-content location-safe-tab">
-        <div className="location-safe-header">
-          <p className="eyebrow">Localização</p>
-          <h2>Status de localização do personagem</h2>
-          <p>
-            O mapa de viagem voltou a ficar em uma área separada da plataforma.
-            Use o Hall → Mapa de Viagem para iniciar ou acompanhar rotas.
-          </p>
-        </div>
-
-        <div className={`location-status-card ${hasActiveTravel ? arrived ? "arrived" : "moving" : "stopped"}`}>
+      <div className="profile-tab-content">
+        <div className={`location-status-card ${arrived ? "arrived" : "moving"}`}>
           <strong>Status</strong>
+          <span>{arrived ? "Chegou ao destino" : "Em viagem"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Região atual</strong>
+          <span>{location.currentCoord?.macroLabel || "-"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Coordenada atual</strong>
+          <span>{location.currentCoord?.label || "-"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Origem</strong>
+          <span>{characterTravel.startCoord.label}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Destino</strong>
+          <span>{characterTravel.endCoord.label}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Meio de locomoção</strong>
+          <span>{characterTravel.modeLabel}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Progresso</strong>
+          <span>{location.progressPercent}%</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Chegada prevista</strong>
+          <span>{formatDateTime(characterTravel.arrivalAt)}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Tempo restante</strong>
           <span>
-            {hasActiveTravel
-              ? arrived
-                ? "Chegou ao destino"
-                : "Em viagem"
-              : "Sem viagem ativa registrada."}
+            {arrived
+              ? "Viagem concluída"
+              : formatTime
+                ? formatTime(location.remainingHours)
+                : `${location.remainingHours.toFixed(2)}h`}
           </span>
         </div>
 
-        <div className={`location-presence-card ${hasActiveTravel ? "active" : "inactive"}`}>
+        <div className="profile-field full">
           <strong>Presenças na região</strong>
-          <span>
-            {hasActiveTravel
-              ? presenceText
-              : "Sem região atual definida para verificar presenças."}
-          </span>
+          <p className="presenceNotice">{presenceText}</p>
         </div>
-
-        {hasActiveTravel ? (
-          <>
-            <div className="profile-field">
-              <strong>Região atual</strong>
-              <span>{location.currentCoord?.macroLabel || "-"}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Coordenada atual</strong>
-              <span>{location.currentCoord?.label || "-"}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Origem</strong>
-              <span>{characterTravel.startCoord.label}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Destino</strong>
-              <span>{characterTravel.endCoord.label}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Meio de locomoção</strong>
-              <span>{characterTravel.modeLabel}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Progresso</strong>
-              <span>{location.progressPercent}%</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Chegada prevista</strong>
-              <span>{formatDateTime(characterTravel.arrivalAt)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Tempo restante</strong>
-              <span>
-                {arrived
-                  ? "Viagem concluída"
-                  : formatTime
-                    ? formatTime(location.remainingHours)
-                    : `${location.remainingHours.toFixed(2)}h`}
-              </span>
-            </div>
-
-            <div className="profile-field full">
-              <strong>Presenças na região</strong>
-              <p className="presenceNotice">{presenceText}</p>
-            </div>
-          </>
-        ) : (
-          <div className="profile-field full">
-            <strong>Como iniciar viagem</strong>
-            <p>
-              Volte ao Hall e abra o Mapa de Viagem. Lá você pode marcar origem,
-              destino, selecionar o personagem e iniciar a viagem.
-            </p>
-          </div>
-        )}
       </div>
     );
   }
@@ -828,7 +752,7 @@ export default function MyNinjaPage({
         <div className="characters-layout">{renderNinjaForm()}</div>
       ) : (
         <div className="characters-layout">
-          <section className={`character-profile-panel ${profileTab === "skills" ? "skill-tree-fullscreen" : ""}`}>
+          <section className="character-profile-panel">
             <div className="profile-title">
               <h3>{character.character_name}</h3>
               <p>
@@ -852,14 +776,6 @@ export default function MyNinjaPage({
                 onClick={() => setProfileTab("location")}
               >
                 Localização
-              </button>
-
-              <button
-                type="button"
-                className={profileTab === "skills" ? "active" : ""}
-                onClick={() => setProfileTab("skills")}
-              >
-                Teia
               </button>            </div>
 
             {profileTab === "info" && renderInfoTab()}

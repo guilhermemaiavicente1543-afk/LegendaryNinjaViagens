@@ -11,7 +11,7 @@ const rawTraits = [
   ["Ninjutsu", "Reflexão do ceu", "Passivo", "Ninjutsu 01"],
   ["Ninjutsu", "Shunshin no Sokudo", "Passivo", "Ninjutsu 02"],
 
-  ["Taijutsu", "Agilidade nós Pés", "Passivo", "Taijutsu 01"],
+  ["Taijutsu", "Agilidade nos Pés", "Passivo", "Taijutsu 01"],
   ["Taijutsu", "Até a morte", "Passivo", "Taijutsu 01"],
   ["Taijutsu", "Condicionamento", "Passivo", "Taijutsu 02"],
   ["Taijutsu", "Conquistador", "Ativo", "Taijutsu 01"],

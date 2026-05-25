@@ -3310,3 +3310,1589 @@ textarea {
     display: none !important;
   }
 }
+
+.admin-search-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0 16px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.admin-search-box input {
+  width: 100%;
+  border: 1px solid #4b5563;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f9fafb;
+  padding: 12px 14px;
+  font-size: 15px;
+}
+
+.admin-search-box input::placeholder {
+  color: #9ca3af;
+}
+
+.admin-search-box span {
+  white-space: nowrap;
+  color: #fed7aa;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .admin-search-box {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-search-box span {
+    white-space: normal;
+  }
+}
+
+.full-tree-tab {
+  display: block !important;
+  grid-template-columns: none !important;
+  padding: 0 !important;
+}
+
+.character-skill-tree {
+  width: 100%;
+  min-height: 720px;
+  display: grid;
+  gap: 14px;
+}
+
+.character-skill-topbar {
+  display: grid;
+  grid-template-columns: auto minmax(260px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 16px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.character-skill-topbar > div {
+  display: grid;
+  gap: 4px;
+}
+
+.character-skill-topbar strong {
+  color: #fed7aa;
+}
+
+.character-skill-topbar span {
+  color: #f9fafb;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.coupon-redeem-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.coupon-redeem-form input,
+.coupon-form input {
+  border: 1px solid #4b5563;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f9fafb;
+  padding: 11px 12px;
+}
+
+.coupon-redeem-form button,
+.character-skill-topbar button,
+.unlock-skill-button,
+.coupon-form button,
+.coupon-card button {
+  border: 0;
+  border-radius: 12px;
+  background: #f97316;
+  color: white;
+  padding: 11px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.unlock-skill-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.character-skill-layout {
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #374151;
+  background: #020617;
+}
+
+.character-skill-canvas {
+  min-height: 620px;
+}
+
+.character-skill-canvas .react-flow {
+  height: 100%;
+}
+
+.character-skill-inspector {
+  padding: 16px;
+  background: #111827;
+  border-left: 1px solid #374151;
+  overflow-y: auto;
+}
+
+.character-skill-inspector h3 {
+  margin-top: 0;
+}
+
+.unlocked-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.unlocked-skills-list strong {
+  width: 100%;
+  color: #fed7aa;
+}
+
+.unlocked-skills-list span {
+  border-radius: 999px;
+  background: #064e3b;
+  color: #bbf7d0;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.ln-circle-skill-node.skill-unlocked .circle-skill-ring {
+  filter: none;
+  opacity: 1;
+  box-shadow:
+    0 0 0 3px rgba(15, 23, 42, 0.95),
+    0 0 26px rgba(34, 197, 94, 0.9),
+    inset 0 0 22px rgba(0, 0, 0, 0.65);
+}
+
+.ln-circle-skill-node.skill-available .circle-skill-ring {
+  filter: none;
+  opacity: 1;
+  box-shadow:
+    0 0 0 3px rgba(15, 23, 42, 0.95),
+    0 0 26px rgba(249, 115, 22, 0.9),
+    inset 0 0 22px rgba(0, 0, 0, 0.65);
+}
+
+.ln-circle-skill-node.skill-no-points .circle-skill-ring {
+  opacity: 0.75;
+  filter: grayscale(0.5);
+}
+
+.ln-circle-skill-node.skill-locked .circle-skill-ring {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.coupon-manager {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.coupon-manager h2 {
+  margin: 0;
+}
+
+.coupon-form {
+  display: grid;
+  grid-template-columns: 1.2fr 0.5fr 0.5fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.coupon-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 800;
+}
+
+.coupon-list {
+  display: grid;
+  gap: 10px;
+}
+
+.coupon-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 14px;
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+.coupon-card strong,
+.coupon-card span {
+  display: block;
+}
+
+.coupon-card strong {
+  color: #fed7aa;
+}
+
+.coupon-card span {
+  color: #d1d5db;
+}
+
+@media (max-width: 900px) {
+  .character-skill-topbar,
+  .character-skill-layout,
+  .coupon-form {
+    grid-template-columns: 1fr;
+  }
+
+  .character-skill-inspector {
+    border-left: 0;
+    border-top: 1px solid #374151;
+  }
+
+  .coupon-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+.player-tree-wrapper {
+  height: calc(100vh - 120px);
+  min-height: 720px;
+  overflow: auto;
+  padding: 16px;
+}
+
+.player-tree-wrapper .character-skill-tree {
+  min-height: 100%;
+}
+
+.player-tree-wrapper .character-skill-layout {
+  min-height: 620px;
+}
+
+@media (max-width: 900px) {
+  .player-tree-wrapper {
+    height: auto;
+    min-height: 100vh;
+    padding: 12px;
+  }
+}
+
+/* Hall de entrada */
+.entry-hall-page {
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #f9fafb;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.18), transparent 32%),
+    radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.16), transparent 30%),
+    #020617;
+}
+
+.entry-hall-card {
+  width: min(920px, 100%);
+  padding: 34px;
+  border-radius: 28px;
+  background: rgba(17, 24, 39, 0.94);
+  border: 1px solid #374151;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+.entry-hall-card h1 {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 58px);
+}
+
+.entry-hall-card p {
+  color: #d1d5db;
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.entry-user-box {
+  display: grid;
+  gap: 5px;
+  margin: 22px 0;
+  padding: 14px;
+  border-radius: 16px;
+  background: #0f172a;
+  border: 1px solid #374151;
+}
+
+.entry-user-box span {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.entry-user-box strong {
+  color: #fed7aa;
+  word-break: break-word;
+}
+
+.entry-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.entry-actions button {
+  min-height: 150px;
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  text-align: left;
+  border: 1px solid #f97316;
+  border-radius: 22px;
+  padding: 22px;
+  background:
+    linear-gradient(135deg, rgba(249, 115, 22, 0.22), rgba(15, 23, 42, 0.92));
+  color: #f9fafb;
+  font-size: 26px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.entry-actions button span {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.entry-actions button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.entry-logout-button,
+.hallReturnButton {
+  border: 0;
+  border-radius: 999px;
+  background: #374151;
+  color: white;
+  padding: 11px 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.entry-logout-button {
+  margin-top: 20px;
+}
+
+.hallReturnButton {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 5000;
+  background: #f97316;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.36);
+}
+
+/* Fora do mapa, remove a barra lateral antiga */
+main.app:not(.app-map) {
+  display: block !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+}
+
+main.app:not(.app-map) > .panel,
+main.app:not(.app-map) > .mobileConfigButton,
+main.app:not(.app-map) > .panelBackdrop {
+  display: none !important;
+}
+
+main.app:not(.app-map) > section {
+  width: 100% !important;
+  min-height: 100vh !important;
+}
+
+@media (max-width: 700px) {
+  .entry-hall-card {
+    padding: 22px;
+  }
+
+  .entry-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-actions button {
+    min-height: 125px;
+    font-size: 22px;
+  }
+
+  .hallReturnButton {
+    top: 10px;
+    right: 10px;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}
+
+.full-tree-tab {
+  display: block !important;
+  grid-template-columns: none !important;
+  padding: 0 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) {
+  max-width: none !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .profile-tab-content {
+  padding: 0 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-tree {
+  min-height: 760px;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-layout {
+  min-height: 640px;
+}
+
+@media (max-width: 900px) {
+  .character-profile-panel:has(.character-skill-tree) .character-skill-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.entry-actions-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.entry-actions-four button {
+  min-height: 145px;
+  font-size: 22px;
+}
+
+@media (max-width: 1100px) {
+  .entry-actions-four {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .entry-actions-four {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Correção: mostrar navegação do ADM acima do Editor da Teia */
+.admin-page:has(.tree-editor-page) .admin-card-wide {
+  display: block !important;
+  max-width: none !important;
+  margin-bottom: 10px !important;
+  padding: 12px 18px !important;
+}
+
+.admin-page:has(.tree-editor-page) .admin-card-wide h1 {
+  display: block !important;
+}
+
+.admin-page:has(.tree-editor-page) .admin-mode-tabs {
+  display: flex !important;
+}
+
+/* Teia dentro do painel Meu Ninja */
+.full-tree-tab {
+  display: block !important;
+  grid-template-columns: none !important;
+  width: 100%;
+  padding: 0 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) {
+  max-width: none !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .profile-tab-content {
+  padding: 0 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-tree {
+  min-height: 760px;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-layout {
+  min-height: 640px;
+}
+
+@media (max-width: 900px) {
+  .character-profile-panel:has(.character-skill-tree) .character-skill-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.entry-actions-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 1000px) {
+  .entry-actions-three {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Teia em tela inteira dentro de Meu Ninja */
+.character-profile-panel:has(.character-skill-tree) {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 4200 !important;
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  background: #020617 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .profile-tabs {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 4300 !important;
+  display: flex !important;
+  gap: 8px !important;
+  padding: 10px !important;
+  background: rgba(17, 24, 39, 0.98) !important;
+  border-bottom: 1px solid #374151 !important;
+  overflow-x: auto !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .profile-tabs button {
+  white-space: nowrap !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .profile-tab-content,
+.character-profile-panel:has(.character-skill-tree) .full-tree-tab {
+  height: calc(100vh - 58px) !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-tree {
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-topbar {
+  margin: 0 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-layout {
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 320px !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-canvas {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .character-skill-canvas .react-flow {
+  height: 100% !important;
+}
+
+.character-profile-panel:has(.character-skill-tree) .unlocked-skills-list {
+  max-height: 92px !important;
+  overflow-y: auto !important;
+}
+
+@media (max-width: 900px) {
+  .character-profile-panel:has(.character-skill-tree) .character-skill-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0, 1fr) 240px !important;
+  }
+
+  .character-profile-panel:has(.character-skill-tree) .character-skill-inspector {
+    border-left: 0 !important;
+    border-top: 1px solid #374151 !important;
+  }
+
+  .character-profile-panel:has(.character-skill-tree) .character-skill-topbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .character-profile-panel:has(.character-skill-tree) .coupon-redeem-form {
+    grid-template-columns: 1fr auto !important;
+  }
+}
+
+.admin-world-map-card {
+  margin: 24px 0;
+  padding: 18px;
+  border-radius: 20px;
+  background: #111827;
+  border: 1px solid #374151;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
+}
+
+.admin-world-map-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.admin-world-map-header h2 {
+  margin: 0;
+}
+
+.admin-world-map-header p {
+  margin: 6px 0 0;
+  color: #d1d5db;
+}
+
+.admin-world-map-header strong {
+  white-space: nowrap;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.16);
+  border: 1px solid rgba(249, 115, 22, 0.55);
+  color: #fed7aa;
+  padding: 8px 12px;
+}
+
+.admin-world-map-stage {
+  height: 580px;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid #374151;
+  background: #020617;
+}
+
+.admin-map-character-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #7f1d1d;
+  border: 3px solid #fed7aa;
+  box-shadow: 0 0 18px rgba(249, 115, 22, 0.85);
+  color: white;
+  font-weight: 950;
+  font-size: 12px;
+}
+
+.admin-map-character-icon span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .admin-world-map-header {
+    flex-direction: column;
+  }
+
+  .admin-world-map-stage {
+    height: 440px;
+  }
+}
+
+/* Teia do jogador em tela quase inteira */
+.character-profile-panel.skill-tree-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 4600 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  background: #020617 !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .profile-tabs {
+  height: 54px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 12px !important;
+  margin: 0 !important;
+  overflow-x: auto !important;
+  background: rgba(17, 24, 39, 0.98) !important;
+  border-bottom: 1px solid #374151 !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .profile-tabs button {
+  white-space: nowrap !important;
+  min-width: fit-content !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .full-tree-tab,
+.character-profile-panel.skill-tree-fullscreen .profile-tab-content {
+  width: 100% !important;
+  height: calc(100vh - 54px) !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-tree {
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 10px !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+  overflow: hidden !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-topbar {
+  margin: 0 !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-layout {
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 330px !important;
+  overflow: hidden !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-canvas {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-canvas .react-flow {
+  height: 100% !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-inspector {
+  height: 100% !important;
+  overflow-y: auto !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .unlocked-skills-list {
+  max-height: 86px !important;
+  overflow-y: auto !important;
+  margin: 0 !important;
+}
+
+/* Mapa dentro da aba Localização do Meu Ninja */
+.location-tab-content {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+}
+
+.player-location-map-card {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.player-location-map-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.player-location-map-header h3 {
+  margin: 0;
+}
+
+.player-location-map-header p {
+  margin: 6px 0 0;
+  color: #d1d5db;
+}
+
+.player-location-map-header strong {
+  white-space: nowrap;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.16);
+  border: 1px solid rgba(249, 115, 22, 0.55);
+  color: #fed7aa;
+  padding: 8px 12px;
+}
+
+.player-location-map-stage {
+  height: 520px;
+  min-height: 520px;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid #374151;
+  background: #020617;
+}
+
+.player-location-map-info {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #0f172a;
+  border: 1px solid #374151;
+  color: #d1d5db;
+}
+
+.player-location-map-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #1d4ed8;
+  border: 3px solid #bfdbfe;
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.85);
+  color: white;
+  font-weight: 950;
+  font-size: 12px;
+}
+
+.player-location-map-icon span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .character-profile-panel.skill-tree-fullscreen .character-skill-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0, 1fr) 240px !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-inspector {
+    border-left: 0 !important;
+    border-top: 1px solid #374151 !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-topbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .player-location-map-header {
+    flex-direction: column;
+  }
+
+  .player-location-map-stage {
+    height: 420px;
+    min-height: 420px;
+  }
+}
+
+/* Correção forte da visualização da Teia do jogador */
+.character-profile-panel.skill-tree-fullscreen .character-skill-tree {
+  position: relative !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.12), transparent 28%),
+    radial-gradient(circle at 85% 75%, rgba(56, 189, 248, 0.10), transparent 30%),
+    #020617 !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-topbar {
+  position: relative !important;
+  z-index: 20 !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(260px, 1fr) auto !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  border-radius: 16px !important;
+  background: rgba(17, 24, 39, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-topbar span {
+  font-size: 20px !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-layout {
+  position: relative !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+  border: 1px solid #374151 !important;
+  background: #020617 !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-canvas .react-flow {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .character-skill-inspector {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  bottom: 14px !important;
+  z-index: 30 !important;
+  width: min(360px, 32vw) !important;
+  height: auto !important;
+  overflow-y: auto !important;
+  border-radius: 18px !important;
+  border: 1px solid #374151 !important;
+  background: rgba(17, 24, 39, 0.94) !important;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .unlocked-skills-list {
+  position: relative !important;
+  z-index: 20 !important;
+  max-height: 64px !important;
+  min-height: 54px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 16px !important;
+  background: rgba(17, 24, 39, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .unlocked-skills-list strong {
+  width: auto !important;
+  min-width: fit-content !important;
+  margin-right: 8px !important;
+}
+
+.character-profile-panel.skill-tree-fullscreen .unlocked-skills-list span {
+  white-space: nowrap !important;
+}
+
+/* Evita que o minimapa tampe a árvore */
+.character-profile-panel.skill-tree-fullscreen .react-flow__minimap {
+  width: 150px !important;
+  height: 110px !important;
+  right: 390px !important;
+  bottom: 14px !important;
+  opacity: 0.82 !important;
+}
+
+/* Deixa os controles mais visíveis */
+.character-profile-panel.skill-tree-fullscreen .react-flow__controls {
+  left: 14px !important;
+  bottom: 14px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  border: 1px solid #374151 !important;
+}
+
+/* No celular, a árvore continua grande e o painel vira uma gaveta inferior */
+@media (max-width: 900px) {
+  .character-profile-panel.skill-tree-fullscreen .character-skill-tree {
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-topbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .coupon-redeem-form {
+    grid-template-columns: 1fr auto !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-inspector {
+    top: auto !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+    width: auto !important;
+    max-height: 230px !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .react-flow__minimap {
+    display: none !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .unlocked-skills-list {
+    display: none !important;
+  }
+}
+
+/* Correção: mensagem de desbloqueio não pode tampar a Teia */
+.character-profile-panel.skill-tree-fullscreen .character-skill-tree > .auth-message {
+  position: absolute !important;
+  top: 74px !important;
+  left: 18px !important;
+  right: 390px !important;
+  z-index: 80 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+  background: rgba(17, 24, 39, 0.96) !important;
+  border: 1px solid rgba(249, 115, 22, 0.7) !important;
+  color: #fed7aa !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.42) !important;
+  backdrop-filter: blur(10px) !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 900px) {
+  .character-profile-panel.skill-tree-fullscreen .character-skill-tree > .auth-message {
+    top: 150px !important;
+    left: 10px !important;
+    right: 10px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* Correção ADM: Editor da Teia com rolagem e botões visíveis */
+.admin-page:has(.tree-editor-page) {
+  height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 12px !important;
+}
+
+.admin-page:has(.tree-editor-page) .admin-card-wide {
+  display: block !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 3000 !important;
+  max-width: none !important;
+  margin-bottom: 10px !important;
+  padding: 12px 18px !important;
+  border-radius: 16px !important;
+  background: rgba(17, 24, 39, 0.98) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.admin-page:has(.tree-editor-page) .admin-mode-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-page {
+  height: calc(100vh - 118px) !important;
+  min-height: 720px !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-toolbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  padding: 12px 16px !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-actions button,
+.admin-page:has(.tree-editor-page) .import-json-button {
+  min-height: 38px !important;
+  padding: 9px 11px !important;
+  font-size: 13px !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-layout {
+  min-height: 0 !important;
+  height: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 340px !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-canvas {
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+.admin-page:has(.tree-editor-page) .tree-editor-panel {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding-bottom: 80px !important;
+}
+
+@media (max-width: 900px) {
+  .admin-page:has(.tree-editor-page) {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-page {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 68vh auto !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-panel {
+    max-height: none !important;
+    border-left: 0 !important;
+    border-top: 1px solid #374151 !important;
+  }
+}
+
+/* Mapa de viagem dentro de Meu Ninja → Localização */
+.player-location-map-card-full {
+  width: 100%;
+}
+
+.player-location-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 14px;
+  min-height: 680px;
+}
+
+.player-location-controls {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  max-height: 680px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.player-location-controls .travelBox,
+.player-location-controls .info,
+.player-location-controls .result {
+  margin: 0 !important;
+}
+
+.player-location-map-stage-full {
+  height: 680px !important;
+  min-height: 680px !important;
+}
+
+@media (max-width: 1000px) {
+  .player-location-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .player-location-controls {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .player-location-map-stage-full {
+    height: 520px !important;
+    min-height: 520px !important;
+  }
+}
+
+.entry-actions-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 800px) {
+  .entry-actions-two {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Correção do mapa em Meu Ninja → Localização */
+.player-location-map-stage,
+.player-location-map-stage-full {
+  position: relative !important;
+  width: 100% !important;
+  height: 680px !important;
+  min-height: 680px !important;
+  background: #020617 !important;
+}
+
+.player-location-map-stage .leaflet-container,
+.player-location-map-stage-full .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 680px !important;
+  background: #020617 !important;
+}
+
+.location-tab-content {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 1000px) {
+  .player-location-map-stage,
+  .player-location-map-stage-full,
+  .player-location-map-stage .leaflet-container,
+  .player-location-map-stage-full .leaflet-container {
+    height: 520px !important;
+    min-height: 520px !important;
+  }
+}
+
+/* Correção do fundo azul do Leaflet na aba Localização */
+.player-location-map-stage-full,
+.player-location-map-stage-full .leaflet-container,
+.player-location-map-stage-full .leaflet-pane,
+.player-location-map-stage-full .leaflet-map-pane {
+  background: #020617 !important;
+}
+
+.player-location-map-stage-full .leaflet-image-layer {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.location-safe-tab {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  min-height: 400px !important;
+  padding: 16px !important;
+}
+
+.location-safe-header {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border-radius: 16px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.location-safe-header h2 {
+  margin: 0;
+  color: #f9fafb;
+}
+
+.location-safe-header p {
+  color: #d1d5db;
+}
+
+@media (max-width: 800px) {
+  .location-safe-tab {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mapa e viagem dentro de Meu Ninja → Localização */
+.location-map-zone {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  min-height: 760px !important;
+  display: block !important;
+}
+
+.location-map-zone .player-location-map-card {
+  width: 100% !important;
+  min-height: 760px !important;
+}
+
+.location-map-zone .player-location-layout {
+  display: grid !important;
+  grid-template-columns: 340px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  min-height: 680px !important;
+}
+
+.location-map-zone .player-location-controls {
+  max-height: 680px !important;
+  overflow-y: auto !important;
+}
+
+.location-map-zone .player-location-map-stage,
+.location-map-zone .player-location-map-stage-full {
+  height: 680px !important;
+  min-height: 680px !important;
+  width: 100% !important;
+  display: block !important;
+  overflow: hidden !important;
+}
+
+.location-map-zone .leaflet-container {
+  height: 100% !important;
+  min-height: 680px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 1000px) {
+  .location-map-zone .player-location-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .location-map-zone .player-location-controls {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .location-map-zone .player-location-map-stage,
+  .location-map-zone .player-location-map-stage-full,
+  .location-map-zone .leaflet-container {
+    height: 520px !important;
+    min-height: 520px !important;
+  }
+}
+
+/* Mapa estável por imagem em Meu Ninja → Localização */
+.player-location-image-stage {
+  height: 680px;
+  min-height: 680px;
+  overflow: auto;
+  border-radius: 16px;
+  border: 1px solid #374151;
+  background: #020617;
+}
+
+.player-location-image-wrap {
+  position: relative;
+  width: 100%;
+  min-width: 1080px;
+  line-height: 0;
+  cursor: crosshair;
+  user-select: none;
+}
+
+.player-location-image-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.player-map-point,
+.player-map-current {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: white;
+  font-weight: 950;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+}
+
+.player-map-point {
+  width: 28px;
+  height: 28px;
+  border: 2px solid white;
+  font-size: 13px;
+}
+
+.player-map-point.point-a {
+  background: #22c55e;
+}
+
+.player-map-point.point-b {
+  background: #ef4444;
+}
+
+.player-map-current {
+  width: 36px;
+  height: 36px;
+  background: #1d4ed8;
+  border: 3px solid #bfdbfe;
+  font-size: 11px;
+}
+
+.player-map-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.player-map-route line {
+  stroke: #f97316;
+  stroke-width: 0.35;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 0.7px rgba(0, 0, 0, 0.8));
+}
+
+@media (max-width: 1000px) {
+  .player-location-image-stage {
+    height: 520px;
+    min-height: 520px;
+  }
+
+  .player-location-image-wrap {
+    min-width: 900px;
+  }
+}
+
+.entry-actions-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 1000px) {
+  .entry-actions-three {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.location-presence-card {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.location-presence-card strong {
+  color: #fed7aa;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.location-presence-card span {
+  color: #e5e7eb;
+  font-weight: 800;
+}
+
+.location-presence-card.active {
+  border-color: rgba(249, 115, 22, 0.65);
+  background: rgba(249, 115, 22, 0.12);
+}
+
+.location-presence-card.inactive {
+  opacity: 0.85;
+}
+
+.location-presence-card,
+.map-presence-card {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+.location-presence-card {
+  grid-column: 1 / -1;
+}
+
+.location-presence-card strong,
+.map-presence-card strong {
+  color: #fed7aa;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.location-presence-card span,
+.map-presence-card span {
+  color: #e5e7eb;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.map-presence-card small {
+  color: #9ca3af;
+  font-weight: 700;
+}
+
+.location-presence-card.active,
+.map-presence-card.active {
+  border-color: rgba(249, 115, 22, 0.65);
+  background: rgba(249, 115, 22, 0.12);
+}
+
+.location-presence-card.inactive,
+.map-presence-card.inactive {
+  opacity: 0.88;
+}
+
+.characterMapIcon {
+  overflow: hidden;
+}
+
+.characterMapIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  display: block;
+}
+
+.map-icon-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-icon-preview img {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid #f97316;
+}
