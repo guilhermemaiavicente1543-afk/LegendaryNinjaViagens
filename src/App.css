@@ -4896,3 +4896,200 @@ main.app:not(.app-map) > section {
   object-fit: cover;
   border: 2px solid #f97316;
 }
+
+/* Correções mobile gerais para ADM */
+@media (max-width: 900px) {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  main.app:not(.app-map),
+  main.app:not(.app-map) > section {
+    min-height: 100dvh !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .admin-page {
+    min-height: 100dvh !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px !important;
+    padding-bottom: 90px !important;
+  }
+
+  .admin-card,
+  .admin-card-wide {
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  .admin-mode-tabs {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+  }
+
+  .admin-world-map-card {
+    display: block !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .admin-world-map-stage {
+    display: block !important;
+    height: 58dvh !important;
+    min-height: 420px !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .admin-world-map-stage .leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Editor da Teia no celular: rolagem e painel acessível */
+@media (max-width: 900px) {
+  .admin-page:has(.tree-editor-page) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 10px !important;
+    padding-bottom: 90px !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .admin-card-wide {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 3000 !important;
+    display: block !important;
+    margin-bottom: 10px !important;
+    padding: 12px !important;
+    background: rgba(17, 24, 39, 0.98) !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-page {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-toolbar {
+    position: relative !important;
+    display: grid !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-actions button,
+  .admin-page:has(.tree-editor-page) .import-json-button {
+    min-height: 42px !important;
+    font-size: 12px !important;
+    padding: 8px !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-categories {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    padding: 8px !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 64dvh auto !important;
+    gap: 12px !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-canvas {
+    height: 64dvh !important;
+    min-height: 420px !important;
+    overflow: hidden !important;
+    border-radius: 16px !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-canvas .react-flow {
+    height: 100% !important;
+  }
+
+  .admin-page:has(.tree-editor-page) .tree-editor-panel {
+    height: auto !important;
+    max-height: 70dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-left: 0 !important;
+    border-top: 1px solid #374151 !important;
+    padding: 14px !important;
+    padding-bottom: 80px !important;
+  }
+}
+
+/* Teia do jogador no celular: rolagem da página e remoção da faixa azul */
+@media (max-width: 900px) {
+  .character-profile-panel.skill-tree-fullscreen {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: #020617 !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .full-tree-tab,
+  .character-profile-panel.skill-tree-fullscreen .profile-tab-content {
+    height: auto !important;
+    min-height: calc(100dvh - 54px) !important;
+    overflow: visible !important;
+    background: #020617 !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-tree {
+    height: auto !important;
+    min-height: calc(100dvh - 54px) !important;
+    overflow: visible !important;
+    padding-bottom: 24px !important;
+    background: #020617 !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-layout {
+    height: 62dvh !important;
+    min-height: 460px !important;
+    overflow: hidden !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-canvas {
+    height: 100% !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-canvas .react-flow {
+    height: 100% !important;
+  }
+
+  .character-profile-panel.skill-tree-fullscreen .character-skill-inspector {
+    max-height: 240px !important;
+    overflow-y: auto !important;
+  }
+}

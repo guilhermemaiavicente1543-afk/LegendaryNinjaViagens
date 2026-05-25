@@ -418,21 +418,6 @@ function dbTravelToAppTravel(row) {
   };
 }
 
-
-const CHARACTER_LOCATION_STORAGE_KEY = "legendary-ninja-character-locations";
-
-function readCharacterLocations() {
-  try {
-    return JSON.parse(localStorage.getItem(CHARACTER_LOCATION_STORAGE_KEY) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-function writeCharacterLocations(locations) {
-  localStorage.setItem(CHARACTER_LOCATION_STORAGE_KEY, JSON.stringify(locations));
-}
-
 export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
@@ -445,9 +430,6 @@ export default function App() {
   const [travelCharacters, setTravelCharacters] = useState(() => readSavedCharacters());
   const [selectedTravelCharacterId, setSelectedTravelCharacterId] = useState("");
   const [travels, setTravels] = useState(() => readSavedTravels());
-  const [characterLocations, setCharacterLocations] = useState(() =>
-    readCharacterLocations()
-  );
   const [now, setNow] = useState(Date.now());
   const [session, setSession] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -544,22 +526,6 @@ export default function App() {
     [selectedTravelCharacterId, travelCharacters]
   );
 
-  function saveCharacterLocation(characterId, coord) {
-    if (!characterId || !coord) return;
-
-    const nextLocations = {
-      ...characterLocations,
-      [characterId]: {
-        coord,
-        center: getSmallCellCenter(coord),
-        updatedAt: new Date().toISOString()
-      }
-    };
-
-    setCharacterLocations(nextLocations);
-    writeCharacterLocations(nextLocations);
-  }
-
   function getCenterCoordinate() {
     return getCoordinate({
       lat: GRID_TOP + gridHeight / 2,
@@ -572,22 +538,16 @@ export default function App() {
       (travel) => travel.characterId === characterId
     );
 
-    if (existingTravel) {
-      const currentPoint = getTravelCurrentPoint(existingTravel, now);
-
-      return getCoordinate({
-        lat: currentPoint[0],
-        lng: currentPoint[1]
-      });
+    if (!existingTravel) {
+      return getCenterCoordinate();
     }
 
-    const savedLocation = characterLocations[characterId];
+    const currentPoint = getTravelCurrentPoint(existingTravel, now);
 
-    if (savedLocation?.coord) {
-      return savedLocation.coord;
-    }
-
-    return getCenterCoordinate();
+    return getCoordinate({
+      lat: currentPoint[0],
+      lng: currentPoint[1]
+    });
   }
 
   function isSameProvince(a, b) {
@@ -609,25 +569,28 @@ export default function App() {
       return;
     }
 
-    if (points.length < 1) {
-      alert("Clique no destino da viagem.");
+    if (points.length !== 2) {
+      alert("Clique em dois pontos no mapa: origem e destino.");
       return;
     }
 
-    const startCoord = getCurrentCoordinateForCharacter(selectedTravelCharacter.id);
-    const endCoord = points[0];
+    const currentLocation = getCurrentCoordinateForCharacter(
+      selectedTravelCharacter.id
+    );
 
-    if (!startCoord) {
+    if (!currentLocation) {
       alert("Não foi possível determinar a localização atual do personagem.");
       return;
     }
 
-    if (!endCoord) {
-      alert("Selecione um destino no mapa.");
+    if (!isSameProvince(points[0], currentLocation)) {
+      alert(
+        `Seu personagem está em ${currentLocation.label}. A viagem precisa começar nessa província.`
+      );
       return;
     }
 
-    const travelData = calculateTravel(startCoord, endCoord, travelMode);
+    const travelData = calculateTravel(points[0], points[1], travelMode);
     const startedAt = new Date().toISOString();
     const arrivalAt = new Date(
       Date.now() + travelData.hours * 60 * 60 * 1000
@@ -643,18 +606,16 @@ export default function App() {
         "",
       travelMode,
       modeLabel: travelData.modeLabel,
-      startCoord,
-      endCoord,
-      startCenter: getSmallCellCenter(startCoord),
-      endCenter: getSmallCellCenter(endCoord),
+      startCoord: points[0],
+      endCoord: points[1],
+      startCenter: getSmallCellCenter(points[0]),
+      endCenter: getSmallCellCenter(points[1]),
       durationHours: travelData.hours,
       durationDays: travelData.days,
       distanceFeet: travelData.feet,
       startedAt,
       arrivalAt,
     };
-
-    saveCharacterLocation(selectedTravelCharacter.id, endCoord);
 
     if (isSupabaseConfigured && supabase && session?.user) {
       const payload = {
@@ -667,10 +628,10 @@ export default function App() {
           "",
         travel_mode: travelMode,
         mode_label: travelData.modeLabel,
-        start_coord: startCoord,
-        end_coord: endCoord,
-        start_center: getSmallCellCenter(startCoord),
-        end_center: getSmallCellCenter(endCoord),
+        start_coord: points[0],
+        end_coord: points[1],
+        start_center: getSmallCellCenter(points[0]),
+        end_center: getSmallCellCenter(points[1]),
         duration_hours: travelData.hours,
         duration_days: travelData.days,
         distance_feet: travelData.feet,
@@ -713,20 +674,6 @@ export default function App() {
   }
 
   async function cancelTravel(travelId) {
-    const travelToCancel = travels.find((travel) => travel.id === travelId);
-
-    if (travelToCancel) {
-      const currentPoint = getTravelCurrentPoint(travelToCancel, now);
-      const currentCoord = getCoordinate({
-        lat: currentPoint[0],
-        lng: currentPoint[1]
-      });
-
-      if (currentCoord) {
-        saveCharacterLocation(travelToCancel.characterId, currentCoord);
-      }
-    }
-
     if (isSupabaseConfigured && supabase && session?.user) {
       const { error } = await supabase
         .from("travels")
@@ -755,18 +702,17 @@ export default function App() {
       return;
     }
 
-    setPoints([coord]);
+    setPoints((current) => {
+      if (current.length >= 2) {
+        return [coord];
+      }
+
+      return [...current, coord];
+    });
   }
 
-  const currentTravelOrigin =
-    selectedTravelCharacter
-      ? getCurrentCoordinateForCharacter(selectedTravelCharacter.id)
-      : null;
-
   const travel =
-    points.length >= 1 && currentTravelOrigin
-      ? calculateTravel(currentTravelOrigin, points[0], travelMode)
-      : null;
+    points.length === 2 ? calculateTravel(points[0], points[1], travelMode) : null;
 
   if (isAuthLoading) {
     return (
@@ -795,9 +741,7 @@ export default function App() {
     travels.find((item) => item.characterId === selectedTravelCharacterId) || null;
 
   const selectedInitialCoord =
-    selectedTravelCharacter && !selectedMapTravel
-      ? getCurrentCoordinateForCharacter(selectedTravelCharacter.id)
-      : null;
+    selectedTravelCharacter && !selectedMapTravel ? getCenterCoordinate() : null;
 
 
   const selectedMapPresence = selectedMapTravel
@@ -1018,7 +962,7 @@ export default function App() {
           </button>
 
           <button type="button" onClick={startCharacterTravel}>
-            Iniciar viagem até o destino
+            Iniciar viagem com os pontos A e B
           </button>
 
           <p className="travelSmallText">
@@ -1044,11 +988,11 @@ export default function App() {
 
         {points.length > 0 && (
           <div className="info">
-            <strong>Destino:</strong>{" "}
+            <strong>Ponto A:</strong>{" "}
             {points[0] ? points[0].label : "-"}
             <br />
-            <strong>Destino:</strong>{" "}
-            {points[0] ? points[0].label : "-"}
+            <strong>Ponto B:</strong>{" "}
+            {points[1] ? points[1].label : "-"}
           </div>
         )}
 
@@ -1220,9 +1164,9 @@ export default function App() {
             </CircleMarker>
           ))}
 
-          {points.length >= 1 && currentTravelOrigin && (
+          {points.length === 2 && (
             <Polyline
-              positions={[getSmallCellCenter(currentTravelOrigin), getSmallCellCenter(points[0])]}
+              positions={[getSmallCellCenter(points[0]), getSmallCellCenter(points[1])]}
               pathOptions={{
                 color: "#f97316",
                 weight: 4,
