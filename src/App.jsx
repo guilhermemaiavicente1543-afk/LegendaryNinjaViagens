@@ -19,6 +19,7 @@ import SkillTreePage from "./components/SkillTreePage";
 import EntryHall from "./components/EntryHall";
 import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
 import SoundtrackPlayer from "./components/audio/SoundtrackPlayer";
+import PasswordRecoveryWidget from "./components/auth/PasswordRecoveryWidget";
 
 /*
   Mapa com grade:
@@ -848,6 +849,7 @@ export default function App() {
   return (
     <main className={`app app-${activePage}`}>
       <SoundtrackPlayer />
+      <PasswordRecoveryWidget session={session} />
       <button
         className="mobileConfigButton"
         onClick={() => setIsPanelOpen(true)}
