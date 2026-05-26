@@ -18,6 +18,7 @@ import AdminPanel from "./components/admin/AdminPanel";
 import SkillTreePage from "./components/SkillTreePage";
 import EntryHall from "./components/EntryHall";
 import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
+import SoundtrackPlayer from "./components/audio/SoundtrackPlayer";
 
 /*
   Mapa com grade:
@@ -846,6 +847,7 @@ export default function App() {
 
   return (
     <main className={`app app-${activePage}`}>
+      <SoundtrackPlayer />
       <button
         className="mobileConfigButton"
         onClick={() => setIsPanelOpen(true)}
