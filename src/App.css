@@ -11007,3 +11007,1206 @@ main.app:not(.app-map) > section {
       url("/map-bg-mobile.png") center top / cover no-repeat !important;
   }
 }
+
+/* =====================================================
+   Mapa — modo imersivo sem painel lateral rolável
+===================================================== */
+
+@media (min-width: 901px) {
+  .app-map {
+    position: relative !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .mobileConfigButton {
+    display: none !important;
+  }
+
+  .app-map .panelBackdrop {
+    display: none !important;
+  }
+
+  .app-map .mapArea {
+    position: relative !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    flex: 1 1 100% !important;
+    padding: 84px 34px 112px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 26px !important;
+  }
+
+  /* O painel deixa de ser lateral e vira dock superior */
+  .app-map .panel {
+    position: fixed !important;
+    top: 18px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    z-index: 80 !important;
+
+    width: min(1180px, calc(100vw - 160px)) !important;
+    max-width: 1180px !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(220px, 0.8fr) minmax(360px, 1.3fr) auto !important;
+    align-items: end !important;
+    gap: 12px !important;
+
+    padding: 12px 14px !important;
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 22px !important;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.16), transparent 36%),
+      rgba(0, 0, 0, 0.76) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 55px rgba(0, 0, 0, 0.58),
+      0 0 28px rgba(255, 80, 0, 0.12) !important;
+  }
+
+  /* Remove conteúdos redundantes do painel antigo */
+  .app-map .panelHeader,
+  .app-map .panel > p,
+  .app-map .ln-current-user,
+  .app-map .navigationTabs,
+  .app-map .ruleBox,
+  .app-map .hint,
+  .app-map .travelList {
+    display: none !important;
+  }
+
+  /* Esconde opções técnicas de grade no dock principal */
+  .app-map .panel > label:nth-of-type(n + 2) {
+    display: none !important;
+  }
+
+  /* Mantém Meio de locomoção */
+  .app-map .panel > label:first-of-type {
+    margin: 0 !important;
+    display: grid !important;
+    gap: 6px !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .app-map .panel select,
+  .app-map .panel input {
+    min-height: 42px !important;
+    border: 1px solid rgba(255, 122, 0, 0.32) !important;
+    border-radius: 14px !important;
+    background: rgba(2, 6, 23, 0.92) !important;
+    color: #f5ead0 !important;
+    padding: 9px 11px !important;
+  }
+
+  /* Bloco de viagem do personagem vira controle superior */
+  .app-map .travelBox {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    display: grid !important;
+    grid-template-columns: minmax(220px, 1fr) auto auto !important;
+    gap: 10px !important;
+    align-items: end !important;
+  }
+
+  .app-map .travelBox > strong,
+  .app-map .travelSmallText {
+    display: none !important;
+  }
+
+  .app-map .travelBox label {
+    margin: 0 !important;
+    display: grid !important;
+    gap: 6px !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .app-map .travelBox button,
+  .app-map .panel > button {
+    min-height: 42px !important;
+    border: 1px solid rgba(255, 122, 0, 0.55) !important;
+    border-radius: 999px !important;
+    background:
+      linear-gradient(180deg, rgba(255, 106, 0, 0.92), rgba(124, 29, 6, 0.92)) !important;
+    color: #fff7ed !important;
+    padding: 9px 13px !important;
+    font-weight: 950 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38) !important;
+  }
+
+  .app-map .panel > button {
+    align-self: end !important;
+    background: rgba(0, 0, 0, 0.72) !important;
+    color: #fed7aa !important;
+  }
+
+  /* Informações dos pontos ficam no rodapé */
+  .app-map .panel .info {
+    position: fixed !important;
+    left: 50% !important;
+    bottom: 22px !important;
+    transform: translateX(-50%) !important;
+    z-index: 82 !important;
+
+    width: min(520px, calc(100vw - 80px)) !important;
+    margin: 0 !important;
+    padding: 13px 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.38) !important;
+    border-radius: 18px !important;
+    background: rgba(0, 0, 0, 0.76) !important;
+    color: #f5ead0 !important;
+    text-align: center !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.58) !important;
+  }
+
+  /* Resultado do cálculo fica no canto inferior direito */
+  .app-map .panel .result {
+    position: fixed !important;
+    right: 28px !important;
+    bottom: 22px !important;
+    z-index: 82 !important;
+
+    width: min(340px, calc(100vw - 80px)) !important;
+    margin: 0 !important;
+    padding: 13px 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.38) !important;
+    border-radius: 18px !important;
+    background: rgba(0, 0, 0, 0.76) !important;
+    color: #f5ead0 !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.58) !important;
+  }
+
+  .app-map .panel .info strong,
+  .app-map .panel .result strong {
+    color: #ff7a00 !important;
+  }
+
+  .app-map .hallReturnButton {
+    top: auto !important;
+    left: 28px !important;
+    bottom: 24px !important;
+    z-index: 90 !important;
+  }
+}
+
+/* Mobile mantém botão de configurações, mas sem rolagem lateral estranha */
+@media (max-width: 900px) {
+  .app-map {
+    overflow: hidden !important;
+  }
+
+  .app-map .mapArea {
+    min-height: 100dvh !important;
+    padding: 74px 10px 88px !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .leaflet-container {
+    border-radius: 18px !important;
+  }
+
+  .app-map .panel.panelOpen {
+    max-height: 82dvh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* =====================================================
+   Mapa notebook — controles laterais
+   Corrige o layout anterior de dock superior
+===================================================== */
+
+@media (min-width: 901px) {
+  .app-map {
+    position: relative !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .mapArea {
+    position: relative !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    padding: 32px 390px 32px 390px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 26px !important;
+    border: 1px solid rgba(255, 122, 0, 0.38) !important;
+    box-shadow:
+      0 24px 80px rgba(0, 0, 0, 0.68),
+      0 0 38px rgba(255, 80, 0, 0.16) !important;
+  }
+
+  /* Painel esquerdo: controles */
+  .app-map .panel {
+    position: fixed !important;
+    top: 84px !important;
+    left: 22px !important;
+    right: auto !important;
+    bottom: 24px !important;
+    transform: none !important;
+    z-index: 80 !important;
+
+    width: 335px !important;
+    max-width: 335px !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    display: block !important;
+    padding: 18px !important;
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 22px !important;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.16), transparent 36%),
+      rgba(0, 0, 0, 0.78) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 55px rgba(0, 0, 0, 0.62),
+      0 0 28px rgba(255, 80, 0, 0.13) !important;
+  }
+
+  /* Remove redundâncias do painel lateral */
+  .app-map .panelHeader,
+  .app-map .panel > p,
+  .app-map .ln-current-user,
+  .app-map .navigationTabs,
+  .app-map .ruleBox,
+  .app-map .hint,
+  .app-map .travelList {
+    display: none !important;
+  }
+
+  /* Mantém o painel limpo */
+  .app-map .panel > label:nth-of-type(n + 2) {
+    display: none !important;
+  }
+
+  .app-map .panel > label:first-of-type {
+    display: grid !important;
+    gap: 7px !important;
+    margin: 0 0 14px !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  .app-map .panel select,
+  .app-map .panel input {
+    width: 100% !important;
+    min-height: 42px !important;
+    border: 1px solid rgba(255, 122, 0, 0.34) !important;
+    border-radius: 14px !important;
+    background: rgba(2, 6, 23, 0.92) !important;
+    color: #f5ead0 !important;
+    padding: 9px 11px !important;
+  }
+
+  .app-map .panel > button {
+    width: 100% !important;
+    min-height: 42px !important;
+    margin: 0 0 14px !important;
+    border: 1px solid rgba(255, 122, 0, 0.45) !important;
+    border-radius: 999px !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+    cursor: pointer !important;
+  }
+
+  .app-map .travelBox {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    padding: 14px !important;
+    border: 1px solid rgba(255, 122, 0, 0.26) !important;
+    border-radius: 18px !important;
+    background: rgba(2, 6, 23, 0.58) !important;
+  }
+
+  .app-map .travelBox > strong {
+    display: block !important;
+    color: #ff7a00 !important;
+    font-size: 15px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .app-map .travelBox label {
+    display: grid !important;
+    gap: 7px !important;
+    margin: 0 !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .app-map .travelBox button {
+    width: 100% !important;
+    min-height: 44px !important;
+    border: 1px solid rgba(255, 122, 0, 0.66) !important;
+    border-radius: 999px !important;
+    background:
+      linear-gradient(180deg, rgba(255, 106, 0, 0.95), rgba(124, 29, 6, 0.95)) !important;
+    color: #fff7ed !important;
+    padding: 10px 14px !important;
+    font-weight: 950 !important;
+    cursor: pointer !important;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.44) !important;
+  }
+
+  .app-map .travelSmallText {
+    color: #d1d5db !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Painel direito: informações */
+  .app-map .panel .info {
+    position: fixed !important;
+    top: 84px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 82 !important;
+
+    width: 335px !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.38) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 36%),
+      rgba(0, 0, 0, 0.78) !important;
+    color: #f5ead0 !important;
+    text-align: left !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.62) !important;
+  }
+
+  .app-map .panel .result {
+    position: fixed !important;
+    top: 250px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 82 !important;
+
+    width: 335px !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.38) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 36%),
+      rgba(0, 0, 0, 0.78) !important;
+    color: #f5ead0 !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.62) !important;
+  }
+
+  .app-map .panel .info strong,
+  .app-map .panel .result strong {
+    color: #ff7a00 !important;
+  }
+
+  .app-map .hallReturnButton {
+    position: fixed !important;
+    top: 24px !important;
+    left: 22px !important;
+    bottom: auto !important;
+    z-index: 92 !important;
+  }
+
+  .app-map .mobileConfigButton {
+    display: none !important;
+  }
+}
+
+/* =====================================================
+   Correção final da aba Mapa
+   - botão Hall normal
+   - mapa limpo por padrão
+   - controles de grade/escala acessíveis
+===================================================== */
+
+@media (min-width: 901px) {
+  .app-map .hallReturnButton {
+    position: fixed !important;
+    top: 24px !important;
+    left: 22px !important;
+    bottom: auto !important;
+    z-index: 120 !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 160px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0 16px !important;
+    border-radius: 999px !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+
+    border: 1px solid rgba(255, 122, 0, 0.58) !important;
+    background: rgba(0, 0, 0, 0.74) !important;
+    color: #fed7aa !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.48) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .app-map .hallReturnButton:hover {
+    background: rgba(255, 85, 0, 0.18) !important;
+    color: #fff7ed !important;
+  }
+
+  /*
+    Reexibe os controles de camadas.
+    Antes eles tinham sido escondidos para limpar o painel.
+  */
+  .app-map .panel > label:nth-of-type(n + 2) {
+    display: grid !important;
+    gap: 7px !important;
+    margin: 0 0 10px !important;
+    color: #fed7aa !important;
+    font-weight: 900 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+  }
+
+  .app-map .panel > label:nth-of-type(n + 2) input[type="checkbox"] {
+    width: auto !important;
+    min-height: auto !important;
+    accent-color: #f97316 !important;
+    transform: scale(1.08);
+    margin-right: 8px;
+  }
+
+  .app-map .panel > label:nth-of-type(n + 2) input[type="range"] {
+    width: 100% !important;
+    accent-color: #f97316 !important;
+  }
+
+  /*
+    Dá aparência de "Camadas do mapa" aos controles técnicos.
+  */
+  .app-map .panel > label:nth-of-type(2),
+  .app-map .panel > label:nth-of-type(3),
+  .app-map .panel > label:nth-of-type(4),
+  .app-map .panel > label:nth-of-type(5) {
+    padding: 10px 12px !important;
+    border: 1px solid rgba(255, 122, 0, 0.22) !important;
+    border-radius: 14px !important;
+    background: rgba(2, 6, 23, 0.54) !important;
+  }
+
+  .app-map .travelBox {
+    margin-top: 14px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-map .hallReturnButton {
+    width: auto !important;
+    max-width: 150px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* =====================================================
+   Mapa mobile — tela cheia com gaveta inferior
+===================================================== */
+
+@media (max-width: 900px) {
+  .app-map {
+    position: relative !important;
+    width: 100vw !important;
+    min-height: 100dvh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .mapArea {
+    position: relative !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 72px 10px 78px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .app-map .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(255, 122, 0, 0.34) !important;
+    background: rgba(0, 0, 0, 0.68) !important;
+    box-shadow:
+      0 18px 60px rgba(0, 0, 0, 0.62),
+      0 0 28px rgba(255, 80, 0, 0.12) !important;
+  }
+
+  .app-map .hallReturnButton {
+    position: fixed !important;
+    top: 16px !important;
+    left: 12px !important;
+    bottom: auto !important;
+    z-index: 130 !important;
+
+    width: auto !important;
+    max-width: 118px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 13px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 999px !important;
+    border: 1px solid rgba(255, 122, 0, 0.58) !important;
+    background: rgba(0, 0, 0, 0.76) !important;
+    color: #fed7aa !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.52) !important;
+  }
+
+  .app-map .mobileConfigButton {
+    position: fixed !important;
+    top: 16px !important;
+    right: 12px !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 130 !important;
+
+    width: auto !important;
+    max-width: 190px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 13px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 999px !important;
+    border: 1px solid rgba(255, 122, 0, 0.58) !important;
+    background: rgba(0, 0, 0, 0.76) !important;
+    color: #fed7aa !important;
+    font-size: 12px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.52) !important;
+  }
+
+  .app-map .panelBackdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 140 !important;
+    display: block !important;
+    border: 0 !important;
+    background: rgba(0, 0, 0, 0.55) !important;
+    backdrop-filter: blur(3px) !important;
+  }
+
+  .app-map .panel {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    top: auto !important;
+    bottom: 10px !important;
+    z-index: 150 !important;
+
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: 82dvh !important;
+
+    transform: translateY(calc(100% + 24px)) !important;
+    transition: transform 0.24s ease !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
+
+    padding: 16px !important;
+    border-radius: 24px 24px 18px 18px !important;
+    border: 1px solid rgba(255, 122, 0, 0.46) !important;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.16), transparent 36%),
+      rgba(0, 0, 0, 0.9) !important;
+    color: #f5ead0 !important;
+    backdrop-filter: blur(14px) !important;
+    box-shadow:
+      0 -18px 60px rgba(0, 0, 0, 0.72),
+      0 0 30px rgba(255, 80, 0, 0.12) !important;
+  }
+
+  .app-map .panel.panelOpen {
+    transform: translateY(0) !important;
+  }
+
+  .app-map .panelHeader {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid rgba(255, 122, 0, 0.24) !important;
+  }
+
+  .app-map .panelHeader h1 {
+    margin: 0 !important;
+    color: #ff7a00 !important;
+    font-size: 20px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  .app-map .mobileCloseButton {
+    display: grid !important;
+    place-items: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255, 122, 0, 0.5) !important;
+    background: rgba(0, 0, 0, 0.62) !important;
+    color: #fed7aa !important;
+    font-size: 18px !important;
+  }
+
+  .app-map .panel > p,
+  .app-map .ln-current-user,
+  .app-map .navigationTabs,
+  .app-map .ruleBox,
+  .app-map .hint,
+  .app-map .travelList {
+    display: none !important;
+  }
+
+  .app-map .panel > label {
+    display: grid !important;
+    gap: 7px !important;
+    margin: 0 0 11px !important;
+    color: #fed7aa !important;
+    font-size: 12px !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+  }
+
+  .app-map .panel select,
+  .app-map .panel input {
+    width: 100% !important;
+    min-height: 42px !important;
+    border: 1px solid rgba(255, 122, 0, 0.32) !important;
+    border-radius: 14px !important;
+    background: rgba(2, 6, 23, 0.92) !important;
+    color: #f5ead0 !important;
+    padding: 9px 11px !important;
+    box-sizing: border-box !important;
+  }
+
+  .app-map .panel input[type="checkbox"] {
+    width: auto !important;
+    min-height: auto !important;
+    margin-right: 8px !important;
+    accent-color: #f97316 !important;
+  }
+
+  .app-map .panel input[type="range"] {
+    accent-color: #f97316 !important;
+  }
+
+  .app-map .panel > button {
+    width: 100% !important;
+    min-height: 42px !important;
+    margin: 0 0 12px !important;
+    border: 1px solid rgba(255, 122, 0, 0.45) !important;
+    border-radius: 999px !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+  }
+
+  .app-map .travelBox {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin: 14px 0 0 !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(255, 122, 0, 0.28) !important;
+    background: rgba(2, 6, 23, 0.62) !important;
+  }
+
+  .app-map .travelBox > strong {
+    display: block !important;
+    color: #ff7a00 !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .app-map .travelBox label {
+    display: grid !important;
+    gap: 7px !important;
+    margin: 0 !important;
+    color: #fed7aa !important;
+    font-weight: 950 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  .app-map .travelBox button {
+    width: 100% !important;
+    min-height: 44px !important;
+    border: 1px solid rgba(255, 122, 0, 0.66) !important;
+    border-radius: 999px !important;
+    background:
+      linear-gradient(180deg, rgba(255, 106, 0, 0.95), rgba(124, 29, 6, 0.95)) !important;
+    color: #fff7ed !important;
+    font-weight: 950 !important;
+  }
+
+  .app-map .travelSmallText {
+    color: #d1d5db !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  .app-map .panel .info,
+  .app-map .panel .result {
+    position: static !important;
+    width: auto !important;
+    transform: none !important;
+    margin: 12px 0 0 !important;
+    padding: 13px !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.28) !important;
+    background: rgba(2, 6, 23, 0.62) !important;
+    color: #f5ead0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .app-map .panel .info strong,
+  .app-map .panel .result strong {
+    color: #ff7a00 !important;
+  }
+
+  /* Evita que controles do Leaflet batam nos botões superiores */
+  .app-map .leaflet-top {
+    top: 62px !important;
+  }
+
+  .app-map .leaflet-bottom {
+    bottom: 82px !important;
+  }
+}
+
+/* =====================================================
+   Mapa — botão único de grade e indicadores à direita
+===================================================== */
+
+.systemGridToggleButton {
+  width: 100%;
+  min-height: 42px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(255, 122, 0, 0.55);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(24, 18, 14, 0.94), rgba(0, 0, 0, 0.82));
+  color: #fed7aa;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.systemGridToggleButton:hover {
+  background: rgba(255, 85, 0, 0.18);
+  color: #fff7ed;
+}
+
+/* Notebook: indicadores de pontos/resultados no lado direito */
+@media (min-width: 901px) {
+  .app-map .panel .info {
+    position: fixed !important;
+    top: 84px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 90 !important;
+    width: 335px !important;
+    max-width: 335px !important;
+    text-align: left !important;
+  }
+
+  .app-map .panel .result {
+    position: fixed !important;
+    top: 250px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 90 !important;
+    width: 335px !important;
+    max-width: 335px !important;
+  }
+
+  .app-map .panel {
+    padding-bottom: 18px !important;
+  }
+}
+
+/* Mobile: botão único também fica dentro da gaveta */
+@media (max-width: 900px) {
+  .systemGridToggleButton {
+    min-height: 44px;
+    margin: 0 0 12px;
+  }
+}
+
+/* =====================================================
+   Mapa notebook — coordenadas no lado direito
+===================================================== */
+
+@media (min-width: 901px) {
+  .app-map .map-coordinate-dock {
+    position: fixed !important;
+    top: 84px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 140 !important;
+
+    width: 335px !important;
+    max-width: 335px !important;
+    max-height: 34vh !important;
+    overflow-y: auto !important;
+
+    margin: 0 !important;
+    padding: 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 38%),
+      rgba(0, 0, 0, 0.82) !important;
+    color: #f5ead0 !important;
+    text-align: left !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.64),
+      0 0 26px rgba(255, 80, 0, 0.12) !important;
+  }
+
+  .app-map .map-coordinate-dock strong {
+    color: #ff7a00 !important;
+  }
+
+  .app-map .map-coordinate-dock br {
+    line-height: 1.8 !important;
+  }
+
+  .app-map .map-route-result-dock {
+    position: fixed !important;
+    top: calc(84px + 34vh + 18px) !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 140 !important;
+
+    width: 335px !important;
+    max-width: 335px !important;
+    max-height: 42vh !important;
+    overflow-y: auto !important;
+
+    margin: 0 !important;
+    padding: 16px !important;
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 38%),
+      rgba(0, 0, 0, 0.82) !important;
+    color: #f5ead0 !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.64),
+      0 0 26px rgba(255, 80, 0, 0.12) !important;
+  }
+
+  .app-map .map-route-result-dock strong {
+    color: #ff7a00 !important;
+  }
+
+  /* Garante que essas caixas não ocupem espaço dentro do painel esquerdo */
+  .app-map .panel .map-coordinate-dock,
+  .app-map .panel .map-route-result-dock {
+    pointer-events: auto !important;
+  }
+}
+
+/* No mobile, as coordenadas continuam dentro da gaveta para não cobrir o mapa */
+@media (max-width: 900px) {
+  .app-map .map-coordinate-dock,
+  .app-map .map-route-result-dock {
+    position: static !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: none !important;
+    margin: 12px 0 0 !important;
+  }
+}
+
+/* =====================================================
+   Correção definitiva: mensagens de coordenada fora do painel esquerdo
+===================================================== */
+
+@media (min-width: 901px) {
+  .app-map .panel .map-coordinate-dock,
+  .app-map .map-coordinate-dock {
+    position: fixed !important;
+    top: 84px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 180 !important;
+
+    width: 335px !important;
+    max-width: 335px !important;
+    max-height: 34vh !important;
+    overflow-y: auto !important;
+
+    margin: 0 !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 38%),
+      rgba(0, 0, 0, 0.84) !important;
+    color: #f5ead0 !important;
+    text-align: left !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.66),
+      0 0 26px rgba(255, 80, 0, 0.14) !important;
+  }
+
+  .app-map .panel .map-route-result-dock,
+  .app-map .map-route-result-dock {
+    position: fixed !important;
+    top: 260px !important;
+    right: 22px !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    z-index: 180 !important;
+
+    width: 335px !important;
+    max-width: 335px !important;
+    max-height: 46vh !important;
+    overflow-y: auto !important;
+
+    margin: 0 !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 38%),
+      rgba(0, 0, 0, 0.84) !important;
+    color: #f5ead0 !important;
+    text-align: left !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.66),
+      0 0 26px rgba(255, 80, 0, 0.14) !important;
+  }
+
+  .app-map .map-coordinate-dock strong,
+  .app-map .map-route-result-dock strong {
+    color: #ff7a00 !important;
+  }
+
+  /* Evita que essas caixas ocupem espaço dentro do painel esquerdo */
+  .app-map .panel .map-coordinate-dock + *,
+  .app-map .panel .map-route-result-dock + * {
+    margin-top: 0 !important;
+  }
+}
+
+/* No mobile, as mensagens continuam dentro da gaveta de controles */
+@media (max-width: 900px) {
+  .app-map .map-coordinate-dock,
+  .app-map .map-route-result-dock {
+    position: static !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: none !important;
+    margin: 12px 0 0 !important;
+  }
+}
+
+/* =====================================================
+   Mapa notebook — cards de coordenada fora do painel esquerdo
+===================================================== */
+
+.map-coordinate-dock-floating,
+.map-route-result-dock-floating {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  /* Esconde as mensagens antigas dentro do painel esquerdo */
+  .app-map .panel .map-coordinate-dock,
+  .app-map .panel .map-route-result-dock {
+    display: none !important;
+  }
+
+  .app-map .map-coordinate-dock-floating {
+    display: grid !important;
+    position: fixed !important;
+    top: 84px !important;
+    right: 22px !important;
+    z-index: 220 !important;
+
+    width: 335px !important;
+    gap: 8px !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 38%),
+      rgba(0, 0, 0, 0.86) !important;
+    color: #f5ead0 !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.66),
+      0 0 26px rgba(255, 80, 0, 0.14) !important;
+  }
+
+  .app-map .map-route-result-dock-floating {
+    display: grid !important;
+    position: fixed !important;
+    top: 190px !important;
+    right: 22px !important;
+    z-index: 220 !important;
+
+    width: 335px !important;
+    gap: 8px !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+
+    border: 1px solid rgba(255, 122, 0, 0.42) !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(255, 85, 0, 0.14), transparent 38%),
+      rgba(0, 0, 0, 0.86) !important;
+    color: #f5ead0 !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.66),
+      0 0 26px rgba(255, 80, 0, 0.14) !important;
+  }
+
+  .app-map .map-coordinate-dock-floating strong,
+  .app-map .map-route-result-dock-floating strong {
+    color: #ff7a00 !important;
+    font-size: 13px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  .app-map .map-coordinate-dock-floating span,
+  .app-map .map-route-result-dock-floating span {
+    color: #f5ead0 !important;
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .map-coordinate-dock-floating,
+  .map-route-result-dock-floating {
+    display: none !important;
+  }
+
+  .app-map .panel .map-coordinate-dock,
+  .app-map .panel .map-route-result-dock {
+    display: block !important;
+  }
+}

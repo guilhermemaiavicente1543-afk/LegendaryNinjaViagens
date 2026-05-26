@@ -122,18 +122,25 @@ function getCoordinate(latlng) {
   }
 
   const relX = x - GRID_LEFT;
-  const relY = y - GRID_TOP;
+
+  // O eixo Y do Leaflet/CRS.Simple fica invertido em relação à leitura visual do mapa.
+  // Por isso, para a escala do RPG, o cálculo vertical precisa começar no topo visual.
+  const relYFromTop = GRID_BOTTOM - y;
 
   const macroCol = Math.min(MACRO_COLS - 1, Math.floor(relX / macroCellWidth));
-  const macroRow = Math.min(MACRO_ROWS - 1, Math.floor(relY / macroCellHeight));
+  const macroRow = Math.min(
+    MACRO_ROWS - 1,
+    Math.floor(relYFromTop / macroCellHeight)
+  );
 
   const insideMacroX = relX - macroCol * macroCellWidth;
-  const insideMacroY = relY - macroRow * macroCellHeight;
+  const insideMacroY = relYFromTop - macroRow * macroCellHeight;
 
   const subCol = Math.min(
     SUBDIVISIONS,
     Math.floor(insideMacroX / smallCellWidth) + 1
   );
+
   const subRow = Math.min(
     SUBDIVISIONS,
     Math.floor(insideMacroY / smallCellHeight) + 1
@@ -142,15 +149,14 @@ function getCoordinate(latlng) {
   const globalSmallCol = macroCol * SUBDIVISIONS + (subCol - 1);
   const globalSmallRow = macroRow * SUBDIVISIONS + (subRow - 1);
 
-  // Ajuste visual do rótulo da linha:
-  // a grade do mapa está uma linha abaixo do cálculo bruto.
-  const displayMacroRow = Math.max(1, macroRow);
+  // Linha visual da macro-região: topo = 1, depois 2, 3...
+  const displayMacroRow = macroRow + 1;
 
-  // Cada região possui 25 províncias.
-  // Pela orientação visual adotada no mapa:
-  // antigo 1,5 = P1; 2,5 = P2; 3,5 = P3...
+  // Províncias sequenciais por linha:
+  // topo: P1, P2, P3, P4, P5
+  // linha abaixo: P6, P7, P8, P9, P10...
   const provinceNumber =
-    (SUBDIVISIONS - subRow) * SUBDIVISIONS + subCol;
+    (subRow - 1) * SUBDIVISIONS + subCol;
 
   return {
     x,
@@ -168,12 +174,14 @@ function getCoordinate(latlng) {
   };
 }
 
+
 function getSmallCellCenter(coord) {
   return [
-    GRID_TOP + (coord.globalSmallRow + 0.5) * smallCellHeight,
+    GRID_BOTTOM - (coord.globalSmallRow + 0.5) * smallCellHeight,
     GRID_LEFT + (coord.globalSmallCol + 0.5) * smallCellWidth,
   ];
 }
+
 
 function calculateTravel(a, b, travelMode) {
   const dx = Math.abs(a.globalSmallCol - b.globalSmallCol);
@@ -457,7 +465,7 @@ function writeCharacterLocations(locations) {
 export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
-  const [showImageGrid, setShowImageGrid] = useState(true);
+  const [showImageGrid, setShowImageGrid] = useState(false);
   const [showOverlayGrid, setShowOverlayGrid] = useState(true);
   const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.35);
@@ -856,7 +864,7 @@ export default function App() {
         onClick={() => setIsPanelOpen(true)}
         type="button"
       >
-        ☰ Configurações
+        {activePage === "map" ? "☰ Controles do Mapa" : "☰ Configurações"}
       </button>
 
       {activePage !== "hall" && (
@@ -1071,17 +1079,14 @@ export default function App() {
         </div>
 
         {points.length > 0 && (
-          <div className="info">
-            <strong>Destino:</strong>{" "}
-            {points[0] ? points[0].label : "-"}
-            <br />
+          <div className="info map-coordinate-dock">
             <strong>Destino:</strong>{" "}
             {points[0] ? points[0].label : "-"}
           </div>
         )}
 
         {travel && (
-          <div className="result">
+          <div className="result map-route-result-dock">
             <strong>Viagem {travel.modeLabel}</strong>
             <br />
             Distância: {travel.smallSquares.toFixed(2)} províncias
@@ -1170,6 +1175,25 @@ export default function App() {
           <strong>Imagem:</strong> 1080 × 903px
         </div>
       </aside>
+
+      {activePage === "map" && points.length > 0 && (
+        <div className="map-coordinate-dock-floating">
+          <strong>Destino selecionado</strong>
+          <span>{points[0] ? points[0].label : "-"}</span>
+        </div>
+      )}
+
+      {activePage === "map" && travel && (
+        <div className="map-route-result-dock-floating">
+          <strong>Viagem {travel.modeLabel}</strong>
+          <span>Distância: {travel.smallSquares.toFixed(2)} províncias</span>
+          <span>Regiões atravessadas: {travel.macroBlocks.toFixed(2)}</span>
+          <span>Tempo: {formatTime(travel.hours)}</span>
+          <span>Dias: {travel.days.toFixed(2)} dias</span>
+        </div>
+      )}
+
+
 
       <section className="mapArea">
         {activePage === "hall" ? (
