@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import PasswordRecoveryWidget from "./PasswordRecoveryWidget";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 export default function AuthPage({ onDemoEnter }) {
+  const { t } = useLanguage();
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,11 +58,10 @@ export default function AuthPage({ onDemoEnter }) {
       <PasswordRecoveryWidget session={null} />
     <main className="auth-page">
       <section className="auth-card">
-        <p className="eyebrow">LN Digital</p>
-        <h1>Legendary Ninja Digital</h1>
+        <p className="eyebrow">{t("auth.eyebrow")}</p>
+        <h1>{t("auth.title")}</h1>
         <p>
-          Entre ou crie sua conta para acessar seu ninja, acompanhar localização,
-          viagens e evolução.
+{t("auth.subtitle")}
         </p>
 
         <div className="auth-switch">
@@ -84,7 +85,7 @@ export default function AuthPage({ onDemoEnter }) {
         <form onSubmit={handleSubmit} className="auth-form">
           {mode === "register" && (
             <label>
-              Nome de jogador
+              {t("auth.playerName")}
               <input
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
@@ -94,7 +95,7 @@ export default function AuthPage({ onDemoEnter }) {
           )}
 
           <label>
-            E-mail
+            {t("auth.email")}
             <input
               type="email"
               value={email}
@@ -105,7 +106,7 @@ export default function AuthPage({ onDemoEnter }) {
           </label>
 
           <label>
-            Senha
+            {t("auth.password")}
             <input
               type="password"
               value={password}
@@ -116,7 +117,7 @@ export default function AuthPage({ onDemoEnter }) {
           </label>
 
           <button type="submit" disabled={isLoading}>
-            {isLoading ? "Carregando..." : mode === "login" ? "Entrar" : "Criar conta"}
+            {isLoading ? t("auth.loading") : mode === "login" ? t("auth.enter") : t("auth.createAccount")}
           </button>
 
             {mode === "login" && (
@@ -127,7 +128,7 @@ export default function AuthPage({ onDemoEnter }) {
                   window.dispatchEvent(new Event("open-password-recovery"))
                 }
               >
-                Esqueci minha senha
+                {t("auth.forgotPassword")}
               </button>
             )}
         </form>
@@ -136,14 +137,13 @@ export default function AuthPage({ onDemoEnter }) {
 
         {!isSupabaseConfigured && (
           <div className="auth-demo-box">
-            <strong>Modo demonstração</strong>
+            <strong>{t("auth.demoTitle")}</strong>
             <p>
-              O Supabase ainda não foi conectado. Você pode continuar testando
-              localmente enquanto configuramos o banco online.
+{t("auth.demoText")}
             </p>
 
             <button type="button" onClick={onDemoEnter}>
-              Entrar em modo demonstração
+              {t("auth.enterDemo")}
             </button>
           </div>
         )}

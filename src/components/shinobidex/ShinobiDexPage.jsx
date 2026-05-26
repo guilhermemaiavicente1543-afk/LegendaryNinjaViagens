@@ -1,10 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 const RANKS = ["Todos", "E", "D", "C", "B", "A", "S", "SS"];
 const STATUS = ["Todos", "draft", "approved", "needs_review"];
 
+const LANGUAGES = [
+  { code: "pt", label: "PT-BR" },
+  { code: "en", label: "EN" },
+  { code: "es", label: "ES" },
+  { code: "fr", label: "FR" }
+];
+
+function getTechniqueName(technique, language) {
+  if (!technique) return "";
+
+  if (language === "en") return technique.name_en || technique.name_pt || technique.name;
+  if (language === "es") return technique.name_es || technique.name_pt || technique.name;
+  if (language === "fr") return technique.name_fr || technique.name_pt || technique.name;
+
+  return technique.name_pt || technique.name;
+}
+
 export default function ShinobiDexPage({ onBack }) {
+  const { language, t } = useLanguage();
   const [techniques, setTechniques] = useState([]);
   const [search, setSearch] = useState("");
   const [rank, setRank] = useState("Todos");
@@ -18,6 +37,7 @@ export default function ShinobiDexPage({ onBack }) {
   useEffect(() => {
     loadTechniques();
   }, []);
+
 
   async function loadTechniques() {
     if (!isSupabaseConfigured || !supabase) {
@@ -57,6 +77,10 @@ export default function ShinobiDexPage({ onBack }) {
     return techniques.filter((technique) => {
       const text = [
         technique.name,
+        technique.name_pt,
+        technique.name_en,
+        technique.name_es,
+        technique.name_fr,
         technique.original_name,
         technique.english_name,
         technique.classification,
@@ -83,16 +107,16 @@ export default function ShinobiDexPage({ onBack }) {
       <header className="shinobidex-hero">
         <div>
           <p className="eyebrow">LN Digital</p>
-          <h1>ShinobiDex</h1>
+          <h1>{t("shinobidex.title")}</h1>
           <p>
-            Biblioteca alternativa de técnicas do RPG, importada como rascunho,
-            calculada pela lógica ANCED e revisável pelo ADM.
+{t("shinobidex.subtitle")}
           </p>
         </div>
 
         <div className="shinobidex-actions">
-          <button type="button" onClick={loadTechniques}>Atualizar</button>
-          {onBack && <button type="button" onClick={onBack}>Voltar</button>}
+
+          <button type="button" onClick={loadTechniques}>{t("common.update")}</button>
+          {onBack && <button type="button" onClick={onBack}>{t("common.back")}</button>}
         </div>
       </header>
 
@@ -100,7 +124,7 @@ export default function ShinobiDexPage({ onBack }) {
 
       <div className="shinobidex-filters">
         <label>
-          Buscar
+          {t("common.search")}
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -109,28 +133,28 @@ export default function ShinobiDexPage({ onBack }) {
         </label>
 
         <label>
-          Rank
+          {t("shinobidex.rank")}
           <select value={rank} onChange={(event) => setRank(event.target.value)}>
             {RANKS.map((item) => <option key={item}>{item}</option>)}
           </select>
         </label>
 
         <label>
-          Classificação
+          {t("shinobidex.classification")}
           <select value={classification} onChange={(event) => setClassification(event.target.value)}>
             {classifications.map((item) => <option key={item}>{item}</option>)}
           </select>
         </label>
 
         <label>
-          Natureza
+          {t("shinobidex.nature")}
           <select value={nature} onChange={(event) => setNature(event.target.value)}>
             {natures.map((item) => <option key={item}>{item}</option>)}
           </select>
         </label>
 
         <label>
-          Status
+          {t("shinobidex.status")}
           <select value={status} onChange={(event) => setStatus(event.target.value)}>
             {STATUS.map((item) => <option key={item}>{item}</option>)}
           </select>
@@ -138,7 +162,7 @@ export default function ShinobiDexPage({ onBack }) {
       </div>
 
       <div className="shinobidex-count">
-        {isLoading ? "Carregando técnicas..." : `${filtered.length} técnica(s) encontradas`}
+        {isLoading ? "Carregando técnicas..." : `${filtered.length} ${t("shinobidex.found")}`}
       </div>
 
       <div className="shinobidex-layout">
@@ -155,7 +179,7 @@ export default function ShinobiDexPage({ onBack }) {
               </span>
 
               <span className="shinobidex-card-body">
-                <strong>{technique.name}</strong>
+                <strong>{getTechniqueName(technique, language)}</strong>
                 <small>
                   {technique.classification || "Sem classificação"} ·{" "}
                   {technique.nature || "Sem natureza"} ·{" "}
@@ -167,7 +191,7 @@ export default function ShinobiDexPage({ onBack }) {
 
           {!isLoading && filtered.length === 0 && (
             <div className="shinobidex-empty">
-              Nenhuma técnica encontrada.
+              {t("shinobidex.noResults")}
             </div>
           )}
         </div>
@@ -175,8 +199,8 @@ export default function ShinobiDexPage({ onBack }) {
         <aside className="shinobidex-detail">
           {selected ? (
             <>
-              <p className="eyebrow">Técnica</p>
-              <h2>{selected.name}</h2>
+              <p className="eyebrow">{t("shinobidex.technique")}</p>
+              <h2>{getTechniqueName(selected, language)}</h2>
 
               {selected.original_name && <p className="shinobidex-original">{selected.original_name}</p>}
 
@@ -189,24 +213,24 @@ export default function ShinobiDexPage({ onBack }) {
               </div>
 
               <div className="shinobidex-info-grid">
-                <p><strong>Classificação</strong><span>{selected.classification || "Não identificada"}</span></p>
-                <p><strong>Natureza</strong><span>{selected.nature || "Não identificada"}</span></p>
+                <p><strong>{t("shinobidex.classification")}</strong><span>{selected.classification || "Não identificada"}</span></p>
+                <p><strong>{t("shinobidex.nature")}</strong><span>{selected.nature || "Não identificada"}</span></p>
                 <p><strong>Tipo</strong><span>{selected.technique_type || "Não identificado"}</span></p>
                 <p><strong>Usuários</strong><span>{selected.users_text || "Não identificados"}</span></p>
               </div>
 
               <section>
-                <h3>Resumo</h3>
+                <h3>{t("shinobidex.summary")}</h3>
                 <p>{selected.summary || "Resumo pendente de adaptação para o RPG."}</p>
               </section>
 
               <section>
-                <h3>Efeito no RPG</h3>
+                <h3>{t("shinobidex.rpgEffect")}</h3>
                 <p>{selected.rpg_effect || "Efeito pendente de revisão ADM."}</p>
               </section>
 
               <section>
-                <h3>Cálculo ANCED sugerido</h3>
+                <h3>{t("shinobidex.ancedCalculation")}</h3>
                 <p>{selected.anced_details || "Sem detalhes de cálculo."}</p>
               </section>
 
@@ -217,13 +241,13 @@ export default function ShinobiDexPage({ onBack }) {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Ver fonte original
+                  {t("shinobidex.originalSource")}
                 </a>
               )}
             </>
           ) : (
             <div className="shinobidex-empty detail">
-              Selecione uma técnica para ver detalhes.
+              {t("shinobidex.noTechnique")}
             </div>
           )}
         </aside>

@@ -1,201 +1,142 @@
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../../i18n/LanguageContext";
 
 const AUDIO_SRC = "/audio/ln-soundtrack.mp3";
-
-function getInitialVolume() {
-  const savedVolume = Number(localStorage.getItem("ln-sound-volume"));
-
-  if (Number.isFinite(savedVolume) && savedVolume > 0) {
-    return Math.min(1, Math.max(0, savedVolume));
-  }
-
-  return 0.5;
-}
-
-function getInitialHiddenState() {
-  return localStorage.getItem("ln-sound-control-hidden") === "true";
-}
+const STORAGE_KEY = "ln-digital-sound-enabled";
+const FIXED_VOLUME = 0.15;
 
 export default function SoundtrackPlayer() {
+  const { t } = useLanguage();
   const audioRef = useRef(null);
-  const [isEnabled, setIsEnabled] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [wasBlocked, setWasBlocked] = useState(false);
-  const [volume, setVolume] = useState(getInitialVolume);
-  const [isHidden, setIsHidden] = useState(getInitialHiddenState);
 
-  async function playAudio() {
-    const audio = audioRef.current;
+  const [isEnabled, setIsEnabled] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
 
-    if (!audio) return false;
+    if (saved === "false") return false;
 
-    audio.volume = volume;
-    audio.loop = true;
-
-    try {
-      await audio.play();
-      setIsPlaying(true);
-      setWasBlocked(false);
-      return true;
-    } catch {
-      setIsPlaying(false);
-      setWasBlocked(true);
-      return false;
-    }
-  }
-
-  function pauseAudio() {
-    const audio = audioRef.current;
-
-    if (!audio) return;
-
-    audio.pause();
-    setIsPlaying(false);
-    setWasBlocked(false);
-  }
+    return true;
+  });
 
   useEffect(() => {
-    localStorage.removeItem("ln-sound-enabled");
-  }, []);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-
-    if (!audio) return;
-
-    audio.volume = volume;
-    localStorage.setItem("ln-sound-volume", String(volume));
-  }, [volume]);
-
-  useEffect(() => {
-    localStorage.setItem("ln-sound-control-hidden", String(isHidden));
-  }, [isHidden]);
-
-  useEffect(() => {
-    if (!isEnabled) {
-      pauseAudio();
-      return;
-    }
-
-    playAudio();
+    localStorage.setItem(STORAGE_KEY, String(isEnabled));
   }, [isEnabled]);
 
   useEffect(() => {
-    if (!isEnabled || isPlaying) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    function unlockAudio() {
-      setIsEnabled(true);
-      playAudio();
+    audio.volume = FIXED_VOLUME;
+    audio.loop = true;
+    audio.preload = "auto";
+
+    async function tryPlay() {
+      audio.volume = FIXED_VOLUME;
+
+      if (!isEnabled || document.hidden) {
+        audio.pause();
+        return;
+      }
+
+      try {
+        await audio.play();
+      } catch {
+        // O navegador pode bloquear autoplay com som.
+        // Nesse caso, o áudio inicia na primeira interação do usuário.
+        audio.pause();
+      }
     }
 
-    window.addEventListener("pointerdown", unlockAudio, { once: true });
-    window.addEventListener("keydown", unlockAudio, { once: true });
-    window.addEventListener("touchstart", unlockAudio, { once: true });
+    function stopAudio(reset = false) {
+      audio.pause();
+
+      if (reset) {
+        audio.currentTime = 0;
+      }
+    }
+
+    function handleFirstInteraction() {
+      if (!isEnabled || document.hidden) return;
+      tryPlay();
+    }
+
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        stopAudio();
+        return;
+      }
+
+      if (isEnabled) {
+        tryPlay();
+      }
+    }
+
+    function handlePageHide() {
+      stopAudio(true);
+    }
+
+    function handleBeforeUnload() {
+      stopAudio(true);
+    }
+
+    tryPlay();
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    window.addEventListener("pointerdown", handleFirstInteraction);
+    window.addEventListener("keydown", handleFirstInteraction);
+    window.addEventListener("touchstart", handleFirstInteraction);
 
     return () => {
-      window.removeEventListener("pointerdown", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+
+      stopAudio();
     };
-  }, [isEnabled, isPlaying, volume]);
+  }, [isEnabled]);
 
   function toggleSound() {
-    if (isPlaying) {
-      setIsEnabled(false);
-      pauseAudio();
+    const audio = audioRef.current;
+    const nextValue = !isEnabled;
+
+    setIsEnabled(nextValue);
+    localStorage.setItem(STORAGE_KEY, String(nextValue));
+
+    if (!audio) return;
+
+    audio.volume = FIXED_VOLUME;
+
+    if (!nextValue) {
+      audio.pause();
+      audio.currentTime = 0;
       return;
     }
 
-    setIsEnabled(true);
-    playAudio();
-  }
-
-  function handleVolumeChange(event) {
-    const nextVolume = Number(event.target.value);
-
-    setVolume(nextVolume);
-
-    if (!isEnabled) {
-      setIsEnabled(true);
-    }
-
-    if (!isPlaying) {
-      playAudio();
+    if (!document.hidden) {
+      audio.play().catch(() => {
+        audio.pause();
+      });
     }
   }
-
-  function hideControl() {
-    setIsHidden(true);
-  }
-
-  function showControl() {
-    setIsHidden(false);
-
-    if (isEnabled && !isPlaying) {
-      playAudio();
-    }
-  }
-
-  const label = isPlaying
-    ? "Som ligado"
-    : wasBlocked
-      ? "Clique para som"
-      : "Som ativado";
-
-  const volumePercent = Math.round(volume * 100);
 
   return (
     <>
-      <audio ref={audioRef} src={AUDIO_SRC} preload="auto" />
+      <audio ref={audioRef} src={AUDIO_SRC} />
 
-      {isHidden ? (
-        <button
-          type="button"
-          className={`soundtrack-mini-toggle ${isPlaying ? "playing" : "muted"}`}
-          onClick={showControl}
-          title="Mostrar controle de som"
-          aria-label="Mostrar controle de som"
-        >
-          {isPlaying ? "♪" : "♪"}
-        </button>
-      ) : (
-        <div className="soundtrack-control">
-          <button
-            type="button"
-            className={`soundtrack-toggle ${isPlaying ? "playing" : "muted"}`}
-            onClick={toggleSound}
-            title={isPlaying ? "Desativar som" : "Ativar som"}
-          >
-            <span>{isPlaying ? "♪" : "♪"}</span>
-            <strong>{label}</strong>
-          </button>
-
-          <label className="soundtrack-volume" title={`Volume: ${volumePercent}%`}>
-            <span>Vol.</span>
-
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-            />
-
-            <small>{volumePercent}%</small>
-          </label>
-
-          <button
-            type="button"
-            className="soundtrack-hide-button"
-            onClick={hideControl}
-            title="Ocultar controle de som"
-            aria-label="Ocultar controle de som"
-          >
-            —
-          </button>
-        </div>
-      )}
+      <button
+        type="button"
+        className={`sound-toggle-button ${isEnabled ? "active" : ""}`}
+        onClick={toggleSound}
+        aria-label={isEnabled ? t("sound.disable") : t("sound.enable")}
+      >
+        {isEnabled ? t("sound.on") : t("sound.off")}
+      </button>
     </>
   );
 }

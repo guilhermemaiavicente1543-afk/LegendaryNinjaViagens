@@ -12210,3 +12210,141 @@ main.app:not(.app-map) > section {
     display: block !important;
   }
 }
+
+/* =====================================================
+   Controle fixo de áudio
+===================================================== */
+
+.soundtrack-player,
+.sound-volume-control,
+.sound-volume-slider,
+.audio-volume-control,
+.audio-volume-slider,
+.volume-control,
+.volume-slider {
+  display: none !important;
+}
+
+.sound-toggle-button {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 9999;
+
+  min-width: 86px;
+  height: 42px;
+  padding: 0 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.74);
+  color: #fed7aa;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(255, 80, 0, 0.12);
+}
+
+.sound-toggle-button.active {
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.92), rgba(124, 29, 6, 0.92));
+  color: #fff7ed;
+  border-color: rgba(255, 122, 0, 0.86);
+}
+
+.sound-toggle-button:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 700px) {
+  .sound-toggle-button {
+    top: 74px;
+    right: 14px;
+    min-width: 78px;
+    height: 38px;
+    font-size: 11px;
+    padding: 0 11px;
+  }
+}
+
+/* Reposicionamento do botão de som */
+@media (min-width: 701px) {
+  .sound-toggle-button {
+    top: 72px !important;
+    right: 18px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .sound-toggle-button {
+    top: 76px !important;
+    right: 14px !important;
+  }
+}
+
+/* Reposicionamento do botão de som */
+@media (min-width: 701px) {
+  .sound-toggle-button {
+    top: 72px !important;
+    right: 18px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 9999 !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .sound-toggle-button {
+    top: 76px !important;
+    right: 14px !important;
+  }
+}
+
+/* =====================================================
+   Botão global de idioma
+===================================================== */
+
+.language-switcher {
+  display: inline-grid;
+  gap: 4px;
+  color: #fed7aa;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.language-switcher select {
+  min-height: 36px;
+  border: 1px solid rgba(255, 122, 0, 0.48);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 0 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ln-mobile-menu-panel .language-switcher {
+  width: 100%;
+  margin: 4px 0 8px;
+}
+
+.ln-mobile-menu-panel .language-switcher select {
+  width: 100%;
+}
