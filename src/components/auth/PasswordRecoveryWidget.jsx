@@ -12,6 +12,18 @@ export default function PasswordRecoveryWidget({ session }) {
   const isPasswordRecovery = mode === "update-password";
 
   useEffect(() => {
+    function openPasswordRecovery() {
+      setMode("request-email");
+    }
+
+    window.addEventListener("open-password-recovery", openPasswordRecovery);
+
+    return () => {
+      window.removeEventListener("open-password-recovery", openPasswordRecovery);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return;
 
     const currentUrl = window.location.href;
@@ -35,10 +47,6 @@ export default function PasswordRecoveryWidget({ session }) {
       subscription.unsubscribe();
     };
   }, []);
-
-  if (session && !isPasswordRecovery) {
-    return null;
-  }
 
   async function sendRecoveryEmail(event) {
     event.preventDefault();
@@ -122,16 +130,6 @@ export default function PasswordRecoveryWidget({ session }) {
 
   return (
     <>
-      {!isPasswordRecovery && (
-        <button
-          type="button"
-          className="forgot-password-floating-button"
-          onClick={() => setMode("request-email")}
-        >
-          Esqueci minha senha
-        </button>
-      )}
-
       {mode !== "closed" && (
         <div className="password-recovery-backdrop">
           <section className="password-recovery-card">

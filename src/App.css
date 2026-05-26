@@ -9749,3 +9749,25 @@ main.app:not(.app-map) > section {
     padding: 22px;
   }
 }
+
+/* Desativa botão flutuante antigo de recuperação */
+.forgot-password-floating-button {
+  display: none !important;
+}
+
+/* Botão dentro da tela de login */
+.login-forgot-password-button {
+  border: 0;
+  background: transparent;
+  color: #fed7aa;
+  font-weight: 900;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding: 8px 0;
+  margin-top: -4px;
+}
+
+.login-forgot-password-button:hover {
+  color: #fb923c;
+}

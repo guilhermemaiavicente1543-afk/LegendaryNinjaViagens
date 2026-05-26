@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import PasswordRecoveryWidget from "./PasswordRecoveryWidget";
 
 export default function AuthPage({ onDemoEnter }) {
   const [mode, setMode] = useState("login");
@@ -51,6 +52,8 @@ export default function AuthPage({ onDemoEnter }) {
   }
 
   return (
+    <>
+      <PasswordRecoveryWidget session={null} />
     <main className="auth-page">
       <section className="auth-card">
         <p className="eyebrow">LN Digital</p>
@@ -115,6 +118,18 @@ export default function AuthPage({ onDemoEnter }) {
           <button type="submit" disabled={isLoading}>
             {isLoading ? "Carregando..." : mode === "login" ? "Entrar" : "Criar conta"}
           </button>
+
+            {mode === "login" && (
+              <button
+                type="button"
+                className="login-forgot-password-button"
+                onClick={() =>
+                  window.dispatchEvent(new Event("open-password-recovery"))
+                }
+              >
+                Esqueci minha senha
+              </button>
+            )}
         </form>
 
         {message && <p className="auth-message">{message}</p>}
@@ -134,5 +149,6 @@ export default function AuthPage({ onDemoEnter }) {
         )}
       </section>
     </main>
+    </>
   );
 }
