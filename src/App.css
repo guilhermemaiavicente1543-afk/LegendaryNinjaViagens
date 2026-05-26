@@ -5391,3 +5391,13 @@ main.app:not(.app-map) > section {
     grid-template-columns: 1fr;
   }
 }
+
+/* Mapa: o jogador marca apenas o destino */
+.leaflet-tooltip {
+  font-weight: 800;
+}
+
+/* Mapa: o jogador marca apenas o destino */
+.leaflet-tooltip {
+  font-weight: 800;
+}
