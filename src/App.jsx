@@ -20,6 +20,7 @@ import EntryHall from "./components/EntryHall";
 import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
 import SoundtrackPlayer from "./components/audio/SoundtrackPlayer";
 import PasswordRecoveryWidget from "./components/auth/PasswordRecoveryWidget";
+import ShinobiDexPage from "./components/shinobidex/ShinobiDexPage";
 
 /*
   Mapa com grade:
@@ -1176,9 +1177,12 @@ export default function App() {
             userEmail={session?.user?.email}
             onOpenMyNinja={() => setActivePage("my-ninja")}
             onOpenMap={() => setActivePage("map")}
+            onOpenShinobiDex={() => setActivePage("shinobidex")}
             onOpenAdmin={() => setActivePage("admin")}
             onLogout={handleLogout}
           />
+        ) : activePage === "shinobidex" ? (
+          <ShinobiDexPage onBack={() => setActivePage("hall")} />
         ) : activePage === "map" ? (
         <MapContainer
           crs={CRS.Simple}

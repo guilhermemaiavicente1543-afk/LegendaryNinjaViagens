@@ -2,6 +2,7 @@ export default function EntryHall({
   userEmail,
   onOpenMyNinja,
   onOpenMap,
+  onOpenShinobiDex,
   onOpenAdmin,
   onLogout
 }) {
@@ -69,6 +70,14 @@ export default function EntryHall({
             </span>
           </button>
 
+          <button type="button" className="ln-bg-main-button dex" onClick={onOpenShinobiDex} onClick={onOpenShinobiDex}>
+            <span className="button-symbol">巻</span>
+            <span>
+              <strong>ShinobiDex</strong>
+              <small>Biblioteca de técnicas</small>
+            </span>
+          </button>
+
           <button type="button" className="ln-bg-main-button dark" onClick={onOpenAdmin}>
             <span className="button-symbol">◈</span>
             <span>
@@ -129,6 +138,19 @@ export default function EntryHall({
           <span>
             <strong>Explorar Mapa</strong>
             <small>Descubra o mundo ninja</small>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          className="ln-mobile-hitbox mobile-dex"
+          onClick={onOpenShinobiDex}
+          aria-label="ShinobiDex"
+        >
+          <span className="mobile-button-icon">巻</span>
+          <span>
+            <strong>ShinobiDex</strong>
+            <small>Biblioteca de técnicas</small>
           </span>
         </button>
 

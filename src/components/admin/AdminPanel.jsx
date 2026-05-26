@@ -4,6 +4,7 @@ import SkillTreeEditor from "./SkillTreeEditor";
 import CouponManager from "./CouponManager";
 import AppearanceManager from "./AppearanceManager";
 import AdminWorldMap from "./AdminWorldMap";
+import ShinobiDexAdmin from "./ShinobiDexAdmin";
 
 function dbTravelToAppTravel(row) {
   return {
@@ -364,6 +365,60 @@ export default function AdminPanel({
     );
   }
 
+  if (adminView === "shinobidex") {
+    return (
+      <section className="admin-page">
+        <div className="admin-card admin-card-wide">
+          <p className="eyebrow">Painel do Mestre</p>
+          <h1>ShinobiDex ADM</h1>
+          <p>
+            Revise, corrija e aprove as técnicas importadas para a biblioteca oficial do RPG.
+          </p>
+
+          <div className="admin-mode-tabs">
+            <button
+              type="button"
+              onClick={() => setAdminView("overview")}
+            >
+              Visão Geral
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAdminView("appearances")}
+            >
+              Aparências
+            </button>
+
+            <button
+              type="button"
+              className="active"
+              onClick={() => setAdminView("shinobidex")}
+            >
+              ShinobiDex
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAdminView("coupons")}
+            >
+              Cupons
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAdminView("tree-editor")}
+            >
+              Editor da Teia
+            </button>
+          </div>
+        </div>
+
+        <ShinobiDexAdmin />
+      </section>
+    );
+  }
+
   if (adminView === "tree-editor") {
     return (
       <section className="admin-page">
@@ -429,6 +484,14 @@ export default function AdminPanel({
             onClick={() => setAdminView("appearances")}
           >
             Aparências
+          </button>
+
+          <button
+            type="button"
+            className={adminView === "shinobidex" ? "active" : ""}
+            onClick={() => setAdminView("shinobidex")}
+          >
+            ShinobiDex
           </button>
 
           <button
