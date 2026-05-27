@@ -3,7 +3,6 @@ import CharactersPage from "./CharactersPage";
 import CharacterSkillTree from "./CharacterSkillTree";
 import { uniqueTraits } from "../data/uniqueTraits";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
-import CharacterInventoryPanel from "./inventory/CharacterInventoryPanel";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
@@ -885,7 +884,7 @@ export default function MyNinjaPage({
   }
 
   return (
-    <section className="characters-page my-ninja-page">
+    <section className="characters-page">
       <div className="characters-header">
         <div>
           <p className="eyebrow">LN Digital</p>
@@ -923,14 +922,6 @@ export default function MyNinjaPage({
 
               <button
                 type="button"
-                className={profileTab === "inventory" ? "active" : ""}
-                onClick={() => setProfileTab("inventory")}
-              >
-                Inventário
-              </button>
-
-              <button
-                type="button"
                 className={profileTab === "location" ? "active" : ""}
                 onClick={() => setProfileTab("location")}
               >
@@ -946,9 +937,6 @@ export default function MyNinjaPage({
               </button>            </div>
 
             {profileTab === "info" && renderInfoTab()}
-            {profileTab === "inventory" && (
-              <CharacterInventoryPanel user={user} character={character} />
-            )}
             {profileTab === "location" && renderLocationTab()}
             {profileTab === "skills" && renderSkillsTab()}
           </section>

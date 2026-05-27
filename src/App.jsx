@@ -21,6 +21,7 @@ import { isSupabaseConfigured, supabase } from "./lib/supabaseClient";
 import SoundtrackPlayer from "./components/audio/SoundtrackPlayer";
 import PasswordRecoveryWidget from "./components/auth/PasswordRecoveryWidget";
 import ShinobiDexPage from "./components/shinobidex/ShinobiDexPage";
+import AncedCalculatorPage from "./components/anced/AncedCalculatorPage";
 
 /*
   Mapa com grade:
@@ -824,7 +825,6 @@ export default function App() {
       />
     );
   }
-
   const selectedMapTravel =
     travels.find((item) => item.characterId === selectedTravelCharacterId) || null;
 
@@ -1202,9 +1202,12 @@ export default function App() {
             onOpenMyNinja={() => setActivePage("my-ninja")}
             onOpenMap={() => setActivePage("map")}
             onOpenShinobiDex={() => setActivePage("shinobidex")}
+            onOpenAnced={() => setActivePage("anced")}
             onOpenAdmin={() => setActivePage("admin")}
             onLogout={handleLogout}
           />
+        ) : activePage === "anced" ? (
+          <AncedCalculatorPage user={session?.user} onBack={() => setActivePage("hall")} />
         ) : activePage === "shinobidex" ? (
           <ShinobiDexPage onBack={() => setActivePage("hall")} />
         ) : activePage === "map" ? (

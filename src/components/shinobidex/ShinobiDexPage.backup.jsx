@@ -22,17 +22,6 @@ function getTechniqueName(technique, language) {
   return technique.name_pt || technique.name;
 }
 
-
-function getTechniqueSourceUrl(technique, language) {
-  if (!technique) return "";
-
-  if (language === "en") return technique.source_url_en || technique.source_url_pt || technique.source_url || "";
-  if (language === "es") return technique.source_url_es || technique.source_url_pt || technique.source_url || "";
-  if (language === "fr") return technique.source_url_fr || technique.source_url_pt || technique.source_url || "";
-
-  return technique.source_url_pt || technique.source_url || "";
-}
-
 export default function ShinobiDexPage({ onBack }) {
   const { language, t } = useLanguage();
   const [techniques, setTechniques] = useState([]);
@@ -277,7 +266,7 @@ export default function ShinobiDexPage({ onBack }) {
               {selected.source_url && (
                 <a
                   className="shinobidex-source"
-                  href={getTechniqueSourceUrl(selected, language) || selected.source_url || "#"}
+                  href={getTechniqueSourceUrl(selected, language)}
                   target="_blank"
                   rel="noreferrer"
                 >

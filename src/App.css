@@ -12348,3 +12348,1868 @@ main.app:not(.app-map) > section {
 .ln-mobile-menu-panel .language-switcher select {
   width: 100%;
 }
+
+/* =====================================================
+   Calculadora ANCED
+===================================================== */
+
+.anced-calc-page {
+  min-height: 100vh;
+  padding: 24px;
+  color: #f5ead0;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.18), transparent 32%),
+    radial-gradient(circle at 80% 40%, rgba(220, 38, 38, 0.12), transparent 30%),
+    #020617;
+}
+
+.anced-calc-hero {
+  width: min(1450px, 100%);
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid rgba(255, 122, 0, 0.42);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.16), transparent 36%),
+    rgba(0, 0, 0, 0.78);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+}
+
+.anced-calc-hero h1 {
+  margin: 0;
+  font-size: clamp(42px, 7vw, 84px);
+  line-height: 0.9;
+}
+
+.anced-calc-hero p {
+  max-width: 760px;
+  color: #d1d5db;
+}
+
+.anced-calc-hero button,
+.anced-calc-actions button {
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.74);
+  color: #fed7aa;
+  padding: 10px 15px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.anced-calc-layout {
+  width: min(1450px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.anced-calc-card,
+.anced-calc-result {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.78);
+  padding: 20px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+}
+
+.anced-calc-card h2 {
+  margin-top: 0;
+  color: #ff7a00;
+}
+
+.anced-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.anced-calc-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.anced-calc-field {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.anced-calc-field span {
+  color: #fed7aa;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.anced-calc-field input,
+.anced-calc-field select,
+.anced-calc-field textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 11px 12px;
+}
+
+.anced-calc-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.anced-calc-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.anced-calc-checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 122, 0, 0.32);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.68);
+  padding: 9px 12px;
+  color: #f5ead0;
+  font-weight: 850;
+}
+
+.anced-calc-checks input {
+  accent-color: #f97316;
+}
+
+.anced-calc-result {
+  position: sticky;
+  top: 20px;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.anced-calc-result > p {
+  margin: 0;
+  color: #fed7aa;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.anced-calc-result > strong {
+  width: 128px;
+  height: 128px;
+  display: grid;
+  place-items: center;
+  border: 3px solid rgba(255, 122, 0, 0.88);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 85, 0, 0.18), rgba(0, 0, 0, 0.92));
+  color: #ff7a00;
+  font-size: 58px;
+  font-weight: 950;
+  box-shadow: 0 0 32px rgba(255, 85, 0, 0.2);
+}
+
+.anced-calc-result > span {
+  color: #f5ead0;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.anced-calc-details {
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  text-align: left;
+}
+
+.anced-calc-details small {
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.68);
+  color: #d1d5db;
+  padding: 7px 9px;
+}
+
+.anced-calc-actions {
+  display: grid;
+  width: 100%;
+  gap: 8px;
+}
+
+.anced-calc-actions .primary {
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.95), rgba(124, 29, 6, 0.95));
+  color: #fff7ed;
+}
+
+.anced-calc-note {
+  color: #9ca3af;
+}
+
+@media (max-width: 1000px) {
+  .anced-calc-hero,
+  .anced-calc-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .anced-calc-grid,
+  .anced-calc-grid.two {
+    grid-template-columns: 1fr;
+  }
+
+  .anced-calc-result {
+    position: static;
+  }
+}
+
+.anced-calc-message {
+  width: min(1450px, 100%);
+  margin: 0 auto 16px;
+  padding: 13px 16px;
+  border: 1px solid rgba(255, 122, 0, 0.38);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.76);
+  color: #fed7aa;
+  font-weight: 900;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+}
+
+.anced-calc-actions button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   Correção de rolagem da ShinobiDex
+===================================================== */
+
+.app-shinobidex,
+.shinobidex-page {
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.shinobidex-page {
+  padding-bottom: 60px !important;
+}
+
+/* Lista de técnicas com rolagem própria no notebook */
+.shinobidex-list {
+  max-height: calc(100vh - 310px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 8px !important;
+}
+
+/* Detalhes também podem rolar caso a técnica tenha muito texto */
+.shinobidex-detail {
+  max-height: calc(100vh - 260px) !important;
+  overflow-y: auto !important;
+}
+
+/* Barra de rolagem discreta */
+.shinobidex-list::-webkit-scrollbar,
+.shinobidex-detail::-webkit-scrollbar,
+.shinobidex-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.shinobidex-list::-webkit-scrollbar-thumb,
+.shinobidex-detail::-webkit-scrollbar-thumb,
+.shinobidex-page::-webkit-scrollbar-thumb {
+  background: rgba(255, 122, 0, 0.42);
+  border-radius: 999px;
+}
+
+.shinobidex-list::-webkit-scrollbar-track,
+.shinobidex-detail::-webkit-scrollbar-track,
+.shinobidex-page::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Mobile: página inteira rola normalmente */
+@media (max-width: 1000px) {
+  .app-shinobidex,
+  .shinobidex-page {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+  }
+
+  .shinobidex-list,
+  .shinobidex-detail {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .shinobidex-page {
+    padding-bottom: 90px !important;
+  }
+}
+
+/* =====================================================
+   Correção FORTE de rolagem da ShinobiDex no notebook
+===================================================== */
+
+@media (min-width: 1001px) {
+  html:has(.shinobidex-page),
+  body:has(.shinobidex-page),
+  #root:has(.shinobidex-page) {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .app:has(.shinobidex-page),
+  .app-shinobidex,
+  .app.app-shinobidex {
+    display: block !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    align-items: initial !important;
+    justify-content: initial !important;
+  }
+
+  .shinobidex-page {
+    display: block !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 90px !important;
+  }
+
+  .shinobidex-layout {
+    min-height: 0 !important;
+    align-items: start !important;
+  }
+
+  .shinobidex-list {
+    max-height: calc(100vh - 300px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .shinobidex-detail {
+    max-height: calc(100vh - 245px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* =====================================================
+   ShinobiDex — rolagem do painel de detalhes da técnica
+===================================================== */
+
+@media (min-width: 1001px) {
+  .app-shinobidex {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+
+  .shinobidex-page {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .shinobidex-layout {
+    height: calc(100vh - 350px) !important;
+    max-height: calc(100vh - 350px) !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+  }
+
+  .shinobidex-list {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 8px !important;
+  }
+
+  .shinobidex-detail {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 14px !important;
+  }
+
+  .shinobidex-detail::-webkit-scrollbar,
+  .shinobidex-list::-webkit-scrollbar {
+    width: 9px;
+  }
+
+  .shinobidex-detail::-webkit-scrollbar-thumb,
+  .shinobidex-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 122, 0, 0.55);
+    border-radius: 999px;
+  }
+
+  .shinobidex-detail::-webkit-scrollbar-track,
+  .shinobidex-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.38);
+    border-radius: 999px;
+  }
+}
+
+/* =====================================================
+   ShinobiDex — rolagem da página inteira
+   Correção definitiva: sem scroll interno nos cards
+===================================================== */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+@media (min-width: 1001px) {
+  body:has(.shinobidex-page),
+  html:has(.shinobidex-page),
+  #root:has(.shinobidex-page) {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .app:has(.shinobidex-page),
+  .app-shinobidex,
+  .app.app-shinobidex {
+    display: block !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .shinobidex-page {
+    display: block !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 120px !important;
+  }
+
+  .shinobidex-layout {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    align-items: start !important;
+  }
+
+  .shinobidex-list,
+  .shinobidex-detail {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* Barra de rolagem da página */
+body:has(.shinobidex-page)::-webkit-scrollbar {
+  width: 10px;
+}
+
+body:has(.shinobidex-page)::-webkit-scrollbar-thumb {
+  background: rgba(255, 122, 0, 0.55);
+  border-radius: 999px;
+}
+
+body:has(.shinobidex-page)::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+
+/* =====================================================
+   ShinobiDex — correção estável de rolagem
+   Sem mexer em body/html/root
+===================================================== */
+
+.shinobidex-page {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  padding-bottom: 120px !important;
+}
+
+/* força o conteúdo a poder crescer */
+.shinobidex-page > * {
+  min-height: 0 !important;
+}
+
+/* layout principal da lista + detalhe */
+.shinobidex-layout {
+  min-height: 0 !important;
+  align-items: stretch !important;
+}
+
+/* lista da esquerda com scroll próprio */
+.shinobidex-list {
+  height: calc(100vh - 390px) !important;
+  max-height: calc(100vh - 390px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 8px !important;
+}
+
+/* card da técnica com scroll próprio */
+.shinobidex-detail {
+  height: calc(100vh - 390px) !important;
+  max-height: calc(100vh - 390px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 14px !important;
+}
+
+/* scroll visual */
+.shinobidex-page::-webkit-scrollbar,
+.shinobidex-list::-webkit-scrollbar,
+.shinobidex-detail::-webkit-scrollbar {
+  width: 9px !important;
+}
+
+.shinobidex-page::-webkit-scrollbar-thumb,
+.shinobidex-list::-webkit-scrollbar-thumb,
+.shinobidex-detail::-webkit-scrollbar-thumb {
+  background: rgba(255, 122, 0, 0.58) !important;
+  border-radius: 999px !important;
+}
+
+.shinobidex-page::-webkit-scrollbar-track,
+.shinobidex-list::-webkit-scrollbar-track,
+.shinobidex-detail::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.38) !important;
+  border-radius: 999px !important;
+}
+
+/* Firefox */
+.shinobidex-page,
+.shinobidex-list,
+.shinobidex-detail {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 122, 0, 0.58) rgba(0, 0, 0, 0.38);
+}
+
+/* Mobile: página rola inteira, cards não ficam presos */
+@media (max-width: 1000px) {
+  .shinobidex-page {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+    padding-bottom: 120px !important;
+  }
+
+  .shinobidex-layout {
+    display: grid !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .shinobidex-list,
+  .shinobidex-detail {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* =====================================================
+   LN Custom Select / Pop-up de opções
+===================================================== */
+
+.ln-custom-select {
+  position: relative;
+  min-width: 112px;
+  z-index: 50;
+}
+
+.ln-custom-select-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #fed7aa;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ln-custom-select-trigger {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  border: 1px solid rgba(255, 122, 0, 0.48);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(8, 8, 8, 0.92), rgba(0, 0, 0, 0.78)),
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.16), transparent 36%);
+  color: #f5ead0;
+  padding: 6px 10px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.44),
+    inset 0 0 16px rgba(255, 85, 0, 0.05);
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 11px) 0,
+    100% 11px,
+    100% 100%,
+    11px 100%,
+    0 calc(100% - 11px)
+  );
+}
+
+.ln-custom-select-trigger:hover,
+.ln-custom-select.open .ln-custom-select-trigger {
+  border-color: rgba(255, 122, 0, 0.82);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.54),
+    0 0 22px rgba(255, 85, 0, 0.16);
+}
+
+.ln-custom-select-current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ln-custom-select-current strong {
+  display: block;
+  color: #f5ead0;
+  font-size: 13px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.ln-custom-select-current small {
+  display: block;
+  margin-top: 2px;
+  color: rgba(245, 234, 208, 0.58);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ln-custom-select-icon,
+.ln-custom-select-option-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255, 122, 0, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 85, 0, 0.08);
+  color: #ff7a00;
+
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+}
+
+.ln-custom-select-arrow {
+  color: #ff7a00;
+  font-size: 18px;
+  line-height: 1;
+  transform: translateY(-2px);
+  transition: transform 0.18s ease;
+}
+
+.ln-custom-select.open .ln-custom-select-arrow {
+  transform: translateY(1px) rotate(180deg);
+}
+
+.ln-custom-select-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  z-index: 9999;
+  width: 270px;
+  padding: 12px;
+
+  border: 1px solid rgba(255, 122, 0, 0.56);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.96), rgba(0, 0, 0, 0.92));
+  color: #f5ead0;
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.78),
+    0 0 28px rgba(255, 85, 0, 0.14);
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+}
+
+.ln-custom-select-popover.align-right {
+  right: 0;
+}
+
+.ln-custom-select-popover.align-left {
+  left: 0;
+}
+
+.ln-custom-select-popover-head {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 10px;
+  padding: 4px 6px 10px;
+  border-bottom: 1px solid rgba(255, 122, 0, 0.24);
+}
+
+.ln-custom-select-popover-head strong {
+  color: #ff7a00;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ln-custom-select-popover-head small {
+  color: rgba(245, 234, 208, 0.62);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ln-custom-select-options {
+  display: grid;
+  gap: 8px;
+}
+
+.ln-custom-select-options button {
+  width: 100%;
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid rgba(245, 234, 208, 0.14);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.58);
+  color: #f5ead0;
+  padding: 8px 10px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  text-align: left;
+  cursor: pointer;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+.ln-custom-select-options button:hover {
+  border-color: rgba(255, 122, 0, 0.52);
+  background: rgba(255, 85, 0, 0.12);
+}
+
+.ln-custom-select-options button.active {
+  border-color: rgba(255, 122, 0, 0.82);
+  background:
+    linear-gradient(90deg, rgba(255, 85, 0, 0.2), rgba(15, 23, 42, 0.7));
+}
+
+.ln-custom-select-options button strong {
+  display: block;
+  color: #f5ead0;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.ln-custom-select-options button small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(245, 234, 208, 0.6);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ln-custom-select-options button em {
+  color: #ff7a00;
+  font-style: normal;
+  font-weight: 950;
+  text-align: center;
+}
+
+/* Remove aparência antiga caso ainda exista */
+.language-switcher select {
+  display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .ln-custom-select {
+    width: 100%;
+  }
+
+  .ln-custom-select-popover {
+    position: static;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .ln-custom-select-trigger {
+    min-height: 44px;
+  }
+}
+
+/* =====================================================
+   CustomSelect como pop-up padrão global
+   Renderiza acima de painéis/cards/overflows
+===================================================== */
+
+.ln-custom-select-popover {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+
+.ln-custom-select-popover::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: 22px;
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+  background: rgba(5, 5, 5, 0.96);
+  border-left: 1px solid rgba(255, 122, 0, 0.42);
+  border-top: 1px solid rgba(255, 122, 0, 0.42);
+}
+
+@media (max-width: 700px) {
+  .ln-custom-select-popover {
+    max-width: calc(100vw - 28px) !important;
+  }
+}
+
+/* =====================================================
+   Botão global de idioma em todas as páginas
+===================================================== */
+
+.global-language-floating {
+  position: fixed;
+  top: 122px;
+  right: 18px;
+  z-index: 9998;
+  width: 126px;
+}
+
+/* Evita duplicar no Hall desktop, onde já existe idioma no menu */
+body:has(.ln-bg-home) .global-language-floating {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .global-language-floating {
+    top: 122px;
+    right: 14px;
+    width: 118px;
+  }
+
+  body:has(.ln-bg-home) .global-language-floating {
+    display: none;
+  }
+}
+
+/* =====================================================
+   Fundo padrão global do sistema LN Digital
+   Substitui o fundo azul antigo nas páginas internas
+===================================================== */
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.92)),
+    url("/ln-digital-bg.png") center center / cover fixed no-repeat !important;
+}
+
+/* Fundo base para páginas internas */
+.app {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.12), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.94)),
+    url("/ln-digital-bg.png") center center / cover fixed no-repeat !important;
+}
+
+/* Mantém Hall, Login e Mapa com seus próprios fundos */
+.app-hall,
+.app-map,
+.login-page,
+.ln-bg-home {
+  background: initial;
+}
+
+/* Páginas internas com camada escura para leitura */
+.app-admin,
+.app-shinobidex,
+.app-anced,
+.app-myninja,
+.app-my-ninja,
+.app-characters {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.16), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.92)),
+    url("/ln-digital-bg.png") center center / cover fixed no-repeat !important;
+}
+
+/* Remove qualquer azul antigo de cards/containers principais que herdavam fundo */
+.app-admin main,
+.app-shinobidex main,
+.app-anced main,
+.app-myninja main,
+.app-my-ninja main {
+  background-color: transparent !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  html,
+  body,
+  #root,
+  .app,
+  .app-admin,
+  .app-shinobidex,
+  .app-anced,
+  .app-myninja,
+  .app-my-ninja,
+  .app-characters {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.94)),
+      url("/ln-digital-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+
+  .app-hall,
+  .app-map,
+  .login-page,
+  .ln-bg-home {
+    background: initial !important;
+  }
+}
+
+/* =====================================================
+   Fundo exclusivo da página Meu Ninja
+===================================================== */
+
+.app-myninja,
+.app-my-ninja,
+.my-ninja-page,
+.myninja-page {
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 80, 0, 0.13), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.9)),
+    url("/my-ninja-bg-desktop.png") center center / cover fixed no-repeat !important;
+}
+
+/* Garante leitura dos cards por cima do fundo */
+.app-myninja main,
+.app-my-ninja main,
+.my-ninja-page main,
+.myninja-page main {
+  background: transparent !important;
+}
+
+/* Cartões internos com vidro escuro */
+.app-myninja .card,
+.app-my-ninja .card,
+.my-ninja-page .card,
+.myninja-page .card,
+.app-myninja section,
+.app-my-ninja section {
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .app-myninja,
+  .app-my-ninja,
+  .my-ninja-page,
+  .myninja-page {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.92)),
+      url("/my-ninja-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Fundo exclusivo da página Meu Ninja
+===================================================== */
+
+.app-myninja,
+.app-my-ninja,
+.my-ninja-page,
+.myninja-page {
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 80, 0, 0.13), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.9)),
+    url("/my-ninja-bg-desktop.png") center center / cover fixed no-repeat !important;
+}
+
+/* Garante leitura dos cards por cima do fundo */
+.app-myninja main,
+.app-my-ninja main,
+.my-ninja-page main,
+.myninja-page main {
+  background: transparent !important;
+}
+
+/* Cartões internos com vidro escuro */
+.app-myninja .card,
+.app-my-ninja .card,
+.my-ninja-page .card,
+.myninja-page .card,
+.app-myninja section,
+.app-my-ninja section {
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .app-myninja,
+  .app-my-ninja,
+  .my-ninja-page,
+  .myninja-page {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.92)),
+      url("/my-ninja-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — fundo exclusivo corrigido
+   Inclui classe real app-myNinja
+===================================================== */
+
+.app.app-myNinja,
+.app-myNinja,
+.app-myninja,
+.app-my-ninja {
+  position: relative !important;
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 80, 0, 0.12), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.92)),
+    url("/my-ninja-bg-desktop.png") center center / cover fixed no-repeat !important;
+  overflow-x: hidden !important;
+}
+
+/* Camada de leitura por cima do fundo */
+.app.app-myNinja::before,
+.app-myNinja::before,
+.app-myninja::before,
+.app-my-ninja::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(255, 80, 0, 0.08), transparent 32%),
+    rgba(0, 0, 0, 0.18);
+}
+
+/* Garante que o conteúdo fique acima do fundo */
+.app.app-myNinja > *,
+.app-myNinja > *,
+.app-myninja > *,
+.app-my-ninja > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Remove fundo azul/antigo de containers internos do Meu Ninja */
+.app.app-myNinja main,
+.app.app-myNinja section,
+.app.app-myNinja article,
+.app.app-myNinja .page,
+.app.app-myNinja .panel,
+.app.app-myNinja .container,
+.app-myNinja main,
+.app-myNinja section,
+.app-myNinja article,
+.app-myNinja .page,
+.app-myNinja .panel,
+.app-myNinja .container {
+  background-color: transparent !important;
+}
+
+/* Cards continuam legíveis */
+.app.app-myNinja .card,
+.app.app-myNinja .panel,
+.app.app-myNinja article,
+.app-myNinja .card,
+.app-myNinja .panel,
+.app-myNinja article {
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .app.app-myNinja,
+  .app-myNinja,
+  .app-myninja,
+  .app-my-ninja {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.94)),
+      url("/my-ninja-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — correção do fundo cobrindo a página inteira
+===================================================== */
+
+.app.app-myNinja,
+.app-myNinja,
+.app-myninja,
+.app-my-ninja {
+  position: relative !important;
+  min-height: 100vh !important;
+  background: #020617 !important;
+  overflow-x: hidden !important;
+}
+
+/* Fundo real da página inteira */
+.app.app-myNinja::after,
+.app-myNinja::after,
+.app-myninja::after,
+.app-my-ninja::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 80, 0, 0.12), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.88)),
+    url("/my-ninja-bg-desktop.png") center center / cover no-repeat !important;
+}
+
+/* Garante que o conteúdo fique acima do fundo */
+.app.app-myNinja > *,
+.app-myNinja > *,
+.app-myninja > *,
+.app-my-ninja > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Remove o fundo azul do container principal, mas preserva os cards */
+.app.app-myNinja > main,
+.app.app-myNinja > section,
+.app.app-myNinja > div,
+.app-myNinja > main,
+.app-myNinja > section,
+.app-myNinja > div,
+.app-myninja > main,
+.app-myninja > section,
+.app-myninja > div,
+.app-my-ninja > main,
+.app-my-ninja > section,
+.app-my-ninja > div {
+  background: transparent !important;
+}
+
+/* Se a página interna tiver classe própria, também remove o azul */
+.my-ninja-page,
+.myninja-page,
+.myNinjaPage,
+.my-ninja-layout,
+.myninja-layout {
+  background: transparent !important;
+}
+
+/* Cards continuam escuros e legíveis */
+.app.app-myNinja article,
+.app.app-myNinja .card,
+.app.app-myNinja .panel,
+.app.app-myNinja .character-card,
+.app.app-myNinja .ninja-card,
+.app-myNinja article,
+.app-myNinja .card,
+.app-myNinja .panel,
+.app-myNinja .character-card,
+.app-myNinja .ninja-card {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(15, 23, 42, 0.84) !important;
+  border-color: rgba(255, 122, 0, 0.22) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .app.app-myNinja::after,
+  .app-myNinja::after,
+  .app-myninja::after,
+  .app-my-ninja::after {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.92)),
+      url("/my-ninja-bg-mobile.png") center top / cover no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — força fundo customizado sobre o azul antigo
+===================================================== */
+
+/* Classe principal da página */
+.app.app-myNinja,
+.app-myNinja,
+.app-myninja,
+.app-my-ninja {
+  position: relative !important;
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 80, 0, 0.14), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.9)),
+    url("/my-ninja-bg-desktop.png") center center / cover fixed no-repeat !important;
+}
+
+/* Remove o azul de QUALQUER camada grande dentro do Meu Ninja */
+.app.app-myNinja main,
+.app.app-myNinja section,
+.app.app-myNinja div,
+.app.app-myNinja article,
+.app-myNinja main,
+.app-myNinja section,
+.app-myNinja div,
+.app-myNinja article {
+  background-color: transparent !important;
+}
+
+/* Remove background completo de wrappers grandes, mas não dos inputs/cards depois */
+.app.app-myNinja [class*="page"],
+.app.app-myNinja [class*="Page"],
+.app.app-myNinja [class*="layout"],
+.app.app-myNinja [class*="Layout"],
+.app.app-myNinja [class*="shell"],
+.app.app-myNinja [class*="Shell"],
+.app.app-myNinja [class*="container"],
+.app.app-myNinja [class*="Container"],
+.app.app-myNinja [class*="wrapper"],
+.app.app-myNinja [class*="Wrapper"],
+.app-myNinja [class*="page"],
+.app-myNinja [class*="Page"],
+.app-myNinja [class*="layout"],
+.app-myNinja [class*="Layout"],
+.app-myNinja [class*="shell"],
+.app-myNinja [class*="Shell"],
+.app-myNinja [class*="container"],
+.app-myNinja [class*="Container"],
+.app-myNinja [class*="wrapper"],
+.app-myNinja [class*="Wrapper"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Restaura cards/painéis para continuarem legíveis */
+.app.app-myNinja .card,
+.app.app-myNinja .panel,
+.app.app-myNinja .character-card,
+.app.app-myNinja .ninja-card,
+.app.app-myNinja [class*="card"],
+.app.app-myNinja [class*="Card"],
+.app.app-myNinja [class*="panel"],
+.app.app-myNinja [class*="Panel"],
+.app-myNinja .card,
+.app-myNinja .panel,
+.app-myNinja .character-card,
+.app-myNinja .ninja-card,
+.app-myNinja [class*="card"],
+.app-myNinja [class*="Card"],
+.app-myNinja [class*="panel"],
+.app-myNinja [class*="Panel"] {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(255, 122, 0, 0.24) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Mantém campos escuros */
+.app.app-myNinja input,
+.app.app-myNinja select,
+.app.app-myNinja textarea,
+.app-myNinja input,
+.app-myNinja select,
+.app-myNinja textarea {
+  background: rgba(2, 6, 23, 0.92) !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .app.app-myNinja,
+  .app-myNinja,
+  .app-myninja,
+  .app-my-ninja {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.92)),
+      url("/my-ninja-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — fundo definitivo pela classe real
+===================================================== */
+
+.my-ninja-page {
+  position: relative !important;
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 80, 0, 0.14), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.9)),
+    url("/my-ninja-bg-desktop.png") center center / cover fixed no-repeat !important;
+  overflow-x: hidden !important;
+}
+
+/* remove o azul dos wrappers grandes dentro da página */
+.my-ninja-page > *,
+.my-ninja-page main,
+.my-ninja-page section,
+.my-ninja-page .page,
+.my-ninja-page .layout,
+.my-ninja-page .container,
+.my-ninja-page .wrapper {
+  background-color: transparent !important;
+}
+
+/* cards continuam legíveis */
+.my-ninja-page article,
+.my-ninja-page .card,
+.my-ninja-page .panel,
+.my-ninja-page [class*="card"],
+.my-ninja-page [class*="Card"],
+.my-ninja-page [class*="panel"],
+.my-ninja-page [class*="Panel"] {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(255, 122, 0, 0.24) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* mobile */
+@media (max-width: 700px) {
+  .my-ninja-page {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.92)),
+      url("/my-ninja-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — fundo definitivo no container principal real
+===================================================== */
+
+.my-ninja-page {
+  position: relative !important;
+  min-height: 100vh !important;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 80, 0, 0.14), transparent 34%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.90)),
+    url("/my-ninja-bg-desktop.png") center center / cover fixed no-repeat !important;
+  overflow-x: hidden !important;
+}
+
+/* remove o azul apenas dos wrappers grandes */
+.my-ninja-page > main,
+.my-ninja-page > section,
+.my-ninja-page > div,
+.my-ninja-page .profile-page,
+.my-ninja-page .profile-layout,
+.my-ninja-page .profile-shell,
+.my-ninja-page .profile-container,
+.my-ninja-page .character-page,
+.my-ninja-page .character-layout,
+.my-ninja-page .character-shell,
+.my-ninja-page .character-container {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* mantém campos/cards legíveis */
+.my-ninja-page .character-form,
+.my-ninja-page .profile-tab-content,
+.my-ninja-page .profile-field,
+.my-ninja-page .trait-selector,
+.my-ninja-page .trait-filters,
+.my-ninja-page article,
+.my-ninja-page .card,
+.my-ninja-page .panel,
+.my-ninja-page [class*="card"],
+.my-ninja-page [class*="Card"],
+.my-ninja-page [class*="panel"],
+.my-ninja-page [class*="Panel"] {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(255, 122, 0, 0.24) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+@media (max-width: 700px) {
+  .my-ninja-page {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.92)),
+      url("/my-ninja-bg-mobile.png") center top / cover fixed no-repeat !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — Inventário
+===================================================== */
+
+.inventory-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.inventory-header div {
+  display: grid;
+  gap: 3px;
+}
+
+.inventory-header strong {
+  color: #ff7a00;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.inventory-header span {
+  color: #d1d5db;
+  font-size: 13px;
+}
+
+.inventory-header button,
+.inventory-submit,
+.inventory-item-actions button,
+.inventory-filters button {
+  border: 1px solid rgba(255, 122, 0, 0.42);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fed7aa;
+  padding: 9px 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.inventory-header button:hover,
+.inventory-submit:hover,
+.inventory-item-actions button:hover,
+.inventory-filters button:hover,
+.inventory-filters button.active {
+  background: rgba(255, 85, 0, 0.18);
+  border-color: rgba(255, 122, 0, 0.78);
+}
+
+.inventory-message {
+  border: 1px solid rgba(255, 122, 0, 0.34);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.54);
+  color: #fed7aa;
+  padding: 11px 13px;
+  font-weight: 850;
+}
+
+.inventory-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.inventory-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(2, 6, 23, 0.62);
+}
+
+.inventory-form label {
+  display: grid;
+  gap: 7px;
+  color: #fed7aa;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.inventory-form input,
+.inventory-form select,
+.inventory-form textarea,
+.inventory-item-actions input {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 10px 11px;
+}
+
+.inventory-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.inventory-wide {
+  grid-column: span 3;
+}
+
+.inventory-check {
+  display: flex !important;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+}
+
+.inventory-check input {
+  width: auto;
+  accent-color: #f97316;
+}
+
+.inventory-submit {
+  grid-column: span 3;
+  justify-self: start;
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.95), rgba(124, 29, 6, 0.95));
+  color: #fff7ed;
+}
+
+.inventory-list {
+  display: grid;
+  gap: 12px;
+}
+
+.inventory-item-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 14px;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(2, 6, 23, 0.84));
+}
+
+.inventory-item-main {
+  display: grid;
+  gap: 6px;
+}
+
+.inventory-type {
+  width: fit-content;
+  border: 1px solid rgba(255, 122, 0, 0.44);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: #ff7a00;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.inventory-item-main h3 {
+  margin: 0;
+  color: #f5ead0;
+  font-size: 18px;
+}
+
+.inventory-item-main p,
+.inventory-item-main small,
+.inventory-item-main em {
+  margin: 0;
+  color: #cbd5e1;
+  font-style: normal;
+}
+
+.inventory-item-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.inventory-item-actions .danger {
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+}
+
+@media (max-width: 900px) {
+  .inventory-form,
+  .inventory-item-card {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-wide,
+  .inventory-submit {
+    grid-column: auto;
+  }
+
+  .inventory-item-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — Inventário
+===================================================== */
+
+.inventory-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.inventory-header div {
+  display: grid;
+  gap: 3px;
+}
+
+.inventory-header strong {
+  color: #ff7a00;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.inventory-header span {
+  color: #d1d5db;
+  font-size: 13px;
+}
+
+.inventory-header button,
+.inventory-submit,
+.inventory-item-actions button,
+.inventory-filters button {
+  border: 1px solid rgba(255, 122, 0, 0.42);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fed7aa;
+  padding: 9px 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.inventory-header button:hover,
+.inventory-submit:hover,
+.inventory-item-actions button:hover,
+.inventory-filters button:hover,
+.inventory-filters button.active {
+  background: rgba(255, 85, 0, 0.18);
+  border-color: rgba(255, 122, 0, 0.78);
+}
+
+.inventory-message {
+  border: 1px solid rgba(255, 122, 0, 0.34);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.54);
+  color: #fed7aa;
+  padding: 11px 13px;
+  font-weight: 850;
+}
+
+.inventory-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.inventory-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(2, 6, 23, 0.62);
+}
+
+.inventory-form label {
+  display: grid;
+  gap: 7px;
+  color: #fed7aa;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.inventory-form input,
+.inventory-form select,
+.inventory-form textarea,
+.inventory-item-actions input {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 10px 11px;
+}
+
+.inventory-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.inventory-wide {
+  grid-column: span 3;
+}
+
+.inventory-check {
+  display: flex !important;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+}
+
+.inventory-check input {
+  width: auto;
+  accent-color: #f97316;
+}
+
+.inventory-submit {
+  grid-column: span 3;
+  justify-self: start;
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.95), rgba(124, 29, 6, 0.95));
+  color: #fff7ed;
+}
+
+.inventory-list {
+  display: grid;
+  gap: 12px;
+}
+
+.inventory-item-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 14px;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.84), rgba(2, 6, 23, 0.84));
+}
+
+.inventory-item-main {
+  display: grid;
+  gap: 6px;
+}
+
+.inventory-type {
+  width: fit-content;
+  border: 1px solid rgba(255, 122, 0, 0.44);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: #ff7a00;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.inventory-item-main h3 {
+  margin: 0;
+  color: #f5ead0;
+  font-size: 18px;
+}
+
+.inventory-item-main p,
+.inventory-item-main small,
+.inventory-item-main em {
+  margin: 0;
+  color: #cbd5e1;
+  font-style: normal;
+}
+
+.inventory-item-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.inventory-item-actions .danger {
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+}
+
+@media (max-width: 900px) {
+  .inventory-form,
+  .inventory-item-card {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-wide,
+  .inventory-submit {
+    grid-column: auto;
+  }
+
+  .inventory-item-actions {
+    grid-template-columns: 1fr;
+  }
+}

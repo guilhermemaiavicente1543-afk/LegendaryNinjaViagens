@@ -7,6 +7,7 @@ export default function EntryHall({
   onOpenMyNinja,
   onOpenMap,
   onOpenShinobiDex,
+  onOpenAnced,
   onOpenAdmin,
   onLogout
 }) {
@@ -48,6 +49,10 @@ export default function EntryHall({
 
           <button type="button" onClick={onOpenShinobiDex}>
             {t("hall.shinobidex")}
+          </button>
+
+          <button type="button" onClick={onOpenAnced}>
+            ANCED
           </button>
 
           <button type="button">
@@ -113,6 +118,11 @@ export default function EntryHall({
             <button type="button" onClick={() => goTo(onOpenShinobiDex)}>
               <span>巻</span>
               {t("hall.shinobidex")}
+            </button>
+
+            <button type="button" onClick={() => goTo(onOpenAnced)}>
+              <span>術</span>
+              ANCED
             </button>
 
             <button type="button" onClick={() => goTo(onOpenAdmin)}>
