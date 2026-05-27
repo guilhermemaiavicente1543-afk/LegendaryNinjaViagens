@@ -30,7 +30,7 @@ export default function EntryHall({
       <div className="ln-bg-overlay" />
 
       <header className="ln-bg-nav desktop-only">
-        <button aria-label="Meu Ninja" type="button" className="ln-bg-logo" onClick={onOpenMyNinja}>
+        <button type="button" className="ln-bg-logo" onClick={onOpenMyNinja}>
           <strong>LN</strong>
           <span>Digital</span>
         </button>
@@ -40,7 +40,7 @@ export default function EntryHall({
             {t("hall.home")}
           </button>
 
-          <button aria-label="Explorar mapa" type="button" onClick={onOpenMap}>
+          <button type="button" onClick={onOpenMap}>
             {t("hall.map")}
           </button>
 
@@ -53,7 +53,7 @@ export default function EntryHall({
             <strong>Hall das Lendas</strong>
           </button>
 
-          <button aria-label="Meu Ninja" type="button" onClick={onOpenMyNinja}>
+          <button type="button" onClick={onOpenMyNinja}>
             {t("hall.characters")}
           </button>
 
@@ -80,11 +80,11 @@ export default function EntryHall({
         <div className="ln-bg-nav-actions">
           <LanguageSwitcher />
 
-          <button aria-label="Painel ADM" type="button" className="ln-bg-icon-button" onClick={onOpenAdmin}>
+          <button type="button" className="ln-bg-icon-button" onClick={onOpenAdmin}>
             忍
           </button>
 
-          <button aria-label="Meu Ninja" type="button" className="ln-bg-login-button" onClick={onOpenMyNinja}>
+          <button type="button" className="ln-bg-login-button" onClick={onOpenMyNinja}>
             {t("hall.myNinja")}
           </button>
         </div>
@@ -103,7 +103,7 @@ export default function EntryHall({
 
       {isMobileMenuOpen && (
         <>
-          <button aria-label="Meu Ninja"
+          <button
             type="button"
             className="ln-mobile-menu-backdrop"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -123,7 +123,7 @@ export default function EntryHall({
               {t("hall.myNinja")}
             </button>
 
-            <button aria-label="Explorar mapa" type="button" onClick={() => goTo(onOpenMap)}>
+            <button type="button" onClick={() => goTo(onOpenMap)}>
               <span>✧</span>
               {t("hall.travelMap")}
             </button>
@@ -138,7 +138,7 @@ export default function EntryHall({
               ANCED
             </button>
 
-            <button aria-label="Painel ADM" type="button" onClick={() => goTo(onOpenAdmin)}>
+            <button type="button" onClick={() => goTo(onOpenAdmin)}>
               <span>忍</span>
               {t("common.adminPanel")}
             </button>
@@ -167,7 +167,7 @@ export default function EntryHall({
         <div className="ln-bg-spacer" />
 
         <div className="ln-bg-actions">
-          <button aria-label="Meu Ninja" type="button" className="ln-bg-main-button primary" onClick={onOpenMyNinja}>
+          <button type="button" className="ln-bg-main-button primary" onClick={onOpenMyNinja}>
             <span className="button-symbol">✦</span>
             <span>
               <strong>{t("hall.myNinja")}</strong>
@@ -175,7 +175,7 @@ export default function EntryHall({
             </span>
           </button>
 
-          <button aria-label="Explorar mapa" type="button" className="ln-bg-main-button light" onClick={onOpenMap}>
+          <button type="button" className="ln-bg-main-button light" onClick={onOpenMap}>
             <span className="button-symbol">✧</span>
             <span>
               <strong>{t("hall.explore")}</strong>
@@ -183,7 +183,7 @@ export default function EntryHall({
             </span>
           </button>
 
-          <button aria-label="Painel ADM" type="button" className="ln-bg-main-button dark" onClick={onOpenAdmin}>
+          <button type="button" className="ln-bg-main-button dark" onClick={onOpenAdmin}>
             <span className="button-symbol">◈</span>
             <span>
               <strong>{t("common.adminPanel")}</strong>

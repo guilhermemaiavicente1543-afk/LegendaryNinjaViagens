@@ -394,64 +394,20 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function createCharacterIcon(travel = {}, progress = 1) {
+function createCharacterIcon(travel, progress) {
   const statusClass = progress >= 1 ? "arrived" : "moving";
-
-  const rawIconUrl =
-    travel.characterIconUrl ||
-    travel.iconUrl ||
-    travel.icon_url ||
-    travel.character_icon_url ||
-    travel.mapIconUrl ||
-    travel.map_icon_url ||
-    travel.photoUrl ||
-    travel.photo_url ||
-    travel.portraitUrl ||
-    travel.portrait_url ||
-    travel.profileImageUrl ||
-    travel.profile_image_url ||
-    "";
-
-  const cleanIconUrl = String(rawIconUrl || "").trim();
-
-  const iconUrl =
-    cleanIconUrl &&
-    (
-      cleanIconUrl.startsWith("http://") ||
-      cleanIconUrl.startsWith("https://") ||
-      cleanIconUrl.startsWith("data:image/") ||
-      cleanIconUrl.startsWith("blob:") ||
-      cleanIconUrl.startsWith("/")
-    )
-      ? cleanIconUrl
-      : cleanIconUrl
-        ? `/${cleanIconUrl}`
-        : "";
-
-  const characterName =
-    travel.characterName ||
-    travel.character_name ||
-    travel.name ||
-    "Ninja";
+  const iconUrl = travel.characterIconUrl || travel.iconUrl || "";
+  const characterName = travel.characterName || "Ninja";
 
   const content = iconUrl
-    ? `
-      <img
-        src="${escapeHtml(iconUrl)}"
-        alt="${escapeHtml(characterName)}"
-        loading="lazy"
-        referrerpolicy="no-referrer"
-        onerror="this.remove(); this.closest('.characterMapIcon')?.classList.add('broken-image');"
-      />
-      <span class="characterMapIconFallback">忍</span>
-    `
-    : `<span class="characterMapIconFallback visible">忍</span>`;
+    ? `<img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(characterName)}" />`
+    : "忍";
 
   return divIcon({
     className: "characterMapIconWrapper",
-    html: `<div class="characterMapIcon ${statusClass} ${iconUrl ? "has-custom-image" : "no-custom-image"}">${content}</div>`,
-    iconSize: [46, 46],
-    iconAnchor: [23, 23],
+    html: `<div class="characterMapIcon ${statusClass}">${content}</div>`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
   });
 }
 
@@ -478,15 +434,7 @@ function dbTravelToAppTravel(row) {
     id: row.id,
     characterId: row.character_id,
     characterName: row.character_name || "Ninja sem nome",
-    characterIconUrl:
-      row.character_icon_url ||
-      row.icon_url ||
-      row.iconUrl ||
-      row.map_icon_url ||
-      row.photo_url ||
-      row.portrait_url ||
-      row.profile_image_url ||
-      "",
+    characterIconUrl: row.character_icon_url || "",
     travelMode: row.travel_mode,
     modeLabel: row.mode_label,
     startCoord: row.start_coord,
@@ -516,7 +464,81 @@ function writeCharacterLocations(locations) {
   localStorage.setItem(CHARACTER_LOCATION_STORAGE_KEY, JSON.stringify(locations));
 }
 
-export default function App() {
+export default 
+function escapeMapIconHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function resolveMapIconUrl(iconUrl) {
+  if (!iconUrl) return "";
+
+  const cleanUrl = String(iconUrl).trim();
+
+  if (!cleanUrl) return "";
+
+  if (
+    cleanUrl.startsWith("http://") ||
+    cleanUrl.startsWith("https://") ||
+    cleanUrl.startsWith("data:image/") ||
+    cleanUrl.startsWith("blob:")
+  ) {
+    return cleanUrl;
+  }
+
+  if (cleanUrl.startsWith("/")) {
+    return cleanUrl;
+  }
+
+  return `/${cleanUrl}`;
+}
+
+function createCharacterMapIcon(character) {
+  const iconUrl = resolveMapIconUrl(
+    character?.icon_url ||
+    character?.map_icon_url ||
+    character?.avatar_url ||
+    character?.photo_url ||
+    character?.profile_image_url
+  );
+
+  if (!iconUrl) {
+    return L.divIcon({
+      className: "ln-map-character-marker ln-map-character-marker-default",
+      html: `<span>忍</span>`,
+      iconSize: [42, 42],
+      iconAnchor: [21, 21],
+      popupAnchor: [0, -22]
+    });
+  }
+
+  const alt = escapeMapIconHtml(character?.character_name || character?.name || "Ninja");
+
+  return L.divIcon({
+    className: "ln-map-character-marker ln-map-character-marker-custom",
+    html: `
+      <span class="ln-map-character-marker-ring">
+        <img
+          src="${escapeMapIconHtml(iconUrl)}"
+          alt="${alt}"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          onerror="this.closest('.ln-map-character-marker-ring')?.classList.add('is-broken'); this.remove();"
+        />
+        <b>忍</b>
+      </span>
+    `,
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
+    popupAnchor: [0, -26]
+  });
+}
+
+function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
   const [showImageGrid, setShowImageGrid] = useState(false);
@@ -628,66 +650,6 @@ export default function App() {
     [selectedTravelCharacterId, travelCharacters]
   );
 
-  function findTravelCharacter(characterId) {
-    if (!characterId) return null;
-
-    return travelCharacters.find(
-      (character) => String(character.id) === String(characterId)
-    ) || null;
-  }
-
-  function getCharacterImageUrl(character) {
-    if (!character) return "";
-
-    return (
-      character.iconUrl ||
-      character.icon_url ||
-      character.characterIconUrl ||
-      character.character_icon_url ||
-      character.mapIconUrl ||
-      character.map_icon_url ||
-      character.photoUrl ||
-      character.photo_url ||
-      character.portraitUrl ||
-      character.portrait_url ||
-      character.profileImageUrl ||
-      character.profile_image_url ||
-      ""
-    );
-  }
-
-  function enrichTravelWithCharacterIcon(travel) {
-    const linkedCharacter = findTravelCharacter(travel.characterId);
-
-    const characterImageUrl = getCharacterImageUrl(linkedCharacter);
-
-    return {
-      ...travel,
-      characterName:
-        travel.characterName ||
-        linkedCharacter?.characterName ||
-        linkedCharacter?.character_name ||
-        linkedCharacter?.name ||
-        "Ninja sem nome",
-      characterIconUrl:
-        travel.characterIconUrl ||
-        travel.iconUrl ||
-        travel.icon_url ||
-        travel.character_icon_url ||
-        travel.mapIconUrl ||
-        travel.map_icon_url ||
-        travel.photoUrl ||
-        travel.photo_url ||
-        travel.portraitUrl ||
-        travel.portrait_url ||
-        travel.profileImageUrl ||
-        travel.profile_image_url ||
-        characterImageUrl ||
-        ""
-    };
-  }
-
-
   function saveCharacterLocation(characterId, coord) {
     if (!characterId || !coord) return;
 
@@ -781,7 +743,10 @@ export default function App() {
       id: crypto.randomUUID(),
       characterId: selectedTravelCharacter.id,
       characterName: selectedTravelCharacter.characterName,
-      characterIconUrl: getCharacterImageUrl(selectedTravelCharacter),
+      characterIconUrl:
+        selectedTravelCharacter.iconUrl ||
+        selectedTravelCharacter.icon_url ||
+        "",
       travelMode,
       modeLabel: travelData.modeLabel,
       startCoord,
@@ -807,7 +772,10 @@ export default function App() {
         character_id: selectedTravelCharacter.id,
         user_id: session.user.id,
         character_name: selectedTravelCharacter.characterName,
-        character_icon_url: getCharacterImageUrl(selectedTravelCharacter),
+        character_icon_url:
+          selectedTravelCharacter.iconUrl ||
+          selectedTravelCharacter.icon_url ||
+          "",
         travel_mode: travelMode,
         mode_label: travelData.modeLabel,
         start_coord: startCoord,
@@ -1041,10 +1009,7 @@ export default function App() {
           <button
             type="button"
             className={activePage === "map" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("map");
-              setIsPanelOpen(false);
-            }}
+            onClick={() => setActivePage("map")}
           >
             Mapa
           </button>
@@ -1550,16 +1515,15 @@ export default function App() {
               lat: currentPoint[0],
               lng: currentPoint[1],
             });
-            const markerTravel = enrichTravelWithCharacterIcon(travel);
 
             return (
               <Marker
                 key={`marker-${travel.id}`}
                 position={currentPoint}
-                icon={createCharacterIcon(markerTravel, progress)}
+                icon={createCharacterIcon(travel, progress)}
               >
                 <Tooltip direction="top">
-                  <strong>{markerTravel.characterName}</strong>
+                  <strong>{travel.characterName}</strong>
                   <br />
                   {progress >= 1 ? "Chegou ao destino" : "Em viagem"}
                   <br />
@@ -1577,11 +1541,11 @@ export default function App() {
               position={getSmallCellCenter(selectedInitialCoord)}
               icon={createCharacterIcon(
                 {
-                  characterName:
-                    selectedTravelCharacter.characterName ||
-                    selectedTravelCharacter.character_name ||
-                    "Ninja",
-                  characterIconUrl: getCharacterImageUrl(selectedTravelCharacter)
+                  characterName: selectedTravelCharacter.characterName,
+                  characterIconUrl:
+                    selectedTravelCharacter.iconUrl ||
+                    selectedTravelCharacter.icon_url ||
+                    ""
                 },
                 1
               )}

@@ -1041,10 +1041,7 @@ export default function App() {
           <button
             type="button"
             className={activePage === "map" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("map");
-              setIsPanelOpen(false);
-            }}
+            onClick={() => setActivePage("map")}
           >
             Mapa
           </button>

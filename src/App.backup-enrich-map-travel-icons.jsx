@@ -628,66 +628,6 @@ export default function App() {
     [selectedTravelCharacterId, travelCharacters]
   );
 
-  function findTravelCharacter(characterId) {
-    if (!characterId) return null;
-
-    return travelCharacters.find(
-      (character) => String(character.id) === String(characterId)
-    ) || null;
-  }
-
-  function getCharacterImageUrl(character) {
-    if (!character) return "";
-
-    return (
-      character.iconUrl ||
-      character.icon_url ||
-      character.characterIconUrl ||
-      character.character_icon_url ||
-      character.mapIconUrl ||
-      character.map_icon_url ||
-      character.photoUrl ||
-      character.photo_url ||
-      character.portraitUrl ||
-      character.portrait_url ||
-      character.profileImageUrl ||
-      character.profile_image_url ||
-      ""
-    );
-  }
-
-  function enrichTravelWithCharacterIcon(travel) {
-    const linkedCharacter = findTravelCharacter(travel.characterId);
-
-    const characterImageUrl = getCharacterImageUrl(linkedCharacter);
-
-    return {
-      ...travel,
-      characterName:
-        travel.characterName ||
-        linkedCharacter?.characterName ||
-        linkedCharacter?.character_name ||
-        linkedCharacter?.name ||
-        "Ninja sem nome",
-      characterIconUrl:
-        travel.characterIconUrl ||
-        travel.iconUrl ||
-        travel.icon_url ||
-        travel.character_icon_url ||
-        travel.mapIconUrl ||
-        travel.map_icon_url ||
-        travel.photoUrl ||
-        travel.photo_url ||
-        travel.portraitUrl ||
-        travel.portrait_url ||
-        travel.profileImageUrl ||
-        travel.profile_image_url ||
-        characterImageUrl ||
-        ""
-    };
-  }
-
-
   function saveCharacterLocation(characterId, coord) {
     if (!characterId || !coord) return;
 
@@ -781,7 +721,10 @@ export default function App() {
       id: crypto.randomUUID(),
       characterId: selectedTravelCharacter.id,
       characterName: selectedTravelCharacter.characterName,
-      characterIconUrl: getCharacterImageUrl(selectedTravelCharacter),
+      characterIconUrl:
+        selectedTravelCharacter.iconUrl ||
+        selectedTravelCharacter.icon_url ||
+        "",
       travelMode,
       modeLabel: travelData.modeLabel,
       startCoord,
@@ -807,7 +750,10 @@ export default function App() {
         character_id: selectedTravelCharacter.id,
         user_id: session.user.id,
         character_name: selectedTravelCharacter.characterName,
-        character_icon_url: getCharacterImageUrl(selectedTravelCharacter),
+        character_icon_url:
+          selectedTravelCharacter.iconUrl ||
+          selectedTravelCharacter.icon_url ||
+          "",
         travel_mode: travelMode,
         mode_label: travelData.modeLabel,
         start_coord: startCoord,
@@ -1041,10 +987,7 @@ export default function App() {
           <button
             type="button"
             className={activePage === "map" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("map");
-              setIsPanelOpen(false);
-            }}
+            onClick={() => setActivePage("map")}
           >
             Mapa
           </button>
@@ -1550,16 +1493,15 @@ export default function App() {
               lat: currentPoint[0],
               lng: currentPoint[1],
             });
-            const markerTravel = enrichTravelWithCharacterIcon(travel);
 
             return (
               <Marker
                 key={`marker-${travel.id}`}
                 position={currentPoint}
-                icon={createCharacterIcon(markerTravel, progress)}
+                icon={createCharacterIcon(travel, progress)}
               >
                 <Tooltip direction="top">
-                  <strong>{markerTravel.characterName}</strong>
+                  <strong>{travel.characterName}</strong>
                   <br />
                   {progress >= 1 ? "Chegou ao destino" : "Em viagem"}
                   <br />
@@ -1577,11 +1519,11 @@ export default function App() {
               position={getSmallCellCenter(selectedInitialCoord)}
               icon={createCharacterIcon(
                 {
-                  characterName:
-                    selectedTravelCharacter.characterName ||
-                    selectedTravelCharacter.character_name ||
-                    "Ninja",
-                  characterIconUrl: getCharacterImageUrl(selectedTravelCharacter)
+                  characterName: selectedTravelCharacter.characterName,
+                  characterIconUrl:
+                    selectedTravelCharacter.iconUrl ||
+                    selectedTravelCharacter.icon_url ||
+                    ""
                 },
                 1
               )}
