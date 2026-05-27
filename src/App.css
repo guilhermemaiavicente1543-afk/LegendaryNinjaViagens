@@ -14213,3 +14213,862 @@ body,
     grid-template-columns: 1fr;
   }
 }
+
+/* =====================================================
+   Botão de voltar ao Hall — versão artística LN
+===================================================== */
+
+.my-ninja-page button,
+.app button {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* captura o botão simples de voltar ao Hall */
+.my-ninja-page .back-button,
+.my-ninja-page .hall-back-button,
+.my-ninja-page .ln-back-button,
+.app .back-button,
+.app .hall-back-button,
+.app .ln-back-button {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  z-index: 9999 !important;
+
+  min-width: 150px !important;
+  height: 52px !important;
+  padding: 0 18px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+
+  border: 1px solid rgba(255, 122, 0, 0.82) !important;
+  border-radius: 18px !important;
+
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 106, 0, 0.24), transparent 40%),
+    linear-gradient(135deg, rgba(26, 12, 8, 0.96), rgba(92, 31, 7, 0.88)),
+    rgba(0, 0, 0, 0.82) !important;
+
+  color: #fff7ed !important;
+  font-size: 0 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.55),
+    0 0 28px rgba(255, 85, 0, 0.22),
+    inset 0 0 18px rgba(255, 122, 0, 0.08) !important;
+
+  backdrop-filter: blur(10px) !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  ) !important;
+}
+
+.my-ninja-page .back-button::before,
+.my-ninja-page .hall-back-button::before,
+.my-ninja-page .ln-back-button::before,
+.app .back-button::before,
+.app .hall-back-button::before,
+.app .ln-back-button::before {
+  content: "◁";
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255, 185, 92, 0.55);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  color: #ff9b3d;
+
+  font-size: 15px;
+  font-weight: 950;
+  box-shadow: inset 0 0 12px rgba(255, 122, 0, 0.18);
+}
+
+.my-ninja-page .back-button::after,
+.my-ninja-page .hall-back-button::after,
+.my-ninja-page .ln-back-button::after,
+.app .back-button::after,
+.app .hall-back-button::after,
+.app .ln-back-button::after {
+  content: "HALL";
+  color: #fff7ed;
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+.my-ninja-page .back-button:hover,
+.my-ninja-page .hall-back-button:hover,
+.my-ninja-page .ln-back-button:hover,
+.app .back-button:hover,
+.app .hall-back-button:hover,
+.app .ln-back-button:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(255, 180, 80, 0.98) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.62),
+    0 0 34px rgba(255, 85, 0, 0.32) !important;
+}
+
+@media (max-width: 700px) {
+  .my-ninja-page .back-button,
+  .my-ninja-page .hall-back-button,
+  .my-ninja-page .ln-back-button,
+  .app .back-button,
+  .app .hall-back-button,
+  .app .ln-back-button {
+    top: 14px !important;
+    left: 14px !important;
+    min-width: 118px !important;
+    height: 44px !important;
+    border-radius: 15px !important;
+  }
+}
+
+/* =====================================================
+   Botão artístico de retorno ao Hall
+===================================================== */
+
+.ln-hall-return-button {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  z-index: 9999 !important;
+
+  min-width: 156px !important;
+  height: 54px !important;
+  padding: 0 16px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+
+  border: 1px solid rgba(255, 122, 0, 0.82) !important;
+  border-radius: 18px !important;
+
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 106, 0, 0.28), transparent 38%),
+    linear-gradient(135deg, rgba(13, 8, 6, 0.96), rgba(92, 31, 7, 0.9)),
+    rgba(0, 0, 0, 0.82) !important;
+
+  color: #fff7ed !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.58),
+    0 0 28px rgba(255, 85, 0, 0.24),
+    inset 0 0 20px rgba(255, 122, 0, 0.08) !important;
+
+  backdrop-filter: blur(10px) !important;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  ) !important;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease !important;
+}
+
+.ln-hall-return-button::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.9), transparent);
+  opacity: 0.72;
+}
+
+.ln-hall-return-button:hover {
+  transform: translateY(-2px) scale(1.015) !important;
+  border-color: rgba(255, 190, 100, 0.98) !important;
+  filter: brightness(1.08);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.66),
+    0 0 36px rgba(255, 85, 0, 0.34) !important;
+}
+
+.ln-hall-return-button__seal {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255, 185, 92, 0.58);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 106, 0, 0.22), rgba(0, 0, 0, 0.62));
+
+  color: #ff9b3d;
+  font-size: 15px;
+  font-weight: 950;
+
+  box-shadow:
+    inset 0 0 12px rgba(255, 122, 0, 0.18),
+    0 0 14px rgba(255, 85, 0, 0.18);
+}
+
+.ln-hall-return-button__text {
+  display: grid;
+  gap: 1px;
+  text-align: left;
+  line-height: 1;
+}
+
+.ln-hall-return-button__text small {
+  color: #ff8e34;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ln-hall-return-button__text strong {
+  color: #fff7ed;
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .ln-hall-return-button {
+    top: 14px !important;
+    left: 14px !important;
+    min-width: 126px !important;
+    height: 46px !important;
+    padding: 0 12px !important;
+    gap: 9px !important;
+    border-radius: 15px !important;
+  }
+
+  .ln-hall-return-button__seal {
+    width: 29px;
+    height: 29px;
+    font-size: 13px;
+  }
+
+  .ln-hall-return-button__text small {
+    font-size: 7px;
+  }
+
+  .ln-hall-return-button__text strong {
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   Botão artístico de retorno ao Hall
+===================================================== */
+
+.ln-hall-return-button {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  z-index: 9999 !important;
+
+  min-width: 156px !important;
+  height: 54px !important;
+  padding: 0 16px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+
+  border: 1px solid rgba(255, 122, 0, 0.82) !important;
+  border-radius: 18px !important;
+
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 106, 0, 0.28), transparent 38%),
+    linear-gradient(135deg, rgba(13, 8, 6, 0.96), rgba(92, 31, 7, 0.9)),
+    rgba(0, 0, 0, 0.82) !important;
+
+  color: #fff7ed !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.58),
+    0 0 28px rgba(255, 85, 0, 0.24),
+    inset 0 0 20px rgba(255, 122, 0, 0.08) !important;
+
+  backdrop-filter: blur(10px) !important;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  ) !important;
+}
+
+.ln-hall-return-button::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.9), transparent);
+  opacity: 0.72;
+}
+
+.ln-hall-return-button:hover {
+  transform: translateY(-2px) scale(1.015) !important;
+  border-color: rgba(255, 190, 100, 0.98) !important;
+  filter: brightness(1.08);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.66),
+    0 0 36px rgba(255, 85, 0, 0.34) !important;
+}
+
+.ln-hall-return-button__seal {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255, 185, 92, 0.58);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 106, 0, 0.22), rgba(0, 0, 0, 0.62));
+
+  color: #ff9b3d;
+  font-size: 15px;
+  font-weight: 950;
+
+  box-shadow:
+    inset 0 0 12px rgba(255, 122, 0, 0.18),
+    0 0 14px rgba(255, 85, 0, 0.18);
+}
+
+.ln-hall-return-button__text {
+  display: grid;
+  gap: 1px;
+  text-align: left;
+  line-height: 1;
+}
+
+.ln-hall-return-button__text small {
+  color: #ff8e34;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ln-hall-return-button__text strong {
+  color: #fff7ed;
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .ln-hall-return-button {
+    top: 14px !important;
+    left: 14px !important;
+    min-width: 126px !important;
+    height: 46px !important;
+    padding: 0 12px !important;
+    gap: 9px !important;
+    border-radius: 15px !important;
+  }
+
+  .ln-hall-return-button__seal {
+    width: 29px;
+    height: 29px;
+    font-size: 13px;
+  }
+
+  .ln-hall-return-button__text small {
+    font-size: 7px;
+  }
+
+  .ln-hall-return-button__text strong {
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   Botão artístico de retorno ao Hall
+===================================================== */
+
+.ln-hall-return-button {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  z-index: 9999 !important;
+
+  min-width: 156px !important;
+  height: 54px !important;
+  padding: 0 16px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+
+  border: 1px solid rgba(255, 122, 0, 0.82) !important;
+  border-radius: 18px !important;
+
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 106, 0, 0.28), transparent 38%),
+    linear-gradient(135deg, rgba(13, 8, 6, 0.96), rgba(92, 31, 7, 0.9)),
+    rgba(0, 0, 0, 0.82) !important;
+
+  color: #fff7ed !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.58),
+    0 0 28px rgba(255, 85, 0, 0.24),
+    inset 0 0 20px rgba(255, 122, 0, 0.08) !important;
+
+  backdrop-filter: blur(10px) !important;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  ) !important;
+}
+
+.ln-hall-return-button::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.9), transparent);
+  opacity: 0.72;
+}
+
+.ln-hall-return-button:hover {
+  transform: translateY(-2px) scale(1.015) !important;
+  border-color: rgba(255, 190, 100, 0.98) !important;
+  filter: brightness(1.08);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.66),
+    0 0 36px rgba(255, 85, 0, 0.34) !important;
+}
+
+.ln-hall-return-button__seal {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255, 185, 92, 0.58);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 106, 0, 0.22), rgba(0, 0, 0, 0.62));
+
+  color: #ff9b3d;
+  font-size: 15px;
+  font-weight: 950;
+
+  box-shadow:
+    inset 0 0 12px rgba(255, 122, 0, 0.18),
+    0 0 14px rgba(255, 85, 0, 0.18);
+}
+
+.ln-hall-return-button__text {
+  display: grid;
+  gap: 1px;
+  text-align: left;
+  line-height: 1;
+}
+
+.ln-hall-return-button__text small {
+  color: #ff8e34;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ln-hall-return-button__text strong {
+  color: #fff7ed;
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .ln-hall-return-button {
+    top: 14px !important;
+    left: 14px !important;
+    min-width: 126px !important;
+    height: 46px !important;
+    padding: 0 12px !important;
+    gap: 9px !important;
+    border-radius: 15px !important;
+  }
+
+  .ln-hall-return-button__seal {
+    width: 29px;
+    height: 29px;
+    font-size: 13px;
+  }
+
+  .ln-hall-return-button__text small {
+    font-size: 7px;
+  }
+
+  .ln-hall-return-button__text strong {
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   Botão artístico de retorno ao Hall
+===================================================== */
+
+.ln-hall-return-button {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  z-index: 9999 !important;
+
+  min-width: 156px !important;
+  height: 54px !important;
+  padding: 0 16px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+
+  border: 1px solid rgba(255, 122, 0, 0.82) !important;
+  border-radius: 18px !important;
+
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 106, 0, 0.28), transparent 38%),
+    linear-gradient(135deg, rgba(13, 8, 6, 0.96), rgba(92, 31, 7, 0.9)),
+    rgba(0, 0, 0, 0.82) !important;
+
+  color: #fff7ed !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.58),
+    0 0 28px rgba(255, 85, 0, 0.24),
+    inset 0 0 20px rgba(255, 122, 0, 0.08) !important;
+
+  backdrop-filter: blur(10px) !important;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  ) !important;
+
+  transition: all 0.22s ease;
+}
+
+.ln-hall-return-button::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.9), transparent);
+  opacity: 0.72;
+}
+
+.ln-hall-return-button:hover {
+  transform: translateY(-2px) scale(1.015) !important;
+  border-color: rgba(255, 190, 100, 0.98) !important;
+  filter: brightness(1.08);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.66),
+    0 0 36px rgba(255, 85, 0, 0.34) !important;
+}
+
+.ln-hall-return-button__seal {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border: 1px solid rgba(255, 185, 92, 0.58);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 106, 0, 0.22), rgba(0, 0, 0, 0.62));
+
+  color: #ff9b3d;
+  font-size: 15px;
+  font-weight: 950;
+
+  box-shadow:
+    inset 0 0 12px rgba(255, 122, 0, 0.18),
+    0 0 14px rgba(255, 85, 0, 0.18);
+}
+
+.ln-hall-return-button__text {
+  display: grid;
+  gap: 1px;
+  text-align: left;
+  line-height: 1;
+}
+
+.ln-hall-return-button__text small {
+  color: #ff8e34;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ln-hall-return-button__text strong {
+  color: #fff7ed;
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .ln-hall-return-button {
+    top: 14px !important;
+    left: 14px !important;
+    min-width: 126px !important;
+    height: 46px !important;
+    padding: 0 12px !important;
+    gap: 9px !important;
+    border-radius: 15px !important;
+  }
+
+  .ln-hall-return-button__seal {
+    width: 29px;
+    height: 29px;
+    font-size: 13px;
+  }
+
+  .ln-hall-return-button__text small {
+    font-size: 7px;
+  }
+
+  .ln-hall-return-button__text strong {
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   Correção final — botão Hall artístico sem bolha/recorte
+===================================================== */
+
+.ln-hall-return-button {
+  all: unset !important;
+
+  position: fixed !important;
+  top: 22px !important;
+  left: 24px !important;
+  z-index: 99999 !important;
+
+  width: 172px !important;
+  height: 58px !important;
+  box-sizing: border-box !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+
+  padding: 0 16px !important;
+
+  color: #fff7ed !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  cursor: pointer !important;
+
+  border: 1px solid rgba(255, 122, 0, 0.82) !important;
+  border-radius: 16px !important;
+
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 120, 0, 0.34), transparent 38%),
+    linear-gradient(135deg, rgba(8, 8, 8, 0.96), rgba(70, 24, 8, 0.94)),
+    rgba(0, 0, 0, 0.88) !important;
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.62),
+    0 0 28px rgba(255, 85, 0, 0.24),
+    inset 0 0 20px rgba(255, 122, 0, 0.08) !important;
+
+  backdrop-filter: blur(10px) !important;
+
+  overflow: hidden !important;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  ) !important;
+
+  transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.ln-hall-return-button:hover {
+  transform: translateY(-2px) scale(1.015) !important;
+  filter: brightness(1.08) !important;
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.72),
+    0 0 38px rgba(255, 85, 0, 0.34) !important;
+}
+
+.ln-hall-return-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 122, 0, 0.16), transparent 58%),
+    radial-gradient(circle at 10% 50%, rgba(255, 85, 0, 0.22), transparent 35%);
+}
+
+.ln-hall-return-button::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.95), transparent);
+  opacity: 0.8;
+}
+
+.ln-hall-return-button__seal {
+  position: relative;
+  z-index: 1;
+
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border: 1px solid rgba(255, 185, 92, 0.62) !important;
+  border-radius: 999px !important;
+
+  background:
+    radial-gradient(circle, rgba(255, 106, 0, 0.28), rgba(0, 0, 0, 0.68)) !important;
+
+  color: #ff9b3d !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+
+  box-shadow:
+    inset 0 0 12px rgba(255, 122, 0, 0.2),
+    0 0 16px rgba(255, 85, 0, 0.2) !important;
+}
+
+.ln-hall-return-button__text {
+  position: relative;
+  z-index: 1;
+
+  display: grid !important;
+  gap: 2px !important;
+  line-height: 1 !important;
+}
+
+.ln-hall-return-button__text small {
+  color: #ff8e34 !important;
+  font-size: 9px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.ln-hall-return-button__text strong {
+  color: #fff7ed !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .ln-hall-return-button {
+    top: 14px !important;
+    left: 14px !important;
+    width: 136px !important;
+    height: 48px !important;
+    padding: 0 12px !important;
+    gap: 9px !important;
+  }
+
+  .ln-hall-return-button__seal {
+    width: 29px !important;
+    height: 29px !important;
+    min-width: 29px !important;
+    font-size: 13px !important;
+  }
+
+  .ln-hall-return-button__text small {
+    font-size: 7px !important;
+  }
+
+  .ln-hall-return-button__text strong {
+    font-size: 14px !important;
+  }
+}

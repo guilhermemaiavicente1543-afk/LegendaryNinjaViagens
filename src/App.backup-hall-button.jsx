@@ -868,19 +868,15 @@ export default function App() {
       </button>
 
       {activePage !== "hall" && (
-        <button className="ln-hall-return-button"
-         
+        <button
+          className="hallReturnButton"
           type="button"
           onClick={() => {
             setActivePage("hall");
             setIsPanelOpen(false);
           }}
         >
-          <span className="ln-hall-return-button__seal">忍</span>
-          <span className="ln-hall-return-button__text">
-            <small>LN Digital</small>
-            <strong>Hall</strong>
-          </span>
+          ← Hall
         </button>
       )}
 
