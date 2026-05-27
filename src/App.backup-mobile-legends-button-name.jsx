@@ -869,6 +869,21 @@ export default function App() {
         {activePage === "map" ? "☰ Controles do Mapa" : "☰ Configurações"}
       </button>
 
+      {activePage === "hall" && (
+        <button
+          type="button"
+          className="mobile-legends-shortcut"
+          onClick={() => {
+            setActivePage("legends");
+            setIsPanelOpen(false);
+          }}
+        >
+          <span>本</span>
+          <strong>Livro de Lendas</strong>
+          <small>Hall of Legends</small>
+        </button>
+      )}
+
       {activePage !== "hall" && (
         <button className="ln-hall-return-button"
          

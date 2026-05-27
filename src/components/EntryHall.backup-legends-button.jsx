@@ -9,8 +9,7 @@ export default function EntryHall({
   onOpenShinobiDex,
   onOpenAnced,
   onOpenAdmin,
-  onLogout,
-  onOpenLegends
+  onLogout
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
@@ -44,15 +43,6 @@ export default function EntryHall({
             {t("hall.map")}
           </button>
 
-          <button
-            type="button"
-            className="hall-action-card hall-legends-card"
-            onClick={onOpenLegends}
-          >
-            <span className="hall-action-icon">本</span>
-            <strong>Hall das Lendas</strong>
-          </button>
-
           <button type="button" onClick={onOpenMyNinja}>
             {t("hall.characters")}
           </button>
@@ -65,11 +55,8 @@ export default function EntryHall({
             ANCED
           </button>
 
-          <button
-            type="button"
-            onClick={onOpenLegends}
-          >
-            Hall das Lendas
+          <button type="button">
+            {t("hall.rankings")}
           </button>
 
           <button type="button">
@@ -143,12 +130,10 @@ export default function EntryHall({
               {t("common.adminPanel")}
             </button>
 
-            <button
-            type="button"
-            onClick={onOpenLegends}
-          >
-            Hall das Lendas
-          </button>
+            <button type="button" className="disabled">
+              <span>榜</span>
+              {t("hall.rankings")}
+            </button>
 
             <button type="button" className="disabled">
               <span>衆</span>

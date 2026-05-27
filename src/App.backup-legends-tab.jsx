@@ -22,7 +22,6 @@ import SoundtrackPlayer from "./components/audio/SoundtrackPlayer";
 import PasswordRecoveryWidget from "./components/auth/PasswordRecoveryWidget";
 import ShinobiDexPage from "./components/shinobidex/ShinobiDexPage";
 import AncedCalculatorPage from "./components/anced/AncedCalculatorPage";
-import LegendsPage from "./components/legends/LegendsPage";
 
 /*
   Mapa com grade:
@@ -953,17 +952,6 @@ export default function App() {
 
           <button
             type="button"
-            className={activePage === "legends" ? "activeTab" : ""}
-            onClick={() => {
-              setActivePage("legends");
-              setIsPanelOpen(false);
-            }}
-          >
-            Lendas
-          </button>
-
-          <button
-            type="button"
             className={activePage === "admin" ? "activeTab" : ""}
             onClick={() => {
               setActivePage("admin");
@@ -1219,7 +1207,6 @@ export default function App() {
             onOpenMyNinja={() => setActivePage("my-ninja")}
             onOpenMap={() => setActivePage("map")}
             onOpenShinobiDex={() => setActivePage("shinobidex")}
-            onOpenLegends={() => setActivePage("legends")}
             onOpenAnced={() => setActivePage("anced")}
             onOpenAdmin={() => setActivePage("admin")}
             onLogout={handleLogout}
@@ -1228,8 +1215,6 @@ export default function App() {
           <AncedCalculatorPage user={session?.user} onBack={() => setActivePage("hall")} />
         ) : activePage === "shinobidex" ? (
           <ShinobiDexPage onBack={() => setActivePage("hall")} />
-        ) : activePage === "legends" ? (
-          <LegendsPage onBack={() => setActivePage("hall")} />
         ) : activePage === "map" ? (
         <>
           <button

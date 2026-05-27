@@ -50,7 +50,8 @@ export default function EntryHall({
             onClick={onOpenLegends}
           >
             <span className="hall-action-icon">本</span>
-            <strong>Hall das Lendas</strong>
+            <strong>Livro de Lendas</strong>
+            <small>Panteão histórico do RPG</small>
           </button>
 
           <button type="button" onClick={onOpenMyNinja}>
@@ -65,11 +66,8 @@ export default function EntryHall({
             ANCED
           </button>
 
-          <button
-            type="button"
-            onClick={onOpenLegends}
-          >
-            Hall das Lendas
+          <button type="button">
+            {t("hall.rankings")}
           </button>
 
           <button type="button">
@@ -143,12 +141,10 @@ export default function EntryHall({
               {t("common.adminPanel")}
             </button>
 
-            <button
-            type="button"
-            onClick={onOpenLegends}
-          >
-            Hall das Lendas
-          </button>
+            <button type="button" className="disabled">
+              <span>榜</span>
+              {t("hall.rankings")}
+            </button>
 
             <button type="button" className="disabled">
               <span>衆</span>

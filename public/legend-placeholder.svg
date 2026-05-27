@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#080808"/>
+      <stop offset="1" stop-color="#2b1207"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="70%" cy="45%" r="40%">
+      <stop offset="0" stop-color="#f5ead0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#f5ead0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="420" fill="url(#bg)"/>
+  <circle cx="425" cy="165" r="112" fill="url(#moon)"/>
+  <path d="M310 360c24-92 9-132-24-176-20-27-29-60-2-92 22-26 70-23 92 1 29 31 20 70-1 96-36 44-44 84-19 171z" fill="#080808"/>
+  <path d="M250 388c30-64 64-94 102-95 40-1 80 33 113 95z" fill="#080808"/>
+  <path d="M190 360c89-59 193-74 314-35" fill="none" stroke="#ff6a00" stroke-width="9" stroke-opacity=".55"/>
+  <text x="55" y="82" font-family="Georgia,serif" font-size="46" fill="#ff7a00" font-weight="900">LN</text>
+  <text x="55" y="125" font-family="Georgia,serif" font-size="24" fill="#f5ead0">伝説</text>
+</svg>

@@ -1,6 +1,5 @@
 export const UI_AUTO_TRANSLATIONS = {
   en: {
-    "auth.enterDemo": "Enter demo mode",
     "auth.eyebrow": "Shinobi Access",
     "auth.title": "Enter Legendary",
     "auth.subtitle": "Access your account to continue your journey.",

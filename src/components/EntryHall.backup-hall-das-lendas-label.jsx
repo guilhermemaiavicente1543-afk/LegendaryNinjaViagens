@@ -50,7 +50,8 @@ export default function EntryHall({
             onClick={onOpenLegends}
           >
             <span className="hall-action-icon">本</span>
-            <strong>Hall das Lendas</strong>
+            <strong>Livro de Lendas</strong>
+            <small>Panteão histórico do RPG</small>
           </button>
 
           <button type="button" onClick={onOpenMyNinja}>
