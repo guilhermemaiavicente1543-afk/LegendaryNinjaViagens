@@ -472,7 +472,6 @@ export default function App() {
   const [gridOpacity, setGridOpacity] = useState(0.35);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [activePage, setActivePage] = useState("hall");
-  const [showMobileMapOptions, setShowMobileMapOptions] = useState(true);
   const [travelCharacters, setTravelCharacters] = useState(() => readSavedCharacters());
   const [selectedTravelCharacterId, setSelectedTravelCharacterId] = useState("");
   const [travels, setTravels] = useState(() => readSavedTravels());
@@ -1217,15 +1216,6 @@ export default function App() {
           <ShinobiDexPage onBack={() => setActivePage("hall")} />
         ) : activePage === "map" ? (
         <>
-          <button
-            type="button"
-            className={`mobile-map-options-toggle ${showMobileMapOptions ? "open" : "closed"}`}
-            onClick={() => setShowMobileMapOptions((current) => !current)}
-          >
-            {showMobileMapOptions ? "Ocultar opções" : "Mostrar opções"}
-          </button>
-
-          {showMobileMapOptions && (
           <div className="mobile-map-quick-controls" aria-label="Controles rápidos do mapa">
             <div className="mobile-map-control-field mobile-map-control-full">
               <label>
@@ -1330,7 +1320,6 @@ export default function App() {
               </div>
             )}
           </div>
-          )}
 
         <MapContainer
           crs={CRS.Simple}
@@ -1342,16 +1331,6 @@ export default function App() {
           zoomSnap={0.25}
           zoomDelta={0.5}
           wheelPxPerZoomLevel={80}
-          dragging={true}
-          touchZoom={true}
-          doubleClickZoom="center"
-          scrollWheelZoom="center"
-          boxZoom={false}
-          keyboard={false}
-          zoomControl={true}
-          bounceAtZoomLimits={false}
-          inertia={false}
-          maxBoundsViscosity={1.0}
           style={{ height: "100%", width: "100%" }}
         >
           <FitMapToBounds />

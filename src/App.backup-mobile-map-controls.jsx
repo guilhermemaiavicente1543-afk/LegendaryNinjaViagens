@@ -472,7 +472,6 @@ export default function App() {
   const [gridOpacity, setGridOpacity] = useState(0.35);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [activePage, setActivePage] = useState("hall");
-  const [showMobileMapOptions, setShowMobileMapOptions] = useState(true);
   const [travelCharacters, setTravelCharacters] = useState(() => readSavedCharacters());
   const [selectedTravelCharacterId, setSelectedTravelCharacterId] = useState("");
   const [travels, setTravels] = useState(() => readSavedTravels());
@@ -1216,122 +1215,6 @@ export default function App() {
         ) : activePage === "shinobidex" ? (
           <ShinobiDexPage onBack={() => setActivePage("hall")} />
         ) : activePage === "map" ? (
-        <>
-          <button
-            type="button"
-            className={`mobile-map-options-toggle ${showMobileMapOptions ? "open" : "closed"}`}
-            onClick={() => setShowMobileMapOptions((current) => !current)}
-          >
-            {showMobileMapOptions ? "Ocultar opções" : "Mostrar opções"}
-          </button>
-
-          {showMobileMapOptions && (
-          <div className="mobile-map-quick-controls" aria-label="Controles rápidos do mapa">
-            <div className="mobile-map-control-field mobile-map-control-full">
-              <label>
-                Locomoção
-                <select
-                  value={travelMode}
-                  onChange={(e) => setTravelMode(e.target.value)}
-                >
-                  <option value="terrestre">Terrestre — 1 província = 12h</option>
-                  <option value="aquatico">Aquático — 1 província = 9h</option>
-                  <option value="aereo">Aéreo — 1 província = 6h</option>
-                  <option value="teletransporte">Teletransporte — imediato</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="mobile-map-control-buttons">
-              <button
-                type="button"
-                className={showImageGrid ? "active" : ""}
-                onClick={() => setShowImageGrid((current) => !current)}
-              >
-                {showImageGrid ? "Mapa com grade" : "Mapa limpo"}
-              </button>
-
-              <button
-                type="button"
-                className={showOverlayGrid ? "active" : ""}
-                onClick={() => setShowOverlayGrid((current) => !current)}
-              >
-                {showOverlayGrid ? "Grade sistema" : "Sem grade"}
-              </button>
-
-              <button
-                type="button"
-                className={showSmallGrid ? "active" : ""}
-                onClick={() => setShowSmallGrid((current) => !current)}
-              >
-                {showSmallGrid ? "Províncias" : "Sem províncias"}
-              </button>
-
-              <button type="button" onClick={() => setPoints([])}>
-                Limpar pontos
-              </button>
-            </div>
-
-            <label className="mobile-map-opacity">
-              <span>Opacidade da grade: {Math.round(gridOpacity * 100)}%</span>
-              <input
-                type="range"
-                min="0.05"
-                max="0.8"
-                step="0.05"
-                value={gridOpacity}
-                onChange={(e) => setGridOpacity(Number(e.target.value))}
-              />
-            </label>
-
-            <div className="mobile-map-travel-tools">
-              <label>
-                Personagem
-                <select
-                  value={selectedTravelCharacterId}
-                  onChange={(e) => setSelectedTravelCharacterId(e.target.value)}
-                >
-                  {travelCharacters.length === 0 && (
-                    <option value="">Nenhum personagem salvo</option>
-                  )}
-
-                  {travelCharacters.map((character) => (
-                    <option key={character.id} value={character.id}>
-                      {character.characterName}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <button type="button" onClick={refreshTravelCharacters}>
-                Atualizar
-              </button>
-
-              <button type="button" className="primary" onClick={startCharacterTravel}>
-                Iniciar viagem
-              </button>
-            </div>
-
-            {(points.length > 0 || travel) && (
-              <div className="mobile-map-live-info">
-                {points.length > 0 && (
-                  <span>
-                    <strong>Destino:</strong> {points[0]?.label || "-"}
-                  </span>
-                )}
-
-                {travel && (
-                  <span>
-                    <strong>Viagem:</strong> {travel.modeLabel} ·{" "}
-                    {travel.smallSquares.toFixed(2)} províncias ·{" "}
-                    {formatTime(travel.hours)}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-          )}
-
         <MapContainer
           crs={CRS.Simple}
           bounds={imageBounds}
@@ -1342,16 +1225,6 @@ export default function App() {
           zoomSnap={0.25}
           zoomDelta={0.5}
           wheelPxPerZoomLevel={80}
-          dragging={true}
-          touchZoom={true}
-          doubleClickZoom="center"
-          scrollWheelZoom="center"
-          boxZoom={false}
-          keyboard={false}
-          zoomControl={true}
-          bounceAtZoomLimits={false}
-          inertia={false}
-          maxBoundsViscosity={1.0}
           style={{ height: "100%", width: "100%" }}
         >
           <FitMapToBounds />
@@ -1474,7 +1347,6 @@ export default function App() {
           )}
 
         </MapContainer>
-        </>
         ) : activePage === "skills" ? (
           <SkillTreePage />
         ) : activePage === "admin" ? (
