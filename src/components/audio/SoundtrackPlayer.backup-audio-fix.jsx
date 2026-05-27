@@ -30,6 +30,7 @@ function MegaphoneIcon({ muted }) {
   return (
     <svg className="floating-sound-icon" viewBox="0 0 64 64" aria-hidden="true">
       <path
+        className="speaker-body"
         d="M10 28.5v7c0 2.2 1.8 4 4 4h7.2l14.9 9.4c2.1 1.3 4.9-.2 4.9-2.7V17.8c0-2.5-2.8-4-4.9-2.7L21.2 24.5H14c-2.2 0-4 1.8-4 4Z"
         fill="currentColor"
       />
@@ -55,7 +56,7 @@ function MegaphoneIcon({ muted }) {
       )}
 
       {muted && (
-        <>
+        <g className="speaker-x">
           <path
             d="M46 24l11 11"
             fill="none"
@@ -70,7 +71,7 @@ function MegaphoneIcon({ muted }) {
             strokeWidth="5"
             strokeLinecap="round"
           />
-        </>
+        </g>
       )}
     </svg>
   );
@@ -79,9 +80,6 @@ function MegaphoneIcon({ muted }) {
 export default function SoundtrackPlayer() {
   const audioRef = useRef(null);
   const buttonRef = useRef(null);
-
-  const isMutedRef = useRef(getStoredMuted());
-  const hasUserGestureRef = useRef(false);
   const dragRef = useRef({
     isDragging: false,
     wasDragged: false,
@@ -91,123 +89,50 @@ export default function SoundtrackPlayer() {
     startButtonY: 0
   });
 
-  const [isMuted, setIsMuted] = useState(isMutedRef.current);
+  const [isMuted, setIsMuted] = useState(getStoredMuted);
   const [position, setPosition] = useState(getStoredPosition);
-
-  function pauseAudio() {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.pause();
-  }
-
-  function stopAudioCompletely() {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.pause();
-  }
-
-  function tryPlayAudio() {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isMutedRef.current) return;
-    if (document.hidden) return;
-
-    audio.volume = 0.15;
-    audio.muted = false;
-
-    audio.play().catch(() => {
-      // Navegadores podem bloquear áudio até uma interação real do usuário.
-    });
-  }
 
   useEffect(() => {
     const audio = new Audio(AUDIO_SRC);
     audio.loop = true;
     audio.volume = 0.15;
-    audio.preload = "auto";
-    audio.muted = isMutedRef.current;
-
+    audio.muted = isMuted;
     audioRef.current = audio;
 
-    function unlockAndPlay() {
-      hasUserGestureRef.current = true;
-      tryPlayAudio();
+    function tryPlay() {
+      if (!audioRef.current || isMuted) return;
+      audioRef.current.play().catch(() => {});
     }
 
-    function handleVisibilityChange() {
-      if (document.hidden) {
-        pauseAudio();
-        return;
-      }
+    tryPlay();
 
-      if (hasUserGestureRef.current && !isMutedRef.current) {
-        tryPlayAudio();
-      }
-    }
-
-    function handleWindowBlur() {
-      pauseAudio();
-    }
-
-    function handleWindowFocus() {
-      if (hasUserGestureRef.current && !isMutedRef.current && !document.hidden) {
-        tryPlayAudio();
-      }
-    }
-
-    function handlePageHide() {
-      stopAudioCompletely();
-    }
-
-    // Captura praticamente qualquer primeira interação do usuário.
-    document.addEventListener("pointerdown", unlockAndPlay, true);
-    document.addEventListener("click", unlockAndPlay, true);
-    document.addEventListener("touchstart", unlockAndPlay, true);
-    document.addEventListener("keydown", unlockAndPlay, true);
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleWindowBlur);
-    window.addEventListener("focus", handleWindowFocus);
-    window.addEventListener("pagehide", handlePageHide);
-    window.addEventListener("beforeunload", handlePageHide);
+    window.addEventListener("pointerdown", tryPlay, { once: true });
+    window.addEventListener("keydown", tryPlay, { once: true });
 
     return () => {
-      document.removeEventListener("pointerdown", unlockAndPlay, true);
-      document.removeEventListener("click", unlockAndPlay, true);
-      document.removeEventListener("touchstart", unlockAndPlay, true);
-      document.removeEventListener("keydown", unlockAndPlay, true);
-
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleWindowBlur);
-      window.removeEventListener("focus", handleWindowFocus);
-      window.removeEventListener("pagehide", handlePageHide);
-      window.removeEventListener("beforeunload", handlePageHide);
+      window.removeEventListener("pointerdown", tryPlay);
+      window.removeEventListener("keydown", tryPlay);
 
       audio.pause();
-      audio.src = "";
+      audio.currentTime = 0;
       audioRef.current = null;
     };
   }, []);
 
   useEffect(() => {
-    isMutedRef.current = isMuted;
     localStorage.setItem(STORAGE_MUTED_KEY, String(isMuted));
 
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!audioRef.current) return;
 
-    audio.muted = isMuted;
-    audio.volume = 0.15;
+    audioRef.current.muted = isMuted;
+    audioRef.current.volume = 0.15;
 
     if (isMuted) {
-      pauseAudio();
+      audioRef.current.pause();
       return;
     }
 
-    hasUserGestureRef.current = true;
-    tryPlayAudio();
+    audioRef.current.play().catch(() => {});
   }, [isMuted]);
 
   function clampPosition(x, y) {
