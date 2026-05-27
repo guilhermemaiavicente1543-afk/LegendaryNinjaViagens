@@ -15072,3 +15072,1384 @@ body,
     font-size: 14px !important;
   }
 }
+
+/* =====================================================
+   Hall — Pergaminho retrátil de novidades
+===================================================== */
+
+.hall-scroll-board {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 8500;
+  width: min(420px, calc(100vw - 40px));
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.hall-scroll-head {
+  all: unset;
+  width: 100%;
+  height: 72px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 42px 1fr auto 42px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  cursor: pointer;
+  color: #2a1004;
+  background:
+    linear-gradient(180deg, #b85a17, #7a2a09),
+    radial-gradient(circle at center, rgba(255, 222, 145, 0.55), transparent 48%);
+  border: 2px solid rgba(255, 181, 79, 0.82);
+  border-radius: 999px;
+  box-shadow:
+    0 16px 45px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(255, 85, 0, 0.24),
+    inset 0 0 18px rgba(255, 226, 168, 0.22);
+}
+
+.hall-scroll-roll {
+  width: 38px;
+  height: 54px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, #2c1307, #d08a36, #351306);
+  border: 1px solid rgba(255, 220, 155, 0.62);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45);
+}
+
+.hall-scroll-title {
+  display: grid;
+  line-height: 1;
+}
+
+.hall-scroll-title small {
+  color: #ffe3b0;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.hall-scroll-title strong {
+  color: #fff7dc;
+  font-size: 27px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.58),
+    0 0 14px rgba(255, 216, 136, 0.28);
+}
+
+.hall-scroll-toggle {
+  color: #fff7dc;
+  border: 1px solid rgba(255, 231, 177, 0.55);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.26);
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.hall-scroll-body {
+  overflow: hidden;
+  max-height: 520px;
+  transition: max-height 0.42s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+
+.hall-scroll-board.closed .hall-scroll-body {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.hall-scroll-paper {
+  margin: -2px 26px 0;
+  padding: 24px 22px 26px;
+  min-height: 180px;
+  max-height: 420px;
+  overflow-y: auto;
+  color: #2b1408;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(255, 229, 170, 0.95), rgba(198, 137, 67, 0.96));
+  border-left: 4px solid rgba(91, 38, 11, 0.62);
+  border-right: 4px solid rgba(91, 38, 11, 0.62);
+  box-shadow:
+    inset 0 0 40px rgba(105, 45, 9, 0.26),
+    0 18px 38px rgba(0, 0, 0, 0.38);
+}
+
+.hall-scroll-announcement {
+  border-bottom: 1px solid rgba(93, 42, 12, 0.34);
+  padding: 0 0 14px;
+  margin-bottom: 14px;
+}
+
+.hall-scroll-announcement:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.hall-scroll-announcement span {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid rgba(93, 42, 12, 0.38);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #641f0b;
+  background: rgba(255, 248, 213, 0.42);
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hall-scroll-announcement h3 {
+  margin: 8px 0 6px;
+  color: #2b1004;
+  font-size: 19px;
+}
+
+.hall-scroll-announcement p,
+.hall-scroll-empty {
+  margin: 0;
+  color: #3c1a08;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.hall-scroll-bottom-roll {
+  height: 24px;
+  margin: -1px 42px 0;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, #a84a14, #5a1b08);
+  border: 1px solid rgba(255, 181, 79, 0.55);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42);
+}
+
+.hall-scroll-board.closed .hall-scroll-bottom-roll {
+  display: none;
+}
+
+/* =====================================================
+   ADM — Gerenciador de novidades
+===================================================== */
+
+.admin-announcements-panel {
+  position: fixed;
+  right: 24px;
+  top: 120px;
+  z-index: 8700;
+  width: min(390px, calc(100vw - 40px));
+  color: #f5ead0;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.admin-announcements-toggle {
+  border: 1px solid rgba(255, 122, 0, 0.64);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fed7aa;
+  padding: 10px 14px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.admin-announcements-content {
+  margin-top: 10px;
+  padding: 18px;
+  border: 1px solid rgba(255, 122, 0, 0.36);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.14), transparent 36%),
+    rgba(2, 6, 23, 0.92);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(14px);
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+}
+
+.admin-announcements-content h2 {
+  margin: 0;
+  color: #ff7a00;
+}
+
+.admin-announcements-content header span {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.admin-announcements-message {
+  border: 1px solid rgba(255, 122, 0, 0.34);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.46);
+  color: #fed7aa;
+  padding: 10px;
+}
+
+.admin-announcements-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.admin-announcements-form label {
+  display: grid;
+  gap: 6px;
+  color: #fed7aa;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.admin-announcements-form input,
+.admin-announcements-form textarea {
+  border: 1px solid rgba(255, 122, 0, 0.26);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 10px 11px;
+}
+
+.admin-announcements-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.admin-announcements-grid {
+  display: grid;
+  grid-template-columns: 1fr 95px;
+  gap: 10px;
+}
+
+.admin-announcements-check {
+  display: flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.admin-announcements-check input {
+  width: auto;
+  accent-color: #f97316;
+}
+
+.admin-announcements-form button,
+.admin-announcements-list button {
+  border: 1px solid rgba(255, 122, 0, 0.52);
+  border-radius: 999px;
+  background: rgba(255, 85, 0, 0.16);
+  color: #fed7aa;
+  padding: 9px 12px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.admin-announcements-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.admin-announcements-list article {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.72);
+  padding: 12px;
+}
+
+.admin-announcements-list span {
+  color: #ff7a00;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.admin-announcements-list strong {
+  display: block;
+  color: #f5ead0;
+}
+
+.admin-announcements-list p {
+  margin: 4px 0;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.admin-announcements-list small {
+  color: #9ca3af;
+}
+
+.admin-announcements-list article > div:last-child {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-announcements-list .danger {
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+}
+
+@media (max-width: 700px) {
+  .hall-scroll-board {
+    right: 14px;
+    left: 14px;
+    bottom: 18px;
+    width: auto;
+  }
+
+  .hall-scroll-title strong {
+    font-size: 21px;
+  }
+
+  .hall-scroll-toggle {
+    display: none;
+  }
+
+  .hall-scroll-paper {
+    margin-inline: 18px;
+    max-height: 360px;
+  }
+
+  .admin-announcements-panel {
+    left: 14px;
+    right: 14px;
+    top: 88px;
+    width: auto;
+  }
+}
+
+/* =====================================================
+   Correção final — Pergaminho NOVIDADES compacto no Hall
+===================================================== */
+
+.hall-scroll-board {
+  position: fixed !important;
+  top: auto !important;
+  left: auto !important;
+  right: 28px !important;
+  bottom: 94px !important;
+  z-index: 8500 !important;
+
+  width: 380px !important;
+  max-width: calc(100vw - 36px) !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  pointer-events: auto !important;
+}
+
+.hall-scroll-head {
+  all: unset !important;
+
+  width: 100% !important;
+  height: 62px !important;
+  box-sizing: border-box !important;
+
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) auto 34px !important;
+  align-items: center !important;
+  gap: 8px !important;
+
+  padding: 0 12px !important;
+  cursor: pointer !important;
+
+  color: #fff7dc !important;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 211, 128, 0.22), transparent 36%),
+    linear-gradient(180deg, #8f340d, #4b1606) !important;
+
+  border: 2px solid rgba(255, 151, 45, 0.72) !important;
+  border-radius: 999px !important;
+
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.64),
+    0 0 24px rgba(255, 85, 0, 0.22),
+    inset 0 0 18px rgba(255, 226, 168, 0.16) !important;
+}
+
+.hall-scroll-roll {
+  width: 32px !important;
+  height: 46px !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(90deg, #1c0b04, #ce8434, #1c0b04) !important;
+  border: 1px solid rgba(255, 220, 155, 0.62) !important;
+}
+
+.hall-scroll-title {
+  display: grid !important;
+  line-height: 1 !important;
+}
+
+.hall-scroll-title small {
+  color: #ffbf75 !important;
+  font-size: 8px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+.hall-scroll-title strong {
+  color: #fff7dc !important;
+  font-size: 22px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.08em !important;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.58),
+    0 0 14px rgba(255, 216, 136, 0.24) !important;
+}
+
+.hall-scroll-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  color: #fff7dc !important;
+  border: 1px solid rgba(255, 231, 177, 0.48) !important;
+  border-radius: 999px !important;
+  padding: 5px 8px !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+
+  font-size: 10px !important;
+  font-weight: 950 !important;
+}
+
+.hall-scroll-body {
+  overflow: hidden !important;
+  max-height: 430px !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition:
+    max-height 0.36s ease,
+    opacity 0.24s ease,
+    transform 0.24s ease !important;
+}
+
+.hall-scroll-board.closed .hall-scroll-body {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  transform: translateY(-8px) !important;
+}
+
+.hall-scroll-paper {
+  margin: -1px 22px 0 !important;
+  padding: 20px 18px 22px !important;
+
+  min-height: 150px !important;
+  max-height: 340px !important;
+  overflow-y: auto !important;
+
+  color: #2b1408 !important;
+  background:
+    radial-gradient(circle at 30% 15%, rgba(255, 255, 255, 0.24), transparent 34%),
+    linear-gradient(180deg, rgba(255, 229, 170, 0.96), rgba(197, 135, 65, 0.96)) !important;
+
+  border-left: 4px solid rgba(91, 38, 11, 0.62) !important;
+  border-right: 4px solid rgba(91, 38, 11, 0.62) !important;
+
+  box-shadow:
+    inset 0 0 38px rgba(105, 45, 9, 0.26),
+    0 18px 38px rgba(0, 0, 0, 0.38) !important;
+}
+
+.hall-scroll-bottom-roll {
+  height: 20px !important;
+  margin: -1px 38px 0 !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, #8f340d, #4b1606) !important;
+  border: 1px solid rgba(255, 181, 79, 0.55) !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42) !important;
+}
+
+.hall-scroll-board.closed .hall-scroll-bottom-roll {
+  display: none !important;
+}
+
+.hall-scroll-announcement h3 {
+  font-size: 17px !important;
+}
+
+.hall-scroll-announcement p,
+.hall-scroll-empty {
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+/* Mobile: fica como faixa inferior compacta */
+@media (max-width: 700px) {
+  .hall-scroll-board {
+    left: 14px !important;
+    right: 14px !important;
+    bottom: 16px !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  .hall-scroll-head {
+    height: 58px !important;
+    grid-template-columns: 30px minmax(0, 1fr) 30px !important;
+  }
+
+  .hall-scroll-roll {
+    width: 28px !important;
+    height: 42px !important;
+  }
+
+  .hall-scroll-roll.right {
+    display: block !important;
+  }
+
+  .hall-scroll-toggle {
+    display: none !important;
+  }
+
+  .hall-scroll-title strong {
+    font-size: 20px !important;
+  }
+
+  .hall-scroll-paper {
+    margin-inline: 18px !important;
+    max-height: 300px !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — perfil completo / foto do personagem
+===================================================== */
+
+.character-portrait-uploader {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.character-portrait-frame {
+  width: 190px;
+  height: 250px;
+  border-radius: 26px;
+  padding: 6px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.24), transparent 36%),
+    linear-gradient(180deg, rgba(255, 122, 0, 0.38), rgba(0, 0, 0, 0.82));
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.58),
+    0 0 28px rgba(255, 85, 0, 0.18);
+  overflow: hidden;
+}
+
+.character-portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+.character-portrait-empty {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle, rgba(255, 85, 0, 0.12), transparent 42%),
+    rgba(2, 6, 23, 0.92);
+  color: #fed7aa;
+}
+
+.character-portrait-empty span {
+  font-size: 56px;
+  color: #ff7a00;
+  text-shadow: 0 0 24px rgba(255, 85, 0, 0.34);
+}
+
+.character-portrait-empty small {
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.character-portrait-uploader button {
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.92), rgba(92, 31, 7, 0.92));
+  color: #fff7ed;
+  padding: 10px 16px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.character-portrait-uploader button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.character-portrait-message {
+  color: #fed7aa;
+  text-align: center;
+}
+
+.character-profile-hero {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.12), transparent 36%),
+    rgba(2, 6, 23, 0.66);
+  backdrop-filter: blur(10px);
+}
+
+.character-profile-hero-info {
+  display: grid;
+  gap: 8px;
+}
+
+.character-profile-hero-info .eyebrow {
+  margin: 0;
+  color: #ff7a00;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.character-profile-hero-info h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(32px, 4vw, 56px);
+  line-height: 0.95;
+}
+
+.character-profile-hero-info .epithet {
+  color: #fed7aa;
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.character-profile-quote {
+  margin-top: 10px;
+  border-left: 3px solid rgba(255, 122, 0, 0.78);
+  padding-left: 14px;
+  color: #e5e7eb;
+  font-style: italic;
+}
+
+.profile-section-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-field.large {
+  grid-column: span 2;
+}
+
+.profile-field textarea {
+  width: 100%;
+  min-height: 95px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 10px 11px;
+  resize: vertical;
+}
+
+@media (max-width: 900px) {
+  .character-profile-hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .character-profile-quote {
+    text-align: left;
+  }
+
+  .profile-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-field.large {
+    grid-column: auto;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — formulário completo do perfil
+===================================================== */
+
+.profile-form-section {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(2, 6, 23, 0.62);
+}
+
+.profile-form-section h3 {
+  margin: 0;
+  color: #ff7a00;
+  font-size: 19px;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-form-section label {
+  display: grid;
+  gap: 7px;
+}
+
+.profile-form-section input,
+.profile-form-section textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.92);
+  color: #f5ead0;
+  padding: 10px 11px;
+}
+
+.profile-form-section textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.character-profile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.character-profile-badges span {
+  border: 1px solid rgba(255, 122, 0, 0.34);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  color: #fed7aa;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.profile-section-card {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 122, 0, 0.20);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(2, 6, 23, 0.62);
+  backdrop-filter: blur(10px);
+}
+
+.profile-section-card h3 {
+  margin: 0;
+  color: #ff7a00;
+  font-size: 19px;
+}
+
+.character-complete-profile {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================
+   Emergência — desativa camadas de anúncios que podem bloquear cliques
+===================================================== */
+
+.hall-scroll-board,
+.admin-announcements-panel {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* =====================================================
+   Meu Ninja — Perfil unificado
+===================================================== */
+
+.my-ninja-unified-profile {
+  display: grid;
+  gap: 22px;
+}
+
+.my-ninja-unified-profile > .profile-tab-content,
+.my-ninja-unified-profile > .full-sheet-panel,
+.my-ninja-unified-profile > .inventory-panel {
+  width: 100%;
+}
+
+.my-ninja-unified-profile .full-sheet-panel,
+.my-ninja-unified-profile .inventory-panel {
+  margin-top: 4px;
+}
+
+.profile-tabs button {
+  white-space: nowrap;
+}
+
+/* =====================================================
+   Meu Ninja — Ficha complementar polida, sem redundância
+===================================================== */
+
+.full-sheet-panel.full-sheet-polished {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.full-sheet-header.polished {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 85, 0, 0.16), transparent 38%),
+    linear-gradient(135deg, rgba(17, 24, 39, 0.88), rgba(2, 6, 23, 0.88));
+  box-shadow:
+    0 20px 54px rgba(0, 0, 0, 0.34),
+    inset 0 0 24px rgba(255, 122, 0, 0.05);
+  backdrop-filter: blur(12px);
+}
+
+.full-sheet-header.polished h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 0.95;
+}
+
+.full-sheet-header.polished span {
+  display: block;
+  max-width: 760px;
+  margin-top: 8px;
+  color: #cbd5e1;
+}
+
+.full-sheet-header.polished button {
+  border: 1px solid rgba(255, 122, 0, 0.68);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.95), rgba(92, 31, 7, 0.95));
+  color: #fff7ed;
+  padding: 12px 18px;
+  font-weight: 950;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.full-sheet-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.full-sheet-nav {
+  position: sticky;
+  top: 92px;
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255, 85, 0, 0.11), transparent 38%),
+    rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.full-sheet-nav button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  border: 1px solid rgba(255, 122, 0, 0.16);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #e5e7eb;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.full-sheet-nav button span {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 122, 0, 0.32);
+  border-radius: 999px;
+  color: #ff7a00;
+  background: rgba(0, 0, 0, 0.32);
+  font-weight: 950;
+}
+
+.full-sheet-nav button strong {
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.full-sheet-nav button em {
+  color: #22c55e;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.full-sheet-nav button.active {
+  border-color: rgba(255, 122, 0, 0.72);
+  background:
+    linear-gradient(135deg, rgba(255, 106, 0, 0.24), rgba(15, 23, 42, 0.82));
+  color: #fff7ed;
+  box-shadow: 0 0 24px rgba(255, 85, 0, 0.12);
+}
+
+.full-sheet-section.polished {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.10), transparent 36%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.82));
+  box-shadow:
+    0 20px 54px rgba(0, 0, 0, 0.34),
+    inset 0 0 24px rgba(255, 122, 0, 0.04);
+  backdrop-filter: blur(12px);
+}
+
+.full-sheet-section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 122, 0, 0.18);
+}
+
+.full-sheet-section-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 122, 0, 0.48);
+  border-radius: 999px;
+  color: #ff7a00;
+  background:
+    radial-gradient(circle, rgba(255, 106, 0, 0.24), rgba(0, 0, 0, 0.46));
+  font-size: 22px;
+  font-weight: 950;
+  box-shadow: 0 0 20px rgba(255, 85, 0, 0.14);
+}
+
+.full-sheet-section-title h3 {
+  margin: 0;
+  color: #ff7a00;
+  font-size: 24px;
+}
+
+.full-sheet-section-title p {
+  margin: 4px 0 0;
+  color: #cbd5e1;
+}
+
+.full-sheet-fields.polished {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.full-sheet-field.polished {
+  display: grid;
+  gap: 8px;
+}
+
+.full-sheet-field.polished span {
+  color: #fed7aa;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.full-sheet-field.polished textarea {
+  width: 100%;
+  min-height: 132px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.94), rgba(15, 23, 42, 0.92));
+  color: #f5ead0;
+  padding: 12px 13px;
+  resize: vertical;
+  line-height: 1.45;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.20);
+}
+
+.full-sheet-field.polished textarea:focus {
+  outline: none;
+  border-color: rgba(255, 122, 0, 0.72);
+  box-shadow:
+    0 0 0 3px rgba(255, 85, 0, 0.12),
+    inset 0 0 18px rgba(0, 0, 0, 0.20);
+}
+
+.full-sheet-message {
+  border: 1px solid rgba(255, 122, 0, 0.34);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.56);
+  color: #fed7aa;
+  padding: 12px 14px;
+  font-weight: 900;
+}
+
+@media (max-width: 1000px) {
+  .full-sheet-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .full-sheet-nav {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .full-sheet-fields.polished {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .full-sheet-header.polished {
+    display: grid;
+  }
+
+  .full-sheet-header.polished button {
+    width: 100%;
+  }
+
+  .full-sheet-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .full-sheet-section.polished {
+    padding: 16px;
+  }
+}
+
+/* =====================================================
+   Inventário inteligente — técnicas vinculadas à ShinobiDex
+===================================================== */
+
+.smart-inventory-panel {
+  gap: 18px;
+}
+
+.smart-inventory-tabs {
+  padding: 10px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(2, 6, 23, 0.58);
+}
+
+.smart-inventory-tabs button {
+  min-height: 40px;
+}
+
+.smart-inventory-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: end;
+}
+
+.technique-picker-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 85, 0, 0.08), rgba(2, 6, 23, 0.60));
+}
+
+.selected-technique-preview {
+  grid-column: span 2;
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.26);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.selected-technique-preview strong {
+  color: #ff7a00;
+  font-size: 18px;
+}
+
+.selected-technique-preview span {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.inventory-item-card.item-technique {
+  border-color: rgba(255, 122, 0, 0.34);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 85, 0, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(2, 6, 23, 0.90));
+}
+
+.inventory-item-card.item-technique h3 {
+  color: #fed7aa;
+}
+
+.inventory-item-card.item-technique em {
+  color: #fbbf24;
+}
+
+.type-technique {
+  color: #fff7ed !important;
+  background:
+    linear-gradient(180deg, rgba(255, 106, 0, 0.42), rgba(92, 31, 7, 0.42));
+}
+
+@media (max-width: 900px) {
+  .smart-inventory-form,
+  .technique-picker-block {
+    grid-template-columns: 1fr !important;
+  }
+
+  .selected-technique-preview {
+    grid-column: auto;
+  }
+}
+
+/* =====================================================
+   Correção visual — seletor de técnicas no inventário
+===================================================== */
+
+.technique-picker-block {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+  width: 100% !important;
+  grid-column: 1 / -1 !important;
+  padding: 16px !important;
+  border: 1px solid rgba(255, 122, 0, 0.32) !important;
+  border-radius: 20px !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 85, 0, 0.12), transparent 36%),
+    rgba(2, 6, 23, 0.72) !important;
+}
+
+.technique-picker-block label {
+  display: grid !important;
+  gap: 8px !important;
+  color: #fed7aa !important;
+  font-weight: 950 !important;
+}
+
+.technique-picker-block select,
+.technique-picker-block input {
+  min-height: 44px !important;
+  border: 1px solid rgba(255, 122, 0, 0.34) !important;
+  border-radius: 14px !important;
+  background: rgba(2, 6, 23, 0.94) !important;
+  color: #f5ead0 !important;
+  padding: 10px 12px !important;
+}
+
+.selected-technique-preview {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  gap: 5px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(255, 122, 0, 0.38) !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 85, 0, 0.14), rgba(0, 0, 0, 0.42)) !important;
+}
+
+.selected-technique-preview strong {
+  color: #ff7a00 !important;
+  font-size: 18px !important;
+}
+
+.selected-technique-preview span {
+  color: #cbd5e1 !important;
+}
+
+@media (max-width: 900px) {
+  .technique-picker-block {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =====================================================
+   Inventário — busca própria de técnicas da ShinobiDex
+===================================================== */
+
+.technique-search-picker {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+
+.technique-search-field {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.technique-search-field input {
+  min-height: 48px !important;
+  border: 1px solid rgba(255, 122, 0, 0.38) !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 85, 0, 0.08), transparent 34%),
+    rgba(2, 6, 23, 0.94) !important;
+  color: #f5ead0 !important;
+  padding: 12px 14px !important;
+  font-weight: 800 !important;
+}
+
+.technique-search-field input:focus {
+  outline: none !important;
+  border-color: rgba(255, 122, 0, 0.78) !important;
+  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.13) !important;
+}
+
+.technique-search-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fed7aa;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.technique-search-results {
+  display: grid;
+  gap: 8px;
+  max-height: 330px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.86), rgba(15, 23, 42, 0.78));
+}
+
+.technique-search-results p {
+  margin: 0;
+  color: #94a3b8;
+  padding: 10px;
+}
+
+.technique-search-results button {
+  width: 100%;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.84);
+  color: #e5e7eb;
+  padding: 11px 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.technique-search-results button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 122, 0, 0.58);
+  background:
+    linear-gradient(135deg, rgba(255, 85, 0, 0.13), rgba(15, 23, 42, 0.90));
+}
+
+.technique-search-results button.selected {
+  border-color: rgba(255, 122, 0, 0.88);
+  background:
+    linear-gradient(135deg, rgba(255, 106, 0, 0.28), rgba(15, 23, 42, 0.90));
+  box-shadow: 0 0 18px rgba(255, 85, 0, 0.15);
+}
+
+.technique-search-results button strong {
+  color: #fed7aa;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.technique-search-results button small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.selected-technique-preview {
+  display: grid !important;
+  gap: 5px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(255, 122, 0, 0.44) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 85, 0, 0.14), transparent 36%),
+    rgba(0, 0, 0, 0.42) !important;
+}
+
+.selected-technique-preview > span {
+  color: #ff7a00 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+.selected-technique-preview strong {
+  color: #fff7ed !important;
+  font-size: 18px !important;
+}
+
+.selected-technique-preview small {
+  color: #cbd5e1 !important;
+}

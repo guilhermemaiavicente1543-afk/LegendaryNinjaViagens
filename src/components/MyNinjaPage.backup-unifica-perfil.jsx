@@ -5,7 +5,6 @@ import { uniqueTraits } from "../data/uniqueTraits";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 import CharacterInventoryPanel from "./inventory/CharacterInventoryPanel";
 import CharacterPortraitUploader from "./profile/CharacterPortraitUploader";
-import CharacterFullSheetPanel from "./profile/CharacterFullSheetPanel";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
@@ -291,7 +290,7 @@ export default function MyNinjaPage({
         setForm(dbToForm(data));
         syncCharacterToLocalStorage(data);
 
-        if (profileTab === "skills" || profileTab === "sheet" || profileTab === "inventory") {
+        if (profileTab === "skills") {
           setProfileTab("info");
         }
       }
@@ -1346,7 +1345,15 @@ export default function MyNinjaPage({
                 className={profileTab === "info" ? "active" : ""}
                 onClick={() => setProfileTab("info")}
               >
-                Perfil
+                Informações
+              </button>
+
+              <button
+                type="button"
+                className={profileTab === "inventory" ? "active" : ""}
+                onClick={() => setProfileTab("inventory")}
+              >
+                Inventário
               </button>
 
               <button
@@ -1365,21 +1372,9 @@ export default function MyNinjaPage({
                 Teia
               </button>            </div>
 
-            {profileTab === "info" && (
-              <div className="my-ninja-unified-profile">
-                {renderInfoTab()}
-
-                <CharacterFullSheetPanel
-                  character={character}
-                  onCharacterUpdated={(updatedCharacter) => {
-                    setCharacter(updatedCharacter);
-                    setForm(dbToForm(updatedCharacter));
-                    syncCharacterToLocalStorage(updatedCharacter);
-                  }}
-                />
-
-                <CharacterInventoryPanel user={user} character={character} />
-              </div>
+            {profileTab === "info" && renderInfoTab()}
+            {profileTab === "inventory" && (
+              <CharacterInventoryPanel user={user} character={character} />
             )}
             {profileTab === "location" && renderLocationTab()}
             {profileTab === "skills" && renderSkillsTab()}

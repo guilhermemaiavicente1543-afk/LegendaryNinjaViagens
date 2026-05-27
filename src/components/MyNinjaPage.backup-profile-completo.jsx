@@ -4,8 +4,6 @@ import CharacterSkillTree from "./CharacterSkillTree";
 import { uniqueTraits } from "../data/uniqueTraits";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 import CharacterInventoryPanel from "./inventory/CharacterInventoryPanel";
-import CharacterPortraitUploader from "./profile/CharacterPortraitUploader";
-import CharacterFullSheetPanel from "./profile/CharacterFullSheetPanel";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
@@ -38,29 +36,7 @@ const initialForm = {
   characterName: "",
   villageChoice: "",
   iconUrl: "",
-  portraitUrl: "",
-  bannerUrl: "",
-  epithet: "",
-  quote: "",
-  gender: "",
   age: "",
-  heightCm: "",
-  weightKg: "",
-  birthday: "",
-  rankTitle: "",
-  teamName: "",
-  sensei: "",
-  chakraNatures: "",
-  mainWeapon: "",
-  summonContract: "",
-  combatRole: "",
-  personality: "",
-  biography: "",
-  goals: "",
-  fears: "",
-  allies: "",
-  rivals: "",
-  notes: "",
   appearance: "",
   clanOrKinship: "",
   history: "",
@@ -81,31 +57,7 @@ function dbToForm(character) {
     characterName: character.character_name || "",
     villageChoice: isKnownVillage ? savedVillage : savedVillage ? "Outros" : "",
     iconUrl: character.icon_url || "",
-    portraitUrl: character.portrait_url || "",
-    bannerUrl: character.banner_url || "",
-    epithet: character.epithet || "",
-    quote: character.quote || "",
-    gender: character.gender || "",
     age: character.age || "",
-    heightCm: character.height_cm || "",
-    weightKg: character.weight_kg || "",
-    birthday: character.birthday || "",
-    rankTitle: character.rank_title || "",
-    teamName: character.team_name || "",
-    sensei: character.sensei || "",
-    chakraNatures: Array.isArray(character.chakra_natures)
-      ? character.chakra_natures.join(", ")
-      : "",
-    mainWeapon: character.main_weapon || "",
-    summonContract: character.summon_contract || "",
-    combatRole: character.combat_role || "",
-    personality: character.personality || "",
-    biography: character.biography || character.history || "",
-    goals: character.goals || "",
-    fears: character.fears || "",
-    allies: character.allies || "",
-    rivals: character.rivals || "",
-    notes: character.notes || "",
     appearance: character.appearance || "",
     clanOrKinship: character.clan_or_kinship || "",
     history: character.history || "",
@@ -126,9 +78,6 @@ function dbToLocalCharacter(character) {
     phoneNumber: character.phone_number || "",
     characterName: character.character_name || "",
     iconUrl: character.icon_url || "",
-    portraitUrl: character.portrait_url || "",
-    epithet: character.epithet || "",
-    quote: character.quote || "",
     age: character.age || "",
     appearance: character.appearance || "",
     clanOrKinship: character.clan_or_kinship || "",
@@ -166,35 +115,10 @@ function buildPayload(form, userId) {
     phone_number: form.phoneNumber.trim(),
     character_name: form.characterName.trim(),
     icon_url: form.iconUrl,
-    portrait_url: form.portraitUrl,
-    banner_url: form.bannerUrl,
-    epithet: form.epithet,
-    quote: form.quote,
-    gender: form.gender,
-    age: form.age,
-    height_cm: form.heightCm ? Number(form.heightCm) : null,
-    weight_kg: form.weightKg ? Number(form.weightKg) : null,
-    birthday: form.birthday,
-    rank_title: form.rankTitle,
-    team_name: form.teamName,
-    sensei: form.sensei,
-    chakra_natures: form.chakraNatures
-      ? form.chakraNatures.split(",").map((item) => item.trim()).filter(Boolean)
-      : [],
-    main_weapon: form.mainWeapon,
-    summon_contract: form.summonContract,
-    combat_role: form.combatRole,
-    personality: form.personality,
-    biography: form.biography,
-    goals: form.goals,
-    fears: form.fears,
-    allies: form.allies,
-    rivals: form.rivals,
-    notes: form.notes,
     age: form.age,
     appearance: form.appearance,
     clan_or_kinship: form.clanOrKinship,
-    history: form.history || form.biography,
+    history: form.history,
     village_or_organization: village,
     kekkei_genkai_or_hiden: form.kekkeiGenkaiOrHiden,
     equipment: form.equipment,
@@ -291,7 +215,7 @@ export default function MyNinjaPage({
         setForm(dbToForm(data));
         syncCharacterToLocalStorage(data);
 
-        if (profileTab === "skills" || profileTab === "sheet" || profileTab === "inventory") {
+        if (profileTab === "skills") {
           setProfileTab("info");
         }
       }
@@ -621,197 +545,6 @@ export default function MyNinjaPage({
           </select>
         </label>
 
-
-        <div className="profile-form-section">
-          <h3>Perfil completo do personagem</h3>
-
-          <div className="profile-form-grid">
-            <label>
-              Epíteto / Alcunha
-              <input
-                value={form.epithet}
-                onChange={(event) => updateField("epithet", event.target.value)}
-                placeholder="Ex: O Relâmpago Carmesim"
-              />
-            </label>
-
-            <label>
-              Frase marcante
-              <input
-                value={form.quote}
-                onChange={(event) => updateField("quote", event.target.value)}
-                placeholder="Ex: Um ninja nunca abandona sua sombra."
-              />
-            </label>
-
-            <label>
-              Gênero
-              <input
-                value={form.gender}
-                onChange={(event) => updateField("gender", event.target.value)}
-                placeholder="Ex: Masculino, feminino, outro..."
-              />
-            </label>
-
-            <label>
-              Aniversário
-              <input
-                value={form.birthday}
-                onChange={(event) => updateField("birthday", event.target.value)}
-                placeholder="Ex: 12 de outubro"
-              />
-            </label>
-
-            <label>
-              Altura em cm
-              <input
-                type="number"
-                value={form.heightCm}
-                onChange={(event) => updateField("heightCm", event.target.value)}
-                placeholder="Ex: 175"
-              />
-            </label>
-
-            <label>
-              Peso em kg
-              <input
-                type="number"
-                value={form.weightKg}
-                onChange={(event) => updateField("weightKg", event.target.value)}
-                placeholder="Ex: 68"
-              />
-            </label>
-
-            <label>
-              Título / graduação
-              <input
-                value={form.rankTitle}
-                onChange={(event) => updateField("rankTitle", event.target.value)}
-                placeholder="Ex: Genin, Chūnin, Jōnin, ANBU..."
-              />
-            </label>
-
-            <label>
-              Time / célula
-              <input
-                value={form.teamName}
-                onChange={(event) => updateField("teamName", event.target.value)}
-                placeholder="Ex: Time 7, Esquadrão Sensorial..."
-              />
-            </label>
-
-            <label>
-              Sensei
-              <input
-                value={form.sensei}
-                onChange={(event) => updateField("sensei", event.target.value)}
-                placeholder="Nome do mestre"
-              />
-            </label>
-
-            <label>
-              Naturezas de chakra
-              <input
-                value={form.chakraNatures}
-                onChange={(event) => updateField("chakraNatures", event.target.value)}
-                placeholder="Ex: Katon, Raiton, Yin"
-              />
-            </label>
-
-            <label>
-              Arma principal
-              <input
-                value={form.mainWeapon}
-                onChange={(event) => updateField("mainWeapon", event.target.value)}
-                placeholder="Ex: Katana, kunai, leque, marionete..."
-              />
-            </label>
-
-            <label>
-              Contrato de invocação
-              <input
-                value={form.summonContract}
-                onChange={(event) => updateField("summonContract", event.target.value)}
-                placeholder="Ex: Sapos, cobras, corvos..."
-              />
-            </label>
-
-            <label>
-              Função em combate
-              <input
-                value={form.combatRole}
-                onChange={(event) => updateField("combatRole", event.target.value)}
-                placeholder="Ex: Suporte, assassino, tanque, sensor..."
-              />
-            </label>
-          </div>
-
-          <label>
-            Personalidade
-            <textarea
-              value={form.personality}
-              onChange={(event) => updateField("personality", event.target.value)}
-              placeholder="Descreva comportamento, temperamento, virtudes e defeitos."
-            />
-          </label>
-
-          <label>
-            Biografia completa
-            <textarea
-              value={form.biography}
-              onChange={(event) => updateField("biography", event.target.value)}
-              placeholder="Conte a origem, trajetória, perdas, conquistas e conflitos do personagem."
-            />
-          </label>
-
-          <label>
-            Objetivos
-            <textarea
-              value={form.goals}
-              onChange={(event) => updateField("goals", event.target.value)}
-              placeholder="Quais são os sonhos, ambições e metas do ninja?"
-            />
-          </label>
-
-          <label>
-            Medos / fraquezas emocionais
-            <textarea
-              value={form.fears}
-              onChange={(event) => updateField("fears", event.target.value)}
-              placeholder="O que o personagem teme perder, enfrentar ou revelar?"
-            />
-          </label>
-
-          <div className="profile-form-grid">
-            <label>
-              Aliados
-              <input
-                value={form.allies}
-                onChange={(event) => updateField("allies", event.target.value)}
-                placeholder="Aliados importantes"
-              />
-            </label>
-
-            <label>
-              Rivais
-              <input
-                value={form.rivals}
-                onChange={(event) => updateField("rivals", event.target.value)}
-                placeholder="Rivais ou inimigos recorrentes"
-              />
-            </label>
-          </div>
-
-          <label>
-            Anotações do Mestre
-            <textarea
-              value={form.notes}
-              onChange={(event) => updateField("notes", event.target.value)}
-              placeholder="Observações narrativas, limitações, segredos ou pendências."
-            />
-          </label>
-        </div>
-
         <details className="trait-selector unique-traits-accordion">
           <summary>
             <span>Traços Únicos</span>
@@ -908,254 +641,93 @@ export default function MyNinjaPage({
   function renderInfoTab() {
     if (!character) return null;
 
-    const chakraNatures = Array.isArray(character.chakra_natures)
-      ? character.chakra_natures.join(", ")
-      : "";
-
-    const display = (value, fallback = "Não informado") => {
-      if (Array.isArray(value)) {
-        return value.length ? value.join(", ") : fallback;
-      }
-
-      return value || fallback;
-    };
-
     return (
-      <div className="profile-tab-content character-complete-profile">
-        <section className="character-profile-hero">
-          <CharacterPortraitUploader
-            user={user}
-            character={character}
-            value={character.portrait_url}
-            onUploaded={(portraitUrl) => {
-              const updatedCharacter = {
-                ...character,
-                portrait_url: portraitUrl
-              };
+      <div className="profile-tab-content">
+        <div className="profile-field">
+          <strong>Nome</strong>
+          <span>{character.character_name}</span>
+        </div>
 
-              setCharacter(updatedCharacter);
-              syncCharacterToLocalStorage(updatedCharacter);
-            }}
-          />
-
-          <div className="character-profile-hero-info">
-            <p className="eyebrow">Perfil do personagem</p>
-            <h2>{character.character_name}</h2>
-
-            <span className="epithet">
-              {character.epithet || character.rank_title || "Ninja sem alcunha definida"}
+        <div className="profile-field">
+          <strong>Ícone do mapa</strong>
+          {character.icon_url ? (
+            <span className="map-icon-preview">
+              <img src={character.icon_url} alt={character.character_name} />
+              Personalizado
             </span>
+          ) : (
+            <span>Padrão</span>
+          )}
+        </div>
 
-            {character.quote && (
-              <blockquote className="character-profile-quote">
-                “{character.quote}”
-              </blockquote>
+        <div className="profile-field">
+          <strong>Idade</strong>
+          <span>{character.age || "Não informada"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Aldeia ou Organização</strong>
+          <span>{character.village_or_organization || "Não informada"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Clã ou Parentesco</strong>
+          <span>{character.clan_or_kinship || "Não informado"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Kekkei Genkai ou Hiden</strong>
+          <span>{character.kekkei_genkai_or_hiden || "Nenhum"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Estilo Ninja</strong>
+          <span>{character.ninja_style || "Não selecionado"}</span>
+        </div>
+
+        <div className="profile-field skill-points-field">
+          <strong>Pontos de habilidade</strong>
+          <span>{character.skill_points ?? 50}</span>
+        </div>
+
+        <div className="profile-field full">
+          <strong>Aparência</strong>
+          <p>{character.appearance || "Não informada."}</p>
+        </div>
+
+        <div className="profile-field full">
+          <strong>História</strong>
+          <p>{character.history || "Não informada."}</p>
+        </div>
+
+        <div className="profile-field full">
+          <strong>Equipamentos</strong>
+          <p>{character.equipment || "Nenhum equipamento informado."}</p>
+        </div>
+
+        <div className="profile-field full">
+          <strong>Traços Únicos</strong>
+          <div className="card-traits">
+            {Array.isArray(character.selected_traits) &&
+            character.selected_traits.length > 0 ? (
+              character.selected_traits.map((trait) => (
+                <span key={trait.id}>{trait.name}</span>
+              ))
+            ) : (
+              <p>Nenhum traço selecionado.</p>
             )}
-
-            <div className="character-profile-badges">
-              <span>{character.village_or_organization || "Sem aldeia"}</span>
-              <span>{character.ninja_style || "Sem estilo"}</span>
-              <span>{character.rank_title || "Sem graduação"}</span>
-            </div>
           </div>
-        </section>
-
-        <section className="profile-section-card">
-          <h3>Identidade</h3>
-
-          <div className="profile-section-grid">
-            <div className="profile-field">
-              <strong>Nome</strong>
-              <span>{character.character_name}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Player</strong>
-              <span>{character.player_name || "Não informado"}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Gênero</strong>
-              <span>{display(character.gender)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Idade</strong>
-              <span>{display(character.age)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Aniversário</strong>
-              <span>{display(character.birthday)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Altura / Peso</strong>
-              <span>
-                {character.height_cm ? `${character.height_cm} cm` : "-"} /{" "}
-                {character.weight_kg ? `${character.weight_kg} kg` : "-"}
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section className="profile-section-card">
-          <h3>Afiliação e origem</h3>
-
-          <div className="profile-section-grid">
-            <div className="profile-field">
-              <strong>Aldeia ou Organização</strong>
-              <span>{display(character.village_or_organization)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Clã ou Parentesco</strong>
-              <span>{display(character.clan_or_kinship)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Time / célula</strong>
-              <span>{display(character.team_name)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Sensei</strong>
-              <span>{display(character.sensei)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Kekkei Genkai ou Hiden</strong>
-              <span>{character.kekkei_genkai_or_hiden || "Nenhum"}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Pontos de habilidade</strong>
-              <span>{character.skill_points ?? 50}</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="profile-section-card">
-          <h3>Combate e habilidades</h3>
-
-          <div className="profile-section-grid">
-            <div className="profile-field">
-              <strong>Estilo Ninja</strong>
-              <span>{display(character.ninja_style, "Não selecionado")}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Função em combate</strong>
-              <span>{display(character.combat_role)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Naturezas de chakra</strong>
-              <span>{chakraNatures || "Não informadas"}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Arma principal</strong>
-              <span>{display(character.main_weapon)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Contrato de invocação</strong>
-              <span>{display(character.summon_contract, "Nenhum")}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Ícone do mapa</strong>
-              {character.icon_url ? (
-                <span className="map-icon-preview">
-                  <img src={character.icon_url} alt={character.character_name} />
-                  Personalizado
-                </span>
-              ) : (
-                <span>Padrão</span>
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="profile-section-card">
-          <h3>História e personalidade</h3>
-
-          <div className="profile-field full">
-            <strong>Aparência</strong>
-            <p>{character.appearance || "Não informada."}</p>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Personalidade</strong>
-            <p>{character.personality || "Não informada."}</p>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Biografia</strong>
-            <p>{character.biography || character.history || "Não informada."}</p>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Objetivos</strong>
-            <p>{character.goals || "Não informados."}</p>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Medos / fraquezas emocionais</strong>
-            <p>{character.fears || "Não informados."}</p>
-          </div>
-        </section>
-
-        <section className="profile-section-card">
-          <h3>Relações e observações</h3>
-
-          <div className="profile-section-grid">
-            <div className="profile-field">
-              <strong>Aliados</strong>
-              <span>{display(character.allies)}</span>
-            </div>
-
-            <div className="profile-field">
-              <strong>Rivais</strong>
-              <span>{display(character.rivals)}</span>
-            </div>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Equipamentos</strong>
-            <p>{character.equipment || "Nenhum equipamento informado."}</p>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Anotações do Mestre</strong>
-            <p>{character.notes || "Nenhuma anotação registrada."}</p>
-          </div>
-
-          <div className="profile-field full">
-            <strong>Traços Únicos</strong>
-            <div className="card-traits">
-              {Array.isArray(character.selected_traits) &&
-              character.selected_traits.length > 0 ? (
-                character.selected_traits.map((trait) => (
-                  <span key={trait.id}>{trait.name}</span>
-                ))
-              ) : (
-                <span>Nenhum traço selecionado.</span>
-              )}
-            </div>
-          </div>
-        </section>
+        </div>
 
         <button
+          className="save-character-button"
           type="button"
-          className="secondary-button"
           onClick={() => {
             setForm(dbToForm(character));
             setIsEditing(true);
           }}
         >
-          Editar Perfil
+          Editar Meu Ninja
         </button>
       </div>
     );
@@ -1346,7 +918,15 @@ export default function MyNinjaPage({
                 className={profileTab === "info" ? "active" : ""}
                 onClick={() => setProfileTab("info")}
               >
-                Perfil
+                Informações
+              </button>
+
+              <button
+                type="button"
+                className={profileTab === "inventory" ? "active" : ""}
+                onClick={() => setProfileTab("inventory")}
+              >
+                Inventário
               </button>
 
               <button
@@ -1365,21 +945,9 @@ export default function MyNinjaPage({
                 Teia
               </button>            </div>
 
-            {profileTab === "info" && (
-              <div className="my-ninja-unified-profile">
-                {renderInfoTab()}
-
-                <CharacterFullSheetPanel
-                  character={character}
-                  onCharacterUpdated={(updatedCharacter) => {
-                    setCharacter(updatedCharacter);
-                    setForm(dbToForm(updatedCharacter));
-                    syncCharacterToLocalStorage(updatedCharacter);
-                  }}
-                />
-
-                <CharacterInventoryPanel user={user} character={character} />
-              </div>
+            {profileTab === "info" && renderInfoTab()}
+            {profileTab === "inventory" && (
+              <CharacterInventoryPanel user={user} character={character} />
             )}
             {profileTab === "location" && renderLocationTab()}
             {profileTab === "skills" && renderSkillsTab()}
