@@ -22,6 +22,7 @@ import SoundtrackPlayer from "./components/audio/SoundtrackPlayer";
 import PasswordRecoveryWidget from "./components/auth/PasswordRecoveryWidget";
 import ShinobiDexPage from "./components/shinobidex/ShinobiDexPage";
 import AncedCalculatorPage from "./components/anced/AncedCalculatorPage";
+import LanguageSwitcher from "./components/i18n/LanguageSwitcher";
 
 /*
   Mapa com grade:
@@ -866,6 +867,8 @@ export default function App() {
       >
         {activePage === "map" ? "☰ Controles do Mapa" : "☰ Configurações"}
       </button>
+
+      {activePage === "hall" && <LanguageSwitcher className="hall-only-language-switcher" />}
 
       {activePage !== "hall" && (
         <button className="ln-hall-return-button"

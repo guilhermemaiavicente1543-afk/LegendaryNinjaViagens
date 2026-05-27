@@ -8,6 +8,7 @@ export default function CharacterPortraitUploader({
   onUploaded
 }) {
   const inputRef = useRef(null);
+  const [previewUrl, setPreviewUrl] = useState(value || "");
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -34,7 +35,8 @@ export default function CharacterPortraitUploader({
     }
 
     const extension = file.name.split(".").pop() || "png";
-    const filePath = `${user.id}/${character.id}/portrait-${Date.now()}.${extension}`;
+    const safeExtension = extension.toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
+    const filePath = `${user.id}/${character.id}/portrait-${Date.now()}.${safeExtension}`;
 
     setIsUploading(true);
 
@@ -42,7 +44,8 @@ export default function CharacterPortraitUploader({
       .from("character-portraits")
       .upload(filePath, file, {
         cacheControl: "3600",
-        upsert: true
+        upsert: true,
+        contentType: file.type
       });
 
     if (uploadError) {
@@ -51,11 +54,11 @@ export default function CharacterPortraitUploader({
       return;
     }
 
-    const { data } = supabase.storage
+    const { data: publicData } = supabase.storage
       .from("character-portraits")
       .getPublicUrl(filePath);
 
-    const publicUrl = data?.publicUrl;
+    const publicUrl = publicData?.publicUrl;
 
     if (!publicUrl) {
       setIsUploading(false);
@@ -63,13 +66,15 @@ export default function CharacterPortraitUploader({
       return;
     }
 
-    const { error: updateError } = await supabase
+    const { data: updatedCharacter, error: updateError } = await supabase
       .from("characters")
       .update({
         portrait_url: publicUrl,
         updated_at: new Date().toISOString()
       })
-      .eq("id", character.id);
+      .eq("id", character.id)
+      .select("*")
+      .single();
 
     setIsUploading(false);
 
@@ -78,15 +83,25 @@ export default function CharacterPortraitUploader({
       return;
     }
 
-    onUploaded?.(publicUrl);
+    setPreviewUrl(publicUrl);
+    onUploaded?.(publicUrl, updatedCharacter);
     setMessage("Foto do personagem atualizada.");
   }
+
+  const imageUrl = previewUrl || value || character?.portrait_url || "";
 
   return (
     <div className="character-portrait-uploader">
       <div className="character-portrait-frame">
-        {value ? (
-          <img src={value} alt={character?.character_name || "Personagem"} />
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={character?.character_name || "Personagem"}
+            onError={() => {
+              setPreviewUrl("");
+              setMessage("A imagem foi salva, mas não carregou. Verifique se o bucket está público.");
+            }}
+          />
         ) : (
           <div className="character-portrait-empty">
             <span>忍</span>

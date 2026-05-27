@@ -927,13 +927,14 @@ export default function MyNinjaPage({
             user={user}
             character={character}
             value={character.portrait_url}
-            onUploaded={(portraitUrl) => {
-              const updatedCharacter = {
+            onUploaded={(portraitUrl, updatedCharacterFromDb) => {
+              const updatedCharacter = updatedCharacterFromDb || {
                 ...character,
                 portrait_url: portraitUrl
               };
 
               setCharacter(updatedCharacter);
+              setForm(dbToForm(updatedCharacter));
               syncCharacterToLocalStorage(updatedCharacter);
             }}
           />

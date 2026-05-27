@@ -16453,3 +16453,47 @@ body,
 .selected-technique-preview small {
   color: #cbd5e1 !important;
 }
+
+/* =====================================================
+   Idioma somente no Hall
+===================================================== */
+
+.hall-only-language-switcher {
+  position: fixed !important;
+  top: 92px !important;
+  right: 28px !important;
+  z-index: 9000 !important;
+}
+
+@media (max-width: 700px) {
+  .hall-only-language-switcher {
+    top: 82px !important;
+    right: 14px !important;
+  }
+}
+
+/* =====================================================
+   Som no Meu Ninja
+===================================================== */
+
+.my-ninja-page .sound-toggle,
+.my-ninja-page .sound-button,
+.my-ninja-page .audio-toggle,
+.my-ninja-page [class*="sound"],
+.my-ninja-page [class*="Sound"] {
+  position: fixed !important;
+  right: 26px !important;
+  top: 140px !important;
+  z-index: 9100 !important;
+}
+
+@media (max-width: 700px) {
+  .my-ninja-page .sound-toggle,
+  .my-ninja-page .sound-button,
+  .my-ninja-page .audio-toggle,
+  .my-ninja-page [class*="sound"],
+  .my-ninja-page [class*="Sound"] {
+    right: 14px !important;
+    top: 74px !important;
+  }
+}
