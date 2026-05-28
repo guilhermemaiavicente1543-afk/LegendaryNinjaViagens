@@ -23044,14 +23044,3 @@ main.app .floating-sound-button:active {
     linear-gradient(180deg, rgba(146, 47, 9, 0.92), rgba(59, 18, 6, 0.96));
   font-weight: 800;
 }
-
-/* Botão de pings oficiais no mapa */
-.map-control-action span {
-  flex-shrink: 0;
-}
-
-.mobile-map-control-buttons button.active {
-  box-shadow:
-    inset 0 0 16px rgba(255, 122, 18, 0.18),
-    0 0 12px rgba(255, 122, 18, 0.18);
-}

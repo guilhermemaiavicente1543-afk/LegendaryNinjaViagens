@@ -452,21 +452,8 @@ function createCharacterIcon(travel = {}, progress = 1) {
   return divIcon({
     className: "characterMapIconWrapper",
     html: `<div class="characterMapIcon ${statusClass} ${iconUrl ? "has-custom-image" : "no-custom-image"}">${content}</div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-  });
-}
-
-function createUnknownPresenceIcon(showName = false) {
-  return divIcon({
-    className: `unknownPresenceMarkerWrapper ${showName ? "same-province" : ""}`,
-    html: `
-      <div class="unknownPresenceMarker">
-        <span class="unknownPresenceQuestion">?</span>
-      </div>
-    `,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
   });
 }
 
@@ -528,58 +515,6 @@ function readCharacterLocations() {
 }
 
 
-const CHARACTER_DIMENSION_STORAGE_KEY = "ln-character-dimension-locations";
-
-const DIMENSION_TARGET_OPTIONS = [
-  {
-    value: "invocacao",
-    label: "Mundo da Invocação"
-  },
-  {
-    value: "kamui",
-    label: "Kamui"
-  },
-  {
-    value: "outra",
-    label: "Outra dimensão"
-  }
-];
-
-function readCharacterDimensionLocations() {
-  try {
-    const parsed = JSON.parse(
-      localStorage.getItem(CHARACTER_DIMENSION_STORAGE_KEY) || "{}"
-    );
-
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-function writeCharacterDimensionLocations(locations) {
-  localStorage.setItem(
-    CHARACTER_DIMENSION_STORAGE_KEY,
-    JSON.stringify(locations || {})
-  );
-}
-
-function getDimensionTargetLabel(kind, customName = "") {
-  const cleanName = String(customName || "").trim();
-
-  if (kind === "invocacao") {
-    return cleanName
-      ? `Mundo da Invocação — ${cleanName}`
-      : "Mundo da Invocação";
-  }
-
-  if (kind === "kamui") {
-    return cleanName ? `Kamui — ${cleanName}` : "Kamui";
-  }
-
-  return cleanName || "Outra dimensão";
-}
-
 const MAP_PING_ICON_PATHS = {
   invocacao: "/map-ping-icons/iconinvoc.png",
   vila: "/map-ping-icons/iconvila.png",
@@ -594,7 +529,7 @@ function getMapPingIconPath(iconKey = "vila") {
 
 function createMapPingImageIcon(ping = {}, isSelected = false) {
   const iconPath = getMapPingIconPath(ping.icon_key);
-  const size = isSelected ? 50 : 42;
+  const size = isSelected ? 36 : 30;
   const anchorY = Math.round(size * 0.92);
 
   return divIcon({
@@ -627,17 +562,8 @@ export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
   const [showImageGrid, setShowImageGrid] = useState(false);
-  const [showOverlayGrid, setShowOverlayGrid] = useState(false);
-  const [showSmallGrid, setShowSmallGrid] = useState(false);
-  const [showMapPings, setShowMapPings] = useState(true);
-
-  useEffect(() => {
-    if (!showMapPings) {
-      setSelectedMapPing(null);
-      setMapPingImagePreview(null);
-    }
-  }, [showMapPings]);
-
+  const [showOverlayGrid, setShowOverlayGrid] = useState(true);
+  const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.5);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [activePage, setActivePage] = useState("hall");
@@ -652,12 +578,6 @@ export default function App() {
   const [characterLocations, setCharacterLocations] = useState(() =>
     readCharacterLocations()
   );
-  const [dimensionLocations, setDimensionLocations] = useState(() =>
-    readCharacterDimensionLocations()
-  );
-  const [selectedDimensionKind, setSelectedDimensionKind] = useState("invocacao");
-  const [dimensionTargetName, setDimensionTargetName] = useState("");
-
   const [now, setNow] = useState(Date.now());
   const [session, setSession] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -758,11 +678,6 @@ export default function App() {
     [selectedTravelCharacterId, travelCharacters]
   );
 
-  const selectedCharacterDimension = selectedTravelCharacterId
-    ? dimensionLocations[String(selectedTravelCharacterId)] || null
-    : null;
-
-
   function findTravelCharacter(characterId) {
     if (!characterId) return null;
 
@@ -822,77 +737,6 @@ export default function App() {
     };
   }
 
-
-  function saveDimensionLocations(nextLocations) {
-    setDimensionLocations(nextLocations);
-    writeCharacterDimensionLocations(nextLocations);
-  }
-
-  async function startDimensionTeleport() {
-    if (!selectedTravelCharacter) {
-      alert("Selecione um personagem antes de viajar para outra dimensão.");
-      return;
-    }
-
-    const characterId = String(selectedTravelCharacter.id);
-    const currentCoord = getCurrentCoordinateForCharacter(selectedTravelCharacter.id);
-
-    const dimensionLabel = getDimensionTargetLabel(
-      selectedDimensionKind,
-      dimensionTargetName
-    );
-
-    const nextLocations = {
-      ...dimensionLocations,
-      [characterId]: {
-        characterId,
-        characterName:
-          selectedTravelCharacter.characterName ||
-          selectedTravelCharacter.character_name ||
-          selectedTravelCharacter.name ||
-          "Ninja sem nome",
-        kind: selectedDimensionKind,
-        label: dimensionLabel,
-        previousCoord: currentCoord || null,
-        enteredAt: new Date().toISOString()
-      }
-    };
-
-    saveDimensionLocations(nextLocations);
-
-    setPoints([]);
-
-    setTravels((current) =>
-      current.filter((travel) => String(travel.characterId) !== characterId)
-    );
-
-    if (isSupabaseConfigured && supabase && session?.user) {
-      await supabase
-        .from("travels")
-        .delete()
-        .eq("character_id", selectedTravelCharacter.id);
-    }
-
-    alert(`${selectedTravelCharacter.characterName || "Personagem"} entrou em: ${dimensionLabel}`);
-  }
-
-  function returnFromDimension() {
-    if (!selectedTravelCharacter) return;
-
-    const characterId = String(selectedTravelCharacter.id);
-
-    if (!dimensionLocations[characterId]) {
-      alert("Este personagem não está em outra dimensão.");
-      return;
-    }
-
-    const nextLocations = { ...dimensionLocations };
-    delete nextLocations[characterId];
-
-    saveDimensionLocations(nextLocations);
-
-    alert(`${selectedTravelCharacter.characterName || "Personagem"} retornou ao mapa.`);
-  }
 
   async function loadMapPings() {
     if (!isSupabaseConfigured || !supabase) {
@@ -1169,13 +1013,7 @@ export default function App() {
     );
   }
   const selectedMapTravel =
-    travels.find(
-      (item) =>
-        item.characterId === selectedTravelCharacterId &&
-        !dimensionLocations[String(item.characterId)]
-    ) || null;
-
-  const publicMapTravels = selectedMapTravel ? [selectedMapTravel] : [];
+    travels.find((item) => item.characterId === selectedTravelCharacterId) || null;
 
   const selectedInitialCoord =
     selectedTravelCharacter && !selectedMapTravel
@@ -1197,50 +1035,12 @@ export default function App() {
         );
 
         return {
-          currentPoint,
           currentCoord,
           unknownPresences,
           text: formatUnknownPresences(unknownPresences)
         };
       })()
     : null;
-
-  const unknownPresenceMarkers =
-    selectedMapTravel && selectedMapPresence?.currentCoord
-      ? travels
-          .filter((travel) => String(travel.characterId) !== String(selectedMapTravel.characterId))
-          .filter((travel) => !dimensionLocations[String(travel.characterId)])
-          .map((travel) => {
-            const currentPoint = getTravelCurrentPoint(travel, now);
-            const currentCoord = getCoordinate({
-              lat: currentPoint[0],
-              lng: currentPoint[1]
-            });
-
-            if (!currentCoord) return null;
-
-            const sameMacroRegion =
-              currentCoord.macroLabel &&
-              selectedMapPresence.currentCoord.macroLabel &&
-              currentCoord.macroLabel === selectedMapPresence.currentCoord.macroLabel;
-
-            if (!sameMacroRegion) return null;
-
-            const sameProvince =
-              currentCoord.label &&
-              selectedMapPresence.currentCoord.label &&
-              currentCoord.label === selectedMapPresence.currentCoord.label;
-
-            return {
-              id: travel.id,
-              characterName: travel.characterName || travel.character_name || "Personagem desconhecido",
-              position: currentPoint,
-              coord: currentCoord,
-              sameProvince
-            };
-          })
-          .filter(Boolean)
-      : [];
 
   return (
     <main className={`app app-${activePage}`}>
@@ -1406,15 +1206,6 @@ export default function App() {
               <span>◌</span>
               {showOverlayGrid ? "Ocultar grade do sistema" : "Mostrar grade do sistema"}
             </button>
-
-            <button
-              type="button"
-              className="map-control-action"
-              onClick={() => setShowMapPings((current) => !current)}
-            >
-              <span>⌖</span>
-              {showMapPings ? "Ocultar pings do mapa" : "Mostrar pings do mapa"}
-            </button>
 <label className="map-control-check">
               <input
                 type="checkbox"
@@ -1492,47 +1283,6 @@ export default function App() {
               <span>↻</span>
               Atualizar personagens
             </button>
-
-            <div className="map-dimension-tools">
-              <h4>Viagem dimensional</h4>
-
-              {selectedCharacterDimension ? (
-                <div className="map-dimension-status">
-                  <span>Fora do mapa</span>
-                  <strong>{selectedCharacterDimension.label}</strong>
-                  <button type="button" onClick={returnFromDimension}>
-                    Retornar ao mapa
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <select
-                    value={selectedDimensionKind}
-                    onChange={(event) => setSelectedDimensionKind(event.target.value)}
-                  >
-                    {DIMENSION_TARGET_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-
-                  <input
-                    value={dimensionTargetName}
-                    onChange={(event) => setDimensionTargetName(event.target.value)}
-                    placeholder="Ex: Sapos, Cobras, Kamui particular..."
-                  />
-
-                  <button
-                    type="button"
-                    className="map-control-danger"
-                    onClick={startDimensionTeleport}
-                  >
-                    Teleportar para dimensão
-                  </button>
-                </>
-              )}
-            </div>
           </section>
 
           <section className="map-control-section map-control-presence">
@@ -1754,15 +1504,6 @@ export default function App() {
                   {showSmallGrid ? "Províncias" : "Sem províncias"}
                 </button>
 
-                <button
-                  type="button"
-                  className={showMapPings ? "active" : ""}
-                  onClick={() => setShowMapPings((current) => !current)}
-                >
-                  <span>⌖</span>
-                  {showMapPings ? "Pings ativos" : "Sem pings"}
-                </button>
-
                 <button type="button" onClick={() => setPoints([])}>
                   <span>◎</span>
                   Limpar pontos
@@ -1794,40 +1535,6 @@ export default function App() {
                   <span>↻</span>
                   Atualizar
                 </button>
-
-                <div className="mobile-dimension-tools">
-                  {selectedCharacterDimension ? (
-                    <>
-                      <strong>Fora do mapa: {selectedCharacterDimension.label}</strong>
-                      <button type="button" onClick={returnFromDimension}>
-                        Retornar ao mapa
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <select
-                        value={selectedDimensionKind}
-                        onChange={(event) => setSelectedDimensionKind(event.target.value)}
-                      >
-                        {DIMENSION_TARGET_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-
-                      <input
-                        value={dimensionTargetName}
-                        onChange={(event) => setDimensionTargetName(event.target.value)}
-                        placeholder="Invocação ou dimensão"
-                      />
-
-                      <button type="button" onClick={startDimensionTeleport}>
-                        Teleportar dimensão
-                      </button>
-                    </>
-                  )}
-                </div>
 
                 <button type="button" className="primary" onClick={startCharacterTravel}>
                   Iniciar viagem
@@ -1879,7 +1586,7 @@ export default function App() {
               />
             ))}
 
-          {publicMapTravels.map((travel) => (
+          {travels.map((travel) => (
             <Polyline
               key={`route-${travel.id}`}
               positions={[travel.startCenter, travel.endCenter]}
@@ -1894,31 +1601,6 @@ export default function App() {
           ))}
 
           <ClickHandler onMapClick={handleMapClick} />
-
-          {unknownPresenceMarkers.map((presence) => (
-            <Marker
-              key={`unknown-presence-${presence.id}`}
-              position={presence.position}
-              icon={createUnknownPresenceIcon(presence.sameProvince)}
-              interactive={true}
-            >
-              <Tooltip direction="top">
-                <strong>
-                  {presence.sameProvince
-                    ? presence.characterName
-                    : "Presença desconhecida"}
-                </strong>
-                <br />
-                {presence.sameProvince
-                  ? "Está exatamente na mesma província que você."
-                  : "Há um personagem nesta região."}
-                <br />
-                Região: {presence.coord.macroLabel || "-"}
-                <br />
-                Província: {presence.coord.provinceLabel || presence.coord.label || "-"}
-              </Tooltip>
-            </Marker>
-          ))}
 
           {points.map((point, index) => (
             <CircleMarker
@@ -1948,7 +1630,7 @@ export default function App() {
               }}
             />
           )}
-          {showMapPings && mapPings.map((ping) => {
+          {mapPings.map((ping) => {
             const lat = Number(ping.lat);
             const lng = Number(ping.lng);
             const isSelected = selectedMapPing?.id === ping.id;
@@ -1980,7 +1662,7 @@ export default function App() {
             );
           })}
 
-          {publicMapTravels.map((travel) => {
+          {travels.map((travel) => {
             const progress = getTravelProgress(travel, now);
             const currentPoint = getTravelCurrentPoint(travel, now);
             const currentCoord = getCoordinate({
@@ -2008,7 +1690,7 @@ export default function App() {
             );
           })}
 
-          {selectedInitialCoord && !selectedCharacterDimension && (
+          {selectedInitialCoord && (
             <Marker
               key={`initial-${selectedTravelCharacter.id}`}
               position={getSmallCellCenter(selectedInitialCoord)}

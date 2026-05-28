@@ -1,14 +1,10 @@
-import { useState } from "react";
 import L, { CRS } from "leaflet";
 import {
   ImageOverlay,
   MapContainer,
   Marker,
   Polyline,
-  Tooltip,
-  CircleMarker,
-  Popup,
-  useMapEvents
+  Tooltip
 } from "react-leaflet";
 
 const MAP_WIDTH = 1080;
@@ -39,67 +35,23 @@ function createAdminCharacterIcon(travel) {
   });
 }
 
-function AdminPingClickCapture({ enabled, onPick }) {
-  useMapEvents({
-    click(event) {
-      if (!enabled) return;
-      onPick(event.latlng);
-    }
-  });
-
-  return null;
-}
-
-export default function AdminWorldMap({
-  travelRows = [],
-  enablePingPicker = false,
-  title = "Localização revelada dos personagens",
-  description = "Visualização do mestre com nome real, região, rota e progresso dos personagens."
-}) {
-  const [pickedPoint, setPickedPoint] = useState(null);
-
+export default function AdminWorldMap({ travelRows = [] }) {
   const visibleTravels = travelRows.filter((travel) =>
     Array.isArray(travel.currentPoint)
   );
-
-  function handlePickPoint(latlng) {
-    const payload = {
-      lat: Number(latlng.lat.toFixed(4)),
-      lng: Number(latlng.lng.toFixed(4)),
-      pickedAt: new Date().toISOString()
-    };
-
-    setPickedPoint([payload.lat, payload.lng]);
-
-    localStorage.setItem("ln-admin-map-last-ping-point", JSON.stringify(payload));
-
-    window.dispatchEvent(
-      new CustomEvent("ln-admin-map-ping-point", {
-        detail: payload
-      })
-    );
-  }
 
   return (
     <div className="admin-world-map-card">
       <div className="admin-world-map-header">
         <div>
-          <p className="eyebrow">{enablePingPicker ? "Cartografia ADM" : "Mapa ADM"}</p>
-          <h2>{enablePingPicker ? "Clique no mapa para posicionar o ping" : title}</h2>
+          <p className="eyebrow">Mapa ADM</p>
+          <h2>Localização revelada dos personagens</h2>
           <p>
-            {enablePingPicker
-              ? "Clique exatamente no local onde o ping oficial deve aparecer. A latitude e longitude internas serão enviadas ao formulário de Cartografia."
-              : description}
+            Visualização do mestre com nome real, região, rota e progresso dos personagens.
           </p>
         </div>
 
-        <strong>
-          {enablePingPicker
-            ? pickedPoint
-              ? `${pickedPoint[0]} / ${pickedPoint[1]}`
-              : "Aguardando clique"
-            : `${visibleTravels.length} personagens localizados`}
-        </strong>
+        <strong>{visibleTravels.length} personagens localizados</strong>
       </div>
 
       <div className="admin-world-map-stage">
@@ -116,32 +68,6 @@ export default function AdminWorldMap({
           style={{ height: "100%", width: "100%" }}
         >
           <ImageOverlay url={MAP_IMAGE_CLEAN} bounds={imageBounds} />
-
-          <AdminPingClickCapture
-            enabled={enablePingPicker}
-            onPick={handlePickPoint}
-          />
-
-          {enablePingPicker && pickedPoint && (
-            <CircleMarker
-              center={pickedPoint}
-              radius={10}
-              pathOptions={{
-                color: "#ff7a00",
-                fillColor: "#ff7a00",
-                fillOpacity: 0.88,
-                weight: 3
-              }}
-            >
-              <Popup>
-                <strong>Ponto selecionado</strong>
-                <br />
-                Lat: {pickedPoint[0]}
-                <br />
-                Lng: {pickedPoint[1]}
-              </Popup>
-            </CircleMarker>
-          )}
 
           {visibleTravels.map((travel) => (
             <Polyline

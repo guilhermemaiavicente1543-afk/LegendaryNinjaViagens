@@ -5,7 +5,6 @@ import CouponManager from "./CouponManager";
 import AppearanceManager from "./AppearanceManager";
 import AdminWorldMap from "./AdminWorldMap";
 import ShinobiDexAdmin from "./ShinobiDexAdmin";
-import SystemKnowledgeManager from "./SystemKnowledgeManager";
 import MapPingManager from "./MapPingManager";
 
 function dbTravelToAppTravel(row) {
@@ -296,23 +295,6 @@ export default function AdminPanel({
           <div className="admin-mode-tabs">
             <button
               type="button"
-              className={adminView === "map-pings" ? "active" : ""}
-              onClick={() => setAdminView("map-pings")}
-            >
-              Cartografia
-            </button>
-
-          <button
-            type="button"
-            className={adminView === "system-knowledge" ? "active" : ""}
-            onClick={() => setAdminView("system-knowledge")}
-          >
-            Base de Sistemas
-          </button>
-
-
-            <button
-              type="button"
               onClick={() => setAdminView("overview")}
             >
               Visão Geral
@@ -357,23 +339,6 @@ export default function AdminPanel({
           <div className="admin-mode-tabs">
             <button
               type="button"
-              className={adminView === "map-pings" ? "active" : ""}
-              onClick={() => setAdminView("map-pings")}
-            >
-              Cartografia
-            </button>
-
-          <button
-            type="button"
-            className={adminView === "system-knowledge" ? "active" : ""}
-            onClick={() => setAdminView("system-knowledge")}
-          >
-            Base de Sistemas
-          </button>
-
-
-            <button
-              type="button"
               onClick={() => setAdminView("overview")}
             >
               Visão Geral
@@ -412,23 +377,6 @@ export default function AdminPanel({
           </p>
 
           <div className="admin-mode-tabs">
-            <button
-              type="button"
-              className={adminView === "map-pings" ? "active" : ""}
-              onClick={() => setAdminView("map-pings")}
-            >
-              Cartografia
-            </button>
-
-          <button
-            type="button"
-            className={adminView === "system-knowledge" ? "active" : ""}
-            onClick={() => setAdminView("system-knowledge")}
-          >
-            Base de Sistemas
-          </button>
-
-
             <button
               type="button"
               onClick={() => setAdminView("overview")}
@@ -472,52 +420,6 @@ export default function AdminPanel({
     );
   }
 
-  if (adminView === "system-knowledge") {
-    return (
-      <section className="admin-page">
-        <div className="admin-card admin-card-wide">
-          <p className="eyebrow">Painel do Mestre</p>
-          <h1>Base de Sistemas</h1>
-          <p>
-            Cadastre os sistemas oficiais que serão usados pelo Pergaminho de Dúvidas dos players.
-          </p>
-
-          <div className="admin-mode-tabs">
-            <button type="button" onClick={() => setAdminView("overview")}>
-              Visão Geral
-            </button>
-
-            <button type="button" onClick={() => setAdminView("appearances")}>
-              Aparências
-            </button>
-
-            <button type="button" onClick={() => setAdminView("shinobidex")}>
-              ShinobiDex
-            </button>
-
-            <button type="button" onClick={() => setAdminView("map-pings")}>
-              Cartografia
-            </button>
-
-            <button type="button" className="active" onClick={() => setAdminView("system-knowledge")}>
-              Base de Sistemas
-            </button>
-
-            <button type="button" onClick={() => setAdminView("coupons")}>
-              Cupons
-            </button>
-
-            <button type="button" onClick={() => setAdminView("tree-editor")}>
-              Editor da Teia
-            </button>
-          </div>
-        </div>
-
-        <SystemKnowledgeManager />
-      </section>
-    );
-  }
-
   if (adminView === "map-pings") {
     return (
       <section className="admin-page">
@@ -546,15 +448,6 @@ export default function AdminPanel({
               Cartografia
             </button>
 
-          <button
-            type="button"
-            className={adminView === "system-knowledge" ? "active" : ""}
-            onClick={() => setAdminView("system-knowledge")}
-          >
-            Base de Sistemas
-          </button>
-
-
             <button type="button" onClick={() => setAdminView("coupons")}>
               Cupons
             </button>
@@ -565,7 +458,6 @@ export default function AdminPanel({
           </div>
         </div>
 
-        <AdminWorldMap travelRows={[]} enablePingPicker />
         <MapPingManager />
       </section>
     );
@@ -582,23 +474,6 @@ export default function AdminPanel({
           </p>
 
           <div className="admin-mode-tabs">
-            <button
-              type="button"
-              className={adminView === "map-pings" ? "active" : ""}
-              onClick={() => setAdminView("map-pings")}
-            >
-              Cartografia
-            </button>
-
-          <button
-            type="button"
-            className={adminView === "system-knowledge" ? "active" : ""}
-            onClick={() => setAdminView("system-knowledge")}
-          >
-            Base de Sistemas
-          </button>
-
-
             <button
               type="button"
               onClick={() => setAdminView("overview")}
@@ -639,23 +514,6 @@ export default function AdminPanel({
         </p>
 
         <div className="admin-mode-tabs">
-            <button
-              type="button"
-              className={adminView === "map-pings" ? "active" : ""}
-              onClick={() => setAdminView("map-pings")}
-            >
-              Cartografia
-            </button>
-
-          <button
-            type="button"
-            className={adminView === "system-knowledge" ? "active" : ""}
-            onClick={() => setAdminView("system-knowledge")}
-          >
-            Base de Sistemas
-          </button>
-
-
           <button
             type="button"
             className={adminView === "overview" ? "active" : ""}

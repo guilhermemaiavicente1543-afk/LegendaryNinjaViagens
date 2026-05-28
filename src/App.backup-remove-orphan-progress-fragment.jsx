@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   ImageOverlay,
@@ -24,7 +24,6 @@ import PasswordRecoveryWidget from "./components/auth/PasswordRecoveryWidget";
 import ShinobiDexPage from "./components/shinobidex/ShinobiDexPage";
 import AncedCalculatorPage from "./components/anced/AncedCalculatorPage";
 import LegendsPage from "./components/legends/LegendsPage";
-import PlayerKnowledgeAssistant from "./components/knowledge/PlayerKnowledgeAssistant";
 
 /*
   Mapa com grade:
@@ -452,21 +451,104 @@ function createCharacterIcon(travel = {}, progress = 1) {
   return divIcon({
     className: "characterMapIconWrapper",
     html: `<div class="characterMapIcon ${statusClass} ${iconUrl ? "has-custom-image" : "no-custom-image"}">${content}</div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
+    iconSize: [46, 46],
+    iconAnchor: [23, 23]
   });
 }
 
-function createUnknownPresenceIcon(showName = false) {
+function getMapPingSymbol(type = "") {
+  const normalized = String(type || "").toLowerCase();
+
+  if (normalized.includes("vila")) return "里";
+  if (normalized.includes("país") || normalized.includes("pais")) return "国";
+  if (normalized.includes("cidade")) return "町";
+  if (normalized.includes("organização") || normalized.includes("organizacao")) return "暁";
+  if (normalized.includes("base")) return "砦";
+  if (normalized.includes("campo")) return "⚔";
+  if (normalized.includes("ruína") || normalized.includes("ruina")) return "遺";
+  if (normalized.includes("laboratório") || normalized.includes("laboratorio")) return "研";
+  if (normalized.includes("templo")) return "寺";
+  if (normalized.includes("porto")) return "港";
+  if (normalized.includes("perigosa")) return "!";
+  if (normalized.includes("evento")) return "炎";
+
+  return "印";
+}
+
+function createMapPingIcon(ping = {}) {
+  const symbol = escapeHtml(getMapPingSymbol(ping.type));
+  const type = escapeHtml(ping.type || "Local");
+
   return divIcon({
-    className: `unknownPresenceMarkerWrapper ${showName ? "same-province" : ""}`,
+    className: "ln-map-ping-marker",
     html: `
-      <div class="unknownPresenceMarker">
-        <span class="unknownPresenceQuestion">?</span>
+      <div class="ln-map-ping-icon" title="${type}">
+        <span>${symbol}</span>
       </div>
     `,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -24]
+  });
+}
+, progress = 1) {
+  const statusClass = progress >= 1 ? "arrived" : "moving";
+
+  const rawIconUrl =
+    travel.characterIconUrl ||
+    travel.iconUrl ||
+    travel.icon_url ||
+    travel.character_icon_url ||
+    travel.mapIconUrl ||
+    travel.map_icon_url ||
+    travel.photoUrl ||
+    travel.photo_url ||
+    travel.portraitUrl ||
+    travel.portrait_url ||
+    travel.profileImageUrl ||
+    travel.profile_image_url ||
+    "";
+
+  const cleanIconUrl = String(rawIconUrl || "").trim();
+
+  const iconUrl =
+    cleanIconUrl &&
+    (
+      cleanIconUrl.startsWith("http://") ||
+      cleanIconUrl.startsWith("https://") ||
+      cleanIconUrl.startsWith("data:image/") ||
+      cleanIconUrl.startsWith("blob:") ||
+      cleanIconUrl.startsWith("/")
+    )
+      ? cleanIconUrl
+      : cleanIconUrl
+        ? `/${cleanIconUrl}`
+        : "";
+
+  const characterName =
+    travel.characterName ||
+    travel.character_name ||
+    travel.name ||
+    "Ninja";
+
+  const content = iconUrl
+    ? `
+      <img
+        src="${escapeHtml(iconUrl)}"
+        alt="${escapeHtml(characterName)}"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        onerror="this.remove(); this.closest('.characterMapIcon')?.classList.add('broken-image');"
+      />
+      <span class="characterMapIconFallback">忍</span>
+    `
+    : `<span class="characterMapIconFallback visible">忍</span>`;
+
+  return divIcon({
+    className: "characterMapIconWrapper",
+    html: `<div class="characterMapIcon ${statusClass} ${iconUrl ? "has-custom-image" : "no-custom-image"}">${content}</div>`,
+    iconSize: [46, 46],
+    iconAnchor: [23, 23],
   });
 }
 
@@ -527,98 +609,6 @@ function readCharacterLocations() {
   }
 }
 
-
-const CHARACTER_DIMENSION_STORAGE_KEY = "ln-character-dimension-locations";
-
-const DIMENSION_TARGET_OPTIONS = [
-  {
-    value: "invocacao",
-    label: "Mundo da Invocação"
-  },
-  {
-    value: "kamui",
-    label: "Kamui"
-  },
-  {
-    value: "outra",
-    label: "Outra dimensão"
-  }
-];
-
-function readCharacterDimensionLocations() {
-  try {
-    const parsed = JSON.parse(
-      localStorage.getItem(CHARACTER_DIMENSION_STORAGE_KEY) || "{}"
-    );
-
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-function writeCharacterDimensionLocations(locations) {
-  localStorage.setItem(
-    CHARACTER_DIMENSION_STORAGE_KEY,
-    JSON.stringify(locations || {})
-  );
-}
-
-function getDimensionTargetLabel(kind, customName = "") {
-  const cleanName = String(customName || "").trim();
-
-  if (kind === "invocacao") {
-    return cleanName
-      ? `Mundo da Invocação — ${cleanName}`
-      : "Mundo da Invocação";
-  }
-
-  if (kind === "kamui") {
-    return cleanName ? `Kamui — ${cleanName}` : "Kamui";
-  }
-
-  return cleanName || "Outra dimensão";
-}
-
-const MAP_PING_ICON_PATHS = {
-  invocacao: "/map-ping-icons/iconinvoc.png",
-  vila: "/map-ping-icons/iconvila.png",
-  construcao: "/map-ping-icons/iconconstr.png",
-  desconhecido: "/map-ping-icons/iconinterrogacao.png",
-  alerta: "/map-ping-icons/iconexcla.png"
-};
-
-function getMapPingIconPath(iconKey = "vila") {
-  return MAP_PING_ICON_PATHS[iconKey] || MAP_PING_ICON_PATHS.vila;
-}
-
-function createMapPingImageIcon(ping = {}, isSelected = false) {
-  const iconPath = getMapPingIconPath(ping.icon_key);
-  const size = isSelected ? 50 : 42;
-  const anchorY = Math.round(size * 0.92);
-
-  return divIcon({
-    className: `map-ping-image-marker-wrapper ${isSelected ? "selected" : ""}`,
-    html: `
-      <div
-        class="map-ping-image-marker"
-        style="width:${size}px;height:${size}px;max-width:${size}px;max-height:${size}px;"
-      >
-        <img
-          src="${iconPath}"
-          alt=""
-          draggable="false"
-          style="width:${size}px;height:${size}px;max-width:${size}px;max-height:${size}px;object-fit:contain;display:block;"
-        />
-      </div>
-    `,
-    iconSize: [size, size],
-    iconAnchor: [Math.round(size / 2), anchorY],
-    tooltipAnchor: [0, -size]
-  });
-}
-
-
 function writeCharacterLocations(locations) {
   localStorage.setItem(CHARACTER_LOCATION_STORAGE_KEY, JSON.stringify(locations));
 }
@@ -627,18 +617,9 @@ export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
   const [showImageGrid, setShowImageGrid] = useState(false);
-  const [showOverlayGrid, setShowOverlayGrid] = useState(false);
-  const [showSmallGrid, setShowSmallGrid] = useState(false);
-  const [showMapPings, setShowMapPings] = useState(true);
-
-  useEffect(() => {
-    if (!showMapPings) {
-      setSelectedMapPing(null);
-      setMapPingImagePreview(null);
-    }
-  }, [showMapPings]);
-
-  const [gridOpacity, setGridOpacity] = useState(0.5);
+  const [showOverlayGrid, setShowOverlayGrid] = useState(true);
+  const [showSmallGrid, setShowSmallGrid] = useState(true);
+  const [gridOpacity, setGridOpacity] = useState(0.35);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [activePage, setActivePage] = useState("hall");
   const [showMobileMapOptions, setShowMobileMapOptions] = useState(true);
@@ -646,18 +627,9 @@ export default function App() {
   const [selectedTravelCharacterId, setSelectedTravelCharacterId] = useState("");
   const [travels, setTravels] = useState(() => readSavedTravels());
   const [mapPings, setMapPings] = useState([]);
-  const [selectedMapPing, setSelectedMapPing] = useState(null);
-  const [mapPingImagePreview, setMapPingImagePreview] = useState(null);
-  const ignoreNextMapClickRef = useRef(false);
   const [characterLocations, setCharacterLocations] = useState(() =>
     readCharacterLocations()
   );
-  const [dimensionLocations, setDimensionLocations] = useState(() =>
-    readCharacterDimensionLocations()
-  );
-  const [selectedDimensionKind, setSelectedDimensionKind] = useState("invocacao");
-  const [dimensionTargetName, setDimensionTargetName] = useState("");
-
   const [now, setNow] = useState(Date.now());
   const [session, setSession] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -740,6 +712,7 @@ export default function App() {
     loadMapPings();
   }, []);
 
+
   useEffect(() => {
     setTravelCharacters(readSavedCharacters());
   }, [activePage]);
@@ -757,11 +730,6 @@ export default function App() {
       ),
     [selectedTravelCharacterId, travelCharacters]
   );
-
-  const selectedCharacterDimension = selectedTravelCharacterId
-    ? dimensionLocations[String(selectedTravelCharacterId)] || null
-    : null;
-
 
   function findTravelCharacter(characterId) {
     if (!characterId) return null;
@@ -822,77 +790,6 @@ export default function App() {
     };
   }
 
-
-  function saveDimensionLocations(nextLocations) {
-    setDimensionLocations(nextLocations);
-    writeCharacterDimensionLocations(nextLocations);
-  }
-
-  async function startDimensionTeleport() {
-    if (!selectedTravelCharacter) {
-      alert("Selecione um personagem antes de viajar para outra dimensão.");
-      return;
-    }
-
-    const characterId = String(selectedTravelCharacter.id);
-    const currentCoord = getCurrentCoordinateForCharacter(selectedTravelCharacter.id);
-
-    const dimensionLabel = getDimensionTargetLabel(
-      selectedDimensionKind,
-      dimensionTargetName
-    );
-
-    const nextLocations = {
-      ...dimensionLocations,
-      [characterId]: {
-        characterId,
-        characterName:
-          selectedTravelCharacter.characterName ||
-          selectedTravelCharacter.character_name ||
-          selectedTravelCharacter.name ||
-          "Ninja sem nome",
-        kind: selectedDimensionKind,
-        label: dimensionLabel,
-        previousCoord: currentCoord || null,
-        enteredAt: new Date().toISOString()
-      }
-    };
-
-    saveDimensionLocations(nextLocations);
-
-    setPoints([]);
-
-    setTravels((current) =>
-      current.filter((travel) => String(travel.characterId) !== characterId)
-    );
-
-    if (isSupabaseConfigured && supabase && session?.user) {
-      await supabase
-        .from("travels")
-        .delete()
-        .eq("character_id", selectedTravelCharacter.id);
-    }
-
-    alert(`${selectedTravelCharacter.characterName || "Personagem"} entrou em: ${dimensionLabel}`);
-  }
-
-  function returnFromDimension() {
-    if (!selectedTravelCharacter) return;
-
-    const characterId = String(selectedTravelCharacter.id);
-
-    if (!dimensionLocations[characterId]) {
-      alert("Este personagem não está em outra dimensão.");
-      return;
-    }
-
-    const nextLocations = { ...dimensionLocations };
-    delete nextLocations[characterId];
-
-    saveDimensionLocations(nextLocations);
-
-    alert(`${selectedTravelCharacter.characterName || "Personagem"} retornou ao mapa.`);
-  }
 
   async function loadMapPings() {
     if (!isSupabaseConfigured || !supabase) {
@@ -1119,14 +1016,6 @@ export default function App() {
   const gridLines = useMemo(() => buildGridLines(showSmallGrid), [showSmallGrid]);
 
   function handleMapClick(latlng) {
-    if (ignoreNextMapClickRef.current) {
-      ignoreNextMapClickRef.current = false;
-      return;
-    }
-
-    setSelectedMapPing(null);
-    setMapPingImagePreview(null);
-
     const coord = getCoordinate(latlng);
 
     if (!coord) {
@@ -1169,13 +1058,7 @@ export default function App() {
     );
   }
   const selectedMapTravel =
-    travels.find(
-      (item) =>
-        item.characterId === selectedTravelCharacterId &&
-        !dimensionLocations[String(item.characterId)]
-    ) || null;
-
-  const publicMapTravels = selectedMapTravel ? [selectedMapTravel] : [];
+    travels.find((item) => item.characterId === selectedTravelCharacterId) || null;
 
   const selectedInitialCoord =
     selectedTravelCharacter && !selectedMapTravel
@@ -1197,7 +1080,6 @@ export default function App() {
         );
 
         return {
-          currentPoint,
           currentCoord,
           unknownPresences,
           text: formatUnknownPresences(unknownPresences)
@@ -1205,48 +1087,10 @@ export default function App() {
       })()
     : null;
 
-  const unknownPresenceMarkers =
-    selectedMapTravel && selectedMapPresence?.currentCoord
-      ? travels
-          .filter((travel) => String(travel.characterId) !== String(selectedMapTravel.characterId))
-          .filter((travel) => !dimensionLocations[String(travel.characterId)])
-          .map((travel) => {
-            const currentPoint = getTravelCurrentPoint(travel, now);
-            const currentCoord = getCoordinate({
-              lat: currentPoint[0],
-              lng: currentPoint[1]
-            });
-
-            if (!currentCoord) return null;
-
-            const sameMacroRegion =
-              currentCoord.macroLabel &&
-              selectedMapPresence.currentCoord.macroLabel &&
-              currentCoord.macroLabel === selectedMapPresence.currentCoord.macroLabel;
-
-            if (!sameMacroRegion) return null;
-
-            const sameProvince =
-              currentCoord.label &&
-              selectedMapPresence.currentCoord.label &&
-              currentCoord.label === selectedMapPresence.currentCoord.label;
-
-            return {
-              id: travel.id,
-              characterName: travel.characterName || travel.character_name || "Personagem desconhecido",
-              position: currentPoint,
-              coord: currentCoord,
-              sameProvince
-            };
-          })
-          .filter(Boolean)
-      : [];
-
   return (
     <main className={`app app-${activePage}`}>
       <SoundtrackPlayer />
       <PasswordRecoveryWidget session={session} />
-      {activePage !== "hall" && activePage !== "admin" && <PlayerKnowledgeAssistant />}
       <button
         className="mobileConfigButton"
         onClick={() => setIsPanelOpen(true)}
@@ -1363,196 +1207,125 @@ export default function App() {
           </button>
         </div>
 
-        <div className="map-controls-card">
-          <section className="map-control-section">
-            <h3>
-              <span className="map-control-section-icon">⌘</span>
-              Meio de Locomoção
-            </h3>
+        <label>
+          Meio de locomoção:
+          <select
+            value={travelMode}
+            onChange={(e) => setTravelMode(e.target.value)}
+          >
+            <option value="terrestre">Terrestre — 1 província = 12 horas</option>
+            <option value="aquatico">Aquático — 1 província = 9 horas</option>
+            <option value="aereo">Aéreo — 1 província = 6 horas</option>
+            <option value="teletransporte">Teletransporte — imediato</option>
+          </select>
+        </label>
 
-            <label className="map-control-label">
-              <select
-                value={travelMode}
-                onChange={(e) => setTravelMode(e.target.value)}
-              >
-                <option value="terrestre">Terrestre — 1 província = 12 horas</option>
-                <option value="aquatico">Aquático — 1 província = 9 horas</option>
-                <option value="aereo">Aéreo — 1 província = 6 horas</option>
-                <option value="teletransporte">Teletransporte — imediato</option>
-              </select>
-            </label>
-          </section>
+        <div className="ruleBox">
+          <strong>Regra ativa:</strong>
+          <br />
+          Diagonal = {DIAGONAL_COST}
+          <br />1 província = {UNIT_PER_SMALL_SQUARE} {UNIT_NAME}
+        </div>
 
-          <section className="map-control-section">
-            <h3>
-              <span className="map-control-section-icon">▦</span>
-              Camadas do Mapa
-            </h3>
+        <button
+          type="button"
+          className="gridToggleButton imageGridToggleButton"
+          onClick={() => setShowImageGrid((current) => !current)}
+        >
+          {showImageGrid ? "Usar mapa limpo" : "Usar mapa com grade"}
+        </button>
 
-            <button
-              type="button"
-              className="map-control-action"
-              onClick={() => setShowImageGrid((current) => !current)}
+        <button
+          type="button"
+          className="gridToggleButton"
+          onClick={() => setShowOverlayGrid((current) => !current)}
+        >
+          {showOverlayGrid ? "Ocultar grade do sistema" : "Mostrar grade do sistema"}
+        </button>
+
+        <label className="checkboxRow">
+          <input
+            type="checkbox"
+            checked={showOverlayGrid}
+            onChange={(e) => setShowOverlayGrid(e.target.checked)}
+          />
+          Mostrar grade do app
+        </label>
+
+        <label className="checkboxRow">
+          <input
+            type="checkbox"
+            checked={showSmallGrid}
+            onChange={(e) => setShowSmallGrid(e.target.checked)}
+          />
+          Mostrar províncias
+        </label>
+
+        <label>
+          Transparência da grade:
+          <input
+            type="range"
+            min="0.05"
+            max="0.8"
+            step="0.05"
+            value={gridOpacity}
+            onChange={(e) => setGridOpacity(Number(e.target.value))}
+          />
+          <span>{Math.round(gridOpacity * 100)}%</span>
+        </label>
+
+        <button onClick={() => setPoints([])} type="button">
+          Limpar pontos
+        </button>
+
+        <div className="travelBox">
+          <strong>Viagem do Personagem</strong>
+
+          <label>
+            Personagem:
+            <select
+              value={selectedTravelCharacterId}
+              onChange={(e) => setSelectedTravelCharacterId(e.target.value)}
             >
-              <span>▦</span>
-              {showImageGrid ? "Usar mapa limpo" : "Usar mapa com grade"}
-            </button>
-
-            <button
-              type="button"
-              className="map-control-action"
-              onClick={() => setShowOverlayGrid((current) => !current)}
-            >
-              <span>◌</span>
-              {showOverlayGrid ? "Ocultar grade do sistema" : "Mostrar grade do sistema"}
-            </button>
-
-            <button
-              type="button"
-              className="map-control-action"
-              onClick={() => setShowMapPings((current) => !current)}
-            >
-              <span>⌖</span>
-              {showMapPings ? "Ocultar pings do mapa" : "Mostrar pings do mapa"}
-            </button>
-<label className="map-control-check">
-              <input
-                type="checkbox"
-                checked={showSmallGrid}
-                onChange={(e) => setShowSmallGrid(e.target.checked)}
-              />
-              <span>Mostrar províncias</span>
-            </label>
-
-            {points.length > 0 && (
-              <button
-                type="button"
-                className="map-control-action map-control-action-muted"
-                onClick={() => setPoints([])}
-              >
-                <span>×</span>
-                Limpar destino selecionado
-              </button>
-            )}
-          </section>
-<section className="map-control-section">
-            <h3>
-              <span className="map-control-section-icon">♟</span>
-              Viagem do Personagem
-            </h3>
-
-            <label className="map-character-select-label">
-              <span>Personagem:</span>
-
-              <div className="map-character-select-wrap">
-                {selectedTravelCharacter && getCharacterImageUrl(selectedTravelCharacter) ? (
-                  <img
-                    src={getCharacterImageUrl(selectedTravelCharacter)}
-                    alt={selectedTravelCharacter.characterName || "Personagem"}
-                    loading="lazy"
-                    onError={(event) => {
-                      event.currentTarget.style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <em>忍</em>
-                )}
-
-                <select
-                  value={selectedTravelCharacterId}
-                  onChange={(e) => setSelectedTravelCharacterId(e.target.value)}
-                >
-                  {travelCharacters.length === 0 && (
-                    <option value="">Nenhum personagem salvo</option>
-                  )}
-
-                  {travelCharacters.map((character) => (
-                    <option key={character.id} value={character.id}>
-                      {character.characterName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </label>
-
-            <button
-              type="button"
-              className="map-control-primary"
-              onClick={startCharacterTravel}
-            >
-              <span>➤</span>
-              Iniciar viagem até o destino
-            </button>
-
-            <button
-              type="button"
-              className="map-control-secondary"
-              onClick={refreshTravelCharacters}
-            >
-              <span>↻</span>
-              Atualizar personagens
-            </button>
-
-            <div className="map-dimension-tools">
-              <h4>Viagem dimensional</h4>
-
-              {selectedCharacterDimension ? (
-                <div className="map-dimension-status">
-                  <span>Fora do mapa</span>
-                  <strong>{selectedCharacterDimension.label}</strong>
-                  <button type="button" onClick={returnFromDimension}>
-                    Retornar ao mapa
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <select
-                    value={selectedDimensionKind}
-                    onChange={(event) => setSelectedDimensionKind(event.target.value)}
-                  >
-                    {DIMENSION_TARGET_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-
-                  <input
-                    value={dimensionTargetName}
-                    onChange={(event) => setDimensionTargetName(event.target.value)}
-                    placeholder="Ex: Sapos, Cobras, Kamui particular..."
-                  />
-
-                  <button
-                    type="button"
-                    className="map-control-danger"
-                    onClick={startDimensionTeleport}
-                  >
-                    Teleportar para dimensão
-                  </button>
-                </>
+              {travelCharacters.length === 0 && (
+                <option value="">Nenhum personagem salvo</option>
               )}
-            </div>
-          </section>
 
-          <section className="map-control-section map-control-presence">
-            <h3>
-              <span className="map-control-section-icon">♣</span>
-              Presenças na Região
-            </h3>
+              {travelCharacters.map((character) => (
+                <option key={character.id} value={character.id}>
+                  {character.characterName}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <p>
-              {selectedMapPresence
-                ? selectedMapPresence.text
-                : "Não há presenças"}
-            </p>
+          <button type="button" onClick={refreshTravelCharacters}>
+            Atualizar personagens
+          </button>
 
-            {selectedMapPresence?.currentCoord && (
-              <small>
-                Região atual: {selectedMapPresence.currentCoord.macroLabel || "-"}
-              </small>
-            )}
-          </section>
+          <button type="button" onClick={startCharacterTravel}>
+            Iniciar viagem até o destino
+          </button>
+
+          <p className="travelSmallText">
+            Clique em dois pontos no mapa, selecione o personagem e inicie a
+            viagem. O ícone será movido de acordo com o tempo real.
+          </p>
+        </div>
+
+        <div className={`map-presence-card ${selectedMapPresence ? "active" : "inactive"}`}>
+          <strong>Presenças na região</strong>
+          <span>
+            {selectedMapPresence
+              ? selectedMapPresence.text
+              : "Selecione um personagem com viagem ativa para verificar presenças."}
+          </span>
+
+          {selectedMapPresence?.currentCoord && (
+            <small>
+              Região atual: {selectedMapPresence.currentCoord.macroLabel || "-"}
+            </small>
+          )}
         </div>
 
         {points.length > 0 && (
@@ -1592,6 +1365,44 @@ export default function App() {
         {travels.length > 0 && (
           <div className="travelList">
             <strong>Viagens registradas</strong>
+
+            {mapPings.map((ping) => {
+            const lat = Number(ping.lat);
+            const lng = Number(ping.lng);
+
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+              return null;
+            }
+
+            return (
+              <Marker
+                key={`map-ping-${ping.id}`}
+                position={[lat, lng]}
+                icon={createMapPingIcon(ping)}
+              >
+                <Popup className="ln-map-ping-popup">
+                  <article className="ln-map-ping-card">
+                    {ping.image_url && (
+                      <img src={ping.image_url} alt={ping.title || "Local do mapa"} />
+                    )}
+
+                    <div>
+                      <p>{ping.type || "Local"}</p>
+                      <h3>{ping.title}</h3>
+
+                      {(ping.coord_label || ping.macro_label) && (
+                        <span>
+                          {[ping.coord_label, ping.macro_label].filter(Boolean).join(" · ")}
+                        </span>
+                      )}
+
+                      {ping.description && <strong>{ping.description}</strong>}
+                    </div>
+                  </article>
+                </Popup>
+              </Marker>
+            );
+          })}
 
           {travels.map((travel) => {
               const progress = getTravelProgress(travel, now);
@@ -1696,25 +1507,15 @@ export default function App() {
             type="button"
             className={`mobile-map-options-toggle ${showMobileMapOptions ? "open" : "closed"}`}
             onClick={() => setShowMobileMapOptions((current) => !current)}
-            aria-label="Abrir opções do mapa"
           >
-            <span className="mobile-map-options-icon">▱</span>
-            <strong>Opções</strong>
-            <span className="mobile-map-options-chevron">
-              {showMobileMapOptions ? "⌃" : "⌄"}
-            </span>
+            {showMobileMapOptions ? "Ocultar opções" : "Mostrar opções"}
           </button>
 
           {showMobileMapOptions && (
-            <div className="mobile-map-quick-controls" aria-label="Controles rápidos do mapa">
-              <div className="mobile-map-sheet-handle" />
-
-              <div className="mobile-map-control-field mobile-map-control-full">
-                <h3>
-                  <span>🥾</span>
-                  Locomoção
-                </h3>
-
+          <div className="mobile-map-quick-controls" aria-label="Controles rápidos do mapa">
+            <div className="mobile-map-control-field mobile-map-control-full">
+              <label>
+                Locomoção
                 <select
                   value={travelMode}
                   onChange={(e) => setTravelMode(e.target.value)}
@@ -1724,57 +1525,54 @@ export default function App() {
                   <option value="aereo">Aéreo — 1 província = 6h</option>
                   <option value="teletransporte">Teletransporte — imediato</option>
                 </select>
-              </div>
+              </label>
+            </div>
 
-              <div className="mobile-map-control-buttons">
-                <button
-                  type="button"
-                  className={showImageGrid ? "active" : ""}
-                  onClick={() => setShowImageGrid((current) => !current)}
-                >
-                  <span>✦</span>
-                  {showImageGrid ? "Mapa com grade" : "Mapa limpo"}
-                </button>
+            <div className="mobile-map-control-buttons">
+              <button
+                type="button"
+                className={showImageGrid ? "active" : ""}
+                onClick={() => setShowImageGrid((current) => !current)}
+              >
+                {showImageGrid ? "Mapa com grade" : "Mapa limpo"}
+              </button>
 
-                <button
-                  type="button"
-                  className={showOverlayGrid ? "active" : ""}
-                  onClick={() => setShowOverlayGrid((current) => !current)}
-                >
-                  <span>▦</span>
-                  {showOverlayGrid ? "Grade sistema" : "Sem grade"}
-                </button>
+              <button
+                type="button"
+                className={showOverlayGrid ? "active" : ""}
+                onClick={() => setShowOverlayGrid((current) => !current)}
+              >
+                {showOverlayGrid ? "Grade sistema" : "Sem grade"}
+              </button>
 
-                <button
-                  type="button"
-                  className={showSmallGrid ? "active" : ""}
-                  onClick={() => setShowSmallGrid((current) => !current)}
-                >
-                  <span>▰</span>
-                  {showSmallGrid ? "Províncias" : "Sem províncias"}
-                </button>
+              <button
+                type="button"
+                className={showSmallGrid ? "active" : ""}
+                onClick={() => setShowSmallGrid((current) => !current)}
+              >
+                {showSmallGrid ? "Províncias" : "Sem províncias"}
+              </button>
 
-                <button
-                  type="button"
-                  className={showMapPings ? "active" : ""}
-                  onClick={() => setShowMapPings((current) => !current)}
-                >
-                  <span>⌖</span>
-                  {showMapPings ? "Pings ativos" : "Sem pings"}
-                </button>
+              <button type="button" onClick={() => setPoints([])}>
+                Limpar pontos
+              </button>
+            </div>
 
-                <button type="button" onClick={() => setPoints([])}>
-                  <span>◎</span>
-                  Limpar pontos
-                </button>
-              </div>
+            <label className="mobile-map-opacity">
+              <span>Opacidade da grade: {Math.round(gridOpacity * 100)}%</span>
+              <input
+                type="range"
+                min="0.05"
+                max="0.8"
+                step="0.05"
+                value={gridOpacity}
+                onChange={(e) => setGridOpacity(Number(e.target.value))}
+              />
+            </label>
 
-              <div className="mobile-map-travel-tools">
-                <h3>
-                  <span>🥷</span>
-                  Personagem
-                </h3>
-
+            <div className="mobile-map-travel-tools">
+              <label>
+                Personagem
                 <select
                   value={selectedTravelCharacterId}
                   onChange={(e) => setSelectedTravelCharacterId(e.target.value)}
@@ -1789,51 +1587,35 @@ export default function App() {
                     </option>
                   ))}
                 </select>
+              </label>
 
-                <button type="button" onClick={refreshTravelCharacters}>
-                  <span>↻</span>
-                  Atualizar
-                </button>
+              <button type="button" onClick={refreshTravelCharacters}>
+                Atualizar
+              </button>
 
-                <div className="mobile-dimension-tools">
-                  {selectedCharacterDimension ? (
-                    <>
-                      <strong>Fora do mapa: {selectedCharacterDimension.label}</strong>
-                      <button type="button" onClick={returnFromDimension}>
-                        Retornar ao mapa
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <select
-                        value={selectedDimensionKind}
-                        onChange={(event) => setSelectedDimensionKind(event.target.value)}
-                      >
-                        {DIMENSION_TARGET_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-
-                      <input
-                        value={dimensionTargetName}
-                        onChange={(event) => setDimensionTargetName(event.target.value)}
-                        placeholder="Invocação ou dimensão"
-                      />
-
-                      <button type="button" onClick={startDimensionTeleport}>
-                        Teleportar dimensão
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                <button type="button" className="primary" onClick={startCharacterTravel}>
-                  Iniciar viagem
-                </button>
-              </div>
+              <button type="button" className="primary" onClick={startCharacterTravel}>
+                Iniciar viagem
+              </button>
             </div>
+
+            {(points.length > 0 || travel) && (
+              <div className="mobile-map-live-info">
+                {points.length > 0 && (
+                  <span>
+                    <strong>Destino:</strong> {points[0]?.label || "-"}
+                  </span>
+                )}
+
+                {travel && (
+                  <span>
+                    <strong>Viagem:</strong> {travel.modeLabel} ·{" "}
+                    {travel.smallSquares.toFixed(2)} províncias ·{" "}
+                    {formatTime(travel.hours)}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
           )}
 
         <MapContainer
@@ -1879,7 +1661,7 @@ export default function App() {
               />
             ))}
 
-          {publicMapTravels.map((travel) => (
+          {travels.map((travel) => (
             <Polyline
               key={`route-${travel.id}`}
               positions={[travel.startCenter, travel.endCenter]}
@@ -1894,31 +1676,6 @@ export default function App() {
           ))}
 
           <ClickHandler onMapClick={handleMapClick} />
-
-          {unknownPresenceMarkers.map((presence) => (
-            <Marker
-              key={`unknown-presence-${presence.id}`}
-              position={presence.position}
-              icon={createUnknownPresenceIcon(presence.sameProvince)}
-              interactive={true}
-            >
-              <Tooltip direction="top">
-                <strong>
-                  {presence.sameProvince
-                    ? presence.characterName
-                    : "Presença desconhecida"}
-                </strong>
-                <br />
-                {presence.sameProvince
-                  ? "Está exatamente na mesma província que você."
-                  : "Há um personagem nesta região."}
-                <br />
-                Região: {presence.coord.macroLabel || "-"}
-                <br />
-                Província: {presence.coord.provinceLabel || presence.coord.label || "-"}
-              </Tooltip>
-            </Marker>
-          ))}
 
           {points.map((point, index) => (
             <CircleMarker
@@ -1948,39 +1705,7 @@ export default function App() {
               }}
             />
           )}
-          {showMapPings && mapPings.map((ping) => {
-            const lat = Number(ping.lat);
-            const lng = Number(ping.lng);
-            const isSelected = selectedMapPing?.id === ping.id;
-
-            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-              return null;
-            }
-
-            return (
-              <Marker
-                key={`map-ping-${ping.id}`}
-                position={[lat, lng]}
-                icon={createMapPingImageIcon(ping, isSelected)}
-                eventHandlers={{
-                  click: (event) => {
-                    event.originalEvent?.preventDefault?.();
-                    event.originalEvent?.stopPropagation?.();
-                    ignoreNextMapClickRef.current = true;
-                    setSelectedMapPing(ping);
-                  }
-                }}
-              >
-                <Tooltip direction="top">
-                  <strong>{ping.title}</strong>
-                  <br />
-                  {ping.type || "Local"}
-                </Tooltip>
-              </Marker>
-            );
-          })}
-
-          {publicMapTravels.map((travel) => {
+          {travels.map((travel) => {
             const progress = getTravelProgress(travel, now);
             const currentPoint = getTravelCurrentPoint(travel, now);
             const currentCoord = getCoordinate({
@@ -2008,7 +1733,7 @@ export default function App() {
             );
           })}
 
-          {selectedInitialCoord && !selectedCharacterDimension && (
+          {selectedInitialCoord && (
             <Marker
               key={`initial-${selectedTravelCharacter.id}`}
               position={getSmallCellCenter(selectedInitialCoord)}
@@ -2036,105 +1761,6 @@ export default function App() {
           )}
 
         </MapContainer>
-
-          {mapPingImagePreview && (
-            <div
-              className="map-ping-image-lightbox"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Imagem ampliada do local"
-              onClick={() => setMapPingImagePreview(null)}
-            >
-              <button
-                type="button"
-                className="map-ping-image-lightbox-close"
-                onClick={() => setMapPingImagePreview(null)}
-                aria-label="Fechar imagem ampliada"
-              >
-                ×
-              </button>
-
-              <figure
-                className="map-ping-image-lightbox-frame"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <img
-                  src={mapPingImagePreview.src}
-                  alt={mapPingImagePreview.title}
-                  referrerPolicy="no-referrer"
-                />
-
-                <figcaption>
-                  <span>{mapPingImagePreview.type}</span>
-                  <strong>{mapPingImagePreview.title}</strong>
-                </figcaption>
-              </figure>
-            </div>
-          )}
-
-          {selectedMapPing && (
-            <aside className="map-ping-side-panel" aria-live="polite">
-              <button
-                type="button"
-                className="map-ping-side-close"
-                onClick={() => {
-                  setSelectedMapPing(null);
-                  setMapPingImagePreview(null);
-                }}
-                aria-label="Fechar detalhes do local"
-              >
-                ×
-              </button>
-
-              <div className={`map-ping-side-image ${selectedMapPing.image_url ? "" : "is-empty"}`}>
-                {selectedMapPing.image_url && (
-                  <button
-                    type="button"
-                    className="map-ping-side-image-button"
-                    onClick={() =>
-                      setMapPingImagePreview({
-                        src: selectedMapPing.image_url,
-                        title: selectedMapPing.title || "Imagem do local",
-                        type: selectedMapPing.type || "Local"
-                      })
-                    }
-                    aria-label="Abrir imagem do local"
-                  >
-                    <img
-                      src={selectedMapPing.image_url}
-                      alt={selectedMapPing.title || "Local do mapa"}
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                      onError={(event) => {
-                        event.currentTarget.closest(".map-ping-side-image")?.classList.add("is-empty");
-                      }}
-                    />
-                  </button>
-                )}
-
-                <span>Imagem do local indisponível</span>
-              </div>
-
-              <div className="map-ping-side-content">
-                <p>{selectedMapPing.type || "Local do mundo ninja"}</p>
-                <h2>{selectedMapPing.title}</h2>
-
-                {(selectedMapPing.coord_label || selectedMapPing.macro_label) && (
-                  <small>
-                    {[selectedMapPing.coord_label, selectedMapPing.macro_label]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </small>
-                )}
-
-                {selectedMapPing.description ? (
-                  <strong>{selectedMapPing.description}</strong>
-                ) : (
-                  <strong>Este local ainda não possui descrição cadastrada.</strong>
-                )}
-              </div>
-            </aside>
-          )}
         </>
         ) : activePage === "skills" ? (
           <SkillTreePage />

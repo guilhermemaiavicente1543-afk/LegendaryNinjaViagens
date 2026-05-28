@@ -627,17 +627,8 @@ export default function App() {
   const [points, setPoints] = useState([]);
   const [travelMode, setTravelMode] = useState("terrestre");
   const [showImageGrid, setShowImageGrid] = useState(false);
-  const [showOverlayGrid, setShowOverlayGrid] = useState(false);
-  const [showSmallGrid, setShowSmallGrid] = useState(false);
-  const [showMapPings, setShowMapPings] = useState(true);
-
-  useEffect(() => {
-    if (!showMapPings) {
-      setSelectedMapPing(null);
-      setMapPingImagePreview(null);
-    }
-  }, [showMapPings]);
-
+  const [showOverlayGrid, setShowOverlayGrid] = useState(true);
+  const [showSmallGrid, setShowSmallGrid] = useState(true);
   const [gridOpacity, setGridOpacity] = useState(0.5);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [activePage, setActivePage] = useState("hall");
@@ -1406,15 +1397,6 @@ export default function App() {
               <span>◌</span>
               {showOverlayGrid ? "Ocultar grade do sistema" : "Mostrar grade do sistema"}
             </button>
-
-            <button
-              type="button"
-              className="map-control-action"
-              onClick={() => setShowMapPings((current) => !current)}
-            >
-              <span>⌖</span>
-              {showMapPings ? "Ocultar pings do mapa" : "Mostrar pings do mapa"}
-            </button>
 <label className="map-control-check">
               <input
                 type="checkbox"
@@ -1754,15 +1736,6 @@ export default function App() {
                   {showSmallGrid ? "Províncias" : "Sem províncias"}
                 </button>
 
-                <button
-                  type="button"
-                  className={showMapPings ? "active" : ""}
-                  onClick={() => setShowMapPings((current) => !current)}
-                >
-                  <span>⌖</span>
-                  {showMapPings ? "Pings ativos" : "Sem pings"}
-                </button>
-
                 <button type="button" onClick={() => setPoints([])}>
                   <span>◎</span>
                   Limpar pontos
@@ -1948,7 +1921,7 @@ export default function App() {
               }}
             />
           )}
-          {showMapPings && mapPings.map((ping) => {
+          {mapPings.map((ping) => {
             const lat = Number(ping.lat);
             const lng = Number(ping.lng);
             const isSelected = selectedMapPing?.id === ping.id;
