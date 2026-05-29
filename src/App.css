@@ -36277,3 +36277,124 @@ body:has(.mnd-desktop-shell) .mnd-bottom-grid .mnd-data-list dd {
     width: 100% !important;
   }
 }
+
+/* =========================================================
+   AJUSTE FINAL — board bonito embaixo do perfil + ícone por URL
+   ========================================================= */
+
+/* Stack fica dentro do grid principal, abaixo do perfil esquerdo */
+@media (min-width: 761px) {
+  .mnd-main-grid > .mnd-profile-info-stack {
+    grid-column: 1 / 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-top: 18px !important;
+    align-self: start !important;
+  }
+
+  .mnd-profile-info-stack .mnd-bottom-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .mnd-profile-info-stack .mnd-card {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* No mobile/tablet vira largura total */
+@media (max-width: 760px) {
+  .mnd-main-grid > .mnd-profile-info-stack {
+    grid-column: 1 / -1 !important;
+  }
+
+  .mnd-profile-info-stack .mnd-bottom-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Editor acima do board bonito */
+.mnd-profile-info-stack .mnd-creation-editor-shell {
+  margin: 0 0 16px !important;
+}
+
+/* Campo URL do ícone */
+.mnd-map-url-editor-block {
+  margin-top: 14px !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+  padding-top: 14px !important;
+}
+
+.mnd-map-url-editor-block label {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.mnd-map-url-editor-block label span {
+  color: rgba(233, 227, 220, 0.62) !important;
+  font-size: 0.78rem !important;
+  font-weight: 850 !important;
+}
+
+.mnd-map-url-editor-block input {
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 1px solid rgba(255, 136, 36, 0.20) !important;
+  border-radius: 10px !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  color: #f2ece6 !important;
+  padding: 10px 11px !important;
+  outline: none !important;
+  font-size: 13px !important;
+}
+
+.mnd-map-url-preview {
+  margin-top: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.mnd-map-url-preview span {
+  color: #ff922f !important;
+  font-size: 0.76rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+.mnd-map-url-preview div {
+  width: 52px !important;
+  height: 52px !important;
+  border: 1px solid rgba(255, 136, 36, 0.18) !important;
+  border-radius: 14px !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.mnd-map-url-preview img,
+.mnd-map-icon-box img {
+  width: 42px !important;
+  height: 42px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.mnd-map-url-preview strong {
+  color: #ff9a4d !important;
+  font-size: 11px !important;
+}
+
+/* Mata sobras dos boards errados */
+body:has(.mnd-profile-info-stack) .mnd-official-profile-board,
+body:has(.mnd-profile-info-stack) .mnd-oldstyle-profile-official,
+body:has(.mnd-profile-info-stack) .mnd-profile-overview-boards,
+body:has(.mnd-profile-info-stack) .mnd-character-info-board {
+  display: none !important;
+}

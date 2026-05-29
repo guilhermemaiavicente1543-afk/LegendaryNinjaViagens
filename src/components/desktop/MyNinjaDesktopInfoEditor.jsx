@@ -116,7 +116,7 @@ function buildForm(character) {
     ninjaStyle: valueOrEmpty(character?.ninja_style),
     epithet: valueOrEmpty(character?.epithet),
     quote: valueOrEmpty(character?.quote),
-    mapIcon: valueOrEmpty(character?.icon_url || "shuriken"),
+    iconUrl: valueOrEmpty(character?.icon_url),
     selectedTraits: normalizeTraits(character),
   };
 }
@@ -240,7 +240,7 @@ export default function MyNinjaDesktopInfoEditor({
       ninja_style: form.ninjaStyle,
       epithet: form.epithet.trim(),
       quote: form.quote.trim(),
-      icon_url: form.mapIcon,
+      icon_url: form.iconUrl.trim(),
       selected_traits: form.selectedTraits,
       updated_at: new Date().toISOString(),
     };
@@ -449,24 +449,36 @@ export default function MyNinjaDesktopInfoEditor({
               />
             </label>
           </div>
+          <div className="mnd-map-url-editor-block">
+            <label>
+              <span>Ícone no mapa</span>
+              <input
+                value={form.iconUrl}
+                onChange={(event) => updateField("iconUrl", event.target.value)}
+                placeholder="Cole aqui a URL da imagem do ícone no mapa"
+              />
+            </label>
 
-          <div className="mnd-map-icon-editor-block">
-            <span>Ícone do mapa</span>
+            {form.iconUrl ? (
+              <div className="mnd-map-url-preview">
+                <span>Prévia</span>
 
-            <div className="mnd-map-icon-selector">
-              {mapIconOptions.map((option) => (
-                <button
-                  type="button"
-                  key={option.value}
-                  className={form.mapIcon === option.value ? "is-active" : ""}
-                  onClick={() => updateField("mapIcon", option.value)}
-                >
-                  <strong>{option.glyph}</strong>
-                  <em>{option.label}</em>
-                </button>
-              ))}
-            </div>
+                <div>
+                  {String(form.iconUrl || "").startsWith("http") ? (
+                    <img src={form.iconUrl} alt="Prévia do ícone no mapa" />
+                  ) : (
+                    <strong>URL inválida</strong>
+                  )}
+                </div>
+              </div>
+            ) : null}
           </div>
+
+
+
+          
+          {/* seletor de ícone removido: agora é URL */}
+
 
           <div className="mnd-traits-editor-block">
             <div className="mnd-traits-editor-title">
