@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import MyNinjaDesktopSheet from "./MyNinjaDesktopSheet";
 import CharacterSkillTree from "../CharacterSkillTree";
+import MyNinjaDesktopInfoEditor from "./MyNinjaDesktopInfoEditor";
 
 function valueFrom(character, keys, fallback = "—") {
   for (const key of keys) {
@@ -537,16 +538,10 @@ export default function MyNinjaDesktopHall({
                       </div>
                     </div>
                   </div>
-                  <div className="mnd-character-info-actions">
-                    <div>
-                      <span>Dados de criação</span>
-                      <strong>Informações do personagem</strong>
-                    </div>
-
-                    <button type="button" onClick={handleEditInformation}>
-                      Editar informações
-                    </button>
-                  </div>
+                  <MyNinjaDesktopInfoEditor
+                    character={character}
+                    onCharacterUpdated={onCharacterUpdated}
+                  />
 
                   <div className="mnd-character-info-board">
                     <article>

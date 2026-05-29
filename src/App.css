@@ -33269,3 +33269,119 @@ body:has(.mnd-desktop-shell) {
     width: 100%;
   }
 }
+
+/* =========================================================
+   EDITOR REAL DAS INFORMAÇÕES — Meu Ninja Desktop
+   ========================================================= */
+
+.mnd-info-editor-shell {
+  margin-top: 22px;
+}
+
+.mnd-info-editor-message {
+  margin: 10px 0 0;
+  border: 1px solid rgba(255, 122, 26, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ffbf8a;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.mnd-info-editor-panel {
+  margin-top: 12px;
+  border: 1px solid rgba(255, 122, 26, 0.22);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.08), transparent 34%),
+    rgba(0, 0, 0, 0.28);
+  padding: 14px;
+}
+
+.mnd-info-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mnd-info-editor-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.mnd-info-editor-grid label.wide {
+  grid-column: 1 / -1;
+}
+
+.mnd-info-editor-grid span {
+  color: #f1b179;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mnd-info-editor-grid input,
+.mnd-info-editor-grid textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255, 122, 26, 0.24);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #f3ede3;
+  padding: 10px 11px;
+  outline: none;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.mnd-info-editor-grid textarea {
+  resize: vertical;
+  min-height: 82px;
+}
+
+.mnd-info-editor-grid input:focus,
+.mnd-info-editor-grid textarea:focus {
+  border-color: rgba(255, 122, 26, 0.62);
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.12);
+}
+
+.mnd-info-editor-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.mnd-info-editor-footer button {
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.mnd-info-editor-footer button:first-child {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.22);
+  color: #cfc5b8;
+}
+
+.mnd-info-editor-footer button:last-child {
+  border: 1px solid rgba(255, 122, 26, 0.36);
+  background: linear-gradient(135deg, #ff7a1a, #b85e10);
+  color: #1a1815;
+}
+
+.mnd-info-editor-footer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1280px) and (min-width: 761px) {
+  .mnd-info-editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
