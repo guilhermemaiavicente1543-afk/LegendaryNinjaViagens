@@ -230,6 +230,50 @@ export default function MyNinjaDesktopHall({
 
 
   const [activeTab, setActiveTab] = useState("profile");
+
+  const handleEditInformation = () => {
+    if (typeof onEditProfile === "function") {
+      onEditProfile();
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("ln-open-edit-profile"));
+      window.dispatchEvent(new CustomEvent("ln-edit-profile"));
+      window.dispatchEvent(new CustomEvent("ln-open-character-editor"));
+    }
+
+    if (typeof document !== "undefined") {
+      const buttons = Array.from(document.querySelectorAll("button, [role='button']"));
+
+      const legacyEditButton = buttons.find((button) => {
+        const text = String(button.textContent || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+
+        const isInsideNewInfoButton = button.closest(".mnd-character-info-actions");
+
+        return (
+          !isInsideNewInfoButton &&
+          (
+            text.includes("editar perfil") ||
+            text.includes("editar informacoes") ||
+            text.includes("editar informações") ||
+            text.includes("editar ninja") ||
+            text.includes("alterar perfil") ||
+            text.includes("alterar informacoes") ||
+            text.includes("alterar informações")
+          )
+        );
+      });
+
+      if (legacyEditButton) {
+        legacyEditButton.click();
+      }
+    }
+  };
+
   const [activeSheetSection, setActiveSheetSection] = useState("proofs");
 
   const data = useMemo(() => {
@@ -499,7 +543,7 @@ export default function MyNinjaDesktopHall({
                       <strong>Informações do personagem</strong>
                     </div>
 
-                    <button type="button" onClick={handleEdit}>
+                    <button type="button" onClick={handleEditInformation}>
                       Editar informações
                     </button>
                   </div>
