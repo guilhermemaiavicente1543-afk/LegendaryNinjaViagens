@@ -35873,3 +35873,146 @@ body:has(.mnd-oldstyle-profile-official) .mnd-character-info-board {
     text-align: left !important;
   }
 }
+
+/* =========================================================
+   CORREÇÃO DEFINITIVA — board bonito único no topo
+   ========================================================= */
+
+/* Esconde o board legado real do MyNinjaPage no desktop */
+@media (min-width: 761px) {
+  .my-ninja-page .ln-hide-legacy-desktop-profile,
+  .my-ninja-page .profile-tab-content.character-complete-profile.ln-premium-profile-board,
+  .my-ninja-page .ln-premium-profile-board,
+  .my-ninja-page .profile-section-card.ln-board-card,
+  .my-ninja-page .ln-identity-card,
+  .my-ninja-page .ln-origin-card,
+  .my-ninja-page .ln-map-icon-card {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+}
+
+/* Mata o board novo/feio e sobras duplicadas do Hall */
+body:has(.mnd-oldstyle-profile-official) .mnd-official-profile-board,
+body:has(.mnd-oldstyle-profile-official) .mnd-profile-overview-boards,
+body:has(.mnd-oldstyle-profile-official) .mnd-character-info-board {
+  display: none !important;
+}
+
+/* Wrapper oficial */
+.mnd-oldstyle-profile-official {
+  display: block !important;
+  width: 100% !important;
+  grid-column: 1 / -1 !important;
+  margin: 0 0 26px !important;
+  padding: 0 !important;
+}
+
+/* Editor funcional acima dos cards */
+.mnd-oldstyle-profile-official .mnd-info-editor-shell {
+  margin: 0 0 18px !important;
+  display: block !important;
+}
+
+/* Board bonito antigo como oficial */
+.mnd-oldstyle-profile-official .mnd-bottom-grid-official {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(230px, 0.52fr) !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Cards */
+.mnd-oldstyle-profile-official .mnd-card {
+  min-width: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Dados */
+.mnd-oldstyle-profile-official .mnd-data-list {
+  display: grid !important;
+  gap: 0 !important;
+  margin: 0 !important;
+}
+
+.mnd-oldstyle-profile-official .mnd-data-list div {
+  display: grid !important;
+  grid-template-columns: minmax(165px, 235px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: center !important;
+  min-height: 44px !important;
+  padding: 8px 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.055) !important;
+}
+
+.mnd-oldstyle-profile-official .mnd-data-list div:first-child {
+  border-top: none !important;
+}
+
+.mnd-oldstyle-profile-official .mnd-data-list dt {
+  color: rgba(233, 227, 220, 0.62) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+}
+
+.mnd-oldstyle-profile-official .mnd-data-list dd {
+  margin: 0 !important;
+  color: #f2ece6 !important;
+  font-size: 0.95rem !important;
+  font-weight: 750 !important;
+  line-height: 1.35 !important;
+  text-align: right !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+.mnd-oldstyle-profile-official .mnd-map-icon-box img {
+  width: 58px !important;
+  height: 58px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.mnd-oldstyle-profile-official + .mnd-main-grid {
+  margin-top: 22px !important;
+}
+
+@media (max-width: 1360px) and (min-width: 761px) {
+  .mnd-oldstyle-profile-official .mnd-bottom-grid-official {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .mnd-oldstyle-profile-official .mnd-map-official-card {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .mnd-oldstyle-profile-official .mnd-bottom-grid-official {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mnd-oldstyle-profile-official .mnd-data-list div {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .mnd-oldstyle-profile-official .mnd-data-list dd {
+    text-align: left !important;
+  }
+}
