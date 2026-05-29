@@ -37,8 +37,11 @@ const EMPTY_MISSION = {
 
 const EMPTY_HIDDEN_ACTION = {
   title: "",
-  status: "Sigiloso",
-  description: "",
+  status: "Não revelada",
+  imageUrl: "",
+  storagePath: "",
+  originalName: "",
+  compressedSize: "",
 };
 
 const DEFAULT_SHEET = {
@@ -50,6 +53,7 @@ const DEFAULT_SHEET = {
     notes: "",
   },
   contracts: [],
+  medicalProcedures: [],
   inventoryRecords: [],
   missionRecords: [],
   characterStatus: {
@@ -263,6 +267,9 @@ export default function MyNinjaDesktopSheet({
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [uploadingProofIndex, setUploadingProofIndex] = useState(null);
+  const [uploadingHiddenActionIndex, setUploadingHiddenActionIndex] = useState(null);
+  const [openInventoryIndex, setOpenInventoryIndex] = useState(null);
+  const [openHiddenActionIndex, setOpenHiddenActionIndex] = useState(null);
   const [openProofIndex, setOpenProofIndex] = useState(null);
 
   const [techniques, setTechniques] = useState([]);
@@ -486,7 +493,82 @@ export default function MyNinjaDesktopSheet({
     }
   }
 
+  async function uploadHiddenActionImage(index, file) {
+    setMessage("");
+
+    if (!file) return;
+
+    if (!file.type?.startsWith("image/")) {
+      setMessage("Envie uma imagem válida.");
+      return;
+    }
+
+    if (!character?.id) {
+      setMessage("Crie ou carregue um ninja antes de anexar imagens.");
+      return;
+    }
+
+    if (!isSupabaseConfigured || !supabase) {
+      setMessage("Supabase não está configurado.");
+      return;
+    }
+
+    setUploadingHiddenActionIndex(index);
+
+    try {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !userData?.user?.id) {
+        throw new Error(userError?.message || "Faça login para enviar imagens.");
+      }
+
+      const compressedBlob = await compressImage(file);
+      const safeName = slugify(file.name.replace(/\.[^.]+$/, ""));
+      const storagePath =
+        userData.user.id +
+        "/" +
+        character.id +
+        "/hidden-actions/" +
+        Date.now() +
+        "-" +
+        safeName +
+        ".webp";
+
+      const { error: uploadError } = await supabase.storage
+        .from(PROFILE_SHEET_BUCKET)
+        .upload(storagePath, compressedBlob, {
+          contentType: "image/webp",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
+
+      const { data: publicData } = supabase.storage
+        .from(PROFILE_SHEET_BUCKET)
+        .getPublicUrl(storagePath);
+
+      patchArrayItem("hiddenActionRecords", index, {
+        imageUrl: publicData.publicUrl,
+        storagePath,
+        originalName: file.name,
+        compressedSize: compressedBlob.size,
+      });
+
+      setMessage("Imagem anexada à ação oculta. Clique em salvar ficha para gravar.");
+    } catch (error) {
+      setMessage("Erro ao enviar imagem: " + error.message);
+    } finally {
+      setUploadingHiddenActionIndex(null);
+    }
+  }
+
   function addTechniqueToInventory(technique) {
+    const nextIndex = Array.isArray(sheet.inventoryRecords)
+      ? sheet.inventoryRecords.length
+      : 0;
+
     const record = {
       kind: "jutsu",
       techniqueId: technique.id,
@@ -498,8 +580,9 @@ export default function MyNinjaDesktopSheet({
       total: getTechniquePoints(technique),
       description: getTechniqueDescription(technique),
       source: "shinobidex",
-      quantity: "1",
-      notes: "Adicionado a partir da Shinobidex / ANCED.",
+      acquisitionMethod: "",
+      acquiredAt: "",
+      notes: "",
     };
 
     setSheet((current) => ({
@@ -507,7 +590,8 @@ export default function MyNinjaDesktopSheet({
       inventoryRecords: [...(Array.isArray(current.inventoryRecords) ? current.inventoryRecords : []), record],
     }));
 
-    setMessage();
+    setOpenInventoryIndex(nextIndex);
+    setMessage(record.name + " adicionada ao inventário.");
   }
 
   async function saveSheet() {
@@ -544,6 +628,8 @@ export default function MyNinjaDesktopSheet({
       }
 
       setMessage("Ficha complementar salva com sucesso.");
+      setOpenInventoryIndex(null);
+      setOpenHiddenActionIndex(null);
     } catch (error) {
       setMessage();
     } finally {
@@ -647,42 +733,64 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Ciência e Medicina"
-        description="Registros de corpo, compatibilidade, implantes, DNA, procedimentos e limitações médicas."
+        description="Tipo sanguíneo e procedimentos médicos registrados no personagem."
       />
 
-      <div className="mnds-grid two">
-        <Field label="Tipagem sanguínea">
-          <TextInput
-            value={sheet.scienceMedicine?.bloodTyping}
-            onChange={(value) => updateObject("scienceMedicine", "bloodTyping", value)}
-            placeholder="Ex.: O+"
-          />
-        </Field>
+      <Field label="Tipo sanguíneo">
+        <TextInput
+          value={sheet.scienceMedicine?.bloodTyping}
+          onChange={(value) => updateObject("scienceMedicine", "bloodTyping", value)}
+          placeholder="Ex.: O+"
+        />
+      </Field>
 
-        <Field label="Compatibilidade">
-          <TextInput
-            value={sheet.scienceMedicine?.compatibility}
-            onChange={(value) => updateObject("scienceMedicine", "compatibility", value)}
-            placeholder="Ex.: Compatível com transplantes"
-          />
-        </Field>
+      <div className="mnds-list">
+        {(sheet.medicalProcedures || []).map((procedure, index) => (
+          <article className="mnds-record" key={"medical-procedure-" + index}>
+            <div className="mnds-record-head">
+              <strong>{procedure.title || "Procedimento #" + (index + 1)}</strong>
+
+              <button type="button" onClick={() => removeArrayItem("medicalProcedures", index)}>
+                Remover
+              </button>
+            </div>
+
+            <div className="mnds-grid two">
+              <Field label="Procedimento">
+                <TextInput
+                  value={procedure.title}
+                  onChange={(value) => updateArrayItem("medicalProcedures", index, "title", value)}
+                  placeholder="Ex.: Implante, cirurgia, exame..."
+                />
+              </Field>
+
+              <Field label="Data">
+                <TextInput
+                  value={procedure.date}
+                  onChange={(value) => updateArrayItem("medicalProcedures", index, "date", value)}
+                  placeholder="Ex.: 29/05/2026"
+                />
+              </Field>
+            </div>
+
+            <Field label="Descrição do procedimento">
+              <TextArea
+                value={procedure.description}
+                onChange={(value) => updateArrayItem("medicalProcedures", index, "description", value)}
+                placeholder="Detalhe o procedimento, resultado e observações médicas."
+              />
+            </Field>
+          </article>
+        ))}
       </div>
 
-      <Field label="Procedimentos / Implantes / DNA">
-        <TextArea
-          value={sheet.scienceMedicine?.procedures}
-          onChange={(value) => updateObject("scienceMedicine", "procedures", value)}
-          placeholder="Procedimentos médicos, implantes, alterações corporais ou experimentos."
-        />
-      </Field>
-
-      <Field label="Observações médicas">
-        <TextArea
-          value={sheet.scienceMedicine?.notes}
-          onChange={(value) => updateObject("scienceMedicine", "notes", value)}
-          placeholder="Ferimentos, limitações, recuperação, riscos e observações."
-        />
-      </Field>
+      <button
+        type="button"
+        className="mnds-add-button"
+        onClick={() => addArrayItem("medicalProcedures", { title: "", date: "", description: "" })}
+      >
+        Adicionar procedimento
+      </button>
     </div>
   );
 
@@ -789,70 +897,96 @@ export default function MyNinjaDesktopSheet({
       </div>
 
       <div className="mnds-list">
-        {(sheet.inventoryRecords || []).map((item, index) => (
-          <article className={item.kind === "jutsu" ? "mnds-record is-jutsu" : "mnds-record"} key={index}>
-            <div className="mnds-record-head">
-              <strong>{item.kind === "jutsu" ? "Jutsu" : "Item"} #{index + 1}</strong>
-              <button type="button" onClick={() => removeArrayItem("inventoryRecords", index)}>
-                Remover
-              </button>
-            </div>
+        {(sheet.inventoryRecords || []).map((item, index) => {
+          const isJutsu = item.kind === "jutsu";
+          const isOpen = openInventoryIndex === index;
 
-            <div className="mnds-grid two">
-              <Field label={item.kind === "jutsu" ? "Nome da técnica" : "Nome do item"}>
-                <TextInput
-                  value={item.name}
-                  onChange={(value) => updateArrayItem("inventoryRecords", index, "name", value)}
-                  placeholder="Nome"
-                />
-              </Field>
+          return (
+            <article
+              className={isOpen ? "mnds-record mnds-inventory-drawer is-open" : "mnds-record mnds-inventory-drawer"}
+              key={"inventory-" + index}
+            >
+              <div className="mnds-record-head">
+                <strong>
+                  {item.name || (isJutsu ? "Jutsu sem nome" : "Item sem nome")}
+                  {isJutsu && item.rank ? " • " + item.rank : ""}
+                </strong>
 
-              <Field label={item.kind === "jutsu" ? "Rank" : "Quantidade"}>
-                <TextInput
-                  value={item.kind === "jutsu" ? item.rank : item.quantity}
-                  onChange={(value) => updateArrayItem("inventoryRecords", index, item.kind === "jutsu" ? "rank" : "quantity", value)}
-                  placeholder={item.kind === "jutsu" ? "Rank ANCED" : "Quantidade"}
-                />
-              </Field>
-            </div>
+                <div className="mnds-record-actions">
+                  <button type="button" onClick={() => setOpenInventoryIndex(isOpen ? null : index)}>
+                    {isOpen ? "Fechar" : "Abrir"}
+                  </button>
 
-            {item.kind === "jutsu" ? (
-              <div className="mnds-grid two">
-                <Field label="Classificação">
-                  <TextInput
-                    value={item.classification}
-                    onChange={(value) => updateArrayItem("inventoryRecords", index, "classification", value)}
-                    placeholder="Ninjutsu, Genjutsu..."
-                  />
-                </Field>
-
-                <Field label="Natureza">
-                  <TextInput
-                    value={item.nature}
-                    onChange={(value) => updateArrayItem("inventoryRecords", index, "nature", value)}
-                    placeholder="Katon, Suiton..."
-                  />
-                </Field>
+                  <button type="button" onClick={() => removeArrayItem("inventoryRecords", index)}>
+                    Remover
+                  </button>
+                </div>
               </div>
-            ) : null}
 
-            <Field label="Descrição">
-              <TextArea
-                value={item.description}
-                onChange={(value) => updateArrayItem("inventoryRecords", index, "description", value)}
-                placeholder="Descrição e função."
-              />
-            </Field>
+              {isOpen ? (
+                <div className="mnds-drawer-body">
+                  {isJutsu ? (
+                    <>
+                      <div className="mnds-technique-info">
+                        <p><strong>Rank:</strong> {item.rank || "—"}</p>
+                        <p><strong>Classificação:</strong> {item.classification || "—"}</p>
+                        <p><strong>Natureza:</strong> {item.nature || "—"}</p>
+                        <p><strong>Pontos ANCED:</strong> {item.total || "—"}</p>
+                        <p>{item.description || "Sem descrição cadastrada."}</p>
+                      </div>
 
-            <Field label="Observações">
-              <TextInput
-                value={item.notes}
-                onChange={(value) => updateArrayItem("inventoryRecords", index, "notes", value)}
-                placeholder="Origem, restrição, observação administrativa..."
-              />
-            </Field>
-          </article>
-        ))}
+                      <div className="mnds-grid two">
+                        <Field label="Como adquiriu">
+                          <TextInput
+                            value={item.acquisitionMethod || item.notes || ""}
+                            onChange={(value) => updateArrayItem("inventoryRecords", index, "acquisitionMethod", value)}
+                            placeholder="Ex.: missão, treino, compra, recompensa..."
+                          />
+                        </Field>
+
+                        <Field label="Data de aquisição">
+                          <TextInput
+                            value={item.acquiredAt || item.acquired_date || ""}
+                            onChange={(value) => updateArrayItem("inventoryRecords", index, "acquiredAt", value)}
+                            placeholder="Ex.: 29/05/2026"
+                          />
+                        </Field>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mnds-grid two">
+                        <Field label="Nome do item">
+                          <TextInput
+                            value={item.name}
+                            onChange={(value) => updateArrayItem("inventoryRecords", index, "name", value)}
+                            placeholder="Nome"
+                          />
+                        </Field>
+
+                        <Field label="Quantidade">
+                          <TextInput
+                            value={item.quantity}
+                            onChange={(value) => updateArrayItem("inventoryRecords", index, "quantity", value)}
+                            placeholder="Quantidade"
+                          />
+                        </Field>
+                      </div>
+
+                      <Field label="Descrição">
+                        <TextArea
+                          value={item.description}
+                          onChange={(value) => updateArrayItem("inventoryRecords", index, "description", value)}
+                          placeholder="Descrição e função."
+                        />
+                      </Field>
+                    </>
+                  )}
+                </div>
+              ) : null}
+            </article>
+          );
+        })}
       </div>
     </div>
   );
@@ -866,9 +1000,9 @@ export default function MyNinjaDesktopSheet({
 
       <div className="mnds-list">
         {(sheet.missionRecords || []).map((mission, index) => (
-          <article className="mnds-record" key={index}>
+          <article className="mnds-record" key={"mission-" + index}>
             <div className="mnds-record-head">
-              <strong>Missão #{index + 1}</strong>
+              <strong>{mission.title || "Missão #" + (index + 1)}</strong>
               <button type="button" onClick={() => removeArrayItem("missionRecords", index)}>
                 Remover
               </button>
@@ -883,11 +1017,11 @@ export default function MyNinjaDesktopSheet({
                 />
               </Field>
 
-              <Field label="Status">
-                <SelectInput
-                  value={mission.status}
-                  onChange={(value) => updateArrayItem("missionRecords", index, "status", value)}
-                  options={["Em andamento", "Concluída", "Falhou", "Arquivada"]}
+              <Field label="Rank / Categoria">
+                <TextInput
+                  value={mission.rank}
+                  onChange={(value) => updateArrayItem("missionRecords", index, "rank", value)}
+                  placeholder="Ex.: Rank C, evento, treino..."
                 />
               </Field>
             </div>
@@ -981,49 +1115,96 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Ações Ocultas"
-        description="Ações sigilosas, APR especial, decisões ocultas e registros privados."
+        description="Ações privadas do personagem com título, imagem e nível de revelação."
       />
 
       <div className="mnds-list">
-        {(sheet.hiddenActionRecords || []).map((action, index) => (
-          <article className="mnds-record" key={index}>
-            <div className="mnds-record-head">
-              <strong>Ação oculta #{index + 1}</strong>
-              <button type="button" onClick={() => removeArrayItem("hiddenActionRecords", index)}>
-                Remover
-              </button>
-            </div>
+        {(sheet.hiddenActionRecords || []).map((action, index) => {
+          const isOpen = openHiddenActionIndex === index;
 
-            <div className="mnds-grid two">
-              <Field label="Título">
-                <TextInput
-                  value={action.title}
-                  onChange={(value) => updateArrayItem("hiddenActionRecords", index, "title", value)}
-                  placeholder="Nome da ação ou APR"
-                />
-              </Field>
+          return (
+            <article
+              className={isOpen ? "mnds-record mnds-hidden-drawer is-open" : "mnds-record mnds-hidden-drawer"}
+              key={"hidden-" + index}
+            >
+              <div className="mnds-record-head">
+                <strong>{action.title || "Ação oculta #" + (index + 1)}</strong>
 
-              <Field label="Status">
-                <SelectInput
-                  value={action.status}
-                  onChange={(value) => updateArrayItem("hiddenActionRecords", index, "status", value)}
-                  options={["Sigiloso", "Pendente", "Validado", "Arquivado"]}
-                />
-              </Field>
-            </div>
+                <div className="mnds-record-actions">
+                  <button type="button" onClick={() => setOpenHiddenActionIndex(isOpen ? null : index)}>
+                    {isOpen ? "Fechar" : "Abrir"}
+                  </button>
 
-            <Field label="Descrição">
-              <TextArea
-                value={action.description}
-                onChange={(value) => updateArrayItem("hiddenActionRecords", index, "description", value)}
-                placeholder="Detalhes sigilosos da ação."
-              />
-            </Field>
-          </article>
-        ))}
+                  <button type="button" onClick={() => removeArrayItem("hiddenActionRecords", index)}>
+                    Remover
+                  </button>
+                </div>
+              </div>
+
+              {isOpen ? (
+                <div className="mnds-drawer-body">
+                  <div className="mnds-grid two">
+                    <Field label="Título">
+                      <TextInput
+                        value={action.title}
+                        onChange={(value) => updateArrayItem("hiddenActionRecords", index, "title", value)}
+                        placeholder="Nome da ação oculta"
+                      />
+                    </Field>
+
+                    <Field label="Status">
+                      <SelectInput
+                        value={action.status || "Não revelada"}
+                        onChange={(value) => updateArrayItem("hiddenActionRecords", index, "status", value)}
+                        options={["Não revelada", "Parcialmente revelada", "Revelada"]}
+                      />
+                    </Field>
+                  </div>
+
+                  <Field label="Imagem / Print">
+                    <div className="mnds-file-row">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) => uploadHiddenActionImage(index, event.target.files?.[0])}
+                      />
+
+                      <span>
+                        {uploadingHiddenActionIndex === index
+                          ? "Enviando imagem..."
+                          : action.originalName || "Escolha uma imagem/print"}
+                      </span>
+                    </div>
+                  </Field>
+
+                  {action.imageUrl ? (
+                    <div className="mnds-hidden-preview">
+                      <a href={action.imageUrl} target="_blank" rel="noreferrer">
+                        Abrir imagem anexada
+                      </a>
+
+                      <img src={action.imageUrl} alt={action.title || "Ação oculta"} />
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </article>
+          );
+        })}
       </div>
 
-      <button type="button" className="mnds-add-button" onClick={() => addArrayItem("hiddenActionRecords", EMPTY_HIDDEN_ACTION)}>
+      <button
+        type="button"
+        className="mnds-add-button"
+        onClick={() => {
+          const nextIndex = Array.isArray(sheet.hiddenActionRecords)
+            ? sheet.hiddenActionRecords.length
+            : 0;
+
+          addArrayItem("hiddenActionRecords", EMPTY_HIDDEN_ACTION);
+          setOpenHiddenActionIndex(nextIndex);
+        }}
+      >
         Adicionar ação oculta
       </button>
     </div>

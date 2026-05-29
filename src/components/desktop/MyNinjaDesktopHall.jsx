@@ -158,9 +158,9 @@ const sheetSections = {
     body: "Condição atual, ferimentos, bloqueios, restrições e disponibilidade narrativa.",
   },
   hidden: {
-    title: "APR Especial / Ações Ocultas",
+    title: "Ações Ocultas",
     description:
-      "Ações sigilosas, APR especial, decisões ocultas e registros privados.",
+      "Ações sigilosas, Ações Ocultas, decisões ocultas e registros privados.",
     body: "Área para ações ocultas e registros sensíveis. Em produção, pode exigir permissão de ADM.",
   },
   narrative: {

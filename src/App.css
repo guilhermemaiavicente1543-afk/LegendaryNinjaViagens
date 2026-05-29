@@ -33529,3 +33529,100 @@ body:has(.mnd-desktop-shell) {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   AJUSTES FICHA COMPLEMENTAR — gavetas, ações ocultas,
+   inventário e perfil sem scroll interno
+   ========================================================= */
+
+/* Board esquerdo do perfil sem rolagem interna: quem rola é a página */
+@media (min-width: 761px) {
+  .mnd-profile-card {
+    height: auto !important;
+    max-height: none !important;
+    min-height: max(820px, calc(100vh - 118px)) !important;
+    overflow: visible !important;
+    padding-bottom: 80px !important;
+  }
+
+  .mnd-profile-card::after {
+    display: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) {
+    overflow-y: auto !important;
+  }
+
+  .mnd-page,
+  .mnd-content,
+  .mnd-main-grid {
+    overflow: visible !important;
+  }
+}
+
+/* Gavetas */
+.mnds-inventory-drawer,
+.mnds-hidden-drawer {
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.mnds-inventory-drawer:not(.is-open),
+.mnds-hidden-drawer:not(.is-open) {
+  padding-bottom: 14px !important;
+}
+
+.mnds-drawer-body {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.mnds-technique-info {
+  border: 1px solid rgba(255, 122, 26, 0.18);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.24);
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.mnds-technique-info p {
+  margin: 0;
+  color: #cfc5b8;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mnds-technique-info strong {
+  color: #ff9a4d;
+}
+
+.mnds-hidden-preview {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(255, 122, 26, 0.22);
+  border-radius: 10px;
+  background: rgba(255, 122, 26, 0.055);
+  padding: 12px;
+}
+
+.mnds-hidden-preview a {
+  color: #ff9a4d;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.mnds-hidden-preview img {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Remove sobras visuais antigas de status em missão/ação */
+.mnds-record-head strong {
+  overflow-wrap: anywhere;
+}
