@@ -33095,3 +33095,74 @@ body:has(.mnd-desktop-shell) {
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.28);
 }
+
+/* =========================================================
+   FOTO REAL DO PERSONAGEM — usando CharacterPortraitUploader
+   dentro do board desktop novo
+   ========================================================= */
+
+.mnd-photo-uploader-real {
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}
+
+.mnd-photo-uploader-real .character-portrait-uploader {
+  width: 100% !important;
+  height: 100% !important;
+  display: grid !important;
+  grid-template-rows: 1fr auto auto !important;
+  gap: 8px !important;
+  padding: 0 !important;
+}
+
+.mnd-photo-uploader-real .character-portrait-frame {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 170px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+}
+
+.mnd-photo-uploader-real .character-portrait-frame img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.mnd-photo-uploader-real .character-portrait-empty {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 170px !important;
+  display: grid !important;
+  place-items: center !important;
+  color: rgba(243, 237, 227, 0.55) !important;
+}
+
+.mnd-photo-uploader-real .character-portrait-empty small {
+  color: rgba(243, 237, 227, 0.55) !important;
+  font-size: 12px !important;
+}
+
+.mnd-photo-uploader-real button,
+.mnd-photo-uploader-real .character-portrait-button {
+  width: 100% !important;
+  min-height: 36px !important;
+  border-radius: 8px !important;
+  border: 1px solid #322d27 !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  color: #cfc5b8 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.mnd-photo-uploader-real .character-portrait-message {
+  color: #ff9a4d !important;
+  font-size: 11px !important;
+  text-align: center !important;
+}
