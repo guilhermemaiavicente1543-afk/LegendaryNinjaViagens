@@ -669,6 +669,11 @@ export default function MyNinjaDesktopHall({
 
               <div className="mnd-page-bottom-spacer" aria-hidden="true" />
       
+              
+              {/* bloco duplicado removido */}
+
+
+
               <section className="mnd-official-profile-board">
                 <MyNinjaDesktopInfoEditor
                   character={character}
@@ -711,6 +716,16 @@ export default function MyNinjaDesktopHall({
                         <dt>Altura / Peso</dt>
                         <dd>{data.heightWeight}</dd>
                       </div>
+
+                      <div>
+                        <dt>Alcunha</dt>
+                        <dd>{valueFrom(character, ["epithet", "nickname", "alcunha", "title"], "—")}</dd>
+                      </div>
+
+                      <div>
+                        <dt>Frase</dt>
+                        <dd>{valueFrom(character, ["quote", "phrase", "frase"], "—")}</dd>
+                      </div>
                     </dl>
                   </article>
 
@@ -723,6 +738,16 @@ export default function MyNinjaDesktopHall({
                       <div>
                         <dt>Aldeia ou Organização</dt>
                         <dd>{data.organization}</dd>
+                      </div>
+
+                      <div>
+                        <dt>Graduação</dt>
+                        <dd>{data.rank}</dd>
+                      </div>
+
+                      <div>
+                        <dt>Estilo Ninja</dt>
+                        <dd>{data.style}</dd>
                       </div>
 
                       <div>
@@ -742,7 +767,17 @@ export default function MyNinjaDesktopHall({
 
                       <div>
                         <dt>Traços Únicos</dt>
-                        <dd>{data.uniqueTraits}</dd>
+                        <dd>
+                          {Array.isArray(character?.selected_traits)
+                            ? character.selected_traits
+                                .map((trait) => {
+                                  if (typeof trait === "string") return trait;
+                                  return trait?.name || trait?.title || trait?.label || "";
+                                })
+                                .filter(Boolean)
+                                .join(", ") || "—"
+                            : valueFrom(character, ["unique_traits", "traits", "tracos_unicos"], "—")}
+                        </dd>
                       </div>
 
                       <div>
