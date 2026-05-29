@@ -251,6 +251,7 @@ export default function MyNinjaDesktopSheet({
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [uploadingProofIndex, setUploadingProofIndex] = useState(null);
+  const [openProofIndex, setOpenProofIndex] = useState(null);
 
   const [techniques, setTechniques] = useState([]);
   const [techniquesLoading, setTechniquesLoading] = useState(false);
@@ -265,22 +266,44 @@ export default function MyNinjaDesktopSheet({
     let cancelled = false;
 
     async function loadTechniques() {
-      if (!isSupabaseConfigured || !supabase) return;
+      if (!supabase) {
+        setTechniques([]);
+        setTechniquesLoading(false);
+        setMessage("Supabase não está disponível para carregar a Shinobidex.");
+        return;
+      }
 
       setTechniquesLoading(true);
 
-      const { data, error } = await supabase
-        .from("techniques")
-        .select("*")
-        .order("name", { ascending: true });
+      const attempts = [
+        () => supabase.from("techniques").select("*").order("name", { ascending: true }),
+        () => supabase.from("techniques").select("*").order("created_at", { ascending: false }),
+        () => supabase.from("techniques").select("*"),
+      ];
 
-      if (!cancelled) {
+      let lastError = null;
+
+      for (const attempt of attempts) {
+        const { data, error } = await attempt();
+
         if (!error) {
-          setTechniques(data || []);
+          const list = Array.isArray(data) ? data : [];
+          setTechniques(list);
+
+          if (list.length === 0) {
+            setMessage("Nenhuma técnica foi encontrada na Shinobidex.");
+          }
+
+          setTechniquesLoading(false);
+          return;
         }
 
-        setTechniquesLoading(false);
+        lastError = error;
       }
+
+      setTechniques([]);
+      setTechniquesLoading(false);
+      setMessage("Não consegui carregar técnicas da Shinobidex: " + (lastError?.message || "erro desconhecido"));
     }
 
     loadTechniques();
@@ -517,12 +540,22 @@ export default function MyNinjaDesktopSheet({
 
       <div className="mnds-list">
         {(sheet.academicProofs || []).map((proof, index) => (
-          <article className="mnds-record" key={index}>
+          <article className={openProofIndex === index ? "mnds-record mnds-proof-drawer is-open" : "mnds-record mnds-proof-drawer"} key={"proof-" + index}>
             <div className="mnds-record-head">
-              <strong>Prova #{index + 1}</strong>
-              <button type="button" onClick={() => removeArrayItem("academicProofs", index)}>
-                Remover
-              </button>
+              <strong>{proof.title || "Prova #" + (index + 1)}</strong>
+
+              <div className="mnds-record-actions">
+                <button
+                  type="button"
+                  onClick={() => setOpenProofIndex(openProofIndex === index ? null : index)}
+                >
+                  {openProofIndex === index ? "Fechar" : "Abrir"}
+                </button>
+
+                <button type="button" onClick={() => removeArrayItem("academicProofs", index)}>
+                  Remover
+                </button>
+              </div>
             </div>
 
             <div className="mnds-grid two">

@@ -32056,3 +32056,80 @@ body:has(.mnd-desktop-shell) {
   min-height: 620px;
   background: transparent !important;
 }
+
+/* =========================================================
+   FIX — Scroll maior, gavetas de provas e Shinobidex
+   ========================================================= */
+
+@media (min-width: 761px) {
+  .mnds-board {
+    height: calc(100vh - 105px) !important;
+    max-height: calc(100vh - 105px) !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    padding-bottom: 160px !important;
+    scrollbar-gutter: stable !important;
+  }
+
+  .mnd-sheet-card {
+    overflow: visible !important;
+  }
+
+  .mnds-section {
+    padding-bottom: 28px !important;
+  }
+
+  .mnds-list {
+    padding-bottom: 34px !important;
+  }
+}
+
+/* Gaveta de prova: fechada mostra só o cabeçalho/título */
+.mnds-proof-drawer {
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.mnds-proof-drawer:not(.is-open) {
+  padding-bottom: 14px !important;
+}
+
+.mnds-proof-drawer:not(.is-open) > :not(.mnds-record-head) {
+  display: none !important;
+}
+
+.mnds-proof-drawer .mnds-record-head {
+  cursor: default;
+}
+
+.mnds-record-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mnds-record-actions button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.24);
+  color: #a89f93;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.mnds-record-actions button:hover {
+  color: #fff;
+  border-color: rgba(255, 122, 26, 0.32);
+}
+
+.mnds-shinobidex-picker {
+  margin-bottom: 16px !important;
+}
+
+.mnds-technique-list {
+  min-height: 90px !important;
+  max-height: 360px !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.32) !important;
+}
