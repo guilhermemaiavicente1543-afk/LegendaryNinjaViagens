@@ -35547,3 +35547,23 @@ body:has(.mnd-official-profile-board) .map-icon-board {
     text-align: left !important;
   }
 }
+
+/* =========================================================
+   HARD KILL — remove board antigo inferior e fixa board oficial no topo
+   ========================================================= */
+
+body:has(.mnd-official-profile-board) .mnd-bottom-grid {
+  display: none !important;
+}
+
+.mnd-official-profile-board {
+  display: block !important;
+  width: 100% !important;
+  grid-column: 1 / -1 !important;
+  order: -10 !important;
+  margin: 0 0 26px !important;
+}
+
+.mnd-official-profile-board + .mnd-main-grid {
+  margin-top: 22px !important;
+}
