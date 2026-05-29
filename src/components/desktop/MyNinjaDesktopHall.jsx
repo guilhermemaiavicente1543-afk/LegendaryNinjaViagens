@@ -405,6 +405,68 @@ export default function MyNinjaDesktopHall({
                       </div>
                     </div>
                   </div>
+                  <div className="mnd-character-info-board">
+                    <article>
+                      <span>Nome do personagem</span>
+                      <strong>{data.name}</strong>
+                    </article>
+
+                    <article>
+                      <span>Player</span>
+                      <strong>{data.player}</strong>
+                    </article>
+
+                    <article>
+                      <span>Gênero</span>
+                      <strong>{data.gender}</strong>
+                    </article>
+
+                    <article>
+                      <span>Idade</span>
+                      <strong>{data.age}</strong>
+                    </article>
+
+                    <article>
+                      <span>Aniversário</span>
+                      <strong>{data.birthday}</strong>
+                    </article>
+
+                    <article>
+                      <span>Altura / Peso</span>
+                      <strong>{data.heightWeight}</strong>
+                    </article>
+
+                    <article>
+                      <span>Aldeia / Organização</span>
+                      <strong>{data.organization}</strong>
+                    </article>
+
+                    <article>
+                      <span>País</span>
+                      <strong>{data.country}</strong>
+                    </article>
+
+                    <article>
+                      <span>Origem</span>
+                      <strong>{data.origin}</strong>
+                    </article>
+
+                    <article>
+                      <span>Clã / Parentesco</span>
+                      <strong>{data.clan}</strong>
+                    </article>
+
+                    <article>
+                      <span>Kekkei Genkai / Hiden</span>
+                      <strong>{data.kekkei}</strong>
+                    </article>
+
+                    <article>
+                      <span>Pontos de habilidade</span>
+                      <strong>{data.skillPoints}</strong>
+                    </article>
+                  </div>
+
                 </article>
 
                 <article className="mnd-card mnd-sheet-card">

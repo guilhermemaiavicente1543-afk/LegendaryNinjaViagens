@@ -32957,3 +32957,62 @@ body:has(.mnd-desktop-shell) {
     max-height: 720px !important;
   }
 }
+
+/* =========================================================
+   MEU NINJA DESKTOP — Quadros de informações do personagem
+   ========================================================= */
+
+.mnd-character-info-board {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mnd-character-info-board article {
+  min-width: 0;
+  min-height: 74px;
+  border: 1px solid rgba(255, 122, 26, 0.18);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 44%),
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.075), transparent 34%),
+    rgba(0, 0, 0, 0.24);
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.mnd-character-info-board article span {
+  color: #ff8a2a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.mnd-character-info-board article strong {
+  margin-top: 7px;
+  color: #f3ede3;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.mnd-character-info-board article:hover {
+  border-color: rgba(255, 122, 26, 0.38);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 44%),
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.115), transparent 34%),
+    rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 1280px) and (min-width: 761px) {
+  .mnd-character-info-board {
+    grid-template-columns: 1fr;
+  }
+}
