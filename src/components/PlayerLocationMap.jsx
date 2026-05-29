@@ -1,3 +1,4 @@
+import LnSelect from "./ui/LnSelect";
 export default function PlayerLocationMap({
   character,
   travels = [],
@@ -131,19 +132,19 @@ export default function PlayerLocationMap({
 
             <label>
               Meio de locomoção:
-              <select
+              <LnSelect
                 value={travelMode}
                 onChange={(event) => setTravelMode?.(event.target.value)}
               >
                 <option value="terrestre">Terrestre — 1 província = 12 horas</option>
                 <option value="aquatico">Aquático — 1 província = 9 horas</option>
                 <option value="aereo">Aéreo — 1 província = 6 horas</option>
-              </select>
+              </LnSelect>
             </label>
 
             <label>
               Personagem:
-              <select
+              <LnSelect
                 value={selectedTravelCharacterId}
                 onChange={(event) =>
                   setSelectedTravelCharacterId?.(event.target.value)
@@ -158,7 +159,7 @@ export default function PlayerLocationMap({
                     {item.characterName}
                   </option>
                 ))}
-              </select>
+              </LnSelect>
             </label>
 
             <button type="button" onClick={refreshTravelCharacters}>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const ITEM_TYPES = [
   { value: "technique", label: "Técnica" },
@@ -239,7 +240,7 @@ export default function CharacterInventoryPanel({ user, character }) {
       <form className="inventory-form" onSubmit={addItem}>
         <label>
           Tipo
-          <select
+          <LnSelect
             value={form.item_type}
             onChange={(event) => updateForm("item_type", event.target.value)}
           >
@@ -248,7 +249,7 @@ export default function CharacterInventoryPanel({ user, character }) {
                 {type.label}
               </option>
             ))}
-          </select>
+          </LnSelect>
         </label>
 
         <label>
@@ -271,7 +272,7 @@ export default function CharacterInventoryPanel({ user, character }) {
 
         <label>
           Raridade
-          <select
+          <LnSelect
             value={form.rarity}
             onChange={(event) => updateForm("rarity", event.target.value)}
           >
@@ -280,7 +281,7 @@ export default function CharacterInventoryPanel({ user, character }) {
                 {rarity}
               </option>
             ))}
-          </select>
+          </LnSelect>
         </label>
 
         <label>

@@ -5,6 +5,7 @@ import { uniqueTraits } from "../data/uniqueTraits";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 import CharacterInventoryPanel from "./inventory/CharacterInventoryPanel";
 import CharacterPortraitUploader from "./profile/CharacterPortraitUploader";
+import LnSelect from "./ui/LnSelect";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
@@ -551,7 +552,7 @@ export default function MyNinjaPage({
 
         <label>
           Aldeia ou Organização
-          <select
+          <LnSelect
             value={form.villageChoice}
             onChange={(event) => {
               const value = event.target.value;
@@ -569,7 +570,7 @@ export default function MyNinjaPage({
               </option>
             ))}
             <option value="Outros">Outros</option>
-          </select>
+          </LnSelect>
         </label>
 
         {form.villageChoice === "Outros" && (
@@ -607,7 +608,7 @@ export default function MyNinjaPage({
 
         <label>
           Estilo Ninja
-          <select
+          <LnSelect
             value={form.ninjaStyle}
             onChange={(event) => updateField("ninjaStyle", event.target.value)}
           >
@@ -617,7 +618,7 @@ export default function MyNinjaPage({
                 {style}
               </option>
             ))}
-          </select>
+          </LnSelect>
         </label>
 
 
@@ -824,7 +825,7 @@ export default function MyNinjaPage({
               placeholder="Pesquisar traço único..."
             />
 
-            <select
+            <LnSelect
               value={categoryFilter}
               onChange={(event) => setCategoryFilter(event.target.value)}
             >
@@ -833,9 +834,9 @@ export default function MyNinjaPage({
                   {category}
                 </option>
               ))}
-            </select>
+            </LnSelect>
 
-            <select
+            <LnSelect
               value={typeFilter}
               onChange={(event) => setTypeFilter(event.target.value)}
             >
@@ -844,7 +845,7 @@ export default function MyNinjaPage({
                   {type}
                 </option>
               ))}
-            </select>
+            </LnSelect>
           </div>
 
           <div className="trait-results">

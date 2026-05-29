@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import { useLanguage } from "../../i18n/LanguageContext";
+import LnSelect from "../ui/LnSelect";
 
 const RANKS = ["Todos", "E", "D", "C", "B", "A", "S", "SS"];
 const STATUS = ["Todos", "draft", "approved", "needs_review"];
@@ -163,30 +164,30 @@ export default function ShinobiDexPage({ onBack }) {
 
         <label>
           {t("shinobidex.rank")}
-          <select value={rank} onChange={(event) => setRank(event.target.value)}>
+          <LnSelect value={rank} onChange={(event) => setRank(event.target.value)}>
             {RANKS.map((item) => <option key={item}>{item}</option>)}
-          </select>
+          </LnSelect>
         </label>
 
         <label>
           {t("shinobidex.classification")}
-          <select value={classification} onChange={(event) => setClassification(event.target.value)}>
+          <LnSelect value={classification} onChange={(event) => setClassification(event.target.value)}>
             {classifications.map((item) => <option key={item}>{item}</option>)}
-          </select>
+          </LnSelect>
         </label>
 
         <label>
           {t("shinobidex.nature")}
-          <select value={nature} onChange={(event) => setNature(event.target.value)}>
+          <LnSelect value={nature} onChange={(event) => setNature(event.target.value)}>
             {natures.map((item) => <option key={item}>{item}</option>)}
-          </select>
+          </LnSelect>
         </label>
 
         <label>
           {t("shinobidex.status")}
-          <select value={status} onChange={(event) => setStatus(event.target.value)}>
+          <LnSelect value={status} onChange={(event) => setStatus(event.target.value)}>
             {STATUS.map((item) => <option key={item}>{item}</option>)}
-          </select>
+          </LnSelect>
         </label>
       </div>
 

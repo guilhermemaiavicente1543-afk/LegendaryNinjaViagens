@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const STATUS_OPTIONS = ["draft", "approved", "needs_review", "archived"];
 const RANK_OPTIONS = ["", "E", "D", "C", "B", "A", "S", "SS"];
@@ -277,7 +278,7 @@ export default function ShinobiDexAdmin() {
 
         <label>
           Status
-          <select
+          <LnSelect
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
           >
@@ -287,12 +288,12 @@ export default function ShinobiDexAdmin() {
                 {statusLabel[item] || item}
               </option>
             ))}
-          </select>
+          </LnSelect>
         </label>
 
         <label>
           Confiança
-          <select
+          <LnSelect
             value={confidenceFilter}
             onChange={(event) => setConfidenceFilter(event.target.value)}
           >
@@ -300,12 +301,12 @@ export default function ShinobiDexAdmin() {
             {CONFIDENCE_OPTIONS.map((item) => (
               <option key={item}>{item}</option>
             ))}
-          </select>
+          </LnSelect>
         </label>
 
         <label>
           Rank ANCED
-          <select
+          <LnSelect
             value={rankFilter}
             onChange={(event) => setRankFilter(event.target.value)}
           >
@@ -313,7 +314,7 @@ export default function ShinobiDexAdmin() {
             {RANK_OPTIONS.filter(Boolean).map((item) => (
               <option key={item}>{item}</option>
             ))}
-          </select>
+          </LnSelect>
         </label>
 
         <button type="button" onClick={loadTechniques}>
@@ -434,7 +435,7 @@ export default function ShinobiDexAdmin() {
               <div className="shinobidex-admin-grid four">
                 <label>
                   Rank Wiki
-                  <select
+                  <LnSelect
                     value={form.wiki_rank}
                     onChange={(event) => updateForm("wiki_rank", event.target.value)}
                   >
@@ -443,12 +444,12 @@ export default function ShinobiDexAdmin() {
                         {item || "Não definido"}
                       </option>
                     ))}
-                  </select>
+                  </LnSelect>
                 </label>
 
                 <label>
                   Rank ANCED
-                  <select
+                  <LnSelect
                     value={form.anced_rank}
                     onChange={(event) => updateForm("anced_rank", event.target.value)}
                   >
@@ -457,7 +458,7 @@ export default function ShinobiDexAdmin() {
                         {item || "Não definido"}
                       </option>
                     ))}
-                  </select>
+                  </LnSelect>
                 </label>
 
                 <label>
@@ -473,7 +474,7 @@ export default function ShinobiDexAdmin() {
 
                 <label>
                   Confiança
-                  <select
+                  <LnSelect
                     value={form.anced_confidence}
                     onChange={(event) =>
                       updateForm("anced_confidence", event.target.value)
@@ -482,7 +483,7 @@ export default function ShinobiDexAdmin() {
                     {CONFIDENCE_OPTIONS.map((item) => (
                       <option key={item}>{item}</option>
                     ))}
-                  </select>
+                  </LnSelect>
                 </label>
               </div>
 
@@ -539,7 +540,7 @@ export default function ShinobiDexAdmin() {
 
               <label>
                 Status
-                <select
+                <LnSelect
                   value={form.status}
                   onChange={(event) => updateForm("status", event.target.value)}
                 >
@@ -548,7 +549,7 @@ export default function ShinobiDexAdmin() {
                       {statusLabel[item] || item}
                     </option>
                   ))}
-                </select>
+                </LnSelect>
               </label>
 
               <div className="shinobidex-admin-actions">

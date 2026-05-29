@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { uniqueTraits } from "../data/uniqueTraits";
+import LnSelect from "./ui/LnSelect";
 
 const STORAGE_KEY = "legendary-ninja-characters";
 
@@ -517,7 +518,7 @@ export default function CharactersPage({
 
           <label>
             Estilo Ninja
-            <select
+            <LnSelect
               value={form.ninjaStyle}
               onChange={(event) => updateField("ninjaStyle", event.target.value)}
             >
@@ -527,7 +528,7 @@ export default function CharactersPage({
                   {style}
                 </option>
               ))}
-            </select>
+            </LnSelect>
           </label>
 
           <div className="trait-selector">
@@ -540,7 +541,7 @@ export default function CharactersPage({
                 placeholder="Pesquisar traço único..."
               />
 
-              <select
+              <LnSelect
                 value={categoryFilter}
                 onChange={(event) => setCategoryFilter(event.target.value)}
               >
@@ -549,9 +550,9 @@ export default function CharactersPage({
                     {category}
                   </option>
                 ))}
-              </select>
+              </LnSelect>
 
-              <select
+              <LnSelect
                 value={typeFilter}
                 onChange={(event) => setTypeFilter(event.target.value)}
               >
@@ -560,7 +561,7 @@ export default function CharactersPage({
                     {type}
                   </option>
                 ))}
-              </select>
+              </LnSelect>
             </div>
 
             <div className="trait-results">

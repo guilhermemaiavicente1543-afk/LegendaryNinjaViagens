@@ -25,6 +25,7 @@ import ShinobiDexPage from "./components/shinobidex/ShinobiDexPage";
 import AncedCalculatorPage from "./components/anced/AncedCalculatorPage";
 import LegendsPage from "./components/legends/LegendsPage";
 import PlayerKnowledgeAssistant from "./components/knowledge/PlayerKnowledgeAssistant";
+import LnSelect from "./components/ui/LnSelect";
 
 /*
   Mapa com grade:
@@ -1171,7 +1172,7 @@ export default function App() {
             </h3>
 
             <label className="map-control-label">
-              <select
+              <LnSelect
                 value={travelMode}
                 onChange={(e) => setTravelMode(e.target.value)}
               >
@@ -1179,7 +1180,7 @@ export default function App() {
                 <option value="aquatico">Aquático — 1 província = 9 horas</option>
                 <option value="aereo">Aéreo — 1 província = 6 horas</option>
                 <option value="teletransporte">Teletransporte — imediato</option>
-              </select>
+              </LnSelect>
             </label>
           </section>
 
@@ -1249,7 +1250,7 @@ export default function App() {
                   <em>忍</em>
                 )}
 
-                <select
+                <LnSelect
                   value={selectedTravelCharacterId}
                   onChange={(e) => setSelectedTravelCharacterId(e.target.value)}
                 >
@@ -1262,7 +1263,7 @@ export default function App() {
                       {character.characterName}
                     </option>
                   ))}
-                </select>
+                </LnSelect>
               </div>
             </label>
 
@@ -1465,7 +1466,7 @@ export default function App() {
                   Locomoção
                 </h3>
 
-                <select
+                <LnSelect
                   value={travelMode}
                   onChange={(e) => setTravelMode(e.target.value)}
                 >
@@ -1473,7 +1474,7 @@ export default function App() {
                   <option value="aquatico">Aquático — 1 província = 9h</option>
                   <option value="aereo">Aéreo — 1 província = 6h</option>
                   <option value="teletransporte">Teletransporte — imediato</option>
-                </select>
+                </LnSelect>
               </div>
 
               <div className="mobile-map-control-buttons">
@@ -1516,7 +1517,7 @@ export default function App() {
                   Personagem
                 </h3>
 
-                <select
+                <LnSelect
                   value={selectedTravelCharacterId}
                   onChange={(e) => setSelectedTravelCharacterId(e.target.value)}
                 >
@@ -1529,7 +1530,7 @@ export default function App() {
                       {character.characterName}
                     </option>
                   ))}
-                </select>
+                </LnSelect>
 
                 <button type="button" onClick={refreshTravelCharacters}>
                   <span>↻</span>

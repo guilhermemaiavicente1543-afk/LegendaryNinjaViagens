@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const OPTIONS = {
   range: [
@@ -159,13 +160,13 @@ function SelectField({ label, value, options, onChange }) {
   return (
     <label className="anced-calc-field">
       <span>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
+      <LnSelect value={value} onChange={(event) => onChange(event.target.value)}>
         {options.map(([name, points], index) => (
           <option key={name} value={index}>
             {name} (+{points})
           </option>
         ))}
-      </select>
+      </LnSelect>
     </label>
   );
 }
@@ -290,26 +291,26 @@ export default function AncedCalculatorPage({ user, onBack }) {
 
             <label className="anced-calc-field">
               <span>Classificação</span>
-              <select
+              <LnSelect
                 value={form.classification}
                 onChange={(event) => update("classification", event.target.value)}
               >
                 {CLASSIFICATIONS.map((item) => (
                   <option key={item}>{item}</option>
                 ))}
-              </select>
+              </LnSelect>
             </label>
 
             <label className="anced-calc-field">
               <span>Natureza</span>
-              <select
+              <LnSelect
                 value={form.nature}
                 onChange={(event) => update("nature", event.target.value)}
               >
                 {NATURES.map((item) => (
                   <option key={item}>{item}</option>
                 ))}
-              </select>
+              </LnSelect>
             </label>
 
             <label className="anced-calc-field">

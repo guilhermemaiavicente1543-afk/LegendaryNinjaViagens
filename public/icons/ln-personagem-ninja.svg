@@ -1,0 +1,23 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="orangeGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(46 28) rotate(50) scale(90)">
+      <stop stop-color="#ffcf8a"/>
+      <stop offset="0.46" stop-color="#ff7a12"/>
+      <stop offset="1" stop-color="#6f2406"/>
+    </radialGradient>
+    <filter id="shadow" x="-20" y="-20" width="168" height="168" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#ff7a12" flood-opacity="0.55"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+
+  <circle cx="64" cy="64" r="56" fill="#070504" stroke="#ff7a12" stroke-width="5" filter="url(#shadow)"/>
+  <circle cx="64" cy="64" r="45" fill="url(#orangeGlow)" opacity="0.16"/>
+
+  <path d="M33 58C36 39 48 27 64 27C80 27 92 39 95 58C86 52 76 49 64 49C52 49 42 52 33 58Z" fill="#ff7a12"/>
+  <path d="M29 60C38 52 49 48 64 48C79 48 90 52 99 60C95 81 82 96 64 96C46 96 33 81 29 60Z" fill="#111820" stroke="#ff7a12" stroke-width="4"/>
+  <path d="M42 64C48 58 55 56 64 56C73 56 80 58 86 64C81 70 74 73 64 73C54 73 47 70 42 64Z" fill="#fff4df"/>
+  <circle cx="54" cy="64" r="4" fill="#ff2d1f"/>
+  <circle cx="74" cy="64" r="4" fill="#ff2d1f"/>
+  <path d="M48 83C55 89 73 89 80 83" stroke="#ffb36b" stroke-width="4" stroke-linecap="round"/>
+</svg>

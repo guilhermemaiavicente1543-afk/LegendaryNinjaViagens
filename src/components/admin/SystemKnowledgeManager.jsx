@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const EMPTY_FORM = {
   title: "",
@@ -248,7 +249,7 @@ export default function SystemKnowledgeManager() {
 
           <label>
             Categoria
-            <select
+            <LnSelect
               value={form.category}
               onChange={(event) => updateField("category", event.target.value)}
             >
@@ -257,7 +258,7 @@ export default function SystemKnowledgeManager() {
                   {category}
                 </option>
               ))}
-            </select>
+            </LnSelect>
           </label>
 
           <label className="system-knowledge-form-full">
@@ -309,13 +310,13 @@ export default function SystemKnowledgeManager() {
 
           <label>
             Visibilidade
-            <select
+            <LnSelect
               value={form.visibility}
               onChange={(event) => updateField("visibility", event.target.value)}
             >
               <option value="public">Público</option>
               <option value="admin">Somente ADM</option>
-            </select>
+            </LnSelect>
           </label>
 
           <label className="system-knowledge-toggle">

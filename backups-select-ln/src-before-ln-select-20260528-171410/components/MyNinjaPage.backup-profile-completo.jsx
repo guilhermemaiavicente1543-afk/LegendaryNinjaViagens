@@ -1,0 +1,959 @@
+import { useEffect, useMemo, useState } from "react";
+import CharactersPage from "./CharactersPage";
+import CharacterSkillTree from "./CharacterSkillTree";
+import { uniqueTraits } from "../data/uniqueTraits";
+import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
+import CharacterInventoryPanel from "./inventory/CharacterInventoryPanel";
+
+const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
+
+const villageOptions = [
+  "Vila da Folha",
+  "Vila da Névoa",
+  "Vila da Nuvem",
+  "Vila da Areia",
+  "Vila da Pedra"
+];
+
+const ninjaStyles = [
+  "Ninjutsu",
+  "Taijutsu",
+  "Genjutsu",
+  "Bukijutsu",
+  "Tansakujutsu",
+  "Fuinjutsu",
+  "Iryoninjutsu",
+  "Kugutsu",
+  "Kenjutsu",
+  "Sensorial",
+  "Médico",
+  "Outro"
+];
+
+const initialForm = {
+  playerName: "",
+  phoneNumber: "",
+  characterName: "",
+  villageChoice: "",
+  iconUrl: "",
+  age: "",
+  appearance: "",
+  clanOrKinship: "",
+  history: "",
+  villageOrOrganization: "",
+  kekkeiGenkaiOrHiden: "",
+  equipment: "",
+  ninjaStyle: "",
+  selectedTraits: []
+};
+
+function dbToForm(character) {
+  const savedVillage = character.village_or_organization || "";
+  const isKnownVillage = villageOptions.includes(savedVillage);
+
+  return {
+    playerName: character.player_name || "",
+    phoneNumber: character.phone_number || "",
+    characterName: character.character_name || "",
+    villageChoice: isKnownVillage ? savedVillage : savedVillage ? "Outros" : "",
+    iconUrl: character.icon_url || "",
+    age: character.age || "",
+    appearance: character.appearance || "",
+    clanOrKinship: character.clan_or_kinship || "",
+    history: character.history || "",
+    villageOrOrganization: character.village_or_organization || "",
+    kekkeiGenkaiOrHiden: character.kekkei_genkai_or_hiden || "",
+    equipment: character.equipment || "",
+    ninjaStyle: character.ninja_style || "",
+    selectedTraits: Array.isArray(character.selected_traits)
+      ? character.selected_traits
+      : []
+  };
+}
+
+function dbToLocalCharacter(character) {
+  return {
+    id: character.id,
+    playerName: character.player_name || "",
+    phoneNumber: character.phone_number || "",
+    characterName: character.character_name || "",
+    iconUrl: character.icon_url || "",
+    age: character.age || "",
+    appearance: character.appearance || "",
+    clanOrKinship: character.clan_or_kinship || "",
+    history: character.history || "",
+    villageOrOrganization: character.village_or_organization || "",
+    kekkeiGenkaiOrHiden: character.kekkei_genkai_or_hiden || "",
+    equipment: character.equipment || "",
+    ninjaStyle: character.ninja_style || "",
+    selectedTraits: Array.isArray(character.selected_traits)
+      ? character.selected_traits
+      : [],
+    createdAt: character.created_at
+  };
+}
+
+function syncCharacterToLocalStorage(character) {
+  if (!character) return;
+
+  const localCharacter = dbToLocalCharacter(character);
+  localStorage.setItem(
+    LOCAL_CHARACTER_STORAGE_KEY,
+    JSON.stringify([localCharacter])
+  );
+}
+
+function buildPayload(form, userId) {
+  const village =
+    form.villageChoice === "Outros"
+      ? form.villageOrOrganization.trim()
+      : form.villageChoice;
+
+  return {
+    user_id: userId,
+    player_name: form.playerName.trim(),
+    phone_number: form.phoneNumber.trim(),
+    character_name: form.characterName.trim(),
+    icon_url: form.iconUrl,
+    age: form.age,
+    appearance: form.appearance,
+    clan_or_kinship: form.clanOrKinship,
+    history: form.history,
+    village_or_organization: village,
+    kekkei_genkai_or_hiden: form.kekkeiGenkaiOrHiden,
+    equipment: form.equipment,
+    ninja_style: form.ninjaStyle,
+    selected_traits: form.selectedTraits,
+    updated_at: new Date().toISOString()
+  };
+}
+
+function formatDateTime(value) {
+  if (!value) return "-";
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short"
+  }).format(new Date(value));
+}
+
+export default function MyNinjaPage({
+  travels = [],
+  now = Date.now(),
+  getCoordinate,
+  getTravelCurrentPoint,
+  getTravelProgress,
+  getRemainingTravelHours,
+  getUnknownPresencesCount,
+  formatUnknownPresences,
+  formatTime,
+  points,
+  travelMode,
+  setTravelMode,
+  activeMapImage,
+  showImageGrid,
+  setShowImageGrid,
+  showOverlayGrid,
+  setShowOverlayGrid,
+  showSmallGrid,
+  setShowSmallGrid,
+  gridOpacity,
+  setGridOpacity,
+  gridLines,
+  setPoints,
+  selectedTravelCharacterId,
+  setSelectedTravelCharacterId,
+  travelCharacters,
+  refreshTravelCharacters,
+  startCharacterTravel,
+  handleMapClick,
+  getSmallCellCenter,
+  imageBounds,
+}) {
+  const [user, setUser] = useState(null);
+  const [character, setCharacter] = useState(null);
+  const [form, setForm] = useState(initialForm);
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileTab, setProfileTab] = useState("info");
+  const [isLoading, setIsLoading] = useState(true);
+  const [message, setMessage] = useState("");
+
+  const [traitSearch, setTraitSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("Todos");
+  const [typeFilter, setTypeFilter] = useState("Todos");
+
+  useEffect(() => {
+    async function loadMyNinja() {
+      if (!isSupabaseConfigured || !supabase) {
+        setIsLoading(false);
+        return;
+      }
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !userData?.user) {
+        setIsLoading(false);
+        return;
+      }
+
+      setUser(userData.user);
+
+      const { data, error } = await supabase
+        .from("characters")
+        .select("*")
+        .eq("user_id", userData.user.id)
+        .maybeSingle();
+
+      if (error) {
+        setMessage(error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (data) {
+        setCharacter(data);
+        setForm(dbToForm(data));
+        syncCharacterToLocalStorage(data);
+
+        if (profileTab === "skills") {
+          setProfileTab("info");
+        }
+      }
+
+      setIsLoading(false);
+    }
+
+    loadMyNinja();
+  }, []);
+
+  const characterTravel = useMemo(() => {
+    if (!character) return null;
+
+    return travels.find((travel) => travel.characterId === character.id) || null;
+  }, [character, travels]);
+
+  const location = useMemo(() => {
+    if (
+      !characterTravel ||
+      !getTravelCurrentPoint ||
+      !getCoordinate ||
+      !getTravelProgress
+    ) {
+      return null;
+    }
+
+    const currentPoint = getTravelCurrentPoint(characterTravel, now);
+    const currentCoord = getCoordinate({
+      lat: currentPoint[0],
+      lng: currentPoint[1]
+    });
+
+    const progress = getTravelProgress(characterTravel, now);
+    const remainingHours = getRemainingTravelHours
+      ? getRemainingTravelHours(characterTravel, now)
+      : 0;
+
+    const unknownPresences = getUnknownPresencesCount
+      ? getUnknownPresencesCount(characterTravel, travels, now)
+      : 0;
+
+    return {
+      currentCoord,
+      progress,
+      progressPercent: Math.round(progress * 100),
+      remainingHours,
+      unknownPresences
+    };
+  }, [
+    characterTravel,
+    getTravelCurrentPoint,
+    getCoordinate,
+    getTravelProgress,
+    getRemainingTravelHours,
+    getUnknownPresencesCount,
+    travels,
+    now
+  ]);
+
+  const categories = useMemo(() => {
+    const all = uniqueTraits.map((trait) => trait.category).filter(Boolean);
+    return ["Todos", ...Array.from(new Set(all))];
+  }, []);
+
+  const types = useMemo(() => {
+    const all = uniqueTraits.map((trait) => trait.type).filter(Boolean);
+    return ["Todos", ...Array.from(new Set(all))];
+  }, []);
+
+  const filteredTraits = useMemo(() => {
+    const search = traitSearch.trim().toLowerCase();
+
+    return uniqueTraits.filter((trait) => {
+      const matchesSearch =
+        !search ||
+        trait.name.toLowerCase().includes(search) ||
+        trait.category.toLowerCase().includes(search) ||
+        trait.type.toLowerCase().includes(search) ||
+        trait.requirement.toLowerCase().includes(search) ||
+        trait.description.toLowerCase().includes(search);
+
+      const matchesCategory =
+        categoryFilter === "Todos" || trait.category === categoryFilter;
+
+      const matchesType = typeFilter === "Todos" || trait.type === typeFilter;
+
+      const alreadySelected = form.selectedTraits.some(
+        (selected) => selected.id === trait.id
+      );
+
+      return matchesSearch && matchesCategory && matchesType && !alreadySelected;
+    });
+  }, [traitSearch, categoryFilter, typeFilter, form.selectedTraits]);
+
+  function updateField(field, value) {
+    setForm((current) => ({
+      ...current,
+      [field]: value
+    }));
+  }
+
+  function addTrait(trait) {
+    setForm((current) => ({
+      ...current,
+      selectedTraits: [...current.selectedTraits, trait]
+    }));
+
+    setTraitSearch("");
+  }
+
+  function removeTrait(traitId) {
+    setForm((current) => ({
+      ...current,
+      selectedTraits: current.selectedTraits.filter(
+        (trait) => trait.id !== traitId
+      )
+    }));
+  }
+
+  async function saveNinja(event) {
+    event.preventDefault();
+    setMessage("");
+
+    if (!user) {
+      setMessage("Sessão não encontrada. Faça login novamente.");
+      return;
+    }
+
+    if (!form.characterName.trim()) {
+      setMessage("Preencha o nome do personagem.");
+      return;
+    }
+
+    const payload = buildPayload(form, user.id);
+
+    if (character) {
+      const { data, error } = await supabase
+        .from("characters")
+        .update(payload)
+        .eq("id", character.id)
+        .eq("user_id", user.id)
+        .select()
+        .single();
+
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      setCharacter(data);
+      setForm(dbToForm(data));
+      syncCharacterToLocalStorage(data);
+      setIsEditing(false);
+      setMessage("Ninja atualizado com sucesso.");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("characters")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setCharacter(data);
+    setForm(dbToForm(data));
+    syncCharacterToLocalStorage(data);
+    setIsEditing(false);
+    setProfileTab("info");
+    setMessage("Ninja criado com sucesso.");
+  }
+
+  function renderNinjaForm() {
+    return (
+      <form className="character-form" onSubmit={saveNinja}>
+        <h2>{character ? "Editar Meu Ninja" : "Criar Meu Ninja"}</h2>
+
+        <p className="empty-message">
+          Cada conta pode ter apenas um personagem. Depois de criado, você poderá
+          editar as informações deste ninja.
+        </p>
+
+        <label>
+          Nome do Player
+          <input
+            value={form.playerName}
+            onChange={(event) => updateField("playerName", event.target.value)}
+            placeholder="Ex: Guilherme"
+          />
+        </label>
+
+        <label>
+          Número de telefone
+          <input
+            value={form.phoneNumber}
+            onChange={(event) => updateField("phoneNumber", event.target.value)}
+            placeholder="Ex: (35) 99999-9999"
+          />
+        </label>
+
+        <label>
+          Nome do Personagem
+          <input
+            value={form.characterName}
+            onChange={(event) => updateField("characterName", event.target.value)}
+            placeholder="Ex: Haruto Senju"
+          />
+        </label>
+
+        <label>
+          Ícone do personagem no mapa
+          <input
+            value={form.iconUrl}
+            onChange={(event) => updateField("iconUrl", event.target.value)}
+            placeholder="Cole uma URL de imagem para o ícone do mapa"
+          />
+        </label>
+
+        <label>
+          Idade do Personagem
+          <input
+            value={form.age}
+            onChange={(event) => updateField("age", event.target.value)}
+            placeholder="Ex: 16"
+          />
+        </label>
+
+        <label>
+          Aparência
+          <textarea
+            value={form.appearance}
+            onChange={(event) => updateField("appearance", event.target.value)}
+            placeholder="Descreva altura, cabelo, roupas, marcas, postura..."
+          />
+        </label>
+
+        <label>
+          Clã ou Parentesco
+          <input
+            value={form.clanOrKinship}
+            onChange={(event) => updateField("clanOrKinship", event.target.value)}
+            placeholder="Ex: Uchiha, Senju, órfão, parentesco especial..."
+          />
+        </label>
+
+        <label>
+          História
+          <textarea
+            value={form.history}
+            onChange={(event) => updateField("history", event.target.value)}
+            placeholder="Conte a origem, motivações, traumas e objetivos do personagem."
+          />
+        </label>
+
+        <label>
+          Aldeia ou Organização
+          <select
+            value={form.villageChoice}
+            onChange={(event) => {
+              const value = event.target.value;
+              updateField("villageChoice", value);
+
+              if (value !== "Outros") {
+                updateField("villageOrOrganization", "");
+              }
+            }}
+          >
+            <option value="">Selecione uma opção</option>
+            {villageOptions.map((village) => (
+              <option key={village} value={village}>
+                {village}
+              </option>
+            ))}
+            <option value="Outros">Outros</option>
+          </select>
+        </label>
+
+        {form.villageChoice === "Outros" && (
+          <label>
+            Informe a vila ou organização
+            <input
+              value={form.villageOrOrganization}
+              onChange={(event) =>
+                updateField("villageOrOrganization", event.target.value)
+              }
+              placeholder="Ex: Akatsuki, organização própria..."
+            />
+          </label>
+        )}
+
+        <label>
+          Kekkei Genkai ou Hiden
+          <input
+            value={form.kekkeiGenkaiOrHiden}
+            onChange={(event) =>
+              updateField("kekkeiGenkaiOrHiden", event.target.value)
+            }
+            placeholder="Ex: Sharingan, Byakugan, Mokuton, Hiden do clã..."
+          />
+        </label>
+
+        <label>
+          Equipamentos
+          <textarea
+            value={form.equipment}
+            onChange={(event) => updateField("equipment", event.target.value)}
+            placeholder="Liste armas, itens, pergaminhos, equipamentos especiais..."
+          />
+        </label>
+
+        <label>
+          Estilo Ninja
+          <select
+            value={form.ninjaStyle}
+            onChange={(event) => updateField("ninjaStyle", event.target.value)}
+          >
+            <option value="">Selecione um estilo</option>
+            {ninjaStyles.map((style) => (
+              <option key={style} value={style}>
+                {style}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <details className="trait-selector unique-traits-accordion">
+          <summary>
+            <span>Traços Únicos</span>
+            <small>Clique para abrir/fechar a lista de traços.</small>
+          </summary>
+
+<div className="trait-filters">
+            <input
+              value={traitSearch}
+              onChange={(event) => setTraitSearch(event.target.value)}
+              placeholder="Pesquisar traço único..."
+            />
+
+            <select
+              value={categoryFilter}
+              onChange={(event) => setCategoryFilter(event.target.value)}
+            >
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={typeFilter}
+              onChange={(event) => setTypeFilter(event.target.value)}
+            >
+              {types.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="trait-results">
+            {filteredTraits.map((trait) => (
+              
+
+<button
+                type="button"
+                key={trait.id}
+                className="trait-result"
+                onClick={() => addTrait(trait)}
+              >
+                <strong>{trait.name}</strong>
+                <span>
+                  {trait.category} • {trait.type} •{" "}
+                  {trait.requirement || "Sem requisito"}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="selected-traits">
+            {form.selectedTraits.length === 0 ? (
+              <p>Nenhum traço selecionado.</p>
+            ) : (
+              form.selectedTraits.map((trait) => (
+                <button
+                  type="button"
+                  key={trait.id}
+                  className="selected-trait"
+                  onClick={() => removeTrait(trait.id)}
+                >
+                  {trait.name} ×
+                </button>
+              ))
+            )}
+          </div>
+        </details>
+
+        <button className="save-character-button" type="submit">
+          {character ? "Salvar Alterações" : "Criar Meu Ninja"}
+        </button>
+
+        {character && (
+          <button
+            className="save-character-button"
+            type="button"
+            onClick={() => {
+              setForm(dbToForm(character));
+              setIsEditing(false);
+            }}
+          >
+            Cancelar edição
+          </button>
+        )}
+      </form>
+    );
+  }
+
+  function renderInfoTab() {
+    if (!character) return null;
+
+    return (
+      <div className="profile-tab-content">
+        <div className="profile-field">
+          <strong>Nome</strong>
+          <span>{character.character_name}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Ícone do mapa</strong>
+          {character.icon_url ? (
+            <span className="map-icon-preview">
+              <img src={character.icon_url} alt={character.character_name} />
+              Personalizado
+            </span>
+          ) : (
+            <span>Padrão</span>
+          )}
+        </div>
+
+        <div className="profile-field">
+          <strong>Idade</strong>
+          <span>{character.age || "Não informada"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Aldeia ou Organização</strong>
+          <span>{character.village_or_organization || "Não informada"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Clã ou Parentesco</strong>
+          <span>{character.clan_or_kinship || "Não informado"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Kekkei Genkai ou Hiden</strong>
+          <span>{character.kekkei_genkai_or_hiden || "Nenhum"}</span>
+        </div>
+
+        <div className="profile-field">
+          <strong>Estilo Ninja</strong>
+          <span>{character.ninja_style || "Não selecionado"}</span>
+        </div>
+
+        <div className="profile-field skill-points-field">
+          <strong>Pontos de habilidade</strong>
+          <span>{character.skill_points ?? 50}</span>
+        </div>
+
+        <div className="profile-field full">
+          <strong>Aparência</strong>
+          <p>{character.appearance || "Não informada."}</p>
+        </div>
+
+        <div className="profile-field full">
+          <strong>História</strong>
+          <p>{character.history || "Não informada."}</p>
+        </div>
+
+        <div className="profile-field full">
+          <strong>Equipamentos</strong>
+          <p>{character.equipment || "Nenhum equipamento informado."}</p>
+        </div>
+
+        <div className="profile-field full">
+          <strong>Traços Únicos</strong>
+          <div className="card-traits">
+            {Array.isArray(character.selected_traits) &&
+            character.selected_traits.length > 0 ? (
+              character.selected_traits.map((trait) => (
+                <span key={trait.id}>{trait.name}</span>
+              ))
+            ) : (
+              <p>Nenhum traço selecionado.</p>
+            )}
+          </div>
+        </div>
+
+        <button
+          className="save-character-button"
+          type="button"
+          onClick={() => {
+            setForm(dbToForm(character));
+            setIsEditing(true);
+          }}
+        >
+          Editar Meu Ninja
+        </button>
+      </div>
+    );
+  }
+
+  function renderSkillsTab() {
+    if (!character) return null;
+
+    return (
+      <div className="profile-tab-content full-tree-tab">
+        <CharacterSkillTree
+          character={character}
+          onCharacterUpdated={(updatedCharacter) => {
+            setCharacter(updatedCharacter);
+            syncCharacterToLocalStorage(updatedCharacter);
+          }}
+        />
+      </div>
+    );
+  }
+
+  function renderLocationTab() {
+    if (!character) {
+      return (
+        <div className="profile-tab-content location-tab-content">
+          <p className="empty-message">Crie seu ninja antes de acessar a localização.</p>
+        </div>
+      );
+    }
+
+    const hasActiveTravel = !!characterTravel && !!location;
+    const arrived = hasActiveTravel ? location.progress >= 1 : false;
+
+    const presenceText = hasActiveTravel
+      ? formatUnknownPresences
+        ? formatUnknownPresences(location.unknownPresences)
+        : `Há ${location.unknownPresences} presenças desconhecidas nesta região.`
+      : "Nenhuma presença detectada porque não há viagem ativa.";
+
+    return (
+      <div className="profile-tab-content location-tab-content location-safe-tab">
+        <div className="location-safe-header">
+          <p className="eyebrow">Localização</p>
+          <h2>Status de localização do personagem</h2>
+          <p>
+            O mapa de viagem voltou a ficar em uma área separada da plataforma.
+            Use o Hall → Mapa de Viagem para iniciar ou acompanhar rotas.
+          </p>
+        </div>
+
+        <div className={`location-status-card ${hasActiveTravel ? arrived ? "arrived" : "moving" : "stopped"}`}>
+          <strong>Status</strong>
+          <span>
+            {hasActiveTravel
+              ? arrived
+                ? "Chegou ao destino"
+                : "Em viagem"
+              : "Sem viagem ativa registrada."}
+          </span>
+        </div>
+
+        <div className={`location-presence-card ${hasActiveTravel ? "active" : "inactive"}`}>
+          <strong>Presenças na região</strong>
+          <span>
+            {hasActiveTravel
+              ? presenceText
+              : "Sem região atual definida para verificar presenças."}
+          </span>
+        </div>
+
+        {hasActiveTravel ? (
+          <>
+            <div className="profile-field">
+              <strong>Região atual</strong>
+              <span>{location.currentCoord?.macroLabel || "-"}</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Coordenada atual</strong>
+              <span>{location.currentCoord?.label || "-"}</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Origem</strong>
+              <span>{characterTravel.startCoord.label}</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Destino</strong>
+              <span>{characterTravel.endCoord.label}</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Meio de locomoção</strong>
+              <span>{characterTravel.modeLabel}</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Progresso</strong>
+              <span>{location.progressPercent}%</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Chegada prevista</strong>
+              <span>{formatDateTime(characterTravel.arrivalAt)}</span>
+            </div>
+
+            <div className="profile-field">
+              <strong>Tempo restante</strong>
+              <span>
+                {arrived
+                  ? "Viagem concluída"
+                  : formatTime
+                    ? formatTime(location.remainingHours)
+                    : `${location.remainingHours.toFixed(2)}h`}
+              </span>
+            </div>
+
+            <div className="profile-field full">
+              <strong>Presenças na região</strong>
+              <p className="presenceNotice">{presenceText}</p>
+            </div>
+          </>
+        ) : (
+          <div className="profile-field full">
+            <strong>Como iniciar viagem</strong>
+            <p>
+              Volte ao Hall e abra o Mapa de Viagem. Lá você pode marcar origem,
+              destino, selecionar o personagem e iniciar a viagem.
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    return <CharactersPage {...arguments[0]} />;
+  }
+
+  if (isLoading) {
+    return (
+      <section className="characters-page">
+        <div className="characters-header">
+          <p className="eyebrow">LN Digital</p>
+          <h1>Meu Ninja</h1>
+          <p>Carregando dados do seu personagem...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!user) {
+    return <CharactersPage {...arguments[0]} />;
+  }
+
+  return (
+    <section className="characters-page my-ninja-page">
+      <div className="characters-header">
+        <div>
+          <p className="eyebrow">LN Digital</p>
+          <h1>Meu Ninja</h1>
+          <p>
+            Cada player possui apenas um ninja. Esta página reúne informações,
+            localização e árvore de habilidades do personagem.
+          </p>
+        </div>
+      </div>
+
+      {message && <p className="auth-message">{message}</p>}
+
+      {!character || isEditing ? (
+        <div className="characters-layout">{renderNinjaForm()}</div>
+      ) : (
+        <div className="characters-layout">
+          <section className={`character-profile-panel ${profileTab === "skills" ? "skill-tree-fullscreen" : ""}`}>
+            <div className="profile-title">
+              <h3>{character.character_name}</h3>
+              <p>
+                {character.village_or_organization || "Sem aldeia"} •{" "}
+                {character.ninja_style || "Sem estilo"}
+              </p>
+            </div>
+
+            <div className="profile-tabs">
+              <button
+                type="button"
+                className={profileTab === "info" ? "active" : ""}
+                onClick={() => setProfileTab("info")}
+              >
+                Informações
+              </button>
+
+              <button
+                type="button"
+                className={profileTab === "inventory" ? "active" : ""}
+                onClick={() => setProfileTab("inventory")}
+              >
+                Inventário
+              </button>
+
+              <button
+                type="button"
+                className={profileTab === "location" ? "active" : ""}
+                onClick={() => setProfileTab("location")}
+              >
+                Localização
+              </button>
+
+              <button
+                type="button"
+                className={profileTab === "skills" ? "active" : ""}
+                onClick={() => setProfileTab("skills")}
+              >
+                Teia
+              </button>            </div>
+
+            {profileTab === "info" && renderInfoTab()}
+            {profileTab === "inventory" && (
+              <CharacterInventoryPanel user={user} character={character} />
+            )}
+            {profileTab === "location" && renderLocationTab()}
+            {profileTab === "skills" && renderSkillsTab()}
+          </section>
+        </div>
+      )}
+    </section>
+  );
+}

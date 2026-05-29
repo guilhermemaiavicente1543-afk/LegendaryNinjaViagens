@@ -14,6 +14,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const categoryOptions = [
   "Base",
@@ -875,7 +876,7 @@ export default function SkillTreeEditor() {
 
               <label>
                 Categoria
-                <select
+                <LnSelect
                   value={selectedNodeData.category || ""}
                   onChange={(event) =>
                     updateSelectedNode("category", event.target.value)
@@ -886,12 +887,12 @@ export default function SkillTreeEditor() {
                       {category}
                     </option>
                   ))}
-                </select>
+                </LnSelect>
               </label>
 
               <label>
                 Modo de requisito
-                <select
+                <LnSelect
                   value={selectedNodeData.requirementMode || "all"}
                   onChange={(event) =>
                     updateSelectedNode("requirementMode", event.target.value)
@@ -899,12 +900,12 @@ export default function SkillTreeEditor() {
                 >
                   <option value="all">E / precisa de todos os requisitos</option>
                   <option value="any">OU / precisa de qualquer requisito</option>
-                </select>
+                </LnSelect>
               </label>
 
               <label>
                 Tamanho do círculo
-                <select
+                <LnSelect
                   value={selectedNodeData.nodeSize || "medium"}
                   onChange={(event) =>
                     updateSelectedNode("nodeSize", event.target.value)
@@ -914,7 +915,7 @@ export default function SkillTreeEditor() {
                   <option value="medium">Médio</option>
                   <option value="large">Grande</option>
                   <option value="special">Especial</option>
-                </select>
+                </LnSelect>
               </label>
 
               <label>

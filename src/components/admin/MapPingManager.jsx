@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const PING_ICONS = [
   {
@@ -283,14 +284,14 @@ export default function MapPingManager() {
 
           <label>
             Tipo
-            <select
+            <LnSelect
               value={form.type}
               onChange={(event) => updateField("type", event.target.value)}
             >
               {PING_TYPES.map((type) => (
                 <option key={type} value={type}>{type}</option>
               ))}
-            </select>
+            </LnSelect>
           </label>
 
           <fieldset className="map-ping-icon-picker">
@@ -310,7 +311,11 @@ export default function MapPingManager() {
                     onChange={(event) => updateField("icon_key", event.target.value)}
                   />
 
-                  <img src={icon.src} alt={icon.label} />
+                  {icon.key === "desconhecido" ? (
+                    <span className="map-ping-admin-question-icon">?</span>
+                  ) : (
+                    <img src={icon.src} alt={icon.label} />
+                  )}
                   <span>{icon.label}</span>
                 </label>
               ))}
@@ -369,25 +374,25 @@ export default function MapPingManager() {
 
           <label>
             Visibilidade
-            <select
+            <LnSelect
               value={form.visibility}
               onChange={(event) => updateField("visibility", event.target.value)}
             >
               <option value="public">Público</option>
               <option value="admin">Somente ADM</option>
               <option value="hidden">Oculto</option>
-            </select>
+            </LnSelect>
           </label>
 
           <label>
             Status
-            <select
+            <LnSelect
               value={form.status}
               onChange={(event) => updateField("status", event.target.value)}
             >
               <option value="active">Ativo</option>
               <option value="inactive">Inativo</option>
-            </select>
+            </LnSelect>
           </label>
 
           <label className="map-ping-form-full">

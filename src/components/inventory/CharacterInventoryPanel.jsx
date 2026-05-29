@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const ITEM_TYPES = [
   { value: "technique", label: "Técnicas possuídas" },
@@ -10,7 +11,6 @@ const ITEM_TYPES = [
   { value: "note", label: "Anotações" }
 ];
 
-const RARITIES = ["comum", "incomum", "raro", "épico", "lendário"];
 
 const initialForm = {
   item_type: "technique",
@@ -18,7 +18,6 @@ const initialForm = {
   acquisition_method: "",
   acquired_at: "",
   name: "",
-  rarity: "comum",
   quantity: 1,
   description: "",
   source: "",
@@ -224,7 +223,7 @@ export default function CharacterInventoryPanel({ user, character }) {
         technique_id: String(selectedTechnique.id),
         name: getTechniqueName(selectedTechnique),
         category: "",
-        rarity: selectedTechnique.rank || "comum",
+        rarity: "",
         quantity: 1,
         description: getTechniqueMeta(selectedTechnique),
         source: form.acquisition_method.trim(),
@@ -247,7 +246,7 @@ export default function CharacterInventoryPanel({ user, character }) {
         technique_id: "",
         name: form.name.trim(),
         category: "",
-        rarity: form.rarity,
+        rarity: "",
         quantity: Number(form.quantity) || 1,
         description: form.description.trim(),
         source: form.source.trim(),
@@ -466,20 +465,6 @@ export default function CharacterInventoryPanel({ user, character }) {
             </label>
 
             <label>
-              Raridade
-              <select
-                value={form.rarity}
-                onChange={(event) => updateForm("rarity", event.target.value)}
-              >
-                {RARITIES.map((rarity) => (
-                  <option key={rarity} value={rarity}>
-                    {rarity}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
               Quantidade
               <input
                 type="number"
@@ -546,10 +531,7 @@ export default function CharacterInventoryPanel({ user, character }) {
                   </>
                 ) : (
                   <>
-                    <p>
-                      {item.rarity || "comum"}
-                      {item.equipped ? " · equipado" : ""}
-                    </p>
+                    {item.equipped && <p>Equipado</p>}
 
                     {item.description && <small>{item.description}</small>}
                     {item.source && <em>Origem: {item.source}</em>}

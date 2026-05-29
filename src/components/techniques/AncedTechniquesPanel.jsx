@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import LnSelect from "../ui/LnSelect";
 
 const RANKS = ["E", "D", "C", "B", "A", "S", "SS"];
 
@@ -162,13 +163,13 @@ function SelectField({ label, value, options, onChange }) {
   return (
     <label className="anced-field">
       <span>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
+      <LnSelect value={value} onChange={(event) => onChange(event.target.value)}>
         {options.map(([name, points], index) => (
           <option key={name} value={index}>
             {name} (+{points})
           </option>
         ))}
-      </select>
+      </LnSelect>
     </label>
   );
 }
@@ -348,26 +349,26 @@ export default function AncedTechniquesPanel({ user, character }) {
 
               <label className="anced-field">
                 <span>Classificação</span>
-                <select
+                <LnSelect
                   value={form.classification}
                   onChange={(event) => update("classification", event.target.value)}
                 >
                   {CLASSIFICATIONS.map((item) => (
                     <option key={item}>{item}</option>
                   ))}
-                </select>
+                </LnSelect>
               </label>
 
               <label className="anced-field">
                 <span>Natureza</span>
-                <select
+                <LnSelect
                   value={form.nature}
                   onChange={(event) => update("nature", event.target.value)}
                 >
                   {NATURES.map((item) => (
                     <option key={item}>{item}</option>
                   ))}
-                </select>
+                </LnSelect>
               </label>
             </div>
 
@@ -468,12 +469,12 @@ export default function AncedTechniquesPanel({ user, character }) {
 
             <label className="anced-field">
               <span>Rank</span>
-              <select value={rankFilter} onChange={(event) => setRankFilter(event.target.value)}>
+              <LnSelect value={rankFilter} onChange={(event) => setRankFilter(event.target.value)}>
                 <option>Todos</option>
                 {RANKS.map((rank) => (
                   <option key={rank}>{rank}</option>
                 ))}
-              </select>
+              </LnSelect>
             </label>
           </div>
 
