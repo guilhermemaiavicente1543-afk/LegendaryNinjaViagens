@@ -31317,3 +31317,136 @@ body:has(.mnd-desktop-shell) {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* =========================================================
+   FIX REAL — Barra de rolagem própria da Ficha Complementar
+   ========================================================= */
+
+/* O card principal da ficha precisa permitir que o board interno controle a rolagem */
+.mnd-sheet-card {
+  overflow: visible !important;
+}
+
+/* A estrutura da ficha não pode estourar a largura nem cortar lateral */
+.mnds-shell,
+.mnds-menu,
+.mnds-board,
+.mnds-section,
+.mnds-record,
+.mnds-field,
+.mnds-grid {
+  min-width: 0 !important;
+}
+
+/* Desktop: a ficha terá altura própria e scroll próprio */
+@media (min-width: 761px) {
+  .mnds-shell {
+    align-items: start !important;
+    grid-template-columns: 235px minmax(0, 1fr) !important;
+  }
+
+  .mnds-menu {
+    position: sticky !important;
+    top: 96px !important;
+    max-height: clamp(360px, calc(100vh - 360px), 560px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 4px !important;
+  }
+
+  .mnds-board {
+    height: clamp(380px, calc(100vh - 365px), 590px) !important;
+    max-height: clamp(380px, calc(100vh - 365px), 590px) !important;
+    min-height: 0 !important;
+
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+
+    padding-right: 18px !important;
+    padding-bottom: 96px !important;
+
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: stable !important;
+  }
+
+  .mnds-board > * {
+    max-width: 100% !important;
+  }
+
+  .mnds-grid.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .mnds-field input,
+  .mnds-field textarea,
+  .mnds-field select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Barra de rolagem da ficha */
+  .mnds-board::-webkit-scrollbar,
+  .mnds-menu::-webkit-scrollbar {
+    width: 11px !important;
+  }
+
+  .mnds-board::-webkit-scrollbar-track,
+  .mnds-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.34) !important;
+    border-radius: 999px !important;
+  }
+
+  .mnds-board::-webkit-scrollbar-thumb,
+  .mnds-menu::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+    border-radius: 999px !important;
+    border: 2px solid rgba(0, 0, 0, 0.34) !important;
+  }
+
+  .mnds-board,
+  .mnds-menu {
+    scrollbar-width: thin !important;
+    scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.34) !important;
+  }
+
+  /* O botão de salvar fica preso no fim visível da ficha */
+  .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 5 !important;
+    margin-left: -2px !important;
+    margin-right: -2px !important;
+    padding: 18px 2px 2px !important;
+    background:
+      linear-gradient(180deg, rgba(26, 24, 21, 0), rgba(26, 24, 21, 0.98) 35%),
+      rgba(26, 24, 21, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+}
+
+/* Se a tela for menor, empilha menu e board para não cortar */
+@media (max-width: 1180px) {
+  .mnds-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mnds-menu {
+    position: relative !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .mnds-board {
+    height: 620px !important;
+    max-height: 620px !important;
+  }
+
+  .mnds-grid.two {
+    grid-template-columns: 1fr !important;
+  }
+}
