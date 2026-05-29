@@ -31162,3 +31162,68 @@ body:has(.mnd-desktop-shell) {
     -webkit-backdrop-filter: blur(10px) !important;
   }
 }
+
+/* =========================================================
+   FIX — Scroll interno da Ficha Complementar desktop
+   ========================================================= */
+
+@media (min-width: 761px) {
+  .mnds-shell {
+    align-items: start !important;
+  }
+
+  .mnds-menu {
+    position: sticky !important;
+    top: 96px !important;
+    align-self: start !important;
+    max-height: calc(100vh - 120px) !important;
+    overflow-y: auto !important;
+    padding-right: 4px !important;
+  }
+
+  .mnds-board {
+    max-height: calc(100vh - 150px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 20px !important;
+    scroll-behavior: smooth !important;
+  }
+
+  .mnds-board::-webkit-scrollbar,
+  .mnds-menu::-webkit-scrollbar {
+    width: 10px !important;
+  }
+
+  .mnds-board::-webkit-scrollbar-track,
+  .mnds-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.28) !important;
+    border-radius: 999px !important;
+  }
+
+  .mnds-board::-webkit-scrollbar-thumb,
+  .mnds-menu::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+    border-radius: 999px !important;
+    border: 2px solid rgba(0, 0, 0, 0.28) !important;
+  }
+
+  .mnds-board,
+  .mnds-menu {
+    scrollbar-width: thin !important;
+    scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.28) !important;
+  }
+
+  .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 3 !important;
+    margin-left: -2px !important;
+    margin-right: -2px !important;
+    padding: 16px 2px 2px !important;
+    background:
+      linear-gradient(180deg, rgba(26, 24, 21, 0), rgba(26, 24, 21, 0.96) 28%),
+      rgba(26, 24, 21, 0.96) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+}
