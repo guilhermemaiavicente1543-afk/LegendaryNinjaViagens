@@ -543,65 +543,102 @@ export default function MyNinjaDesktopHall({
                     onCharacterUpdated={onCharacterUpdated}
                   />
 
-                  <div className="mnd-character-info-board">
-                    <article>
-                      <span>Nome do personagem</span>
-                      <strong>{data.name}</strong>
-                    </article>
+                  <div className="mnd-profile-overview-boards">
+                    <section className="mnd-overview-board-card">
+                      <header>
+                        <span>Identidade</span>
+                      </header>
 
-                    <article>
-                      <span>Player</span>
-                      <strong>{data.player}</strong>
-                    </article>
+                      <dl>
+                        <div>
+                          <dt>Nome</dt>
+                          <dd>{data.name}</dd>
+                        </div>
 
-                    <article>
-                      <span>Gênero</span>
-                      <strong>{data.gender}</strong>
-                    </article>
+                        <div>
+                          <dt>Player</dt>
+                          <dd>{data.player}</dd>
+                        </div>
 
-                    <article>
-                      <span>Idade</span>
-                      <strong>{data.age}</strong>
-                    </article>
+                        <div>
+                          <dt>Gênero</dt>
+                          <dd>{data.gender}</dd>
+                        </div>
 
-                    <article>
-                      <span>Aniversário</span>
-                      <strong>{data.birthday}</strong>
-                    </article>
+                        <div>
+                          <dt>Idade</dt>
+                          <dd>{data.age}</dd>
+                        </div>
 
-                    <article>
-                      <span>Altura / Peso</span>
-                      <strong>{data.heightWeight}</strong>
-                    </article>
+                        <div>
+                          <dt>Aniversário</dt>
+                          <dd>{data.birthday}</dd>
+                        </div>
 
-                    <article>
-                      <span>Aldeia / Organização</span>
-                      <strong>{data.organization}</strong>
-                    </article>
-<article>
-                      <span>Origem</span>
-                      <strong>{data.origin}</strong>
-                    </article>
+                        <div>
+                          <dt>Altura / Peso</dt>
+                          <dd>{data.heightWeight}</dd>
+                        </div>
+                      </dl>
+                    </section>
 
-                    <article>
-                      <span>Clã / Parentesco</span>
-                      <strong>{data.clan}</strong>
-                    </article>
+                    <section className="mnd-overview-board-card">
+                      <header>
+                        <span>Afiliação e Origem</span>
+                      </header>
 
-                    <article>
-                      <span>Kekkei Genkai / Hiden</span>
-                      <strong>{data.kekkei}</strong>
-                    </article>
+                      <dl>
+                        <div>
+                          <dt>Aldeia ou Organização</dt>
+                          <dd>{data.organization}</dd>
+                        </div>
 
-                    <article className="mnd-info-wide">
-                      <span>Traços únicos</span>
-                      <strong>{data.uniqueTraits}</strong>
-                    </article>
+                        <div>
+                          <dt>Origem</dt>
+                          <dd>{data.origin}</dd>
+                        </div>
 
-                    <article>
-                      <span>Pontos de habilidade</span>
-                      <strong>{data.skillPoints}</strong>
-                    </article>
+                        <div>
+                          <dt>Clã ou Parentesco</dt>
+                          <dd>{data.clan}</dd>
+                        </div>
+
+                        <div>
+                          <dt>Kekkei Genkai ou Hiden</dt>
+                          <dd>{data.kekkei}</dd>
+                        </div>
+
+                        <div>
+                          <dt>Traços Únicos</dt>
+                          <dd>{data.uniqueTraits}</dd>
+                        </div>
+
+                        <div>
+                          <dt>Pontos de Habilidade</dt>
+                          <dd>{data.skillPoints}</dd>
+                        </div>
+                      </dl>
+                    </section>
+
+                    <section className="mnd-overview-board-card mnd-overview-map-card">
+                      <header>
+                        <span>Ícone do Mapa</span>
+                      </header>
+
+                      <div className="mnd-overview-map-preview">
+                        <div className="mnd-overview-map-circle">
+                          <ShurikenIcon />
+                        </div>
+
+                        <strong>
+                          {character?.icon_url || "Personalizado"}
+                        </strong>
+                      </div>
+
+                      <div className="mnd-overview-map-note">
+                        <span>Selecione ou altere o ícone em Editar informações.</span>
+                      </div>
+                    </section>
                   </div>
 
                 </article>
