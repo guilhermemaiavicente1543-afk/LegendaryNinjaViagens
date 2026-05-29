@@ -33710,3 +33710,164 @@ body:has(.mnd-desktop-shell) {
   height: auto !important;
   max-height: none !important;
 }
+
+/* =========================================================
+   SCROLL MASTER — Meu Ninja Desktop
+   Regra final para parar conflito entre página, perfil e ficha
+   ========================================================= */
+
+/* Base: o documento precisa poder crescer */
+html,
+body,
+#root {
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+}
+
+/* Quando o Meu Ninja desktop estiver aberto, quem rola é a página */
+html:has(.mnd-desktop-shell),
+body:has(.mnd-desktop-shell),
+#root:has(.mnd-desktop-shell) {
+  height: auto !important;
+  min-height: 100vh !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+/* Nenhum container pai do Meu Ninja pode cortar o conteúdo */
+body:has(.mnd-desktop-shell) .app,
+body:has(.mnd-desktop-shell) .app-shell,
+body:has(.mnd-desktop-shell) .main-shell,
+body:has(.mnd-desktop-shell) .page-shell,
+body:has(.mnd-desktop-shell) .main-content,
+body:has(.mnd-desktop-shell) .characters-page,
+body:has(.mnd-desktop-shell) .my-ninja-page,
+body:has(.mnd-desktop-shell) .desktop-my-ninja-layout,
+body:has(.mnd-desktop-shell) .character-profile-panel,
+.mnd-desktop-shell,
+.mnd-page,
+.mnd-content,
+.mnd-main-grid {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* A página precisa de respiro final para mostrar o fim do board */
+.mnd-content {
+  padding-bottom: 340px !important;
+}
+
+/* Grid principal: deixa cada board ter sua altura real */
+@media (min-width: 761px) {
+  .mnd-main-grid {
+    align-items: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Board esquerdo: SEM scroll interno */
+  .mnd-profile-card {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    padding-bottom: 120px !important;
+    margin-bottom: 260px !important;
+  }
+
+  .mnd-profile-card::after {
+    display: none !important;
+    content: none !important;
+    height: 0 !important;
+  }
+
+  .mnd-character-info-board {
+    padding-bottom: 0 !important;
+  }
+
+  .mnd-character-info-board article:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* Board direito/ficha: este sim mantém scroll interno */
+  .mnd-sheet-card {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .mnds-shell {
+    min-height: 0 !important;
+    align-items: start !important;
+    overflow: visible !important;
+  }
+
+  .mnds-board {
+    height: min(760px, calc(100vh - 135px)) !important;
+    min-height: 560px !important;
+    max-height: min(760px, calc(100vh - 135px)) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    padding-bottom: 180px !important;
+    padding-right: 18px !important;
+
+    scrollbar-gutter: stable both-edges !important;
+    overscroll-behavior: contain !important;
+  }
+
+  .mnds-board::after {
+    content: "";
+    display: block;
+    height: 120px !important;
+  }
+
+  .mnds-menu {
+    position: sticky !important;
+    top: 96px !important;
+    max-height: calc(100vh - 125px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Remove a barra visual antiga do board esquerdo caso o navegador ainda desenhe */
+.mnd-profile-card::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.mnd-profile-card {
+  scrollbar-width: none !important;
+}
+
+/* Barra principal da página */
+body:has(.mnd-desktop-shell)::-webkit-scrollbar {
+  width: 13px !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-track {
+  background: #161310 !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+  border-radius: 999px !important;
+  border: 2px solid #161310 !important;
+}
+
+body:has(.mnd-desktop-shell) {
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a #161310 !important;
+}
