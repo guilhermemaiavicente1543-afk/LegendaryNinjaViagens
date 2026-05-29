@@ -5,7 +5,6 @@ import { uniqueTraits } from "../data/uniqueTraits";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 import CharacterPortraitUploader from "./profile/CharacterPortraitUploader";
 import CharacterFullSheetPanel from "./profile/CharacterFullSheetPanel";
-import MyNinjaMobilePanel from "./mobile/MyNinjaMobilePanel";
 import LnSelect from "./ui/LnSelect";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
@@ -1266,45 +1265,8 @@ export default function MyNinjaPage({
       {!character || isEditing ? (
         <div className="characters-layout">{renderNinjaForm()}</div>
       ) : (
-        <>
-          <MyNinjaMobilePanel
-            character={character}
-            profileTab={profileTab}
-            setProfileTab={setProfileTab}
-            onEditProfile={() => {
-              setForm(dbToForm(character));
-              setIsEditing(true);
-            }}
-            onOpenFullSheet={() => {
-              requestAnimationFrame(() => {
-                document
-                  .querySelector(".my-ninja-mobile-fullsheet")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
-              });
-            }}
-          />
-
-          <div className="my-ninja-mobile-live-area">
-            {profileTab === "info" && (
-              <div className="my-ninja-mobile-fullsheet">
-                <CharacterFullSheetPanel
-                  user={user}
-                  character={character}
-                  onCharacterUpdated={(updatedCharacter) => {
-                    setCharacter(updatedCharacter);
-                    setForm(dbToForm(updatedCharacter));
-                    syncCharacterToLocalStorage(updatedCharacter);
-                  }}
-                />
-              </div>
-            )}
-
-            {profileTab === "location" && renderLocationTab()}
-            {profileTab === "skills" && renderSkillsTab()}
-          </div>
-
-          <div className="characters-layout desktop-my-ninja-layout">
-            <section className={`character-profile-panel ${profileTab === "skills" ? "skill-tree-fullscreen" : ""}`}>
+        <div className="characters-layout">
+          <section className={`character-profile-panel ${profileTab === "skills" ? "skill-tree-fullscreen" : ""}`}>
             <div className="profile-title">
               <h3>{character.character_name}</h3>
               <p>
@@ -1356,9 +1318,8 @@ export default function MyNinjaPage({
             )}
             {profileTab === "location" && renderLocationTab()}
             {profileTab === "skills" && renderSkillsTab()}
-            </section>
-          </div>
-        </>
+          </section>
+        </div>
       )}
     </section>
   );
