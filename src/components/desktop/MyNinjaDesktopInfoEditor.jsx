@@ -1,5 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { uniqueTraits } from "../../data/uniqueTraits";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+
+const villageOptions = [
+  "Vila da Folha",
+  "Vila da Névoa",
+  "Vila da Nuvem",
+  "Vila da Areia",
+  "Vila da Pedra"
+];
+
+const ninjaStyles = [
+  "Ninjutsu",
+  "Taijutsu",
+  "Genjutsu",
+  "Bukijutsu",
+  "Tansakujutsu",
+  "Fuinjutsu",
+  "Iryoninjutsu",
+  "Kugutsu",
+  "Kenjutsu",
+  "Sensorial",
+  "Médico",
+  "Outro"
+];
 
 function valueOrEmpty(value) {
   if (value === null || value === undefined) return "";
@@ -16,30 +40,58 @@ function numberOrNull(value) {
   return Number.isFinite(number) ? number : null;
 }
 
-function traitsToText(character) {
-  const traits = character?.selected_traits;
+function normalizeTrait(trait) {
+  if (!trait) return null;
 
-  if (!Array.isArray(traits)) {
-    return "";
+  if (typeof trait === "object") {
+    const name = trait.name || trait.title || trait.label || "";
+
+    if (!name) return null;
+
+    return {
+      ...trait,
+      id: trait.id || name,
+      name
+    };
   }
 
-  return traits
-    .map((trait) => {
-      if (typeof trait === "string") return trait;
-      return trait?.name || trait?.title || trait?.label || "";
-    })
-    .filter(Boolean)
-    .join(", ");
+  const name = String(trait).trim();
+
+  if (!name) return null;
+
+  const found = uniqueTraits.find((item) => {
+    return (
+      String(item.id) === name ||
+      String(item.name || "").toLowerCase() === name.toLowerCase()
+    );
+  });
+
+  if (found) return found;
+
+  return {
+    id: "custom-" + name,
+    name,
+    category: "Personalizado",
+    type: "Manual",
+    requirement: "",
+    description: ""
+  };
 }
 
-function textToTraits(value) {
-  return String(value || "")
-    .split(",")
-    .map((item) => item.trim())
+function normalizeTraits(character) {
+  const raw = character?.selected_traits;
+
+  if (!Array.isArray(raw)) return [];
+
+  return raw
+    .map(normalizeTrait)
     .filter(Boolean);
 }
 
 function buildForm(character) {
+  const savedVillage = character?.village_or_organization || "";
+  const isKnownVillage = villageOptions.includes(savedVillage);
+
   return {
     characterName: valueOrEmpty(character?.character_name || character?.name),
     playerName: valueOrEmpty(character?.player_name),
@@ -48,14 +100,15 @@ function buildForm(character) {
     birthday: valueOrEmpty(character?.birthday),
     heightCm: valueOrEmpty(character?.height_cm),
     weightKg: valueOrEmpty(character?.weight_kg),
-    villageOrOrganization: valueOrEmpty(character?.village_or_organization),
+    villageChoice: isKnownVillage ? savedVillage : savedVillage ? "Outros" : "",
+    villageOrOrganization: isKnownVillage ? "" : valueOrEmpty(savedVillage),
     clanOrKinship: valueOrEmpty(character?.clan_or_kinship),
     kekkeiGenkaiOrHiden: valueOrEmpty(character?.kekkei_genkai_or_hiden),
     rankTitle: valueOrEmpty(character?.rank_title),
     ninjaStyle: valueOrEmpty(character?.ninja_style),
     epithet: valueOrEmpty(character?.epithet),
     quote: valueOrEmpty(character?.quote),
-    uniqueTraits: traitsToText(character),
+    selectedTraits: normalizeTraits(character)
   };
 }
 
@@ -67,16 +120,73 @@ export default function MyNinjaDesktopInfoEditor({
   const [form, setForm] = useState(() => buildForm(character));
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [traitSearch, setTraitSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("Todos");
+  const [typeFilter, setTypeFilter] = useState("Todos");
 
   useEffect(() => {
     setForm(buildForm(character));
     setMessage("");
-  }, [character?.id]);
+  }, [character?.id, character?.updated_at]);
+
+  const traitCategories = useMemo(() => {
+    const all = uniqueTraits.map((trait) => trait.category).filter(Boolean);
+    return ["Todos", ...Array.from(new Set(all))];
+  }, []);
+
+  const traitTypes = useMemo(() => {
+    const all = uniqueTraits.map((trait) => trait.type).filter(Boolean);
+    return ["Todos", ...Array.from(new Set(all))];
+  }, []);
+
+  const filteredTraits = useMemo(() => {
+    const search = traitSearch.trim().toLowerCase();
+
+    return uniqueTraits.filter((trait) => {
+      const matchesSearch =
+        !search ||
+        String(trait.name || "").toLowerCase().includes(search) ||
+        String(trait.category || "").toLowerCase().includes(search) ||
+        String(trait.type || "").toLowerCase().includes(search) ||
+        String(trait.requirement || "").toLowerCase().includes(search) ||
+        String(trait.description || "").toLowerCase().includes(search);
+
+      const matchesCategory =
+        categoryFilter === "Todos" || trait.category === categoryFilter;
+
+      const matchesType =
+        typeFilter === "Todos" || trait.type === typeFilter;
+
+      const alreadySelected = form.selectedTraits.some((selected) => {
+        return String(selected.id) === String(trait.id);
+      });
+
+      return matchesSearch && matchesCategory && matchesType && !alreadySelected;
+    });
+  }, [traitSearch, categoryFilter, typeFilter, form.selectedTraits]);
 
   function updateField(field, value) {
     setForm((current) => ({
       ...current,
       [field]: value,
+    }));
+  }
+
+  function addTrait(trait) {
+    setForm((current) => ({
+      ...current,
+      selectedTraits: [...current.selectedTraits, trait],
+    }));
+
+    setTraitSearch("");
+  }
+
+  function removeTrait(traitId) {
+    setForm((current) => ({
+      ...current,
+      selectedTraits: current.selectedTraits.filter((trait) => {
+        return String(trait.id) !== String(traitId);
+      }),
     }));
   }
 
@@ -93,6 +203,11 @@ export default function MyNinjaDesktopInfoEditor({
       return;
     }
 
+    const village =
+      form.villageChoice === "Outros"
+        ? form.villageOrOrganization.trim()
+        : form.villageChoice;
+
     const payload = {
       character_name: form.characterName.trim(),
       player_name: form.playerName.trim(),
@@ -101,14 +216,15 @@ export default function MyNinjaDesktopInfoEditor({
       birthday: form.birthday.trim(),
       height_cm: numberOrNull(form.heightCm),
       weight_kg: numberOrNull(form.weightKg),
-      village_or_organization: form.villageOrOrganization.trim(),
+      village_or_organization: village,
       clan_or_kinship: form.clanOrKinship.trim(),
       kekkei_genkai_or_hiden: form.kekkeiGenkaiOrHiden.trim(),
       rank_title: form.rankTitle.trim(),
-      ninja_style: form.ninjaStyle.trim(),
+      ninja_style: form.ninjaStyle,
       epithet: form.epithet.trim(),
       quote: form.quote.trim(),
-      selected_traits: textToTraits(form.uniqueTraits),
+      selected_traits: form.selectedTraits,
+      updated_at: new Date().toISOString(),
     };
 
     if (!payload.character_name) {
@@ -182,6 +298,7 @@ export default function MyNinjaDesktopInfoEditor({
               <input
                 value={form.gender}
                 onChange={(event) => updateField("gender", event.target.value)}
+                placeholder="Ex.: Masculino, feminino, outro..."
               />
             </label>
 
@@ -198,7 +315,7 @@ export default function MyNinjaDesktopInfoEditor({
               <input
                 value={form.birthday}
                 onChange={(event) => updateField("birthday", event.target.value)}
-                placeholder="Ex.: 12/04"
+                placeholder="Ex.: 12 de outubro"
               />
             </label>
 
@@ -221,12 +338,38 @@ export default function MyNinjaDesktopInfoEditor({
             </label>
 
             <label>
-              <span>Vila / Organização</span>
-              <input
-                value={form.villageOrOrganization}
-                onChange={(event) => updateField("villageOrOrganization", event.target.value)}
-              />
+              <span>Aldeia ou Organização</span>
+              <select
+                value={form.villageChoice}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  updateField("villageChoice", value);
+
+                  if (value !== "Outros") {
+                    updateField("villageOrOrganization", "");
+                  }
+                }}
+              >
+                <option value="">Selecione uma opção</option>
+                {villageOptions.map((village) => (
+                  <option key={village} value={village}>
+                    {village}
+                  </option>
+                ))}
+                <option value="Outros">Outros</option>
+              </select>
             </label>
+
+            {form.villageChoice === "Outros" ? (
+              <label>
+                <span>Informe a vila ou organização</span>
+                <input
+                  value={form.villageOrOrganization}
+                  onChange={(event) => updateField("villageOrOrganization", event.target.value)}
+                  placeholder="Ex.: Akatsuki, organização própria..."
+                />
+              </label>
+            ) : null}
 
             <label>
               <span>Clã / Parentesco</span>
@@ -241,6 +384,7 @@ export default function MyNinjaDesktopInfoEditor({
               <input
                 value={form.kekkeiGenkaiOrHiden}
                 onChange={(event) => updateField("kekkeiGenkaiOrHiden", event.target.value)}
+                placeholder="Ex.: Sharingan, Byakugan, Mokuton..."
               />
             </label>
 
@@ -254,10 +398,17 @@ export default function MyNinjaDesktopInfoEditor({
 
             <label>
               <span>Estilo Ninja</span>
-              <input
+              <select
                 value={form.ninjaStyle}
                 onChange={(event) => updateField("ninjaStyle", event.target.value)}
-              />
+              >
+                <option value="">Selecione um estilo</option>
+                {ninjaStyles.map((style) => (
+                  <option key={style} value={style}>
+                    {style}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label>
@@ -269,22 +420,88 @@ export default function MyNinjaDesktopInfoEditor({
             </label>
 
             <label className="wide">
-              <span>Frase</span>
+              <span>Frase marcante</span>
               <input
                 value={form.quote}
                 onChange={(event) => updateField("quote", event.target.value)}
               />
             </label>
+          </div>
 
-            <label className="wide">
-              <span>Traços únicos</span>
-              <textarea
-                value={form.uniqueTraits}
-                onChange={(event) => updateField("uniqueTraits", event.target.value)}
-                placeholder="Separe por vírgulas. Ex.: Sensor, Rastreador, Médico"
-                rows={3}
+          <div className="mnd-trait-editor">
+            <div className="mnd-trait-editor-head">
+              <div>
+                <span>Traços Únicos</span>
+                <strong>Selecione os traços do personagem</strong>
+              </div>
+            </div>
+
+            <div className="mnd-trait-filters">
+              <input
+                value={traitSearch}
+                onChange={(event) => setTraitSearch(event.target.value)}
+                placeholder="Buscar traço, requisito, categoria..."
               />
-            </label>
+
+              <select
+                value={categoryFilter}
+                onChange={(event) => setCategoryFilter(event.target.value)}
+              >
+                {traitCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={typeFilter}
+                onChange={(event) => setTypeFilter(event.target.value)}
+              >
+                {traitTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mnd-trait-results">
+              {filteredTraits.slice(0, 12).map((trait) => (
+                <button
+                  type="button"
+                  key={trait.id}
+                  className="mnd-trait-result"
+                  onClick={() => addTrait(trait)}
+                >
+                  <strong>{trait.name}</strong>
+                  <span>
+                    {trait.category} • {trait.type} • {trait.requirement || "Sem requisito"}
+                  </span>
+                </button>
+              ))}
+
+              {filteredTraits.length === 0 ? (
+                <p>Nenhum traço encontrado.</p>
+              ) : null}
+            </div>
+
+            <div className="mnd-selected-traits">
+              {form.selectedTraits.length === 0 ? (
+                <p>Nenhum traço selecionado.</p>
+              ) : (
+                form.selectedTraits.map((trait) => (
+                  <button
+                    type="button"
+                    key={trait.id}
+                    className="mnd-selected-trait"
+                    onClick={() => removeTrait(trait.id)}
+                  >
+                    {trait.name} ×
+                  </button>
+                ))
+              )}
+            </div>
           </div>
 
           <div className="mnd-info-editor-footer">
