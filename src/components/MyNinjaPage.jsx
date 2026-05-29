@@ -7,6 +7,7 @@ import CharacterPortraitUploader from "./profile/CharacterPortraitUploader";
 import CharacterFullSheetPanel from "./profile/CharacterFullSheetPanel";
 import MyNinjaMobilePanel from "./mobile/MyNinjaMobilePanel";
 import LnSelect from "./ui/LnSelect";
+import { createPortal } from "react-dom";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
@@ -252,6 +253,7 @@ export default function MyNinjaPage({
   const [form, setForm] = useState(initialForm);
   const [isEditing, setIsEditing] = useState(false);
   const [profileTab, setProfileTab] = useState("info");
+  const [isMobileFullSheetOpen, setIsMobileFullSheetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -472,7 +474,7 @@ export default function MyNinjaPage({
   function renderNinjaForm() {
     return (
       <form className="character-form" onSubmit={saveNinja}>
-        <h2>{character ? "Editar Meu Ninja" : "Criar Meu Ninja"}</h2>
+<h2>{character ? "Editar Meu Ninja" : "Criar Meu Ninja"}</h2>
 
         <p className="empty-message">
           Cada conta pode ter apenas um personagem. Depois de criado, você poderá
@@ -1275,33 +1277,49 @@ export default function MyNinjaPage({
               setForm(dbToForm(character));
               setIsEditing(true);
             }}
-            onOpenFullSheet={() => {
-              requestAnimationFrame(() => {
-                document
-                  .querySelector(".my-ninja-mobile-fullsheet")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
-              });
-            }}
+            onOpenFullSheet={() => setIsMobileFullSheetOpen(true)}
           />
 
           <div className="my-ninja-mobile-live-area">
-            {profileTab === "info" && (
-              <div className="my-ninja-mobile-fullsheet">
-                <CharacterFullSheetPanel
-                  user={user}
-                  character={character}
-                  onCharacterUpdated={(updatedCharacter) => {
-                    setCharacter(updatedCharacter);
-                    setForm(dbToForm(updatedCharacter));
-                    syncCharacterToLocalStorage(updatedCharacter);
-                  }}
-                />
-              </div>
-            )}
-
             {profileTab === "location" && renderLocationTab()}
             {profileTab === "skills" && renderSkillsTab()}
           </div>
+
+          {isMobileFullSheetOpen &&
+            createPortal(
+              <div className="ln-sheet-portal-overlay" role="dialog" aria-modal="true">
+                <section className="ln-sheet-portal-window">
+                  <header className="ln-sheet-portal-header">
+                    <div>
+                      <span>Dossiê Shinobi</span>
+                      <strong>Ficha Complementar</strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="ln-sheet-portal-close"
+                      onClick={() => setIsMobileFullSheetOpen(false)}
+                      aria-label="Fechar ficha complementar"
+                    >
+                      ×
+                    </button>
+                  </header>
+
+                  <main className="ln-sheet-portal-body">
+                    <CharacterFullSheetPanel
+                      user={user}
+                      character={character}
+                      onCharacterUpdated={(updatedCharacter) => {
+                        setCharacter(updatedCharacter);
+                        setForm(dbToForm(updatedCharacter));
+                        syncCharacterToLocalStorage(updatedCharacter);
+                      }}
+                    />
+                  </main>
+                </section>
+              </div>,
+              document.body
+            )}
 
           <div className="characters-layout desktop-my-ninja-layout">
             <section className={`character-profile-panel ${profileTab === "skills" ? "skill-tree-fullscreen" : ""}`}>

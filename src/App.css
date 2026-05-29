@@ -12,7 +12,7 @@ body,
 
 body {
   font-family: Arial, sans-serif;
-  background: #111827;
+  background: #141414;
 }
 
 .app {
@@ -25,7 +25,7 @@ body {
 
 .panel {
   padding: 20px;
-  background: #111827;
+  background: #141414;
   color: white;
   border-right: 1px solid #374151;
   z-index: 1000;
@@ -98,7 +98,7 @@ body {
 .ruleBox {
   margin-top: 18px;
   padding: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
   border-radius: 12px;
   line-height: 1.6;
@@ -110,7 +110,7 @@ body {
 
 .result {
   font-size: 17px;
-  background: #172554;
+  background: #1a1a1a;
   border-color: #2563eb;
 }
 
@@ -122,13 +122,13 @@ body {
 .mapArea {
   height: 100vh;
   width: 100%;
-  background: #0f172a;
+  background: #141414;
 }
 
 .leaflet-container {
   height: 100%;
   width: 100%;
-  background: #0f172a;
+  background: #141414;
 }
 
 .leaflet-control-attribution {
@@ -237,7 +237,7 @@ body {
   color: #f9fafb;
   background:
     radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent 34%),
-    #0f172a;
+    #141414;
 }
 
 .characters-header {
@@ -308,7 +308,7 @@ body {
   width: 100%;
   border: 1px solid #4b5563;
   border-radius: 10px;
-  background: #0f172a;
+  background: #141414;
   color: #f9fafb;
   padding: 11px 12px;
   font-size: 15px;
@@ -324,7 +324,7 @@ body {
   padding: 16px;
   border: 1px solid #374151;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
 }
 
 .trait-selector h3 {
@@ -347,7 +347,7 @@ body {
   text-align: left;
   border: 1px solid #374151;
   border-radius: 12px;
-  background: #1f2937;
+  background: #1e1e1e;
   color: #f9fafb;
   padding: 12px;
   cursor: pointer;
@@ -507,7 +507,7 @@ body {
 .travelList {
   margin-top: 18px;
   padding: 14px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #f97316;
   border-radius: 12px;
   line-height: 1.5;
@@ -527,7 +527,7 @@ body {
 .travelItem {
   margin-top: 12px;
   padding: 12px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
   border-radius: 10px;
   color: #e5e7eb;
@@ -584,7 +584,7 @@ body {
 .travelList {
   margin-top: 18px;
   padding: 14px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #f97316;
   border-radius: 12px;
   line-height: 1.5;
@@ -604,7 +604,7 @@ body {
 .travelItem {
   margin-top: 12px;
   padding: 12px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
   border-radius: 10px;
   color: #e5e7eb;
@@ -715,7 +715,7 @@ body {
   display: grid;
   gap: 5px;
   padding: 12px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
   border-radius: 12px;
 }
@@ -741,7 +741,7 @@ body {
   padding: 14px;
   border-radius: 14px;
   border: 1px solid #374151;
-  background: #1f2937;
+  background: #1e1e1e;
 }
 
 .location-status-card strong {
@@ -769,7 +769,7 @@ body {
   padding: 16px;
   border: 1px dashed #4b5563;
   border-radius: 14px;
-  background: #111827;
+  background: #141414;
 }
 
 .skill-placeholder h3 {
@@ -820,7 +820,7 @@ body {
   padding: 24px;
   background:
     radial-gradient(circle at top left, rgba(249, 115, 22, 0.22), transparent 34%),
-    #0f172a;
+    #141414;
   color: #f9fafb;
 }
 
@@ -882,7 +882,7 @@ body {
 .auth-form input {
   border: 1px solid #4b5563;
   border-radius: 12px;
-  background: #0f172a;
+  background: #141414;
   color: #f9fafb;
   padding: 12px;
   font-size: 16px;
@@ -894,7 +894,7 @@ body {
   margin-top: 16px;
   padding: 12px;
   border-radius: 12px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -913,7 +913,7 @@ body {
   color: #f9fafb;
   background:
     radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent 34%),
-    #0f172a;
+    #141414;
 }
 
 .admin-card {
@@ -948,7 +948,7 @@ body {
   gap: 8px;
   padding: 18px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -978,7 +978,7 @@ body {
   gap: 6px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1011,7 +1011,7 @@ body {
   align-items: center;
   padding: 14px;
   border-radius: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1045,7 +1045,7 @@ body {
   gap: 8px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1087,7 +1087,7 @@ body {
   gap: 6px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1120,7 +1120,7 @@ body {
   align-items: center;
   padding: 14px;
   border-radius: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1154,7 +1154,7 @@ body {
   gap: 8px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1196,7 +1196,7 @@ body {
   gap: 6px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1229,7 +1229,7 @@ body {
   align-items: center;
   padding: 14px;
   border-radius: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1263,7 +1263,7 @@ body {
   gap: 8px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1305,7 +1305,7 @@ body {
   gap: 6px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1338,7 +1338,7 @@ body {
   align-items: center;
   padding: 14px;
   border-radius: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1372,7 +1372,7 @@ body {
   gap: 8px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1413,7 +1413,7 @@ body {
   color: #f9fafb;
   background:
     radial-gradient(circle at top left, rgba(249, 115, 22, 0.16), transparent 34%),
-    #0f172a;
+    #141414;
   display: grid;
   grid-template-rows: auto 1fr;
 }
@@ -1490,7 +1490,7 @@ body {
   border-radius: 14px;
   color: #f9fafb;
   border: 2px solid #4b5563;
-  background: #111827;
+  background: #141414;
   text-align: center;
 }
 
@@ -1578,7 +1578,7 @@ body {
   margin: 26px 0;
   padding: 22px;
   border-radius: 20px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #f97316;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
 }
@@ -1624,7 +1624,7 @@ body {
   gap: 6px;
   padding: 14px;
   border-radius: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1645,7 +1645,7 @@ body {
   margin-top: 18px;
   padding: 16px;
   border-radius: 16px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -1674,7 +1674,7 @@ body {
   margin-top: 14px;
   padding: 14px;
   border-radius: 14px;
-  background: #0f172a;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -1759,7 +1759,7 @@ body {
   align-items: center;
   padding: 18px 22px;
   border-bottom: 1px solid #374151;
-  background: #111827;
+  background: #141414;
 }
 
 .tree-editor-toolbar h2 {
@@ -1798,13 +1798,13 @@ body {
 .tree-editor-canvas {
   min-width: 0;
   min-height: 0;
-  background: #0f172a;
+  background: #141414;
 }
 
 .tree-editor-panel {
   overflow-y: auto;
   padding: 18px;
-  background: #111827;
+  background: #141414;
   border-left: 1px solid #374151;
 }
 
@@ -1825,7 +1825,7 @@ body {
   width: 100%;
   border: 1px solid #4b5563;
   border-radius: 10px;
-  background: #0f172a;
+  background: #141414;
   color: #f9fafb;
   padding: 10px;
   font-size: 15px;
@@ -1844,7 +1844,7 @@ body {
 .tree-editor-page .react-flow__node {
   border-radius: 14px;
   border: 2px solid #f97316;
-  background: #111827;
+  background: #141414;
   color: #f9fafb;
   white-space: pre-line;
   padding: 12px;
@@ -1905,7 +1905,7 @@ body {
   background:
     radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.18), transparent 30%),
     radial-gradient(circle at 85% 80%, rgba(37, 99, 235, 0.14), transparent 28%),
-    #020617;
+    #0d0d0d;
 }
 
 .tree-editor-categories {
@@ -1913,13 +1913,13 @@ body {
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px 18px;
-  background: #0f172a;
-  border-bottom: 1px solid #1f2937;
+  background: #141414;
+  border-bottom: 1px solid #1e1e1e;
 }
 
 .tree-editor-categories span {
   border-radius: 999px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
   color: #d1d5db;
   padding: 6px 9px;
@@ -2054,7 +2054,7 @@ body {
 }
 
 .tree-editor-page .react-flow__minimap {
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
   border-radius: 14px;
   overflow: hidden;
@@ -2067,7 +2067,7 @@ body {
 }
 
 .tree-editor-page .react-flow__controls-button {
-  background: #111827;
+  background: #141414;
   border-bottom: 1px solid #374151;
   color: #f9fafb;
 }
@@ -2087,7 +2087,7 @@ body {
   border-left: 0 !important;
   border-right: 0 !important;
   padding: 10px 18px !important;
-  background: #1f2937 !important;
+  background: #1e1e1e !important;
   max-height: none !important;
 }
 
@@ -2213,7 +2213,7 @@ body {
   overflow: hidden;
   background:
     radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.22), transparent 30%),
-    #0f172a;
+    #141414;
   border: 4px solid #f97316;
   box-shadow:
     0 0 0 3px rgba(15, 23, 42, 0.95),
@@ -2397,7 +2397,7 @@ body {
   overflow: hidden;
   background:
     radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.22), transparent 30%),
-    #0f172a;
+    #141414;
   border: 4px solid #f97316;
   box-shadow:
     0 0 0 3px rgba(15, 23, 42, 0.95),
@@ -2673,7 +2673,7 @@ body {
 
 .player-skill-meta span {
   border-radius: 10px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
   color: #d1d5db;
   padding: 8px 10px;
@@ -2687,7 +2687,7 @@ body {
 }
 
 .player-skill-tree-stage .react-flow__minimap {
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
   border-radius: 14px;
   overflow: hidden;
@@ -3319,7 +3319,7 @@ textarea {
   margin: 12px 0 16px;
   padding: 12px;
   border-radius: 14px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -3327,7 +3327,7 @@ textarea {
   width: 100%;
   border: 1px solid #4b5563;
   border-radius: 12px;
-  background: #0f172a;
+  background: #141414;
   color: #f9fafb;
   padding: 12px 14px;
   font-size: 15px;
@@ -3374,7 +3374,7 @@ textarea {
   align-items: center;
   padding: 14px;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -3403,7 +3403,7 @@ textarea {
 .coupon-form input {
   border: 1px solid #4b5563;
   border-radius: 12px;
-  background: #0f172a;
+  background: #141414;
   color: #f9fafb;
   padding: 11px 12px;
 }
@@ -3434,7 +3434,7 @@ textarea {
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid #374151;
-  background: #020617;
+  background: #0d0d0d;
 }
 
 .character-skill-canvas {
@@ -3447,7 +3447,7 @@ textarea {
 
 .character-skill-inspector {
   padding: 16px;
-  background: #111827;
+  background: #141414;
   border-left: 1px solid #374151;
   overflow-y: auto;
 }
@@ -3462,7 +3462,7 @@ textarea {
   gap: 8px;
   padding: 14px;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -3513,7 +3513,7 @@ textarea {
   gap: 14px;
   padding: 18px;
   border-radius: 18px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -3546,7 +3546,7 @@ textarea {
   align-items: center;
   padding: 12px;
   border-radius: 14px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -3615,7 +3615,7 @@ textarea {
   background:
     radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.18), transparent 32%),
     radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.16), transparent 30%),
-    #020617;
+    #0d0d0d;
 }
 
 .entry-hall-card {
@@ -3644,7 +3644,7 @@ textarea {
   margin: 22px 0;
   padding: 14px;
   border-radius: 16px;
-  background: #0f172a;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -3876,7 +3876,7 @@ main.app:not(.app-map) > section {
   padding: 0 !important;
   border-radius: 0 !important;
   overflow: hidden !important;
-  background: #020617 !important;
+  background: #0d0d0d !important;
 }
 
 .character-profile-panel:has(.character-skill-tree) .profile-tabs {
@@ -3963,7 +3963,7 @@ main.app:not(.app-map) > section {
   margin: 24px 0;
   padding: 18px;
   border-radius: 20px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
 }
@@ -3999,7 +3999,7 @@ main.app:not(.app-map) > section {
   overflow: hidden;
   border-radius: 18px;
   border: 1px solid #374151;
-  background: #020617;
+  background: #0d0d0d;
 }
 
 .admin-map-character-icon {
@@ -4043,7 +4043,7 @@ main.app:not(.app-map) > section {
   padding: 0 !important;
   border-radius: 0 !important;
   overflow: hidden !important;
-  background: #020617 !important;
+  background: #0d0d0d !important;
 }
 
 .character-profile-panel.skill-tree-fullscreen .profile-tabs {
@@ -4127,7 +4127,7 @@ main.app:not(.app-map) > section {
   width: 100%;
   padding: 16px;
   border-radius: 18px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -4162,7 +4162,7 @@ main.app:not(.app-map) > section {
   overflow: hidden;
   border-radius: 16px;
   border: 1px solid #374151;
-  background: #020617;
+  background: #0d0d0d;
 }
 
 .player-location-map-info {
@@ -4170,7 +4170,7 @@ main.app:not(.app-map) > section {
   gap: 8px;
   padding: 12px;
   border-radius: 14px;
-  background: #0f172a;
+  background: #141414;
   border: 1px solid #374151;
   color: #d1d5db;
 }
@@ -4232,7 +4232,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.12), transparent 28%),
     radial-gradient(circle at 85% 75%, rgba(56, 189, 248, 0.10), transparent 30%),
-    #020617 !important;
+    #0d0d0d !important;
 }
 
 .character-profile-panel.skill-tree-fullscreen .character-skill-topbar {
@@ -4259,7 +4259,7 @@ main.app:not(.app-map) > section {
   overflow: hidden !important;
   border-radius: 18px !important;
   border: 1px solid #374151 !important;
-  background: #020617 !important;
+  background: #0d0d0d !important;
 }
 
 .character-profile-panel.skill-tree-fullscreen .character-skill-canvas {
@@ -4565,7 +4565,7 @@ main.app:not(.app-map) > section {
   width: 100% !important;
   height: 680px !important;
   min-height: 680px !important;
-  background: #020617 !important;
+  background: #0d0d0d !important;
 }
 
 .player-location-map-stage .leaflet-container,
@@ -4573,7 +4573,7 @@ main.app:not(.app-map) > section {
   width: 100% !important;
   height: 100% !important;
   min-height: 680px !important;
-  background: #020617 !important;
+  background: #0d0d0d !important;
 }
 
 .location-tab-content {
@@ -4596,7 +4596,7 @@ main.app:not(.app-map) > section {
 .player-location-map-stage-full .leaflet-container,
 .player-location-map-stage-full .leaflet-pane,
 .player-location-map-stage-full .leaflet-map-pane {
-  background: #020617 !important;
+  background: #0d0d0d !important;
 }
 
 .player-location-map-stage-full .leaflet-image-layer {
@@ -4617,7 +4617,7 @@ main.app:not(.app-map) > section {
   grid-column: 1 / -1;
   padding: 16px;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -4701,7 +4701,7 @@ main.app:not(.app-map) > section {
   overflow: auto;
   border-radius: 16px;
   border: 1px solid #374151;
-  background: #020617;
+  background: #0d0d0d;
 }
 
 .player-location-image-wrap {
@@ -4800,7 +4800,7 @@ main.app:not(.app-map) > section {
   gap: 6px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -4832,7 +4832,7 @@ main.app:not(.app-map) > section {
   margin-top: 12px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -5054,7 +5054,7 @@ main.app:not(.app-map) > section {
     min-height: 100dvh !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    background: #020617 !important;
+    background: #0d0d0d !important;
     padding-bottom: env(safe-area-inset-bottom) !important;
   }
 
@@ -5063,7 +5063,7 @@ main.app:not(.app-map) > section {
     height: auto !important;
     min-height: calc(100dvh - 54px) !important;
     overflow: visible !important;
-    background: #020617 !important;
+    background: #0d0d0d !important;
   }
 
   .character-profile-panel.skill-tree-fullscreen .character-skill-tree {
@@ -5071,7 +5071,7 @@ main.app:not(.app-map) > section {
     min-height: calc(100dvh - 54px) !important;
     overflow: visible !important;
     padding-bottom: 24px !important;
-    background: #020617 !important;
+    background: #0d0d0d !important;
   }
 
   .character-profile-panel.skill-tree-fullscreen .character-skill-layout {
@@ -5097,7 +5097,7 @@ main.app:not(.app-map) > section {
 .unique-traits-accordion {
   border: 1px solid #374151;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
   padding: 0;
   overflow: hidden;
 }
@@ -5138,7 +5138,7 @@ main.app:not(.app-map) > section {
 .unique-traits-accordion {
   border: 1px solid #374151;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
   padding: 0;
   overflow: hidden;
 }
@@ -5180,7 +5180,7 @@ main.app:not(.app-map) > section {
 .unique-traits-accordion {
   border: 1px solid #374151;
   border-radius: 16px;
-  background: #111827;
+  background: #141414;
   overflow: hidden;
   padding: 0 !important;
 }
@@ -5237,7 +5237,7 @@ main.app:not(.app-map) > section {
   margin: 0 auto;
   padding: 18px;
   border-radius: 22px;
-  background: #111827;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -5275,7 +5275,7 @@ main.app:not(.app-map) > section {
   align-items: center;
   padding: 12px;
   border-radius: 16px;
-  background: #0f172a;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -5283,7 +5283,7 @@ main.app:not(.app-map) > section {
   width: 100%;
   border: 1px solid #4b5563;
   border-radius: 12px;
-  background: #020617;
+  background: #0d0d0d;
   color: #f9fafb;
   padding: 12px 14px;
   font-size: 15px;
@@ -5306,7 +5306,7 @@ main.app:not(.app-map) > section {
   gap: 12px;
   padding: 14px;
   border-radius: 18px;
-  background: #1f2937;
+  background: #1e1e1e;
   border: 1px solid #374151;
 }
 
@@ -5349,7 +5349,7 @@ main.app:not(.app-map) > section {
   gap: 6px;
   padding: 10px;
   border-radius: 14px;
-  background: #111827;
+  background: #141414;
   color: #d1d5db;
   font-size: 13px;
 }
@@ -5415,7 +5415,7 @@ main.app:not(.app-map) > section {
     radial-gradient(circle at 50% 42%, rgba(249, 115, 22, 0.24), transparent 22%),
     radial-gradient(circle at 72% 48%, rgba(255, 255, 255, 0.08), transparent 20%),
     linear-gradient(120deg, rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.95)),
-    #020617;
+    #0d0d0d;
   isolation: isolate;
 }
 
@@ -5605,7 +5605,7 @@ main.app:not(.app-map) > section {
   border: 2px solid #7c2d12;
   background:
     linear-gradient(180deg, rgba(249, 115, 22, 0.95), rgba(154, 52, 18, 0.96));
-  color: #111827;
+  color: #141414;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
 }
 
@@ -5634,7 +5634,7 @@ main.app:not(.app-map) > section {
   place-items: center;
   margin-bottom: -14px;
   border-radius: 50%;
-  border: 5px solid #111827;
+  border: 5px solid #141414;
   outline: 4px solid rgba(249, 115, 22, 0.86);
   background:
     radial-gradient(circle, rgba(255, 237, 213, 0.88), rgba(180, 83, 9, 0.35)),
@@ -5647,7 +5647,7 @@ main.app:not(.app-map) > section {
 .ln-hero-orbit span {
   font-size: 94px;
   font-weight: 950;
-  color: #020617;
+  color: #0d0d0d;
   transform: rotate(-7deg);
   letter-spacing: -0.12em;
 }
@@ -5707,7 +5707,7 @@ main.app:not(.app-map) > section {
   min-width: 220px;
   min-height: 64px;
   border-radius: 0;
-  border: 3px solid #111827;
+  border: 3px solid #141414;
   outline: 2px solid rgba(255, 255, 255, 0.16);
   padding: 14px 28px;
   font-size: 22px;
@@ -5880,7 +5880,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 50% 40%, rgba(249, 115, 22, 0.28), transparent 22%),
     radial-gradient(circle at 80% 20%, rgba(185, 28, 28, 0.24), transparent 24%),
-    linear-gradient(120deg, #020617, #050505 52%, #111827);
+    linear-gradient(120deg, #0d0d0d, #050505 52%, #141414);
 }
 
 .ln-shinobi-v2::before {
@@ -5925,7 +5925,7 @@ main.app:not(.app-map) > section {
   height: 54px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 50% 50%, #020617 0 8px, #7f1d1d 9px 15px, #dc2626 16px 31px, #111827 32px);
+    radial-gradient(circle at 50% 50%, #0d0d0d 0 8px, #7f1d1d 9px 15px, #dc2626 16px 31px, #141414 32px);
   border: 4px solid #050505;
   box-shadow:
     inset 0 0 16px rgba(0, 0, 0, 0.95),
@@ -5961,7 +5961,7 @@ main.app:not(.app-map) > section {
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: #020617;
+  background: #0d0d0d;
   box-shadow: 0 0 0 2px rgba(2, 6, 23, 0.75);
 }
 
@@ -5971,7 +5971,7 @@ main.app:not(.app-map) > section {
   width: 12px;
   height: 6px;
   border-radius: 999px;
-  background: #020617;
+  background: #0d0d0d;
   top: 5px;
   left: 3px;
   transform: rotate(42deg);
@@ -6013,11 +6013,11 @@ main.app:not(.app-map) > section {
   width: 68px;
   height: 156px;
   border-radius: 28px;
-  border: 4px solid #111827;
+  border: 4px solid #141414;
   outline: 2px solid rgba(249, 115, 22, 0.75);
   background:
     linear-gradient(90deg, #92400e, #fed7aa 42%, #92400e);
-  color: #020617;
+  color: #0d0d0d;
   font-weight: 950;
   writing-mode: vertical-rl;
   font-size: 24px;
@@ -6361,7 +6361,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.16), transparent 28%),
     radial-gradient(circle at 85% 70%, rgba(249, 115, 22, 0.12), transparent 30%),
-    #020617;
+    #0d0d0d;
 }
 
 .entry-hall-card {
@@ -6391,7 +6391,7 @@ main.app:not(.app-map) > section {
   margin: 22px 0;
   padding: 14px 16px;
   border-radius: 16px;
-  background: #0f172a;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -6423,7 +6423,7 @@ main.app:not(.app-map) > section {
   padding: 22px;
   border: 1px solid rgba(249, 115, 22, 0.5);
   border-radius: 22px;
-  background: linear-gradient(180deg, #1f2937, #111827);
+  background: linear-gradient(180deg, #1e1e1e, #141414);
   color: #f9fafb;
   font-size: 24px;
   font-weight: 950;
@@ -6482,7 +6482,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 50% 36%, rgba(255, 237, 213, 0.16), transparent 21%),
     radial-gradient(circle at 74% 44%, rgba(249, 115, 22, 0.22), transparent 26%),
-    linear-gradient(115deg, #050505 0%, #0f172a 44%, #050505 100%);
+    linear-gradient(115deg, #050505 0%, #141414 44%, #050505 100%);
   isolation: isolate;
 }
 
@@ -6540,7 +6540,7 @@ main.app:not(.app-map) > section {
   height: 72px;
   display: grid;
   place-items: center;
-  border: 2px solid #111827;
+  border: 2px solid #141414;
   outline: 2px solid #f97316;
   background:
     linear-gradient(180deg, #fb923c, #c2410c);
@@ -6696,7 +6696,7 @@ main.app:not(.app-map) > section {
   border-radius: 999px;
   border: 5px solid #050505;
   background:
-    radial-gradient(circle at 50% 50%, #020617 0 9px, #7f1d1d 10px 19px, #dc2626 20px 39px, #111827 40px);
+    radial-gradient(circle at 50% 50%, #0d0d0d 0 9px, #7f1d1d 10px 19px, #dc2626 20px 39px, #141414 40px);
   box-shadow:
     inset 0 0 18px rgba(0,0,0,0.95),
     0 0 32px rgba(220, 38, 38, 0.8);
@@ -6726,7 +6726,7 @@ main.app:not(.app-map) > section {
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: #020617;
+  background: #0d0d0d;
   box-shadow: 0 0 0 2px rgba(2, 6, 23, 0.7);
 }
 
@@ -6736,7 +6736,7 @@ main.app:not(.app-map) > section {
   width: 14px;
   height: 7px;
   border-radius: 999px;
-  background: #020617;
+  background: #0d0d0d;
   top: 5px;
   left: 4px;
   transform: rotate(42deg);
@@ -6781,7 +6781,7 @@ main.app:not(.app-map) > section {
   bottom: 26px;
   width: 46px;
   height: 76px;
-  background: #111827;
+  background: #141414;
   clip-path: polygon(50% 0, 90% 18%, 76% 18%, 100% 36%, 84% 36%, 84% 100%, 16% 100%, 16% 36%, 0 36%, 24% 18%, 10% 18%);
   box-shadow: inset 0 0 0 3px rgba(249, 115, 22, 0.26);
 }
@@ -6893,7 +6893,7 @@ main.app:not(.app-map) > section {
   position: absolute;
   bottom: 50px;
   width: 74px;
-  background: #111827;
+  background: #141414;
   border-bottom: 5px solid rgba(249, 115, 22, 0.75);
   clip-path: polygon(50% 0, 100% 20%, 80% 20%, 96% 38%, 84% 38%, 84% 100%, 16% 100%, 16% 38%, 4% 38%, 20% 20%, 0 20%);
 }
@@ -6920,7 +6920,7 @@ main.app:not(.app-map) > section {
   bottom: 20px;
   height: 66px;
   background:
-    repeating-linear-gradient(90deg, #1f2937 0 36px, #111827 36px 40px);
+    repeating-linear-gradient(90deg, #1e1e1e 0 36px, #141414 36px 40px);
   border-top: 5px solid rgba(249, 115, 22, 0.55);
 }
 
@@ -6940,7 +6940,7 @@ main.app:not(.app-map) > section {
 .ln-coded-ninja .blade {
   position: absolute;
   display: block;
-  background: #020617;
+  background: #0d0d0d;
 }
 
 .ln-coded-ninja .head {
@@ -7474,7 +7474,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.16), transparent 28%),
     radial-gradient(circle at 85% 70%, rgba(249, 115, 22, 0.12), transparent 30%),
-    #020617;
+    #0d0d0d;
 }
 
 .entry-hall-card {
@@ -7504,7 +7504,7 @@ main.app:not(.app-map) > section {
   margin: 22px 0;
   padding: 14px 16px;
   border-radius: 16px;
-  background: #0f172a;
+  background: #141414;
   border: 1px solid #374151;
 }
 
@@ -7536,7 +7536,7 @@ main.app:not(.app-map) > section {
   padding: 22px;
   border: 1px solid rgba(249, 115, 22, 0.5);
   border-radius: 22px;
-  background: linear-gradient(180deg, #1f2937, #111827);
+  background: linear-gradient(180deg, #1e1e1e, #141414);
   color: #f9fafb;
   font-size: 24px;
   font-weight: 950;
@@ -9465,7 +9465,7 @@ main.app:not(.app-map) > section {
     top: 72.2%;
     background:
       linear-gradient(90deg, rgba(245, 234, 208, 0.94), rgba(181, 165, 139, 0.9));
-    color: #111827;
+    color: #141414;
     border-color: rgba(245, 234, 208, 0.85);
   }
 
@@ -9658,7 +9658,7 @@ main.app:not(.app-map) > section {
   border-radius: 22px;
   background:
     radial-gradient(circle at 20% 0%, rgba(249, 115, 22, 0.18), transparent 32%),
-    #111827;
+    #141414;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
   padding: 26px;
   color: #f9fafb;
@@ -9691,7 +9691,7 @@ main.app:not(.app-map) > section {
   width: 100%;
   border: 1px solid #4b5563;
   border-radius: 12px;
-  background: #020617;
+  background: #0d0d0d;
   color: #f9fafb;
   padding: 12px 14px;
   font-size: 15px;
@@ -9783,7 +9783,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 20% 0%, rgba(249, 115, 22, 0.2), transparent 28%),
     radial-gradient(circle at 80% 40%, rgba(220, 38, 38, 0.12), transparent 30%),
-    #020617;
+    #0d0d0d;
 }
 
 .shinobidex-hero {
@@ -9861,7 +9861,7 @@ main.app:not(.app-map) > section {
   width: 100%;
   border: 1px solid #334155;
   border-radius: 12px;
-  background: #020617;
+  background: #0d0d0d;
   color: #f9fafb;
   padding: 11px 12px;
 }
@@ -9978,7 +9978,7 @@ main.app:not(.app-map) > section {
   margin: 0;
   padding: 12px;
   border-radius: 14px;
-  background: #020617;
+  background: #0d0d0d;
 }
 
 .shinobidex-info-grid strong,
@@ -10137,7 +10137,7 @@ main.app:not(.app-map) > section {
   width: 100%;
   border: 1px solid #334155;
   border-radius: 12px;
-  background: #020617;
+  background: #0d0d0d;
   color: #f9fafb;
   padding: 11px 12px;
   font-size: 14px;
@@ -12360,7 +12360,7 @@ main.app:not(.app-map) > section {
   background:
     radial-gradient(circle at 20% 0%, rgba(255, 85, 0, 0.18), transparent 32%),
     radial-gradient(circle at 80% 40%, rgba(220, 38, 38, 0.12), transparent 30%),
-    #020617;
+    #0d0d0d;
 }
 
 .anced-calc-hero {
@@ -12841,7 +12841,6 @@ body:has(.shinobidex-page)::-webkit-scrollbar-thumb {
 body:has(.shinobidex-page)::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.45);
 }
-
 
 /* =====================================================
    ShinobiDex — correção estável de rolagem
@@ -13516,7 +13515,7 @@ body,
 .app-my-ninja {
   position: relative !important;
   min-height: 100vh !important;
-  background: #020617 !important;
+  background: #0d0d0d !important;
   overflow-x: hidden !important;
 }
 
@@ -21235,7 +21234,6 @@ main.app .floating-sound-button:active {
   }
 }
 
-
 /* =====================================================
    ADM — Base de Sistemas
 ===================================================== */
@@ -23543,7 +23541,6 @@ main.app .floating-sound-button:active {
   }
 }
 
-
 /* =========================================================
    Ficha complementar — provas e status compacto
    ========================================================= */
@@ -24232,7 +24229,7 @@ main.app .floating-sound-button:active {
 .my-ninja-page .inventory-item-card {
   background:
     radial-gradient(circle at top left, rgba(255, 122, 18, 0.10), transparent 34%),
-    linear-gradient(145deg, rgba(10, 15, 22, 0.84), rgba(2, 4, 7, 0.94)) !important;
+    linear-gradient(145deg, rgba(20, 20, 20, 0.94), rgba(9, 9, 9, 0.98)) !important;
   border: 1px solid rgba(255, 122, 18, 0.42) !important;
   box-shadow:
     inset 0 0 34px rgba(255, 122, 18, 0.035),
@@ -24267,7 +24264,7 @@ main.app .floating-sound-button:active {
 /* Cards internos mais compactos e com cara de painel premium */
 .my-ninja-page .profile-field {
   background:
-    linear-gradient(145deg, rgba(13, 19, 31, 0.82), rgba(4, 7, 12, 0.92)) !important;
+    linear-gradient(145deg, rgba(26, 26, 26, 0.92), rgba(13, 13, 13, 0.96)) !important;
   border-color: rgba(255, 122, 18, 0.30) !important;
   box-shadow:
     inset 0 0 18px rgba(255, 122, 18, 0.025),
@@ -24377,7 +24374,7 @@ main.app .floating-sound-button:active {
 
 .my-ninja-page .full-sheet-header {
   background:
-    linear-gradient(145deg, rgba(9, 13, 19, 0.88), rgba(2, 4, 7, 0.94)) !important;
+    linear-gradient(145deg, rgba(9, 13, 19, 0.88), rgba(9, 9, 9, 0.98)) !important;
   border-bottom: 1px solid rgba(255, 122, 18, 0.32) !important;
 }
 
@@ -24386,7 +24383,7 @@ main.app .floating-sound-button:active {
   border-radius: 14px !important;
   border: 1px solid rgba(255, 122, 18, 0.28) !important;
   background:
-    linear-gradient(145deg, rgba(13, 18, 27, 0.92), rgba(4, 6, 10, 0.95)) !important;
+    linear-gradient(145deg, rgba(26, 26, 26, 0.96), rgba(13, 13, 13, 0.96)) !important;
   color: rgba(255, 244, 223, 0.78) !important;
   box-shadow:
     inset 0 0 16px rgba(255, 122, 18, 0.025),
@@ -24417,7 +24414,7 @@ main.app .floating-sound-button:active {
   border-radius: 12px !important;
   border: 1px solid rgba(255, 122, 18, 0.34) !important;
   background:
-    linear-gradient(180deg, rgba(12, 17, 26, 0.92), rgba(3, 5, 9, 0.96)) !important;
+    linear-gradient(180deg, rgba(20, 20, 20, 0.96), rgba(9, 9, 9, 0.98)) !important;
   color: #fff4df !important;
   box-shadow:
     inset 0 0 16px rgba(0, 0, 0, 0.38),
@@ -24676,7 +24673,7 @@ main.app .floating-sound-button:active {
   border-radius: 10px !important;
   border: 1px solid rgba(255, 122, 18, 0.22) !important;
   background:
-    linear-gradient(145deg, rgba(13, 19, 28, 0.82), rgba(4, 7, 12, 0.92)) !important;
+    linear-gradient(145deg, rgba(26, 26, 26, 0.92), rgba(13, 13, 13, 0.96)) !important;
   box-shadow:
     inset 0 0 14px rgba(0, 0, 0, 0.26),
     inset 0 1px 0 rgba(255, 244, 223, 0.025) !important;
@@ -25057,7 +25054,7 @@ main.app .floating-sound-button:active {
   border-radius: 14px !important;
   border: 1px solid rgba(255, 122, 18, 0.24) !important;
   background:
-    linear-gradient(145deg, rgba(13, 18, 25, 0.82), rgba(4, 7, 11, 0.92)) !important;
+    linear-gradient(145deg, rgba(26, 26, 26, 0.92), rgba(13, 13, 13, 0.94)) !important;
   color: rgba(255, 244, 223, 0.82) !important;
   text-align: left !important;
   box-shadow:
@@ -25194,7 +25191,7 @@ main.app .floating-sound-button:active {
   border-radius: 14px !important;
   border: 1px solid rgba(255, 122, 18, 0.22) !important;
   background:
-    linear-gradient(145deg, rgba(12, 17, 24, 0.76), rgba(4, 7, 12, 0.90)) !important;
+    linear-gradient(145deg, rgba(20, 20, 20, 0.88), rgba(13, 13, 13, 0.94)) !important;
   box-shadow:
     inset 0 0 16px rgba(0, 0, 0, 0.30),
     inset 0 1px 0 rgba(255, 244, 223, 0.025) !important;
@@ -25247,7 +25244,7 @@ main.app .floating-sound-button:active {
   border-radius: 16px !important;
   border: 1px solid rgba(255, 122, 18, 0.24) !important;
   background:
-    linear-gradient(145deg, rgba(12, 17, 24, 0.76), rgba(4, 7, 12, 0.90)) !important;
+    linear-gradient(145deg, rgba(20, 20, 20, 0.88), rgba(13, 13, 13, 0.94)) !important;
   box-shadow:
     inset 0 0 16px rgba(0, 0, 0, 0.26),
     0 10px 22px rgba(0, 0, 0, 0.24) !important;
@@ -25420,7 +25417,6 @@ main.app .floating-sound-button:active {
   z-index: 2;
 }
 
-
 /* =========================================================
    MEU NINJA MOBILE — painel bonito em HTML/CSS
    Ainda só aparece quando o componente for conectado.
@@ -25459,7 +25455,7 @@ main.app .floating-sound-button:active {
     border-radius: 18px 6px 18px 6px;
     background:
       radial-gradient(circle at left, rgba(255, 122, 18, 0.18), transparent 48%),
-      linear-gradient(145deg, rgba(16, 12, 8, 0.95), rgba(2, 3, 5, 0.96));
+      linear-gradient(145deg, rgba(16, 12, 8, 0.95), rgba(9, 9, 9, 0.98));
   }
 
   .mnm-logo span {
@@ -25496,7 +25492,7 @@ main.app .floating-sound-button:active {
     min-height: 46px;
     border-radius: 14px;
     border: 1px solid rgba(255, 122, 18, 0.48);
-    background: linear-gradient(145deg, rgba(12, 15, 18, 0.92), rgba(2, 3, 5, 0.96));
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.96), rgba(9, 9, 9, 0.98));
     color: #fff4df;
     font-family: inherit;
     font-weight: 800;
@@ -25510,7 +25506,7 @@ main.app .floating-sound-button:active {
     border: 1px solid rgba(255, 122, 18, 0.28);
     background:
       radial-gradient(circle at top left, rgba(255, 122, 18, 0.08), transparent 42%),
-      linear-gradient(145deg, rgba(10, 16, 22, 0.92), rgba(1, 4, 7, 0.97));
+      linear-gradient(145deg, rgba(20, 20, 20, 0.96), rgba(9, 9, 9, 0.98));
     box-shadow:
       inset 0 0 30px rgba(255, 122, 18, 0.025),
       0 16px 34px rgba(0, 0, 0, 0.42);
@@ -25736,7 +25732,7 @@ main.app .floating-sound-button:active {
     padding: 0.65rem 0.85rem;
     border-radius: 12px;
     border: 1px solid rgba(255, 122, 18, 0.20);
-    background: linear-gradient(145deg, rgba(10, 16, 22, 0.82), rgba(2, 4, 7, 0.94));
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.92), rgba(9, 9, 9, 0.98));
     color: #fff4df;
     font-family: inherit;
     font-size: 0.91rem;
@@ -25828,7 +25824,7 @@ main.app .floating-sound-button:active {
     border: 1px solid rgba(255, 122, 18, 0.28);
     background:
       radial-gradient(circle at top left, rgba(255, 122, 18, 0.08), transparent 42%),
-      linear-gradient(145deg, rgba(10, 16, 22, 0.92), rgba(1, 4, 7, 0.97));
+      linear-gradient(145deg, rgba(20, 20, 20, 0.96), rgba(9, 9, 9, 0.98));
     box-shadow:
       inset 0 0 30px rgba(255, 122, 18, 0.025),
       0 16px 34px rgba(0, 0, 0, 0.42);
@@ -27867,14 +27863,14 @@ main.app .floating-sound-button:active {
 
 @media (max-width: 760px) {
   .my-ninja-page {
-    background: #0b0c0e !important;
+    background: #0d0d0d !important;
     padding: 0 !important;
     padding-bottom: 1rem !important;
     color: #fff !important;
   }
 
   .shinobidex-mobile {
-    --sd-bg: #0b0c0e;
+    --sd-bg: #0d0d0d;
     --sd-panel: #111316;
     --sd-border: #2a2c30;
     --sd-orange: #ff6a00;
@@ -28215,4 +28211,1380 @@ main.app .floating-sound-button:active {
   .my-ninja-mobile-fullsheet {
     margin-top: 0 !important;
   }
+}
+
+/* =========================================================
+   RECUPERAÇÃO FINAL — MEU NINJA MOBILE LNM
+   Fundo preto/cinza, SVGs, rodapé Portal e ficha Portal.
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .mnm-page,
+  .shinobidex-mobile,
+  .my-ninja-mobile-fullsheet {
+    display: none !important;
+  }
+
+  .my-ninja-page {
+    padding: 0 !important;
+    background: #0d0d0d !important;
+    color: #e8e2d6 !important;
+    overflow-x: hidden !important;
+  }
+
+  .desktop-my-ninja-layout {
+    display: none !important;
+  }
+
+  .my-ninja-mobile-live-area {
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    padding: 0 16px calc(92px + env(safe-area-inset-bottom)) !important;
+    background: #0d0d0d !important;
+  }
+
+  .lnm-mobile-shell {
+    --bg-deep: #0d0d0d;
+    --bg-card: #141414;
+    --bg-card2: #1a1a1a;
+    --bg-item: #1e1e1e;
+    --orange: #e07b20;
+    --orange-lt: #f0903a;
+    --orange-bg: rgba(224, 123, 32, 0.12);
+    --orange-bdr: rgba(224, 123, 32, 0.30);
+    --text-main: #e8e2d6;
+    --text-sub: #9e9080;
+    --text-dim: #5a5248;
+    --border: rgba(255,255,255,0.06);
+
+    display: block !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    min-height: 100dvh !important;
+    margin: 0 auto !important;
+    padding: 0 0 calc(92px + env(safe-area-inset-bottom)) !important;
+    background: #0d0d0d !important;
+    color: #e8e2d6 !important;
+    font-family: "Exo 2", "Segoe UI", system-ui, sans-serif !important;
+    overflow-x: hidden !important;
+  }
+
+  .lnm-mobile-shell *,
+  .lnm-mobile-shell *::before,
+  .lnm-mobile-shell *::after {
+    box-sizing: border-box !important;
+  }
+
+  .lnm-mobile-shell svg {
+    flex-shrink: 0 !important;
+  }
+
+  .lnm-topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 120 !important;
+    height: 58px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: 0 16px !important;
+    border-bottom: 1px solid var(--border) !important;
+    background: #0d0d0d !important;
+  }
+
+  .lnm-topbar-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+  }
+
+  .lnm-topbar-kanji {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    background: linear-gradient(145deg, #b85e10, #e07b20) !important;
+    color: #fff !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+  }
+
+  .lnm-topbar-brand {
+    display: grid !important;
+    line-height: 1.05 !important;
+  }
+
+  .lnm-topbar-brand small {
+    color: #e07b20 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+  }
+
+  .lnm-topbar-brand strong {
+    color: #e8e2d6 !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+  }
+
+  .lnm-topbar-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .lnm-hide-options {
+    height: 34px !important;
+    padding: 6px 14px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    background: transparent !important;
+    color: #e8e2d6 !important;
+    font: inherit !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+  }
+
+  .lnm-filter-button {
+    width: 36px !important;
+    height: 36px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    background: transparent !important;
+    color: #e8e2d6 !important;
+  }
+
+  .lnm-filter-button svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .lnm-page-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 16px 16px 20px !important;
+    background: #0d0d0d !important;
+  }
+
+  .lnm-card,
+  .lnm-hero-banner,
+  .lnm-profile-card,
+  .lnm-dossie-card,
+  .lnm-section-row,
+  .lnm-traits-card,
+  .lnm-tab-placeholder,
+  .lnm-tab-nav,
+  .lnm-menu-grid {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    background: #141414 !important;
+    background-color: #141414 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .lnm-hero-banner {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 18px 18px 18px 20px !important;
+  }
+
+  .lnm-hero-banner::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(135deg, rgba(224,123,32,0.05) 0%, transparent 60%) !important;
+    pointer-events: none !important;
+  }
+
+  .lnm-hero-eyebrow,
+  .lnm-dossie-eyebrow,
+  .lnm-section-label {
+    color: #e07b20 !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+  }
+
+  .lnm-hero-name {
+    position: relative !important;
+    z-index: 2 !important;
+    margin: 6px 0 10px !important;
+    color: #e8e2d6 !important;
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+  }
+
+  .lnm-hero-desc {
+    position: relative !important;
+    z-index: 2 !important;
+    max-width: 72% !important;
+    margin: 0 !important;
+    color: #9e9080 !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+  }
+
+  .lnm-hero-shuriken {
+    position: absolute !important;
+    right: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 70px !important;
+    height: 70px !important;
+    color: #e07b20 !important;
+    opacity: 0.18 !important;
+  }
+
+  .lnm-tab-nav {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    overflow: hidden !important;
+  }
+
+  .lnm-tab-btn {
+    min-height: 45px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 12px 4px !important;
+    border: 0 !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
+    background: transparent !important;
+    color: #9e9080 !important;
+    font: inherit !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .lnm-tab-btn:last-child {
+    border-right: 0 !important;
+  }
+
+  .lnm-tab-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .lnm-tab-btn.active {
+    background: #e07b20 !important;
+    color: #fff !important;
+    font-weight: 800 !important;
+  }
+
+  .lnm-profile-card {
+    padding: 20px !important;
+  }
+
+  .lnm-profile-card-title {
+    margin-bottom: 16px !important;
+    text-align: center !important;
+    color: #e07b20 !important;
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    background: transparent !important;
+  }
+
+  .lnm-profile-inner {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    background: transparent !important;
+  }
+
+  .lnm-portrait-col {
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: center !important;
+    background: transparent !important;
+  }
+
+  .lnm-portrait-circle {
+    width: 110px !important;
+    height: 110px !important;
+    display: grid !important;
+    place-items: center !important;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+    border: 2px solid #e07b20 !important;
+    background: #1a1a1a !important;
+    color: #5a5248 !important;
+  }
+
+  .lnm-portrait-circle img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .lnm-portrait-circle svg {
+    width: 46px !important;
+    height: 46px !important;
+    opacity: 0.35 !important;
+  }
+
+  .lnm-btn-photo {
+    min-height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 7px 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    background: transparent !important;
+    color: #e8e2d6 !important;
+    font: inherit !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+  }
+
+  .lnm-btn-photo svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .lnm-profile-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    background: transparent !important;
+  }
+
+  .lnm-epithet-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    max-width: 100% !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(224,123,32,0.30) !important;
+    background: rgba(224,123,32,0.12) !important;
+    color: #f0903a !important;
+    font: inherit !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .lnm-epithet-badge svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .lnm-info-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 4px 0 !important;
+    background: transparent !important;
+  }
+
+  .lnm-info-item svg {
+    width: 16px !important;
+    height: 16px !important;
+    color: #9e9080 !important;
+  }
+
+  .lnm-info-item span {
+    color: #e8e2d6 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .lnm-traits-card {
+    padding: 14px 16px !important;
+  }
+
+  .lnm-traits-list {
+    margin-top: 8px !important;
+    padding: 10px 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    background: #1a1a1a !important;
+    color: #e8e2d6 !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+
+  .lnm-dossie-card {
+    position: relative !important;
+    padding: 18px 16px !important;
+    cursor: pointer !important;
+  }
+
+  .lnm-dossie-title {
+    margin: 4px 0 10px !important;
+    color: #e8e2d6 !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+  }
+
+  .lnm-dossie-desc {
+    max-width: 85% !important;
+    margin: 0 !important;
+    color: #9e9080 !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+  }
+
+  .lnm-dossie-arrow {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    background: #e07b20 !important;
+    color: #fff !important;
+  }
+
+  .lnm-dossie-arrow svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .lnm-menu-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+
+  .lnm-menu-item {
+    min-height: 58px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 13px 14px !important;
+    border: 0 !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    background: #1a1a1a !important;
+    color: #e8e2d6 !important;
+    font: inherit !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+  }
+
+  .lnm-menu-item:nth-child(2n) {
+    border-right: 0 !important;
+  }
+
+  .lnm-menu-item:nth-last-child(-n+2) {
+    border-bottom: 0 !important;
+  }
+
+  .lnm-menu-item svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #e07b20 !important;
+  }
+
+  .lnm-section-row {
+    display: flex !important;
+    align-items: stretch !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+  }
+
+  .lnm-section-icon-col {
+    width: 60px !important;
+    min-width: 60px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
+    background: #1a1a1a !important;
+  }
+
+  .lnm-section-icon-wrap {
+    width: 40px !important;
+    height: 40px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(224,123,32,0.30) !important;
+    background: rgba(224,123,32,0.12) !important;
+    color: #e07b20 !important;
+  }
+
+  .lnm-section-icon-wrap svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .lnm-section-body {
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    background: transparent !important;
+  }
+
+  .lnm-section-label {
+    margin-bottom: 6px !important;
+  }
+
+  .lnm-section-fields {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2px 12px !important;
+  }
+
+  .lnm-section-fields.one-column {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lnm-section-fields span {
+    color: #9e9080 !important;
+    font-size: 12px !important;
+    line-height: 1.28 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .lnm-section-fields span::before {
+    content: "• " !important;
+    color: #5a5248 !important;
+  }
+
+  .lnm-section-chevron {
+    width: 40px !important;
+    min-width: 40px !important;
+    display: grid !important;
+    place-items: center !important;
+    color: #5a5248 !important;
+  }
+
+  .lnm-section-chevron svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .lnm-tab-placeholder {
+    padding: 20px !important;
+  }
+
+  .lnm-tab-placeholder h2 {
+    margin: 6px 0 10px !important;
+    color: #e8e2d6 !important;
+    font-size: 20px !important;
+  }
+
+  .lnm-tab-placeholder p {
+    margin: 0 !important;
+    color: #9e9080 !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+  }
+}
+
+/* =========================================================
+   RODAPÉ MOBILE VIA PORTAL
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .lnm-bottom-nav-portal {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    z-index: 2147482500 !important;
+
+    width: 100vw !important;
+    max-width: none !important;
+    height: calc(72px + env(safe-area-inset-bottom)) !important;
+    padding: 0 0 env(safe-area-inset-bottom) !important;
+    margin: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    border: 0 !important;
+    border-top: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 0 !important;
+
+    background: #141414 !important;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.65) !important;
+    pointer-events: auto !important;
+  }
+
+  .lnm-bottom-nav-portal button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    height: 72px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+
+    padding: 6px 2px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #9e9080 !important;
+
+    font-family: "Exo 2", "Segoe UI", system-ui, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+  }
+
+  .lnm-bottom-nav-portal button svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .lnm-bottom-nav-portal button.active {
+    color: #e07b20 !important;
+  }
+
+  .lnm-bottom-nav-portal button.active .lnm-nav-icon-wrap {
+    width: 44px !important;
+    height: 44px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    background: #e07b20 !important;
+    color: #fff !important;
+  }
+
+  .lnm-bottom-nav-portal button.active .lnm-nav-icon-wrap svg {
+    width: 22px !important;
+    height: 22px !important;
+    color: #fff !important;
+  }
+
+  body:has(.ln-sheet-portal-overlay) .lnm-bottom-nav-portal {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   FICHA COMPLEMENTAR MOBILE VIA PORTAL — TELA INTEIRA
+   ========================================================= */
+
+@media (max-width: 760px) {
+  body:has(.ln-sheet-portal-overlay),
+  html:has(.ln-sheet-portal-overlay) {
+    overflow: hidden !important;
+    height: 100dvh !important;
+    touch-action: none !important;
+  }
+
+  .ln-sheet-portal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483647 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    display: flex !important;
+    background: #0d0d0d !important;
+    color: #e8e2d6 !important;
+    overflow: hidden !important;
+  }
+
+  .ln-sheet-portal-window {
+    width: 100vw !important;
+    height: 100dvh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #0d0d0d !important;
+    overflow: hidden !important;
+  }
+
+  .ln-sheet-portal-header {
+    flex: 0 0 auto !important;
+    min-height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    background: #0d0d0d !important;
+  }
+
+  .ln-sheet-portal-header div {
+    display: grid !important;
+    gap: 4px !important;
+    background: transparent !important;
+  }
+
+  .ln-sheet-portal-header span {
+    color: #e07b20 !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+  }
+
+  .ln-sheet-portal-header strong {
+    color: #e8e2d6 !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+  }
+
+  .ln-sheet-portal-close {
+    width: 42px !important;
+    height: 42px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    background: #1e1e1e !important;
+    color: #e8e2d6 !important;
+    font-size: 30px !important;
+    line-height: 1 !important;
+  }
+
+  .ln-sheet-portal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 14px 16px calc(28px + env(safe-area-inset-bottom)) !important;
+    background: #0d0d0d !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-panel.full-sheet-polished {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-header.polished {
+    margin: 0 0 12px !important;
+    padding: 0 0 12px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-header.polished .eyebrow,
+  .ln-sheet-portal-overlay .full-sheet-header.polished h2,
+  .ln-sheet-portal-overlay .full-sheet-header.polished span {
+    display: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-header.polished > button {
+    width: 100% !important;
+    min-height: 46px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: #e07b20 !important;
+    color: #fff !important;
+    font-family: "Exo 2", "Segoe UI", system-ui, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    background: transparent !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-nav button {
+    width: 100% !important;
+    min-height: 56px !important;
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) 12px !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    background: #1a1a1a !important;
+    color: #e8e2d6 !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-nav button.active {
+    background: rgba(224,123,32,0.12) !important;
+    border-color: rgba(224,123,32,0.42) !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-nav button span {
+    width: 36px !important;
+    height: 36px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(224,123,32,0.30) !important;
+    background: rgba(224,123,32,0.12) !important;
+    color: #e07b20 !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-content,
+  .ln-sheet-portal-overlay .full-sheet-section.polished {
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay .full-sheet-section-title,
+  .ln-sheet-portal-overlay .academic-proof-editor,
+  .ln-sheet-portal-overlay .academic-proof-list,
+  .ln-sheet-portal-overlay .academic-proof-card,
+  .ln-sheet-portal-overlay .full-sheet-field.polished,
+  .ln-sheet-portal-overlay .contract-category-card,
+  .ln-sheet-portal-overlay .sheet-simple-record-card {
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 8px !important;
+    background: #1a1a1a !important;
+    box-shadow: none !important;
+  }
+
+  .ln-sheet-portal-overlay input,
+  .ln-sheet-portal-overlay textarea,
+  .ln-sheet-portal-overlay select {
+    background: #1e1e1e !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    color: #e8e2d6 !important;
+  }
+}
+
+/* =========================================================
+   MEU NINJA MOBILE — rodapé fixo real via Portal
+   ========================================================= */
+
+@media (max-width: 760px) {
+  body:has(.lnm-bottom-nav-portal) {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .lnm-bottom-nav-portal {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+
+    transform: none !important;
+    translate: none !important;
+
+    z-index: 2147482500 !important;
+
+    width: 100vw !important;
+    max-width: none !important;
+    height: calc(72px + env(safe-area-inset-bottom)) !important;
+    min-height: calc(72px + env(safe-area-inset-bottom)) !important;
+
+    padding: 0 0 env(safe-area-inset-bottom) !important;
+    margin: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+
+    border: 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 0 !important;
+
+    background: #141414 !important;
+    background-color: #141414 !important;
+    background-image: none !important;
+
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.65) !important;
+
+    pointer-events: auto !important;
+  }
+
+  .lnm-bottom-nav-portal button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    height: 72px !important;
+    min-height: 72px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+
+    padding: 6px 2px !important;
+    margin: 0 !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+
+    color: #9e9080 !important;
+
+    font-family: "Exo 2", "Segoe UI", system-ui, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .lnm-bottom-nav-portal button svg {
+    width: 24px !important;
+    height: 24px !important;
+    display: block !important;
+  }
+
+  .lnm-bottom-nav-portal button.active {
+    color: #e07b20 !important;
+  }
+
+  .lnm-bottom-nav-portal button.active .lnm-nav-icon-wrap {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    border-radius: 50% !important;
+
+    background: #e07b20 !important;
+    background-color: #e07b20 !important;
+    background-image: none !important;
+
+    color: #fff !important;
+    box-shadow: 0 0 18px rgba(224, 123, 32, 0.24) !important;
+  }
+
+  .lnm-bottom-nav-portal button.active .lnm-nav-icon-wrap svg {
+    width: 22px !important;
+    height: 22px !important;
+    color: #fff !important;
+  }
+
+  .lnm-bottom-nav-portal button:active {
+    transform: scale(0.94) !important;
+  }
+
+  /* Espaço para o conteúdo não ficar escondido atrás do rodapé */
+  .my-ninja-page,
+  .my-ninja-mobile-live-area,
+  .lnm-mobile-shell,
+  .lnm-page-content {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Quando a Ficha Complementar em tela cheia estiver aberta, o rodapé some */
+  body:has(.ln-sheet-portal-overlay) .lnm-bottom-nav-portal {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   MEU NINJA MOBILE — remove resquícios finais do board azul
+   ========================================================= */
+
+@media (max-width: 760px) {
+  /* Base absoluta do Meu Ninja mobile */
+  .my-ninja-page,
+  .my-ninja-page .lnm-mobile-shell,
+  .my-ninja-page .lnm-page-content,
+  .my-ninja-page .my-ninja-mobile-live-area {
+    background: #0d0d0d !important;
+    background-color: #0d0d0d !important;
+    background-image: none !important;
+  }
+
+  /* Mata boards antigos que ainda podem estar herdando azul */
+  .my-ninja-page .character-profile-panel,
+  .my-ninja-page .characters-layout,
+  .my-ninja-page .character-complete-profile,
+  .my-ninja-page .character-profile-hero,
+  .my-ninja-page .ln-premium-hero-board,
+  .my-ninja-page .ln-board-card,
+  .my-ninja-page .profile-section-card,
+  .my-ninja-page .map-icon-only-card,
+  .my-ninja-page .ln-story-card,
+  .my-ninja-page .ln-identity-card,
+  .my-ninja-page .ln-affiliation-card,
+  .my-ninja-page .ln-map-icon-card,
+  .my-ninja-page .profile-field,
+  .my-ninja-page .profile-title,
+  .my-ninja-page .profile-tabs,
+  .my-ninja-page .location-tab-content,
+  .my-ninja-page .character-location-panel,
+  .my-ninja-page .full-tree-tab,
+  .my-ninja-page .skills-tree-panel {
+    background: #141414 !important;
+    background-color: #141414 !important;
+    background-image: none !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  /* Subcards / itens internos */
+  .my-ninja-page .profile-field,
+  .my-ninja-page .lnm-menu-item,
+  .my-ninja-page .lnm-section-icon-col,
+  .my-ninja-page .lnm-info-field,
+  .my-ninja-page .lnm-traits-list,
+  .my-ninja-page .map-icon-preview,
+  .my-ninja-page .location-status-card,
+  .my-ninja-page .location-card,
+  .my-ninja-page .skill-node-card,
+  .my-ninja-page .skill-tree-card {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    background-image: none !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove pseudo-elementos que criavam brilho/board azul */
+  .my-ninja-page .character-profile-panel::before,
+  .my-ninja-page .character-profile-panel::after,
+  .my-ninja-page .character-profile-hero::before,
+  .my-ninja-page .character-profile-hero::after,
+  .my-ninja-page .ln-premium-hero-board::before,
+  .my-ninja-page .ln-premium-hero-board::after,
+  .my-ninja-page .ln-board-card::before,
+  .my-ninja-page .ln-board-card::after,
+  .my-ninja-page .profile-section-card::before,
+  .my-ninja-page .profile-section-card::after,
+  .my-ninja-page .lnm-card::before,
+  .my-ninja-page .lnm-card::after {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Mata gradientes azulados herdados por qualquer filho direto do mobile */
+  .my-ninja-page .lnm-mobile-shell *,
+  .my-ninja-page .my-ninja-mobile-live-area * {
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .my-ninja-page .lnm-mobile-shell [class*="board"],
+  .my-ninja-page .lnm-mobile-shell [class*="card"],
+  .my-ninja-page .lnm-mobile-shell [class*="panel"],
+  .my-ninja-page .lnm-mobile-shell [class*="section"],
+  .my-ninja-page .lnm-mobile-shell [class*="profile"],
+  .my-ninja-page .my-ninja-mobile-live-area [class*="board"],
+  .my-ninja-page .my-ninja-mobile-live-area [class*="card"],
+  .my-ninja-page .my-ninja-mobile-live-area [class*="panel"],
+  .my-ninja-page .my-ninja-mobile-live-area [class*="section"],
+  .my-ninja-page .my-ninja-mobile-live-area [class*="profile"] {
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Reaplica o laranja correto nos elementos ativos */
+  .my-ninja-page .lnm-tab-btn.active,
+  .my-ninja-page .lnm-dossie-arrow,
+  .my-ninja-page .lnm-bottom-nav-portal button.active .lnm-nav-icon-wrap,
+  .ln-sheet-portal-overlay .full-sheet-header.polished > button {
+    background: #e07b20 !important;
+    background-color: #e07b20 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+  }
+
+  .my-ninja-page .lnm-section-icon-wrap,
+  .my-ninja-page .lnm-epithet-badge,
+  .ln-sheet-portal-overlay .full-sheet-nav button.active,
+  .ln-sheet-portal-overlay .full-sheet-nav button span {
+    background: rgba(224, 123, 32, 0.12) !important;
+    background-color: rgba(224, 123, 32, 0.12) !important;
+    background-image: none !important;
+    border-color: rgba(224, 123, 32, 0.30) !important;
+  }
+
+  /* Inputs/forms do editor de personagem no mobile */
+  .my-ninja-page form,
+  .my-ninja-page .character-form,
+  .my-ninja-page .ninja-form,
+  .my-ninja-page .characters-form {
+    background: #141414 !important;
+    background-color: #141414 !important;
+    background-image: none !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  .my-ninja-page form input,
+  .my-ninja-page form textarea,
+  .my-ninja-page form select,
+  .my-ninja-page .character-form input,
+  .my-ninja-page .character-form textarea,
+  .my-ninja-page .character-form select,
+  .my-ninja-page .ninja-form input,
+  .my-ninja-page .ninja-form textarea,
+  .my-ninja-page .ninja-form select {
+    background: #1e1e1e !important;
+    background-color: #1e1e1e !important;
+    background-image: none !important;
+    color: #e8e2d6 !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+  }
+}
+
+/* =========================================================
+   CORREÇÃO FINAL VISUAL — remove azul visível dos cards mobile
+   Deve ficar NO FINAL do App.css
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .my-ninja-page .lnm-mobile-shell,
+  .my-ninja-page .lnm-page-content {
+    background: #0d0d0d !important;
+    background-color: #0d0d0d !important;
+    background-image: none !important;
+  }
+
+  .my-ninja-page .lnm-hero-banner,
+  .my-ninja-page .lnm-profile-card,
+  .my-ninja-page .lnm-traits-card,
+  .my-ninja-page .lnm-dossie-card,
+  .my-ninja-page .lnm-card {
+    background: #141414 !important;
+    background-color: #141414 !important;
+    background-image: none !important;
+    background-blend-mode: normal !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    isolation: isolate !important;
+  }
+
+  .my-ninja-page .lnm-hero-banner::before,
+  .my-ninja-page .lnm-hero-banner::after,
+  .my-ninja-page .lnm-profile-card::before,
+  .my-ninja-page .lnm-profile-card::after,
+  .my-ninja-page .lnm-traits-card::before,
+  .my-ninja-page .lnm-traits-card::after,
+  .my-ninja-page .lnm-dossie-card::before,
+  .my-ninja-page .lnm-dossie-card::after,
+  .my-ninja-page .lnm-card::before,
+  .my-ninja-page .lnm-card::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .my-ninja-page .lnm-profile-inner,
+  .my-ninja-page .lnm-profile-info,
+  .my-ninja-page .lnm-portrait-col,
+  .my-ninja-page .lnm-section-body {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  .my-ninja-page .lnm-traits-list,
+  .my-ninja-page .lnm-menu-item,
+  .my-ninja-page .lnm-section-icon-col,
+  .my-ninja-page .lnm-portrait-circle {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    background-image: none !important;
+    background-blend-mode: normal !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  .my-ninja-page .lnm-epithet-badge {
+    background: rgba(224, 123, 32, 0.12) !important;
+    background-color: rgba(224, 123, 32, 0.12) !important;
+    background-image: none !important;
+  }
+
+  .my-ninja-page .lnm-tab-nav {
+    background: #141414 !important;
+    background-color: #141414 !important;
+    background-image: none !important;
+  }
+
+  .my-ninja-page .lnm-tab-btn {
+    background: transparent !important;
+    background-image: none !important;
+  }
+
+  .my-ninja-page .lnm-tab-btn.active {
+    background: #e07b20 !important;
+    background-color: #e07b20 !important;
+    background-image: none !important;
+  }
+
+  .my-ninja-page .lnm-hero-shuriken {
+    color: #e07b20 !important;
+    opacity: 0.16 !important;
+  }
+}
+
+/* =========================================================
+   MOBILE — edição de identidade sem azul antigo
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .my-ninja-page form,
+  .my-ninja-page form *,
+  .my-ninja-page .character-form,
+  .my-ninja-page .character-form *,
+  .my-ninja-page .ninja-form,
+  .my-ninja-page .ninja-form *,
+  .my-ninja-page .characters-form,
+  .my-ninja-page .characters-form * {
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .my-ninja-page form,
+  .my-ninja-page .character-form,
+  .my-ninja-page .ninja-form,
+  .my-ninja-page .characters-form {
+    background: #141414 !important;
+    background-color: #141414 !important;
+    border-color: rgba(255,255,255,0.06) !important;
+    color: #e8e2d6 !important;
+  }
+
+  .my-ninja-page form section,
+  .my-ninja-page form div,
+  .my-ninja-page .character-form section,
+  .my-ninja-page .character-form div,
+  .my-ninja-page .ninja-form section,
+  .my-ninja-page .ninja-form div {
+    background-color: transparent !important;
+  }
+
+  .my-ninja-page form input,
+  .my-ninja-page form textarea,
+  .my-ninja-page form select,
+  .my-ninja-page .character-form input,
+  .my-ninja-page .character-form textarea,
+  .my-ninja-page .character-form select,
+  .my-ninja-page .ninja-form input,
+  .my-ninja-page .ninja-form textarea,
+  .my-ninja-page .ninja-form select {
+    background: #1e1e1e !important;
+    background-color: #1e1e1e !important;
+    background-image: none !important;
+
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    color: #e8e2d6 !important;
+  }
+
+  .my-ninja-page form label,
+  .my-ninja-page .character-form label,
+  .my-ninja-page .ninja-form label {
+    color: #9e9080 !important;
+  }
+}
+
+/* =========================================================
+   FIX CRÍTICO — Meu Ninja mobile não pode aparecer no desktop
+   ========================================================= */
+
+/* Por padrão, o painel mobile fica escondido */
+.lnm-mobile-shell,
+.lnm-bottom-nav-portal {
+  display: none !important;
+}
+
+/* No desktop, o layout desktop aparece normalmente */
+@media (min-width: 761px) {
+  .lnm-mobile-shell,
+  .lnm-bottom-nav-portal,
+  .my-ninja-mobile-live-area {
+    display: none !important;
+  }
+
+  .desktop-my-ninja-layout {
+    display: block !important;
+  }
+
+  .my-ninja-page .characters-header {
+    display: block !important;
+  }
+}
+
+/* No mobile, o painel mobile aparece e o desktop some */
+@media (max-width: 760px) {
+  .lnm-mobile-shell {
+    display: block !important;
+  }
+
+  .lnm-bottom-nav-portal {
+    display: flex !important;
+  }
+
+  .desktop-my-ninja-layout,
+  .my-ninja-page > .characters-header {
+    display: none !important;
+  }
+}
+
+/* Botão temporário para abrir a prévia HTML do Meu Ninja Desktop V2 */
+
+@media (max-width: 760px) {
+  
+
 }
