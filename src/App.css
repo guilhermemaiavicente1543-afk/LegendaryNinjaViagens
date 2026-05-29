@@ -33166,3 +33166,32 @@ body:has(.mnd-desktop-shell) {
   font-size: 11px !important;
   text-align: center !important;
 }
+
+/* =========================================================
+   FOTO NOVA DO DESKTOP — mantém o campo novo, sem uploader antigo
+   ========================================================= */
+
+.mnd-hidden-portrait-input {
+  display: none !important;
+}
+
+.mnd-photo-upload-zone {
+  overflow: hidden !important;
+  cursor: pointer !important;
+}
+
+.mnd-profile-portrait-image {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Esconde sobras visuais do uploader antigo caso algum CSS antigo tente aparecer */
+.mnd-photo-placeholder .character-portrait-uploader,
+.mnd-photo-placeholder .character-portrait-frame,
+.mnd-photo-placeholder .character-portrait-message {
+  display: none !important;
+}
