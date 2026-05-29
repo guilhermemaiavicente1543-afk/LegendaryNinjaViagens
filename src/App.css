@@ -33195,3 +33195,77 @@ body:has(.mnd-desktop-shell) {
 .mnd-photo-placeholder .character-portrait-message {
   display: none !important;
 }
+
+/* =========================================================
+   MEU NINJA DESKTOP — Ações e Traços Únicos no board de infos
+   ========================================================= */
+
+.mnd-character-info-actions {
+  margin-top: 22px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid rgba(255, 122, 26, 0.18);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 44%),
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.075), transparent 34%),
+    rgba(0, 0, 0, 0.24);
+  padding: 13px 14px;
+}
+
+.mnd-character-info-actions span {
+  display: block;
+  color: #ff8a2a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.mnd-character-info-actions strong {
+  display: block;
+  margin-top: 5px;
+  color: #f3ede3;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.mnd-character-info-actions button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 122, 26, 0.32);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff9a4d;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.mnd-character-info-actions button:hover {
+  background: rgba(255, 122, 26, 0.14);
+  border-color: rgba(255, 122, 26, 0.52);
+}
+
+.mnd-character-info-board article.mnd-info-wide {
+  grid-column: 1 / -1;
+  min-height: 86px;
+}
+
+.mnd-character-info-board article.mnd-info-wide strong {
+  line-height: 1.5;
+}
+
+@media (max-width: 1280px) and (min-width: 761px) {
+  .mnd-character-info-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mnd-character-info-actions button {
+    width: 100%;
+  }
+}

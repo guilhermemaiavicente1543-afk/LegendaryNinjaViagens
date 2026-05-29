@@ -255,6 +255,20 @@ export default function MyNinjaDesktopHall({
     const country = valueFrom(character, ["country", "pais", "país", "land", "land_name"], "—");
     const origin = valueFrom(character, ["origin", "origem", "birthplace", "history"], "—");
 
+    const uniqueTraits = Array.isArray(character?.selected_traits)
+      ? character.selected_traits
+          .map((trait) => {
+            if (typeof trait === "string") return trait;
+            return trait?.name || trait?.title || trait?.label || "";
+          })
+          .filter(Boolean)
+          .join(", ") || "Nenhum traço definido"
+      : valueFrom(
+          character,
+          ["selected_traits", "unique_traits", "traits", "tracos_unicos"],
+          "Nenhum traço definido"
+        );
+
     return {
       name,
       village,
@@ -272,6 +286,7 @@ export default function MyNinjaDesktopHall({
       skillPoints,
       country,
       origin,
+      uniqueTraits,
     };
   }, [character]);
 
@@ -478,6 +493,17 @@ export default function MyNinjaDesktopHall({
                       </div>
                     </div>
                   </div>
+                  <div className="mnd-character-info-actions">
+                    <div>
+                      <span>Dados de criação</span>
+                      <strong>Informações do personagem</strong>
+                    </div>
+
+                    <button type="button" onClick={handleEdit}>
+                      Editar informações
+                    </button>
+                  </div>
+
                   <div className="mnd-character-info-board">
                     <article>
                       <span>Nome do personagem</span>
@@ -513,13 +539,7 @@ export default function MyNinjaDesktopHall({
                       <span>Aldeia / Organização</span>
                       <strong>{data.organization}</strong>
                     </article>
-
-                    <article>
-                      <span>País</span>
-                      <strong>{data.country}</strong>
-                    </article>
-
-                    <article>
+<article>
                       <span>Origem</span>
                       <strong>{data.origin}</strong>
                     </article>
@@ -532,6 +552,11 @@ export default function MyNinjaDesktopHall({
                     <article>
                       <span>Kekkei Genkai / Hiden</span>
                       <strong>{data.kekkei}</strong>
+                    </article>
+
+                    <article className="mnd-info-wide">
+                      <span>Traços únicos</span>
+                      <strong>{data.uniqueTraits}</strong>
                     </article>
 
                     <article>
@@ -623,8 +648,7 @@ export default function MyNinjaDesktopHall({
                 <div className="mnd-section-kicker">DADOS TERRITORIAIS</div>
                 <dl className="mnd-data-list">
                   <div><dt>Vila atual</dt><dd>{data.village}</dd></div>
-                  <div><dt>País</dt><dd>{data.country}</dd></div>
-                  <div><dt>Origem</dt><dd>{data.origin}</dd></div>
+<div><dt>Origem</dt><dd>{data.origin}</dd></div>
                   <div><dt>Organização</dt><dd>{data.organization}</dd></div>
                   <div><dt>Estado de viagem</dt><dd>Disponível</dd></div>
                 </dl>
