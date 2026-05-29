@@ -34481,3 +34481,110 @@ body:has(.mnd-desktop-shell) {
     text-align: left !important;
   }
 }
+
+/* =========================================================
+   FIX — Board de perfil visível sem texto vertical
+   ========================================================= */
+
+/* O card esquerdo é estreito demais para 3 colunas; fica 1 coluna */
+.mnd-profile-card .mnd-profile-overview-boards {
+  margin-top: 24px !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+/* Cards ocupam a largura inteira do board esquerdo */
+.mnd-profile-card .mnd-overview-board-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Linhas internas com espaço suficiente para resposta */
+.mnd-profile-card .mnd-overview-board-card dl div {
+  display: grid !important;
+  grid-template-columns: minmax(150px, 42%) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-height: 46px !important;
+  padding: 8px 0 !important;
+}
+
+/* Label não esmaga */
+.mnd-profile-card .mnd-overview-board-card dt {
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+/* Resposta não quebra letra por letra */
+.mnd-profile-card .mnd-overview-board-card dd {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  text-align: right !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  line-break: auto !important;
+}
+
+/* Evita que URLs antigas destruam o layout */
+.mnd-profile-card .mnd-overview-map-preview strong {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Card do ícone mais compacto no board esquerdo */
+.mnd-profile-card .mnd-overview-map-card {
+  min-height: 190px !important;
+}
+
+.mnd-profile-card .mnd-overview-map-preview {
+  padding: 12px 22px 8px !important;
+}
+
+.mnd-profile-card .mnd-overview-map-circle {
+  width: 82px !important;
+  height: 82px !important;
+}
+
+.mnd-profile-card .mnd-overview-map-circle svg {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+/* Esconde os boards antigos duplicados que ficaram aparecendo embaixo */
+.mnd-desktop-shell .profile-section-card.ln-board-card,
+.mnd-desktop-shell .ln-identity-card,
+.mnd-desktop-shell .ln-origin-card,
+.mnd-desktop-shell .ln-map-icon-card,
+.mnd-desktop-shell .ln-premium-profile-board > .profile-section-card {
+  display: none !important;
+}
+
+/* Se os boards antigos estiverem fora do shell, mas ainda dentro do Meu Ninja */
+body:has(.mnd-desktop-shell) .profile-section-card.ln-board-card,
+body:has(.mnd-desktop-shell) .ln-identity-card,
+body:has(.mnd-desktop-shell) .ln-origin-card,
+body:has(.mnd-desktop-shell) .ln-map-icon-card {
+  display: none !important;
+}
+
+/* Mobile / telas menores */
+@media (max-width: 980px) {
+  .mnd-profile-card .mnd-overview-board-card dl div {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .mnd-profile-card .mnd-overview-board-card dd {
+    text-align: left !important;
+  }
+}

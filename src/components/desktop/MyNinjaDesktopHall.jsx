@@ -631,7 +631,14 @@ export default function MyNinjaDesktopHall({
                         </div>
 
                         <strong>
-                          {character?.icon_url || "Personalizado"}
+                          {{
+                            shuriken: "Shuriken",
+                            village: "Vila",
+                            question: "Interrogação",
+                            castle: "Castelo",
+                            warning: "Exclamação",
+                            paw: "Patinha"
+                          }[character?.icon_url] || "Personalizado"}
                         </strong>
                       </div>
 
