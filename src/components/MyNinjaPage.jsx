@@ -8,6 +8,7 @@ import CharacterFullSheetPanel from "./profile/CharacterFullSheetPanel";
 import MyNinjaMobilePanel from "./mobile/MyNinjaMobilePanel";
 import LnSelect from "./ui/LnSelect";
 import { createPortal } from "react-dom";
+import MyNinjaDesktopHall from "./desktop/MyNinjaDesktopHall";
 
 const LOCAL_CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 
@@ -1251,7 +1252,29 @@ export default function MyNinjaPage({
   }
 
   return (
-    <section className="characters-page my-ninja-page">
+    <>
+      <MyNinjaDesktopHall
+        character={typeof character !== "undefined" ? character : null}
+        onEditProfile={
+          typeof onEditProfile !== "undefined"
+            ? onEditProfile
+            : typeof handleEditProfile !== "undefined"
+              ? handleEditProfile
+              : undefined
+        }
+        onOpenFullSheet={
+          typeof setIsMobileFullSheetOpen !== "undefined"
+            ? () => setIsMobileFullSheetOpen(true)
+            : typeof setIsFullSheetOpen !== "undefined"
+              ? () => setIsFullSheetOpen(true)
+              : typeof setIsFullSheetPanelOpen !== "undefined"
+                ? () => setIsFullSheetPanelOpen(true)
+                : undefined
+        }
+      />
+
+      <div className="ln-meu-ninja-legacy-content">
+        <section className="characters-page my-ninja-page">
       <div className="characters-header">
         <div>
           <p className="eyebrow">LN Digital</p>
@@ -1379,5 +1402,7 @@ export default function MyNinjaPage({
         </>
       )}
     </section>
+      </div>
+    </>
   );
 }

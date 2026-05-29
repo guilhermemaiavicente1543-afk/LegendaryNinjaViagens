@@ -29814,3 +29814,787 @@ input[placeholder*="protocolo" i] {
 #ln-preview-v2-floating-link {
   display: none !important;
 }
+
+/* =========================================================
+   MEU NINJA DESKTOP — HTML DO LN DIGITAL HALL
+   Inserido como desktop real; mobile legado permanece ativo.
+   ========================================================= */
+
+.mnd-desktop-shell {
+  min-height: 100vh;
+  display: none;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.12), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(255, 122, 26, 0.08), transparent 30%),
+    #1a1815;
+  color: #f3ede3;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.mnd-desktop-shell * {
+  box-sizing: border-box;
+}
+
+.mnd-sidebar {
+  width: 252px;
+  min-height: 100vh;
+  flex: 0 0 252px;
+  background: #161310;
+  border-right: 1px solid #2a2622;
+  position: sticky;
+  top: 0;
+  align-self: stretch;
+}
+
+.mnd-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+}
+
+.mnd-brand-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 2px solid #ff7a1a;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff7a1a;
+}
+
+.mnd-brand-kicker {
+  color: #ff7a1a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+}
+
+.mnd-brand-title {
+  color: #f3ede3;
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+}
+
+.mnd-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+}
+
+.mnd-nav a {
+  min-height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  color: #beb4a4;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: 160ms ease;
+}
+
+.mnd-nav a:hover {
+  background: #221d18;
+  transform: translateX(2px);
+}
+
+.mnd-nav a.active {
+  color: #ff7a1a;
+  background: #221d18;
+  border-left: 2px solid #ff7a1a;
+  margin-left: -2px;
+}
+
+.mnd-nav svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mnd-page {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mnd-topbar {
+  height: 72px;
+  flex: 0 0 72px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid #322d27;
+  background: rgba(26, 24, 21, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.mnd-topbar-title {
+  color: #a89f93;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mnd-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mnd-topbar-actions button {
+  border: 0;
+  background: transparent;
+  color: #a89f93;
+  padding: 0;
+}
+
+.mnd-topbar-actions button:hover {
+  color: #f3ede3;
+}
+
+.mnd-topbar-actions button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mnd-avatar-mini {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid #322d27;
+  background: #211e1a;
+}
+
+.mnd-avatar-mini > span:last-child {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ff7a1a;
+  box-shadow: 0 0 0 2px #1a1815;
+}
+
+.mnd-content {
+  flex: 1 1 auto;
+  padding: 24px 32px 38px;
+  display: grid;
+  gap: 24px;
+}
+
+.mnd-hero,
+.mnd-character-header,
+.mnd-card {
+  border: 1px solid #322d27;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 40%),
+    #211e1a;
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.20);
+}
+
+.mnd-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 36px 40px;
+  background:
+    radial-gradient(circle at 80% 50%, rgba(255, 122, 26, 0.10), transparent 24%),
+    linear-gradient(135deg, #24201b, #181512);
+}
+
+.mnd-hero h1 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #f3ede3;
+  font-size: clamp(38px, 4vw, 52px);
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.mnd-hero p {
+  max-width: 650px;
+  margin: 14px 0 0;
+  color: #a89f93;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.mnd-hero-watermark {
+  position: absolute;
+  right: 42px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.055;
+  pointer-events: none;
+}
+
+.mnd-hero-watermark .mnd-shuriken {
+  width: 132px;
+  height: 132px;
+}
+
+.mnd-character-header {
+  padding: 24px 32px 0;
+}
+
+.mnd-character-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.mnd-character-header h2 {
+  margin: 0;
+  color: #f3ede3;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.mnd-character-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #a89f93;
+  font-size: 14px;
+}
+
+.mnd-character-meta b {
+  color: #ff7a1a;
+}
+
+.mnd-tabs {
+  margin-top: 24px;
+  display: flex;
+  gap: 32px;
+  border-bottom: 1px solid #322d27;
+}
+
+.mnd-tabs button {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: #a89f93;
+  padding: 0 0 14px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mnd-tabs button:hover {
+  color: #f3ede3;
+}
+
+.mnd-tabs button.active {
+  color: #ff7a1a;
+}
+
+.mnd-tabs button.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 999px;
+  background: #ff7a1a;
+  box-shadow: 0 0 18px rgba(255, 122, 26, 0.55);
+}
+
+.mnd-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(480px, 0.92fr);
+  gap: 24px;
+}
+
+.mnd-card {
+  padding: 24px;
+}
+
+.mnd-profile-grid {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.mnd-photo-placeholder {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid #322d27;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.mnd-photo-placeholder .mnd-shuriken {
+  width: 64px;
+  height: 64px;
+  opacity: 0.72;
+}
+
+.mnd-section-kicker {
+  color: #ff7a1a;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.mnd-epithet {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 122, 26, 0.55);
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff7a1a;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.mnd-pills {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mnd-pills span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 8px;
+  border: 1px solid #322d27;
+  background: rgba(0, 0, 0, 0.25);
+  color: #a89f93;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mnd-ghost-button {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 12px;
+  border: 1px solid #322d27;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #a89f93;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mnd-ghost-button:hover {
+  color: #f3ede3;
+  border-color: rgba(255, 122, 26, 0.38);
+  background: rgba(255, 122, 26, 0.06);
+}
+
+.mnd-sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.mnd-sheet-head h3,
+.mnd-location-board h3,
+.mnd-tree-grid h3 {
+  margin: 8px 0 0;
+  color: #f3ede3;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.mnd-sheet-head p,
+.mnd-location-board p,
+.mnd-tree-grid p {
+  max-width: 540px;
+  margin: 8px 0 0;
+  color: #a89f93;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.mnd-save-button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff7a1a, #b85e10);
+  color: #1a1815;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 14px 26px rgba(255, 122, 26, 0.14);
+}
+
+.mnd-save-button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.mnd-save-button.full {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.mnd-sheet-layout {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.8fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.mnd-sheet-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.mnd-sheet-menu button {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #322d27;
+  background: rgba(0, 0, 0, 0.25);
+  color: rgba(243, 237, 227, 0.85);
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 750;
+  text-align: left;
+}
+
+.mnd-sheet-menu button:hover {
+  background: rgba(255, 122, 26, 0.06);
+}
+
+.mnd-sheet-menu button.active {
+  border-color: #ff7a1a;
+  background: #ff7a1a;
+  color: #1a1815;
+}
+
+.mnd-sheet-menu button i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.mnd-sheet-menu button .green-dot {
+  background: #34d399;
+}
+
+.mnd-sheet-preview {
+  border: 1px solid #322d27;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 20px;
+}
+
+.mnd-sheet-preview-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.mnd-sheet-preview-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff7a1a;
+}
+
+.mnd-sheet-preview h4 {
+  margin: 0;
+  color: #ff7a1a;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.mnd-sheet-preview p {
+  margin: 5px 0 0;
+  color: #a89f93;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.mnd-sheet-preview-body {
+  margin-top: 18px;
+  border: 1px dashed rgba(255, 122, 26, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 122, 26, 0.055);
+  padding: 14px;
+}
+
+.mnd-bottom-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 320px;
+  gap: 24px;
+}
+
+.mnd-data-list {
+  margin: 14px 0 0;
+  display: grid;
+}
+
+.mnd-data-list div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  padding: 12px 0;
+}
+
+.mnd-data-list div:last-child {
+  border-bottom: 0;
+}
+
+.mnd-data-list dt {
+  color: #a89f93;
+  font-size: 14px;
+}
+
+.mnd-data-list dd {
+  margin: 0;
+  color: rgba(243, 237, 227, 0.78);
+  font-size: 14px;
+  text-align: right;
+}
+
+.mnd-map-icon-box {
+  margin-top: 24px;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.mnd-map-icon-box > div {
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid #322d27;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.mnd-map-icon-box .mnd-shuriken {
+  width: 42px;
+  height: 42px;
+  opacity: 0.72;
+}
+
+.mnd-map-icon-box span {
+  color: #a89f93;
+  font-size: 12px;
+}
+
+.mnd-location-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) 390px;
+  gap: 24px;
+}
+
+.mnd-map-board {
+  min-height: 280px;
+  margin-top: 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #322d27;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,122,26,.18), transparent 5%),
+    radial-gradient(circle at 65% 58%, rgba(255,122,26,.14), transparent 6%),
+    radial-gradient(circle at 48% 72%, rgba(243,237,227,.08), transparent 5%),
+    linear-gradient(135deg, #171410, #0f0d0b);
+}
+
+.mnd-map-board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: .55;
+}
+
+.mnd-map-board .marker {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255,122,26,.55);
+  background: rgba(255,122,26,.13);
+  box-shadow: 0 0 0 10px rgba(255,122,26,.04), 0 18px 30px rgba(0,0,0,.42);
+  color: #ff7a1a;
+}
+
+.mnd-map-board .marker.one {
+  left: 42%;
+  top: 44%;
+}
+
+.mnd-map-board .marker.two {
+  left: 68%;
+  top: 62%;
+  opacity: 0.72;
+}
+
+.mnd-map-board .marker.three {
+  left: 54%;
+  top: 29%;
+  opacity: 0.82;
+}
+
+.mnd-tree-grid {
+  display: grid;
+  grid-template-columns: 370px minmax(0, 1fr);
+  gap: 24px;
+}
+
+.mnd-tree-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.mnd-tree-node {
+  position: relative;
+  min-height: 150px;
+  border: 1px solid #322d27;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 18px;
+}
+
+.mnd-tree-node span {
+  color: #ff7a1a;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.mnd-tree-node strong {
+  display: block;
+  margin-top: 12px;
+  color: #f3ede3;
+  font-size: 17px;
+}
+
+.mnd-tree-node p {
+  margin-top: 8px;
+  color: #a89f93;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.mnd-shuriken {
+  width: 1em;
+  height: 1em;
+  display: inline-flex;
+  vertical-align: -0.12em;
+  filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.58));
+}
+
+.mnd-shuriken svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-origin: 50% 50%;
+}
+
+.mnd-shuriken:hover svg {
+  animation: mnd-shuriken-spin 1.2s linear infinite;
+}
+
+@keyframes mnd-shuriken-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Integração: desktop novo aparece só no desktop; conteúdo legado fica para mobile */
+@media (min-width: 761px) {
+  .mnd-desktop-shell {
+    display: flex !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .mnd-desktop-shell {
+    display: none !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: contents !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .mnd-main-grid,
+  .mnd-location-grid,
+  .mnd-tree-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mnd-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mnd-tree-board {
+    grid-template-columns: 1fr;
+  }
+}
