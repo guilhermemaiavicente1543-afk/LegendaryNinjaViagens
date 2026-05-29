@@ -34214,3 +34214,121 @@ body:has(.mnd-desktop-shell) {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   BOARD VISÍVEL DE INFORMAÇÕES — estilo dos cards escondidos
+   ========================================================= */
+
+/* Container dos cards visíveis do perfil */
+.mnd-character-info-board {
+  margin-top: 20px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+/* Cada informação vira um mini-board no estilo Identidade/Afiliação */
+.mnd-character-info-board article {
+  min-height: 72px !important;
+  border: 1px solid rgba(255, 136, 36, 0.18) !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0)),
+    radial-gradient(circle at top right, rgba(255, 128, 32, 0.08), transparent 42%),
+    rgba(18, 15, 13, 0.92) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 12px 26px rgba(0, 0, 0, 0.16) !important;
+  padding: 14px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+/* Título laranja */
+.mnd-character-info-board article span {
+  display: block !important;
+  color: #ff922f !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  line-height: 1.25 !important;
+}
+
+/* Resposta branca */
+.mnd-character-info-board article strong {
+  display: block !important;
+  margin-top: 8px !important;
+  color: #f2ece6 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Traços únicos ocupa linha inteira */
+.mnd-character-info-board article.mnd-info-wide,
+.mnd-character-info-board article:has(span:nth-child(1):contains("Traços")) {
+  grid-column: 1 / -1 !important;
+}
+
+/* Fallback: se o :contains não funcionar, a classe já resolve quando existir */
+.mnd-character-info-board .mnd-info-wide {
+  grid-column: 1 / -1 !important;
+}
+
+/* Header do botão editar combinando com os boards */
+.mnd-character-info-actions {
+  margin-top: 22px !important;
+  margin-bottom: 14px !important;
+  border: 1px solid rgba(255, 136, 36, 0.18) !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0)),
+    radial-gradient(circle at top right, rgba(255, 128, 32, 0.08), transparent 42%),
+    rgba(18, 15, 13, 0.92) !important;
+  padding: 14px 16px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 12px 26px rgba(0, 0, 0, 0.16) !important;
+}
+
+.mnd-character-info-actions span {
+  color: #ff922f !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.mnd-character-info-actions strong {
+  color: #f2ece6 !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+.mnd-character-info-actions button {
+  min-height: 38px !important;
+  border: 1px solid rgba(255, 136, 36, 0.34) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 136, 36, 0.08) !important;
+  color: #ff9a4d !important;
+  padding: 0 14px !important;
+  font-size: 12px !important;
+  font-weight: 950 !important;
+}
+
+/* Garante que o editor aberto também usa o design novo */
+.mnd-info-editor-panel--board-style {
+  margin-top: 14px !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 1280px) and (min-width: 761px) {
+  .mnd-character-info-board {
+    grid-template-columns: 1fr !important;
+  }
+}
