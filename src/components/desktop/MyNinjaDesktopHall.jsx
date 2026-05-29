@@ -288,7 +288,7 @@ export default function MyNinjaDesktopHall({
               </h1>
               <p>
                 Cada player possui apenas um ninja. Esta página reúne informações,
-                localização, árvore de habilidades e a Ficha Complementar do personagem.
+                localização, teia de habilidades e a Ficha Complementar do personagem.
               </p>
             </div>
 
@@ -330,7 +330,7 @@ export default function MyNinjaDesktopHall({
                 className={activeTab === "tree" ? "active" : ""}
                 onClick={() => setActiveTab("tree")}
               >
-                Árvore de Habilidades
+                Teia de Habilidades
               </button>
             </div>
           </section>
@@ -497,12 +497,12 @@ export default function MyNinjaDesktopHall({
           )}
 
           {activeTab === "tree" && (
-            <section className="mnd-tree-grid">
+            <section className="mnd-teia-grid">
               <article className="mnd-card">
-                <div className="mnd-section-kicker">ÁRVORE DE HABILIDADES</div>
-                <h3>Resumo técnico</h3>
+                <div className="mnd-section-kicker">TEIA DE HABILIDADES</div>
+                <h3>Teia Shinobi</h3>
                 <p>
-                  Visão resumida do caminho técnico do personagem. A árvore real pode
+                  Visão resumida do caminho técnico do personagem. A teia real pode
                   continuar sendo carregada pelo componente original do sistema.
                 </p>
 
@@ -513,20 +513,20 @@ export default function MyNinjaDesktopHall({
                 </dl>
               </article>
 
-              <article className="mnd-card mnd-tree-board">
-                <div className="mnd-tree-node">
+              <article className="mnd-card mnd-teia-board">
+                <div className="mnd-teia-node">
                   <span>Base</span>
                   <strong>Controle de Chakra</strong>
                   <p>Fundamento para progressão técnica.</p>
                 </div>
 
-                <div className="mnd-tree-node">
+                <div className="mnd-teia-node">
                   <span>Especialização</span>
                   <strong>{data.style}</strong>
                   <p>Caminho principal do personagem.</p>
                 </div>
 
-                <div className="mnd-tree-node">
+                <div className="mnd-teia-node">
                   <span>Avançado</span>
                   <strong>{data.clan !== "—" ? data.clan : "Desenvolvimento"}</strong>
                   <p>Área vinculada à progressão narrativa.</p>

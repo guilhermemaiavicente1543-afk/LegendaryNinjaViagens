@@ -30598,3 +30598,157 @@ input[placeholder*="protocolo" i] {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   FIX — Meu Ninja Desktop: rolagem e aba Teia
+   ========================================================= */
+
+/* Libera rolagem geral quando o desktop novo do Meu Ninja está ativo */
+html:has(.mnd-desktop-shell),
+body:has(.mnd-desktop-shell) {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+#root:has(.mnd-desktop-shell),
+.app:has(.mnd-desktop-shell),
+main:has(.mnd-desktop-shell),
+.my-ninja-page:has(.mnd-desktop-shell),
+.mnd-desktop-shell,
+.mnd-page,
+.mnd-content {
+  height: auto !important;
+  min-height: 100vh !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.mnd-content {
+  padding-bottom: 80px !important;
+}
+
+/* Scrollbar temática do desktop */
+body:has(.mnd-desktop-shell)::-webkit-scrollbar {
+  width: 11px;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-track {
+  background: #161310;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210);
+  border-radius: 999px;
+  border: 2px solid #161310;
+}
+
+body:has(.mnd-desktop-shell) {
+  scrollbar-color: #ff7a1a #161310;
+  scrollbar-width: thin;
+}
+
+/* Renomeia visualmente a área antiga de tree para Teia, caso alguma classe antiga permaneça */
+.mnd-teia-grid,
+.mnd-tree-grid {
+  display: grid;
+  grid-template-columns: 370px minmax(0, 1fr);
+  gap: 24px;
+}
+
+.mnd-teia-intro h3,
+.mnd-teia-grid h3 {
+  margin: 8px 0 0;
+  color: #f3ede3;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.mnd-teia-intro p,
+.mnd-teia-grid p {
+  max-width: 540px;
+  margin: 8px 0 0;
+  color: #a89f93;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.mnd-teia-board {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.mnd-teia-board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 122, 26, 0.14), transparent 10%),
+    radial-gradient(circle at 72% 38%, rgba(255, 122, 26, 0.10), transparent 11%),
+    radial-gradient(circle at 42% 78%, rgba(243, 237, 227, 0.08), transparent 9%),
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: auto, auto, auto, 38px 38px, 38px 38px;
+  opacity: 0.72;
+}
+
+.mnd-teia-empty {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  border: 1px dashed rgba(255, 122, 26, 0.34);
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 30px;
+  text-align: center;
+}
+
+.mnd-teia-empty-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 122, 26, 0.35);
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff7a1a;
+}
+
+.mnd-teia-empty-icon .mnd-shuriken {
+  width: 38px;
+  height: 38px;
+}
+
+.mnd-teia-empty h4 {
+  margin: 0;
+  color: #f3ede3;
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.mnd-teia-empty p {
+  margin: 10px auto 0;
+  max-width: 420px;
+  color: #a89f93;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.mnd-teia-empty .mnd-ghost-button {
+  width: auto;
+  min-width: 160px;
+  margin-top: 18px;
+  padding: 0 18px;
+}
+
+@media (max-width: 1180px) {
+  .mnd-teia-grid,
+  .mnd-tree-grid {
+    grid-template-columns: 1fr;
+  }
+}
