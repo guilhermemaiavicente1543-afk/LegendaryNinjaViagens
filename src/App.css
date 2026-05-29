@@ -32663,3 +32663,167 @@ body:has(.mnd-desktop-shell) {
   scrollbar-width: thin !important;
   scrollbar-color: #ff7a1a #161310 !important;
 }
+
+/* =========================================================
+   FIX DEFINITIVO — Mais profundidade de scroll no Meu Ninja
+   Página geral + ficha complementar
+   ========================================================= */
+
+/* Força todos os pais do Meu Ninja a permitirem altura real */
+html,
+body,
+#root,
+.app,
+.app-shell,
+.main-shell,
+.page-shell,
+.main-content,
+.my-ninja-page,
+.mnd-desktop-shell,
+.mnd-page,
+.mnd-content {
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+}
+
+/* A página geral precisa ter bastante área de rolagem depois do conteúdo */
+body:has(.mnd-desktop-shell) {
+  overflow-y: scroll !important;
+  min-height: 170vh !important;
+}
+
+#root:has(.mnd-desktop-shell) {
+  min-height: 170vh !important;
+  overflow: visible !important;
+}
+
+.mnd-desktop-shell {
+  min-height: 170vh !important;
+  overflow: visible !important;
+}
+
+.mnd-page,
+.mnd-content {
+  overflow: visible !important;
+}
+
+/* Esse padding é o “chão extra” para a página não acabar cedo demais */
+.mnd-content {
+  padding-bottom: 620px !important;
+}
+
+/* Garante que a grade do perfil/ficha não corte o card da direita */
+.mnd-main-grid,
+.mnd-main-grid > *,
+.mnd-sheet-card,
+.mnd-profile-card {
+  overflow: visible !important;
+  max-height: none !important;
+  min-height: 0 !important;
+}
+
+/* A ficha mantém barra própria, mas com espaço suficiente para os campos finais */
+@media (min-width: 761px) {
+  .mnds-shell {
+    align-items: start !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .mnds-board {
+    height: calc(100vh - 205px) !important;
+    max-height: calc(100vh - 205px) !important;
+    min-height: 430px !important;
+
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+
+    padding-right: 18px !important;
+    padding-bottom: 360px !important;
+
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable both-edges !important;
+    overscroll-behavior: contain !important;
+  }
+
+  /* Cria um espaço real no fim da ficha para o último campo nunca ficar preso */
+  .mnds-board::after {
+    content: "";
+    display: block;
+    height: 260px;
+    flex: 0 0 auto;
+  }
+
+  .mnds-section {
+    padding-bottom: 90px !important;
+  }
+
+  .mnds-list {
+    padding-bottom: 110px !important;
+  }
+
+  .mnds-record:last-child {
+    margin-bottom: 120px !important;
+  }
+
+  .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    margin-left: -2px !important;
+    margin-right: -2px !important;
+    padding: 20px 2px 8px !important;
+    background:
+      linear-gradient(180deg, rgba(26, 24, 21, 0), rgba(26, 24, 21, 0.99) 35%),
+      rgba(26, 24, 21, 0.99) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}
+
+/* Barra da ficha */
+.mnds-board::-webkit-scrollbar,
+.mnds-menu::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.mnds-board::-webkit-scrollbar-track,
+.mnds-menu::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.36) !important;
+  border-radius: 999px !important;
+}
+
+.mnds-board::-webkit-scrollbar-thumb,
+.mnds-menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+  border-radius: 999px !important;
+  border: 2px solid rgba(0, 0, 0, 0.36) !important;
+}
+
+.mnds-board,
+.mnds-menu {
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.36) !important;
+}
+
+/* Barra principal da página */
+body:has(.mnd-desktop-shell)::-webkit-scrollbar {
+  width: 13px !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-track {
+  background: #161310 !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+  border-radius: 999px !important;
+  border: 2px solid #161310 !important;
+}
+
+body:has(.mnd-desktop-shell) {
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a #161310 !important;
+}
