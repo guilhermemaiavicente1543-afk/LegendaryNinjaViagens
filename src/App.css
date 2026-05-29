@@ -32827,3 +32827,133 @@ body:has(.mnd-desktop-shell) {
   scrollbar-width: thin !important;
   scrollbar-color: #ff7a1a #161310 !important;
 }
+
+/* =========================================================
+   FIX — Boards acompanham o crescimento da página
+   Remove o fundo vazio e estica os cards principais
+   ========================================================= */
+
+/* Cancela o "chão vazio" exagerado criado antes */
+body:has(.mnd-desktop-shell),
+#root:has(.mnd-desktop-shell),
+.mnd-desktop-shell {
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* A página ainda rola, mas sem criar uma área morta de imagem abaixo dos boards */
+body:has(.mnd-desktop-shell) {
+  overflow-y: auto !important;
+}
+
+.mnd-page,
+.mnd-content {
+  height: auto !important;
+  min-height: 100vh !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Reduz o padding artificial enorme que estava fazendo aparecer só o fundo */
+.mnd-content {
+  padding-bottom: 90px !important;
+}
+
+/* Os boards principais precisam acompanhar a altura útil da tela */
+@media (min-width: 761px) {
+  .mnd-main-grid {
+    align-items: stretch !important;
+    min-height: max(820px, calc(100vh - 118px)) !important;
+  }
+
+  .mnd-profile-card,
+  .mnd-sheet-card {
+    height: auto !important;
+    min-height: max(820px, calc(100vh - 118px)) !important;
+    overflow: visible !important;
+  }
+
+  .mnd-profile-card {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .mnd-sheet-card {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .mnd-sheet-card .mnd-sheet-head {
+    flex: 0 0 auto !important;
+  }
+
+  .mnds-shell {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    align-items: stretch !important;
+  }
+
+  .mnds-menu {
+    align-self: start !important;
+    position: sticky !important;
+    top: 96px !important;
+    max-height: calc(100vh - 126px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* A ficha mantém rolagem própria, mas agora dentro de um board maior */
+  .mnds-board {
+    height: max(650px, calc(100vh - 165px)) !important;
+    max-height: max(650px, calc(100vh - 165px)) !important;
+    min-height: 650px !important;
+
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+
+    padding-right: 18px !important;
+    padding-bottom: 190px !important;
+
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable both-edges !important;
+    overscroll-behavior: contain !important;
+  }
+
+  .mnds-board::after {
+    content: "";
+    display: block;
+    height: 130px;
+  }
+
+  .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    margin-left: -2px !important;
+    margin-right: -2px !important;
+    padding: 18px 2px 6px !important;
+    background:
+      linear-gradient(180deg, rgba(26, 24, 21, 0), rgba(26, 24, 21, 0.99) 35%),
+      rgba(26, 24, 21, 0.99) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}
+
+/* Em telas menores, evita esmagar a ficha */
+@media (max-width: 1180px) and (min-width: 761px) {
+  .mnd-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mnd-profile-card,
+  .mnd-sheet-card {
+    min-height: auto !important;
+  }
+
+  .mnds-board {
+    height: 720px !important;
+    max-height: 720px !important;
+  }
+}
