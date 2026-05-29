@@ -618,40 +618,95 @@ export default function MyNinjaDesktopHall({
           
           {activeTab === "profile" && (
             <>
+              <MyNinjaDesktopInfoEditor
+                character={character}
+                onCharacterUpdated={onCharacterUpdated}
+              />
+
               <section className="mnd-bottom-grid">
-                              <article className="mnd-card">
-                                <div className="mnd-section-kicker">IDENTIDADE</div>
-                                <dl className="mnd-data-list">
-                                  <div><dt>Nome</dt><dd>{data.name}</dd></div>
-                                  <div><dt>Player</dt><dd>{data.player}</dd></div>
-                                  <div><dt>Gênero</dt><dd>{data.gender}</dd></div>
-                                  <div><dt>Idade</dt><dd>{data.age}</dd></div>
-                                  <div><dt>Aniversário</dt><dd>{data.birthday}</dd></div>
-                                  <div><dt>Altura / Peso</dt><dd>{data.heightWeight}</dd></div>
-                                </dl>
-                              </article>
+                <article className="mnd-card">
+                  <div className="mnd-section-kicker">IDENTIDADE</div>
 
-                              <article className="mnd-card">
-                                <div className="mnd-section-kicker">AFILIAÇÃO E ORIGEM</div>
-                                <dl className="mnd-data-list">
-                                  <div><dt>Aldeia ou Organização</dt><dd>{data.organization}</dd></div>
-                                  <div><dt>Clã ou Parentesco</dt><dd>{data.clan}</dd></div>
-                                  <div><dt>Kekkei Genkai ou Hiden</dt><dd>{data.kekkei}</dd></div>
-                                  <div><dt>Pontos de Habilidade</dt><dd>{data.skillPoints}</dd></div>
-                                </dl>
-                              </article>
+                  <dl className="mnd-data-list">
+                    <div><dt>Nome</dt><dd>{data.name}</dd></div>
+                    <div><dt>Player</dt><dd>{data.player}</dd></div>
+                    <div><dt>Gênero</dt><dd>{data.gender}</dd></div>
+                    <div><dt>Idade</dt><dd>{data.age}</dd></div>
+                    <div><dt>Aniversário</dt><dd>{data.birthday}</dd></div>
+                    <div><dt>Altura / Peso</dt><dd>{data.heightWeight}</dd></div>
+                    <div><dt>Alcunha</dt><dd>{valueFrom(character, ["epithet", "nickname", "alcunha", "title"], "—")}</dd></div>
+                    <div><dt>Frase</dt><dd>{valueFrom(character, ["quote", "phrase", "frase"], "—")}</dd></div>
+                  </dl>
+                </article>
 
-                              <article className="mnd-card">
-                                <div className="mnd-section-kicker">ÍCONE DO MAPA</div>
+                <article className="mnd-card">
+                  <div className="mnd-section-kicker">AFILIAÇÃO E ORIGEM</div>
 
-                                <div className="mnd-map-icon-box">
-                                  <div>
-                                    <ShurikenIcon />
-                                  </div>
-                                  <span>Personalizado</span>
-                                </div>
-                              </article>
-                            </section>
+                  <dl className="mnd-data-list">
+                    <div><dt>Aldeia ou Organização</dt><dd>{data.organization}</dd></div>
+                    <div><dt>Graduação</dt><dd>{data.rank}</dd></div>
+                    <div><dt>Estilo Ninja</dt><dd>{data.style}</dd></div>
+                    <div><dt>Origem</dt><dd>{data.origin}</dd></div>
+                    <div><dt>Clã ou Parentesco</dt><dd>{data.clan}</dd></div>
+                    <div><dt>Kekkei Genkai ou Hiden</dt><dd>{data.kekkei}</dd></div>
+
+                    <div>
+                      <dt>Traços Únicos</dt>
+                      <dd>
+                        {Array.isArray(character?.selected_traits)
+                          ? character.selected_traits
+                              .map((trait) => {
+                                if (typeof trait === "string") return trait;
+                                return trait?.name || trait?.title || trait?.label || "";
+                              })
+                              .filter(Boolean)
+                              .join(", ") || "—"
+                          : valueFrom(character, ["unique_traits", "traits", "tracos_unicos"], "—")}
+                      </dd>
+                    </div>
+
+                    <div><dt>Pontos de Habilidade</dt><dd>{data.skillPoints}</dd></div>
+                  </dl>
+                </article>
+
+                <article className="mnd-card">
+                  <div className="mnd-section-kicker">ÍCONE DO MAPA</div>
+
+                  <div className="mnd-map-icon-box">
+                    <div>
+                      {String(character?.icon_url || "").startsWith("http") ? (
+                        <img src={character.icon_url} alt="Ícone do mapa" />
+                      ) : character?.icon_url && character.icon_url !== "shuriken" ? (
+                        <span className="mnd-map-glyph">
+                          {{
+                            village: "⌂",
+                            question: "?",
+                            castle: "♜",
+                            warning: "!",
+                            paw: "♣"
+                          }[character.icon_url] || "✦"}
+                        </span>
+                      ) : (
+                        <ShurikenIcon />
+                      )}
+                    </div>
+
+                    <span>
+                      {{
+                        shuriken: "Shuriken",
+                        village: "Vila",
+                        question: "Interrogação",
+                        castle: "Castelo",
+                        warning: "Exclamação",
+                        paw: "Patinha"
+                      }[character?.icon_url] ||
+                        (String(character?.icon_url || "").startsWith("http")
+                          ? "Imagem personalizada"
+                          : "Personalizado")}
+                    </span>
+                  </div>
+                </article>
+              </section>
             </>
           )}
 

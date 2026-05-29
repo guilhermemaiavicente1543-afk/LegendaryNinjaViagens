@@ -25,62 +25,13 @@ const ninjaStyles = [
   "Outro"
 ];
 
-
-function SunagakureIcon({ className = "" }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className={"mnd-map-symbol-svg " + className}
-      viewBox="0 0 100 100"
-      fill="none"
-      aria-hidden="true"
-    >
-      <g
-        transform="matrix(0.974572, 0, 0, 0.982521, 1.2714, 0.87391)"
-        stroke="#ffffff"
-        strokeWidth="5.83727"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect
-          x="17.017309"
-          y="2.0173106"
-          width="65.96537"
-          height="13.70934"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="5.83727"
-          strokeLinejoin="round"
-        />
-
-        <path
-          d="M 17.017313,22.58132 L 82.98269,22.58132 L 82.98269,29.43599 C 79.717571,43.14533 66.65626,43.14533 66.65626,56.85467 C 66.65626,70.56401 79.950794,70.56401 82.98269,84.27335 L 82.98269,97.98269 L 17.017313,97.98269 L 17.017313,84.27335 C 19.684969,70.56401 33.343747,70.56401 33.343747,56.85467 C 33.343747,43.14533 19.995933,43.14533 17.017313,29.43599 L 17.017313,22.58132 z"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="5.83727"
-          strokeLinejoin="round"
-        />
-      </g>
-    </svg>
-  );
-}
-
-function MapIconGlyph({ option }) {
-  if (option?.value === "sunagakure") {
-    return <SunagakureIcon />;
-  }
-
-  return <span>{option?.glyph || "✦"}</span>;
-}
-
 const mapIconOptions = [
-  { value: "sunagakure", label: "Sunagakure", glyph: "sunagakure" },
   { value: "shuriken", label: "Shuriken", glyph: "✦" },
   { value: "village", label: "Vila", glyph: "⌂" },
   { value: "question", label: "Interrogação", glyph: "?" },
   { value: "castle", label: "Castelo", glyph: "♜" },
   { value: "warning", label: "Exclamação", glyph: "!" },
-  { value: "paw", label: "Patinha", glyph: "♡" }
+  { value: "paw", label: "Patinha", glyph: "♣" }
 ];
 
 function valueOrEmpty(value) {
@@ -109,7 +60,7 @@ function normalizeTrait(trait) {
     return {
       ...trait,
       id: trait.id || name,
-      name
+      name,
     };
   }
 
@@ -132,7 +83,7 @@ function normalizeTrait(trait) {
     category: "Personalizado",
     type: "Manual",
     requirement: "",
-    description: ""
+    description: "",
   };
 }
 
@@ -166,7 +117,7 @@ function buildForm(character) {
     epithet: valueOrEmpty(character?.epithet),
     quote: valueOrEmpty(character?.quote),
     mapIcon: valueOrEmpty(character?.icon_url || "shuriken"),
-    selectedTraits: normalizeTraits(character)
+    selectedTraits: normalizeTraits(character),
   };
 }
 
@@ -327,8 +278,8 @@ export default function MyNinjaDesktopInfoEditor({
   }
 
   return (
-    <div className="mnd-info-editor-shell">
-      <div className="mnd-character-info-actions">
+    <div className="mnd-creation-editor-shell">
+      <div className="mnd-creation-editor-head">
         <div>
           <span>Dados de criação</span>
           <strong>Informações do personagem</strong>
@@ -339,301 +290,259 @@ export default function MyNinjaDesktopInfoEditor({
         </button>
       </div>
 
-      {message ? <div className="mnd-info-editor-message">{message}</div> : null}
+      {message ? <div className="mnd-creation-editor-message">{message}</div> : null}
 
       {isOpen ? (
-        <div className="mnd-info-editor-panel mnd-info-editor-panel--board-style">
-          <div className="mnd-edit-top-grid">
-            <article className="mnd-info-card mnd-info-card--editable">
-              <header className="mnd-info-card__head">
-                <span>Identidade</span>
-              </header>
+        <div className="mnd-creation-editor-panel">
+          <div className="mnd-creation-editor-grid">
+            <label>
+              <span>Nome do personagem</span>
+              <input
+                value={form.characterName}
+                onChange={(event) => updateField("characterName", event.target.value)}
+              />
+            </label>
 
-              <div className="mnd-info-card__body">
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Nome</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.characterName}
-                    onChange={(event) => updateField("characterName", event.target.value)}
-                    placeholder="Nome do personagem"
-                  />
-                </label>
+            <label>
+              <span>Player</span>
+              <input
+                value={form.playerName}
+                onChange={(event) => updateField("playerName", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Player</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.playerName}
-                    onChange={(event) => updateField("playerName", event.target.value)}
-                    placeholder="Nome do player"
-                  />
-                </label>
+            <label>
+              <span>Gênero</span>
+              <input
+                value={form.gender}
+                onChange={(event) => updateField("gender", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Gênero</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.gender}
-                    onChange={(event) => updateField("gender", event.target.value)}
-                    placeholder="Gênero"
-                  />
-                </label>
+            <label>
+              <span>Idade</span>
+              <input
+                value={form.age}
+                onChange={(event) => updateField("age", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Idade</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.age}
-                    onChange={(event) => updateField("age", event.target.value)}
-                    placeholder="Idade"
-                  />
-                </label>
+            <label>
+              <span>Aniversário</span>
+              <input
+                value={form.birthday}
+                onChange={(event) => updateField("birthday", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Aniversário</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.birthday}
-                    onChange={(event) => updateField("birthday", event.target.value)}
-                    placeholder="Ex.: 12 de outubro"
-                  />
-                </label>
+            <label>
+              <span>Altura em cm</span>
+              <input
+                value={form.heightCm}
+                onChange={(event) => updateField("heightCm", event.target.value)}
+                inputMode="numeric"
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Altura / Peso</span>
-                  <div className="mnd-duo-input">
-                    <input
-                      className="mnd-info-row__input"
-                      value={form.heightCm}
-                      onChange={(event) => updateField("heightCm", event.target.value)}
-                      placeholder="cm"
-                      inputMode="numeric"
-                    />
-                    <input
-                      className="mnd-info-row__input"
-                      value={form.weightKg}
-                      onChange={(event) => updateField("weightKg", event.target.value)}
-                      placeholder="kg"
-                      inputMode="numeric"
-                    />
-                  </div>
-                </label>
-              </div>
-            </article>
+            <label>
+              <span>Peso em kg</span>
+              <input
+                value={form.weightKg}
+                onChange={(event) => updateField("weightKg", event.target.value)}
+                inputMode="numeric"
+              />
+            </label>
 
-            <article className="mnd-info-card mnd-info-card--editable">
-              <header className="mnd-info-card__head">
-                <span>Afiliação e Origem</span>
-              </header>
+            <label>
+              <span>Aldeia ou Organização</span>
+              <select
+                value={form.villageChoice}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  updateField("villageChoice", value);
 
-              <div className="mnd-info-card__body">
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Aldeia ou Organização</span>
-                  <select
-                    className="mnd-info-row__input mnd-info-row__select"
-                    value={form.villageChoice}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      updateField("villageChoice", value);
+                  if (value !== "Outros") {
+                    updateField("villageOrOrganization", "");
+                  }
+                }}
+              >
+                <option value="">Selecione uma opção</option>
+                {villageOptions.map((village) => (
+                  <option key={village} value={village}>
+                    {village}
+                  </option>
+                ))}
+                <option value="Outros">Outros</option>
+              </select>
+            </label>
 
-                      if (value !== "Outros") {
-                        updateField("villageOrOrganization", "");
-                      }
-                    }}
-                  >
-                    <option value="">Selecione uma opção</option>
-                    {villageOptions.map((village) => (
-                      <option key={village} value={village}>
-                        {village}
-                      </option>
-                    ))}
-                    <option value="Outros">Outros</option>
-                  </select>
-                </label>
+            {form.villageChoice === "Outros" ? (
+              <label>
+                <span>Informe a vila/organização</span>
+                <input
+                  value={form.villageOrOrganization}
+                  onChange={(event) => updateField("villageOrOrganization", event.target.value)}
+                />
+              </label>
+            ) : null}
 
-                {form.villageChoice === "Outros" ? (
-                  <label className="mnd-info-row mnd-info-row--editable">
-                    <span className="mnd-info-row__label">Outro nome</span>
-                    <input
-                      className="mnd-info-row__input"
-                      value={form.villageOrOrganization}
-                      onChange={(event) => updateField("villageOrOrganization", event.target.value)}
-                      placeholder="Ex.: Akatsuki"
-                    />
-                  </label>
-                ) : null}
+            <label>
+              <span>Origem</span>
+              <input
+                value={form.origin}
+                onChange={(event) => updateField("origin", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Origem</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.origin}
-                    onChange={(event) => updateField("origin", event.target.value)}
-                    placeholder="Origem do personagem"
-                  />
-                </label>
+            <label>
+              <span>Clã ou Parentesco</span>
+              <input
+                value={form.clanOrKinship}
+                onChange={(event) => updateField("clanOrKinship", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Clã ou Parentesco</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.clanOrKinship}
-                    onChange={(event) => updateField("clanOrKinship", event.target.value)}
-                    placeholder="Clã ou parentesco"
-                  />
-                </label>
+            <label>
+              <span>Kekkei Genkai / Hiden</span>
+              <input
+                value={form.kekkeiGenkaiOrHiden}
+                onChange={(event) => updateField("kekkeiGenkaiOrHiden", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Kekkei Genkai / Hiden</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.kekkeiGenkaiOrHiden}
-                    onChange={(event) => updateField("kekkeiGenkaiOrHiden", event.target.value)}
-                    placeholder="Kekkei Genkai ou Hiden"
-                  />
-                </label>
+            <label>
+              <span>Graduação</span>
+              <input
+                value={form.rankTitle}
+                onChange={(event) => updateField("rankTitle", event.target.value)}
+              />
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Estilo Ninja</span>
-                  <select
-                    className="mnd-info-row__input mnd-info-row__select"
-                    value={form.ninjaStyle}
-                    onChange={(event) => updateField("ninjaStyle", event.target.value)}
-                  >
-                    <option value="">Selecione um estilo</option>
-                    {ninjaStyles.map((style) => (
-                      <option key={style} value={style}>
-                        {style}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+            <label>
+              <span>Estilo Ninja</span>
+              <select
+                value={form.ninjaStyle}
+                onChange={(event) => updateField("ninjaStyle", event.target.value)}
+              >
+                <option value="">Selecione um estilo</option>
+                {ninjaStyles.map((style) => (
+                  <option key={style} value={style}>
+                    {style}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-                <label className="mnd-info-row mnd-info-row--editable">
-                  <span className="mnd-info-row__label">Graduação</span>
-                  <input
-                    className="mnd-info-row__input"
-                    value={form.rankTitle}
-                    onChange={(event) => updateField("rankTitle", event.target.value)}
-                    placeholder="Graduação"
-                  />
-                </label>
-              </div>
-            </article>
+            <label>
+              <span>Alcunha</span>
+              <input
+                value={form.epithet}
+                onChange={(event) => updateField("epithet", event.target.value)}
+              />
+            </label>
 
-            <article className="mnd-info-card mnd-info-card--editable mnd-info-card--mapicon">
-              <header className="mnd-info-card__head">
-                <span>Ícone do mapa</span>
-              </header>
-
-              <div className="mnd-map-icon-editor">
-                <div className="mnd-map-icon-preview">
-                  <div className="mnd-map-icon-preview__button">
-                    <MapIconGlyph option={currentMapIcon} />
-                  </div>
-
-                  <span className="mnd-map-icon-preview__caption">
-                    {currentMapIcon.label}
-                  </span>
-                </div>
-
-                <div className="mnd-map-icon-grid">
-                  {mapIconOptions.map((option) => (
-                    <button
-                      type="button"
-                      key={option.value}
-                      className={
-                        form.mapIcon === option.value
-                          ? "mnd-map-icon-choice is-active"
-                          : "mnd-map-icon-choice"
-                      }
-                      onClick={() => updateField("mapIcon", option.value)}
-                    >
-                      <MapIconGlyph option={option} /> <span>{option.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </article>
+            <label>
+              <span>Frase</span>
+              <input
+                value={form.quote}
+                onChange={(event) => updateField("quote", event.target.value)}
+              />
+            </label>
           </div>
 
-          <article className="mnd-info-card mnd-info-card--editable mnd-traits-board-card">
-            <header className="mnd-info-card__head">
+          <div className="mnd-map-icon-editor-block">
+            <span>Ícone do mapa</span>
+
+            <div className="mnd-map-icon-selector">
+              {mapIconOptions.map((option) => (
+                <button
+                  type="button"
+                  key={option.value}
+                  className={form.mapIcon === option.value ? "is-active" : ""}
+                  onClick={() => updateField("mapIcon", option.value)}
+                >
+                  <strong>{option.glyph}</strong>
+                  <em>{option.label}</em>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mnd-traits-editor-block">
+            <div className="mnd-traits-editor-title">
               <span>Traços Únicos</span>
-            </header>
+              <strong>Selecione os traços do personagem</strong>
+            </div>
 
-            <div className="mnd-trait-editor mnd-trait-editor--inside-card">
-              <div className="mnd-trait-filters">
-                <input
-                  value={traitSearch}
-                  onChange={(event) => setTraitSearch(event.target.value)}
-                  placeholder="Buscar traço, requisito, categoria..."
-                />
+            <div className="mnd-trait-filters">
+              <input
+                value={traitSearch}
+                onChange={(event) => setTraitSearch(event.target.value)}
+                placeholder="Buscar traço, requisito, categoria..."
+              />
 
-                <select
-                  value={categoryFilter}
-                  onChange={(event) => setCategoryFilter(event.target.value)}
+              <select
+                value={categoryFilter}
+                onChange={(event) => setCategoryFilter(event.target.value)}
+              >
+                {traitCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={typeFilter}
+                onChange={(event) => setTypeFilter(event.target.value)}
+              >
+                {traitTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mnd-trait-results">
+              {filteredTraits.slice(0, 12).map((trait) => (
+                <button
+                  type="button"
+                  key={trait.id}
+                  className="mnd-trait-result"
+                  onClick={() => addTrait(trait)}
                 >
-                  {traitCategories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
+                  <strong>{trait.name}</strong>
+                  <span>
+                    {trait.category} • {trait.type} • {trait.requirement || "Sem requisito"}
+                  </span>
+                </button>
+              ))}
 
-                <select
-                  value={typeFilter}
-                  onChange={(event) => setTypeFilter(event.target.value)}
-                >
-                  {traitTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {filteredTraits.length === 0 ? (
+                <p>Nenhum traço encontrado.</p>
+              ) : null}
+            </div>
 
-              <div className="mnd-trait-results">
-                {filteredTraits.slice(0, 12).map((trait) => (
+            <div className="mnd-selected-traits">
+              {form.selectedTraits.length === 0 ? (
+                <p>Nenhum traço selecionado.</p>
+              ) : (
+                form.selectedTraits.map((trait) => (
                   <button
                     type="button"
                     key={trait.id}
-                    className="mnd-trait-result"
-                    onClick={() => addTrait(trait)}
+                    className="mnd-selected-trait"
+                    onClick={() => removeTrait(trait.id)}
                   >
-                    <strong>{trait.name}</strong>
-                    <span>
-                      {trait.category} • {trait.type} • {trait.requirement || "Sem requisito"}
-                    </span>
+                    {trait.name} ×
                   </button>
-                ))}
-
-                {filteredTraits.length === 0 ? (
-                  <p>Nenhum traço encontrado.</p>
-                ) : null}
-              </div>
-
-              <div className="mnd-selected-traits">
-                {form.selectedTraits.length === 0 ? (
-                  <p>Nenhum traço selecionado.</p>
-                ) : (
-                  form.selectedTraits.map((trait) => (
-                    <button
-                      type="button"
-                      key={trait.id}
-                      className="mnd-selected-trait"
-                      onClick={() => removeTrait(trait.id)}
-                    >
-                      {trait.name} ×
-                    </button>
-                  ))
-                )}
-              </div>
+                ))
+              )}
             </div>
-          </article>
+          </div>
 
-          <div className="mnd-info-editor-footer">
+          <div className="mnd-creation-editor-footer">
             <button type="button" onClick={() => setIsOpen(false)}>
               Cancelar
             </button>
