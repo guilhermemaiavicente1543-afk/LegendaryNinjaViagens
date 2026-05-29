@@ -33016,3 +33016,60 @@ body:has(.mnd-desktop-shell) {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   FIX — Barra de rolagem no board esquerdo do perfil
+   ========================================================= */
+
+@media (min-width: 761px) {
+  .mnd-profile-card {
+    height: max(650px, calc(100vh - 165px)) !important;
+    max-height: max(650px, calc(100vh - 165px)) !important;
+    min-height: 650px !important;
+
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+
+    padding-right: 20px !important;
+    padding-bottom: 140px !important;
+
+    scrollbar-gutter: stable both-edges !important;
+    overscroll-behavior: contain !important;
+  }
+
+  .mnd-profile-card::after {
+    content: "";
+    display: block;
+    height: 110px;
+    flex: 0 0 auto;
+  }
+
+  .mnd-character-info-board {
+    padding-bottom: 80px !important;
+  }
+
+  .mnd-character-info-board article:last-child {
+    margin-bottom: 90px !important;
+  }
+}
+
+/* Scrollbar do board esquerdo */
+.mnd-profile-card::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.mnd-profile-card::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.36) !important;
+  border-radius: 999px !important;
+}
+
+.mnd-profile-card::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+  border-radius: 999px !important;
+  border: 2px solid rgba(0, 0, 0, 0.36) !important;
+}
+
+.mnd-profile-card {
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.36) !important;
+}
