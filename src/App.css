@@ -30786,3 +30786,314 @@ body:has(.mnd-desktop-shell) {
     top: 0 !important;
   }
 }
+
+/* =========================================================
+   NOVA FICHA COMPLEMENTAR DESKTOP — BOARD MEU NINJA
+   Não importa o painel antigo; salva diretamente em profile_sheet.
+   ========================================================= */
+
+.mnd-sheet-badge {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 122, 26, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff9a4d;
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mnds-shell {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.78fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.mnds-menu {
+  display: grid;
+  gap: 8px;
+}
+
+.mnds-menu button {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #322d27;
+  background: rgba(0, 0, 0, 0.25);
+  color: rgba(243, 237, 227, 0.86);
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.mnds-menu button:hover {
+  background: rgba(255, 122, 26, 0.06);
+  border-color: rgba(255, 122, 26, 0.22);
+}
+
+.mnds-menu button.active {
+  border-color: #ff7a1a;
+  background: linear-gradient(135deg, #ff7a1a, #c96412);
+  color: #1a1815;
+}
+
+.mnds-menu button i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #34d399;
+}
+
+.mnds-board {
+  border: 1px solid #322d27;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.08), transparent 32%),
+    rgba(0, 0, 0, 0.22);
+  padding: 18px;
+  min-height: 520px;
+}
+
+.mnds-top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+  margin-bottom: 18px;
+}
+
+.mnds-top-actions span {
+  display: block;
+  color: #ff7a1a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mnds-top-actions strong {
+  display: block;
+  margin-top: 4px;
+  color: #f3ede3;
+  font-size: 15px;
+}
+
+.mnds-top-actions button,
+.mnds-bottom-save button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff7a1a, #b85e10);
+  color: #1a1815;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 950;
+  white-space: nowrap;
+  box-shadow: 0 14px 26px rgba(255, 122, 26, 0.13);
+}
+
+.mnds-top-actions button:disabled,
+.mnds-bottom-save button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mnds-message {
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 122, 26, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ffbf8a;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.mnds-section {
+  display: grid;
+  gap: 14px;
+}
+
+.mnds-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.mnds-section-header span {
+  color: #ff7a1a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mnds-section-header h4 {
+  margin: 5px 0 0;
+  color: #ff7a1a;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.mnds-section-header p {
+  margin: 4px 0 0;
+  max-width: 720px;
+  color: #a89f93;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.mnds-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.mnds-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mnds-field {
+  display: grid;
+  gap: 7px;
+}
+
+.mnds-field span {
+  color: #f1b179;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mnds-field input,
+.mnds-field textarea,
+.mnds-field select {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 26, 0.24);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #f3ede3;
+  padding: 11px 12px;
+  outline: none;
+  font-size: 13px;
+}
+
+.mnds-field textarea {
+  resize: vertical;
+  min-height: 92px;
+}
+
+.mnds-field input:focus,
+.mnds-field textarea:focus,
+.mnds-field select:focus {
+  border-color: rgba(255, 122, 26, 0.62);
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.12);
+}
+
+.mnds-list {
+  display: grid;
+  gap: 12px;
+}
+
+.mnds-record {
+  border: 1px solid rgba(255, 122, 26, 0.20);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.20);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.mnds-record-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mnds-record-head strong {
+  color: #f3ede3;
+  font-size: 14px;
+}
+
+.mnds-record-head button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.24);
+  color: #a89f93;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.mnds-record-head button:hover {
+  color: #fff;
+  border-color: rgba(255, 122, 26, 0.32);
+}
+
+.mnds-add-button {
+  min-height: 42px;
+  border: 1px dashed rgba(255, 122, 26, 0.42);
+  border-radius: 10px;
+  background: rgba(255, 122, 26, 0.065);
+  color: #ff9a4d;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.mnds-add-button:hover {
+  background: rgba(255, 122, 26, 0.10);
+}
+
+.mnds-bottom-save {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.065);
+}
+
+.mnds-bottom-save button {
+  width: 100%;
+}
+
+/* Garante que o painel antigo não apareça embaixo no desktop */
+@media (min-width: 761px) {
+  .ln-meu-ninja-legacy-content {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .mnds-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .mnds-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mnds-grid.two {
+    grid-template-columns: 1fr;
+  }
+}

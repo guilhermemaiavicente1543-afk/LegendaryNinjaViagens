@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import MyNinjaDesktopSheet from "./MyNinjaDesktopSheet";
 
 function valueFrom(character, keys, fallback = "—") {
   for (const key of keys) {
@@ -170,8 +171,10 @@ const sheetSections = {
 
 export default function MyNinjaDesktopHall({
   character,
+  user,
   onEditProfile,
   onOpenFullSheet,
+  onCharacterUpdated,
 }) {
   const [activeTab, setActiveTab] = useState("profile");
   const [activeSheetSection, setActiveSheetSection] = useState("proofs");
@@ -415,49 +418,14 @@ export default function MyNinjaDesktopHall({
                       </p>
                     </div>
 
-                    <button type="button" className="mnd-save-button" onClick={handleOpenSheet}>
-                      Abrir ficha
-                    </button>
+                    <span className="mnd-sheet-badge">Ficha integrada</span>
                   </div>
 
-                  <div className="mnd-sheet-layout">
-                    <ul className="mnd-sheet-menu">
-                      {Object.entries(sheetSections).map(([key, section]) => (
-                        <li key={key}>
-                          <button
-                            type="button"
-                            className={activeSheetSection === key ? "active" : ""}
-                            onClick={() => setActiveSheetSection(key)}
-                          >
-                            <span>{section.title}</span>
-                            {key === "inventory" ? <i className="green-dot" /> : null}
-                            {activeSheetSection === key ? <i /> : null}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mnd-sheet-preview">
-                      <div className="mnd-sheet-preview-head">
-                        <div className="mnd-sheet-preview-icon">
-                          <ShurikenIcon />
-                        </div>
-
-                        <div>
-                          <h4>{selectedSection.title}</h4>
-                          <p>{selectedSection.description}</p>
-                        </div>
-                      </div>
-
-                      <div className="mnd-sheet-preview-body">
-                        <p>{selectedSection.body}</p>
-                      </div>
-
-                      <button type="button" className="mnd-save-button full" onClick={handleOpenSheet}>
-                        Abrir Ficha Complementar
-                      </button>
-                    </div>
-                  </div>
+                  <MyNinjaDesktopSheet
+                    character={character}
+                    user={user}
+                    onCharacterUpdated={onCharacterUpdated}
+                  />
                 </article>
               </section>
 
