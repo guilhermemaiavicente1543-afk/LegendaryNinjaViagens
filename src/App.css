@@ -36016,3 +36016,28 @@ body:has(.mnd-oldstyle-profile-official) .mnd-character-info-board {
     text-align: left !important;
   }
 }
+
+/* =========================================================
+   RECUPERAÇÃO — board bonito original do Meu Ninja
+   ========================================================= */
+
+body:has(.mnd-desktop-shell) .mnd-bottom-grid {
+  display: grid !important;
+}
+
+body:has(.mnd-desktop-shell) .mnd-official-profile-board,
+body:has(.mnd-desktop-shell) .mnd-oldstyle-profile-official,
+body:has(.mnd-desktop-shell) .mnd-profile-overview-boards,
+body:has(.mnd-desktop-shell) .mnd-character-info-board {
+  display: none !important;
+}
+
+body:has(.mnd-desktop-shell) .mnd-bottom-grid .mnd-card {
+  min-width: 0 !important;
+}
+
+body:has(.mnd-desktop-shell) .mnd-bottom-grid .mnd-data-list dd {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}

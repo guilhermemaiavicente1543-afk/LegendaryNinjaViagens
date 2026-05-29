@@ -609,44 +609,53 @@ export default function MyNinjaDesktopHall({
                 </article>
               </section>
 
-              <section className="mnd-bottom-grid">
-                <article className="mnd-card">
-                  <div className="mnd-section-kicker">IDENTIDADE</div>
-                  <dl className="mnd-data-list">
-                    <div><dt>Nome</dt><dd>{data.name}</dd></div>
-                    <div><dt>Player</dt><dd>{data.player}</dd></div>
-                    <div><dt>Gênero</dt><dd>{data.gender}</dd></div>
-                    <div><dt>Idade</dt><dd>{data.age}</dd></div>
-                    <div><dt>Aniversário</dt><dd>{data.birthday}</dd></div>
-                    <div><dt>Altura / Peso</dt><dd>{data.heightWeight}</dd></div>
-                  </dl>
-                </article>
+              
+          {/* board novo/feio removido */}
 
-                <article className="mnd-card">
-                  <div className="mnd-section-kicker">AFILIAÇÃO E ORIGEM</div>
-                  <dl className="mnd-data-list">
-                    <div><dt>Aldeia ou Organização</dt><dd>{data.organization}</dd></div>
-                    <div><dt>Clã ou Parentesco</dt><dd>{data.clan}</dd></div>
-                    <div><dt>Kekkei Genkai ou Hiden</dt><dd>{data.kekkei}</dd></div>
-                    <div><dt>Pontos de Habilidade</dt><dd>{data.skillPoints}</dd></div>
-                  </dl>
-                </article>
-
-                <article className="mnd-card">
-                  <div className="mnd-section-kicker">ÍCONE DO MAPA</div>
-
-                  <div className="mnd-map-icon-box">
-                    <div>
-                      <ShurikenIcon />
-                    </div>
-                    <span>Personalizado</span>
-                  </div>
-                </article>
-              </section>
             </>
           )}
 
-          {activeTab === "location" && (
+          
+          {activeTab === "profile" && (
+            <>
+              <section className="mnd-bottom-grid">
+                              <article className="mnd-card">
+                                <div className="mnd-section-kicker">IDENTIDADE</div>
+                                <dl className="mnd-data-list">
+                                  <div><dt>Nome</dt><dd>{data.name}</dd></div>
+                                  <div><dt>Player</dt><dd>{data.player}</dd></div>
+                                  <div><dt>Gênero</dt><dd>{data.gender}</dd></div>
+                                  <div><dt>Idade</dt><dd>{data.age}</dd></div>
+                                  <div><dt>Aniversário</dt><dd>{data.birthday}</dd></div>
+                                  <div><dt>Altura / Peso</dt><dd>{data.heightWeight}</dd></div>
+                                </dl>
+                              </article>
+
+                              <article className="mnd-card">
+                                <div className="mnd-section-kicker">AFILIAÇÃO E ORIGEM</div>
+                                <dl className="mnd-data-list">
+                                  <div><dt>Aldeia ou Organização</dt><dd>{data.organization}</dd></div>
+                                  <div><dt>Clã ou Parentesco</dt><dd>{data.clan}</dd></div>
+                                  <div><dt>Kekkei Genkai ou Hiden</dt><dd>{data.kekkei}</dd></div>
+                                  <div><dt>Pontos de Habilidade</dt><dd>{data.skillPoints}</dd></div>
+                                </dl>
+                              </article>
+
+                              <article className="mnd-card">
+                                <div className="mnd-section-kicker">ÍCONE DO MAPA</div>
+
+                                <div className="mnd-map-icon-box">
+                                  <div>
+                                    <ShurikenIcon />
+                                  </div>
+                                  <span>Personalizado</span>
+                                </div>
+                              </article>
+                            </section>
+            </>
+          )}
+
+{activeTab === "location" && (
             <section className="mnd-location-grid">
               <article className="mnd-card mnd-location-board">
                 <div className="mnd-section-kicker">LOCALIZAÇÃO</div>
@@ -697,172 +706,14 @@ export default function MyNinjaDesktopHall({
               </article>
             </section>
           )}
-        
-        
-              
-              {/* board oficial duplicado removido */}
-
-
-
-              {/* board oficial duplicado removido */}
-
-
-              <div className="mnd-page-bottom-spacer" aria-hidden="true" />
+          {/* blocos antigos removidos */}
+<div className="mnd-page-bottom-spacer" aria-hidden="true" />
       
               
               {/* bloco duplicado removido */}
 
 
 
-              <section className="mnd-official-profile-board">
-                <MyNinjaDesktopInfoEditor
-                  character={character}
-                  onCharacterUpdated={onCharacterUpdated}
-                />
-
-                <div className="mnd-official-profile-grid">
-                  <article className="mnd-official-card">
-                    <header>
-                      <span>Identidade</span>
-                    </header>
-
-                    <dl>
-                      <div>
-                        <dt>Nome</dt>
-                        <dd>{data.name}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Player</dt>
-                        <dd>{data.player}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Gênero</dt>
-                        <dd>{data.gender}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Idade</dt>
-                        <dd>{data.age}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Aniversário</dt>
-                        <dd>{data.birthday}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Altura / Peso</dt>
-                        <dd>{data.heightWeight}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Alcunha</dt>
-                        <dd>{valueFrom(character, ["epithet", "nickname", "alcunha", "title"], "—")}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Frase</dt>
-                        <dd>{valueFrom(character, ["quote", "phrase", "frase"], "—")}</dd>
-                      </div>
-                    </dl>
-                  </article>
-
-                  <article className="mnd-official-card">
-                    <header>
-                      <span>Afiliação e Origem</span>
-                    </header>
-
-                    <dl>
-                      <div>
-                        <dt>Aldeia ou Organização</dt>
-                        <dd>{data.organization}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Graduação</dt>
-                        <dd>{data.rank}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Estilo Ninja</dt>
-                        <dd>{data.style}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Origem</dt>
-                        <dd>{data.origin}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Clã ou Parentesco</dt>
-                        <dd>{data.clan}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Kekkei Genkai ou Hiden</dt>
-                        <dd>{data.kekkei}</dd>
-                      </div>
-
-                      <div>
-                        <dt>Traços Únicos</dt>
-                        <dd>
-                          {Array.isArray(character?.selected_traits)
-                            ? character.selected_traits
-                                .map((trait) => {
-                                  if (typeof trait === "string") return trait;
-                                  return trait?.name || trait?.title || trait?.label || "";
-                                })
-                                .filter(Boolean)
-                                .join(", ") || "—"
-                            : valueFrom(character, ["unique_traits", "traits", "tracos_unicos"], "—")}
-                        </dd>
-                      </div>
-
-                      <div>
-                        <dt>Pontos de Habilidade</dt>
-                        <dd>{data.skillPoints}</dd>
-                      </div>
-                    </dl>
-                  </article>
-
-                  <article className="mnd-official-card mnd-official-map-card">
-                    <header>
-                      <span>Ícone do Mapa</span>
-                    </header>
-
-                    <div className="mnd-official-map-preview">
-                      <div className="mnd-official-map-circle">
-                        {String(character?.icon_url || "").startsWith("http") ? (
-                          <img src={character.icon_url} alt="Ícone do mapa" />
-                        ) : character?.icon_url === "sunagakure" ? (
-                          <SunagakureIcon />
-                        ) : (
-                          <ShurikenIcon />
-                        )}
-                      </div>
-
-                      <strong>
-                        {{
-                          sunagakure: "Sunagakure",
-                          shuriken: "Shuriken",
-                          village: "Vila",
-                          question: "Interrogação",
-                          castle: "Castelo",
-                          warning: "Exclamação",
-                          paw: "Patinha"
-                        }[character?.icon_url] ||
-                          (String(character?.icon_url || "").startsWith("http")
-                            ? "Imagem personalizada"
-                            : "Personalizado")}
-                      </strong>
-
-                      <span>Selecione ou altere o ícone em Editar informações.</span>
-                    </div>
-                  </article>
-                </div>
-              </section>
 
 </main>
       </div>
