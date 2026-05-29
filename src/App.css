@@ -33073,3 +33073,25 @@ body:has(.mnd-desktop-shell) {
   scrollbar-width: thin !important;
   scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.36) !important;
 }
+
+/* =========================================================
+   FOTO DO PERSONAGEM NO LUGAR DA SHURIKEN
+   ========================================================= */
+
+.mnd-hidden-portrait-input {
+  display: none !important;
+}
+
+.mnd-photo-upload-zone {
+  overflow: hidden !important;
+  cursor: pointer;
+}
+
+.mnd-profile-portrait-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28);
+}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import MyNinjaDesktopSheet from "./MyNinjaDesktopSheet";
 import CharacterSkillTree from "../CharacterSkillTree";
 
@@ -177,6 +177,58 @@ export default function MyNinjaDesktopHall({
   onOpenFullSheet,
   onCharacterUpdated,
 }) {
+
+  const portraitInputRef = useRef(null);
+  const portraitStorageKey =
+    "ln-my-ninja-portrait:" +
+    (character?.id || character?.name || character?.character_name || "default");
+  const [portraitPreview, setPortraitPreview] = useState("");
+
+  useEffect(() => {
+    try {
+      const savedPortrait = window.localStorage.getItem(portraitStorageKey);
+      if (savedPortrait) {
+        setPortraitPreview(savedPortrait);
+      }
+    } catch (error) {
+      console.warn("Não foi possível carregar a foto do personagem.", error);
+    }
+  }, [portraitStorageKey]);
+
+  const handlePickPortrait = () => {
+    portraitInputRef.current?.click();
+  };
+
+  const handlePortraitFileChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      window.alert("Selecione um arquivo de imagem válido.");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+
+      if (!result) return;
+
+      setPortraitPreview(result);
+
+      try {
+        window.localStorage.setItem(portraitStorageKey, result);
+      } catch (error) {
+        console.warn("Não foi possível salvar a foto no navegador.", error);
+      }
+    };
+
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  };
+
   const [activeTab, setActiveTab] = useState("profile");
   const [activeSheetSection, setActiveSheetSection] = useState("proofs");
 
@@ -381,11 +433,27 @@ export default function MyNinjaDesktopHall({
                 <article className="mnd-card mnd-profile-card">
                   <div className="mnd-profile-grid">
                     <div>
-                      <div className="mnd-photo-placeholder">
-                        <ShurikenIcon />
+                      <div className="mnd-photo-placeholder mnd-photo-upload-zone">
+                        {portraitPreview ? (
+                          <img
+                            src={portraitPreview}
+                            alt="Retrato do personagem"
+                            className="mnd-profile-portrait-image"
+                          />
+                        ) : (
+                          <ShurikenIcon />
+                        )}
                       </div>
 
-                      <button type="button" className="mnd-ghost-button" onClick={handleEdit}>
+                      <input
+                        ref={portraitInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="mnd-hidden-portrait-input"
+                        onChange={handlePortraitFileChange}
+                      />
+
+                      <button type="button" className="mnd-ghost-button" onClick={handlePickPortrait}>
                         Alterar foto
                       </button>
                     </div>
