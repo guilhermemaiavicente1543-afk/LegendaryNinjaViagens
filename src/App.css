@@ -30786,3 +30786,110 @@ body:has(.mnd-desktop-shell) {
     top: 0 !important;
   }
 }
+
+/* =========================================================
+   FIX — Desktop Meu Ninja: board novo = Ficha Complementar real
+   ========================================================= */
+
+/* O desktop novo agora contém a ficha real. A área antiga/legada não deve aparecer embaixo. */
+@media (min-width: 761px) {
+  .ln-meu-ninja-legacy-content {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Expande o card da ficha para comportar a ficha real sem parecer painel antigo solto */
+.mnd-sheet-card {
+  min-height: 720px;
+}
+
+.mnd-fullsheet-embedded {
+  margin-top: 22px;
+  width: 100%;
+  max-width: none;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 122, 26, 0.22);
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 26, 0.08), transparent 34%),
+    rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+/* Neutraliza margens e largura exagerada da ficha quando ela está dentro do board novo */
+.mnd-fullsheet-embedded > * {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.mnd-fullsheet-embedded .character-full-sheet-panel,
+.mnd-fullsheet-embedded .character-full-sheet,
+.mnd-fullsheet-embedded .full-sheet-panel,
+.mnd-fullsheet-embedded .profile-sheet-panel,
+.mnd-fullsheet-embedded .sheet-panel {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+}
+
+/* A ficha real não deve nascer como um bloco gigante separado quando estiver no desktop novo */
+.mnd-fullsheet-embedded section,
+.mnd-fullsheet-embedded article {
+  max-width: none;
+}
+
+/* Remove visualmente qualquer sobra do número/código de confirmação */
+.mnd-fullsheet-embedded input[name*="confirmation" i],
+.mnd-fullsheet-embedded input[id*="confirmation" i],
+.mnd-fullsheet-embedded input[placeholder*="confirmation" i],
+.mnd-fullsheet-embedded input[name*="confirmacao" i],
+.mnd-fullsheet-embedded input[id*="confirmacao" i],
+.mnd-fullsheet-embedded input[placeholder*="confirmação" i],
+.mnd-fullsheet-embedded input[placeholder*="confirmacao" i],
+.mnd-fullsheet-embedded input[name*="protocolo" i],
+.mnd-fullsheet-embedded input[id*="protocolo" i],
+.mnd-fullsheet-embedded input[placeholder*="protocolo" i] {
+  display: none !important;
+}
+
+.mnd-fullsheet-embedded .ln-sheet-field:has(input[name*="confirmation" i]),
+.mnd-fullsheet-embedded .ln-sheet-field:has(input[id*="confirmation" i]),
+.mnd-fullsheet-embedded .ln-sheet-field:has(input[placeholder*="confirma" i]),
+.mnd-fullsheet-embedded .profile-field:has(input[name*="confirmation" i]),
+.mnd-fullsheet-embedded .profile-field:has(input[id*="confirmation" i]),
+.mnd-fullsheet-embedded .profile-field:has(input[placeholder*="confirma" i]),
+.mnd-fullsheet-embedded .form-field:has(input[name*="confirmation" i]),
+.mnd-fullsheet-embedded .form-field:has(input[id*="confirmation" i]),
+.mnd-fullsheet-embedded .form-field:has(input[placeholder*="confirma" i]) {
+  display: none !important;
+}
+
+/* O botão do topo do board vira apenas atalho visual, não abre painel antigo */
+.mnd-sheet-head .mnd-save-button {
+  background: linear-gradient(135deg, #ff7a1a, #b85e10) !important;
+}
+
+/* Melhora a proporção: a ficha real precisa de mais espaço que o card de perfil */
+@media (min-width: 1181px) {
+  .mnd-main-grid {
+    grid-template-columns: minmax(330px, 0.46fr) minmax(760px, 1.25fr) !important;
+    align-items: start !important;
+  }
+}
+
+/* Evita que modais antigos abertos por engano apareçam abaixo do desktop */
+@media (min-width: 761px) {
+  body:has(.mnd-desktop-shell) .my-ninja-mobile-fullsheet,
+  body:has(.mnd-desktop-shell) .mobile-fullsheet-popup,
+  body:has(.mnd-desktop-shell) .my-ninja-fullsheet-inline {
+    display: none !important;
+  }
+}

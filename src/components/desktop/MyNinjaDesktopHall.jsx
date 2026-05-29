@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import CharacterFullSheetPanel from "../profile/CharacterFullSheetPanel";
 
 function valueFrom(character, keys, fallback = "—") {
   for (const key of keys) {
@@ -170,8 +171,9 @@ const sheetSections = {
 
 export default function MyNinjaDesktopHall({
   character,
+  user,
   onEditProfile,
-  onOpenFullSheet,
+  onCharacterUpdated,
 }) {
   const [activeTab, setActiveTab] = useState("profile");
   const [activeSheetSection, setActiveSheetSection] = useState("proofs");
@@ -216,46 +218,61 @@ export default function MyNinjaDesktopHall({
 
   const selectedSection = sheetSections[activeSheetSection] || sheetSections.proofs;
 
-  const handleOpenSheet = () => {
-    let opened = false;
+  useEffect(() => {
+    const hideConfirmationNumberInsideEmbeddedSheet = () => {
+      if (typeof document === "undefined") return;
 
-    if (typeof onOpenFullSheet === "function") {
-      onOpenFullSheet();
-      opened = true;
-    }
-
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("ln-open-character-full-sheet"));
-      window.dispatchEvent(new CustomEvent("ln-open-ficha-complementar"));
-      opened = true;
-    }
-
-    if (typeof document !== "undefined") {
-      const legacyButtons = Array.from(
-        document.querySelectorAll(
-          ".ln-meu-ninja-legacy-content button, .ln-meu-ninja-legacy-content [role='button']"
-        )
+      const labels = Array.from(
+        document.querySelectorAll(".mnd-fullsheet-embedded label, .mnd-fullsheet-embedded strong, .mnd-fullsheet-embedded span, .mnd-fullsheet-embedded div")
       );
 
-      const legacySheetButton = legacyButtons.find((button) => {
-        const text = String(button.textContent || "").toLowerCase();
+      labels.forEach((node) => {
+        const text = String(node.textContent || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
 
-        return (
-          text.includes("ficha complementar") ||
-          text.includes("dossiê shinobi") ||
-          text.includes("dossie shinobi") ||
-          text.includes("abrir ficha") ||
-          text.includes("editar ficha")
-        );
+        if (
+          text.includes("numero de confirmacao") ||
+          text.includes("codigo de confirmacao") ||
+          text.includes("protocolo de confirmacao")
+        ) {
+          const container =
+            node.closest(".profile-field") ||
+            node.closest(".form-field") ||
+            node.closest(".ln-sheet-field") ||
+            node.closest(".sheet-field") ||
+            node.closest("label") ||
+            node.closest("div");
+
+          if (container) {
+            container.style.display = "none";
+          }
+        }
       });
+    };
 
-      if (legacySheetButton) {
-        legacySheetButton.click();
-        opened = true;
+    hideConfirmationNumberInsideEmbeddedSheet();
+
+    const observer = new MutationObserver(hideConfirmationNumberInsideEmbeddedSheet);
+
+    if (typeof document !== "undefined") {
+      const target = document.querySelector(".mnd-fullsheet-embedded");
+
+      if (target) {
+        observer.observe(target, { childList: true, subtree: true });
       }
     }
 
-    return opened;
+    return () => observer.disconnect();
+  }, []);
+
+  const handleOpenSheet = () => {
+    if (typeof document !== "undefined") {
+      document
+        .querySelector(".mnd-fullsheet-embedded")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   const handleEdit = () => {
@@ -416,47 +433,16 @@ export default function MyNinjaDesktopHall({
                     </div>
 
                     <button type="button" className="mnd-save-button" onClick={handleOpenSheet}>
-                      Abrir ficha
+                      Ficha integrada
                     </button>
                   </div>
 
-                  <div className="mnd-sheet-layout">
-                    <ul className="mnd-sheet-menu">
-                      {Object.entries(sheetSections).map(([key, section]) => (
-                        <li key={key}>
-                          <button
-                            type="button"
-                            className={activeSheetSection === key ? "active" : ""}
-                            onClick={() => setActiveSheetSection(key)}
-                          >
-                            <span>{section.title}</span>
-                            {key === "inventory" ? <i className="green-dot" /> : null}
-                            {activeSheetSection === key ? <i /> : null}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mnd-sheet-preview">
-                      <div className="mnd-sheet-preview-head">
-                        <div className="mnd-sheet-preview-icon">
-                          <ShurikenIcon />
-                        </div>
-
-                        <div>
-                          <h4>{selectedSection.title}</h4>
-                          <p>{selectedSection.description}</p>
-                        </div>
-                      </div>
-
-                      <div className="mnd-sheet-preview-body">
-                        <p>{selectedSection.body}</p>
-                      </div>
-
-                      <button type="button" className="mnd-save-button full" onClick={handleOpenSheet}>
-                        Abrir Ficha Complementar
-                      </button>
-                    </div>
+                  <div className="mnd-fullsheet-embedded">
+                    <CharacterFullSheetPanel
+                      user={user}
+                      character={character}
+                      onCharacterUpdated={onCharacterUpdated}
+                    />
                   </div>
                 </article>
               </section>

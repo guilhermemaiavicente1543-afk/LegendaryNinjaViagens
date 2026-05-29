@@ -1271,7 +1271,19 @@ export default function MyNinjaPage({
                 ? () => setIsFullSheetPanelOpen(true)
                 : undefined
         }
-      />
+      
+        user={
+          typeof user !== "undefined"
+            ? user
+            : typeof session !== "undefined"
+              ? session?.user
+              : null
+        }
+        onCharacterUpdated={(updatedCharacter) => {
+          if (typeof setCharacter !== "undefined") {
+            setCharacter(updatedCharacter);
+          }
+        }}/>
 
       <div className="ln-meu-ninja-legacy-content">
         <section className="characters-page my-ninja-page">
