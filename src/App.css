@@ -35692,3 +35692,41 @@ body:has(.mnd-oldstyle-profile-official) .mnd-character-info-board {
     text-align: left !important;
   }
 }
+
+/* =========================================================
+   ÍCONE SUNAGAKURE — seletor do mapa e board do perfil
+   ========================================================= */
+
+.mnd-map-symbol-svg {
+  width: 42px !important;
+  height: 42px !important;
+  display: block !important;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.28)) !important;
+}
+
+.mnd-map-icon-choice .mnd-map-symbol-svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 auto !important;
+}
+
+.mnd-map-icon-preview__button .mnd-map-symbol-svg,
+.mnd-map-icon-preview .mnd-map-symbol-svg {
+  width: 54px !important;
+  height: 54px !important;
+}
+
+.mnd-map-icon-box .mnd-map-symbol-svg,
+.mnd-official-map-circle .mnd-map-symbol-svg {
+  width: 52px !important;
+  height: 52px !important;
+}
+
+.mnd-map-icon-choice {
+  gap: 10px !important;
+}
+
+.mnd-map-icon-choice > span {
+  display: inline-flex !important;
+  align-items: center !important;
+}

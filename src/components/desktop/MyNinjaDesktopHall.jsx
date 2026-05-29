@@ -43,6 +43,46 @@ function ShurikenIcon({ className = "" }) {
   );
 }
 
+
+function SunagakureIcon({ className = "" }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={"mnd-map-symbol-svg " + className}
+      viewBox="0 0 100 100"
+      fill="none"
+      aria-hidden="true"
+    >
+      <g
+        transform="matrix(0.974572, 0, 0, 0.982521, 1.2714, 0.87391)"
+        stroke="#ffffff"
+        strokeWidth="5.83727"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect
+          x="17.017309"
+          y="2.0173106"
+          width="65.96537"
+          height="13.70934"
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth="5.83727"
+          strokeLinejoin="round"
+        />
+
+        <path
+          d="M 17.017313,22.58132 L 82.98269,22.58132 L 82.98269,29.43599 C 79.717571,43.14533 66.65626,43.14533 66.65626,56.85467 C 66.65626,70.56401 79.950794,70.56401 82.98269,84.27335 L 82.98269,97.98269 L 17.017313,97.98269 L 17.017313,84.27335 C 19.684969,70.56401 33.343747,70.56401 33.343747,56.85467 C 33.343747,43.14533 19.995933,43.14533 17.017313,29.43599 L 17.017313,22.58132 z"
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth="5.83727"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+}
+
 function NavIcon({ type }) {
   if (type === "home") {
     return (
@@ -796,6 +836,8 @@ export default function MyNinjaDesktopHall({
                       <div className="mnd-official-map-circle">
                         {String(character?.icon_url || "").startsWith("http") ? (
                           <img src={character.icon_url} alt="Ícone do mapa" />
+                        ) : character?.icon_url === "sunagakure" ? (
+                          <SunagakureIcon />
                         ) : (
                           <ShurikenIcon />
                         )}
@@ -803,6 +845,7 @@ export default function MyNinjaDesktopHall({
 
                       <strong>
                         {{
+                          sunagakure: "Sunagakure",
                           shuriken: "Shuriken",
                           village: "Vila",
                           question: "Interrogação",

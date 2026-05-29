@@ -25,7 +25,56 @@ const ninjaStyles = [
   "Outro"
 ];
 
+
+function SunagakureIcon({ className = "" }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={"mnd-map-symbol-svg " + className}
+      viewBox="0 0 100 100"
+      fill="none"
+      aria-hidden="true"
+    >
+      <g
+        transform="matrix(0.974572, 0, 0, 0.982521, 1.2714, 0.87391)"
+        stroke="#ffffff"
+        strokeWidth="5.83727"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect
+          x="17.017309"
+          y="2.0173106"
+          width="65.96537"
+          height="13.70934"
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth="5.83727"
+          strokeLinejoin="round"
+        />
+
+        <path
+          d="M 17.017313,22.58132 L 82.98269,22.58132 L 82.98269,29.43599 C 79.717571,43.14533 66.65626,43.14533 66.65626,56.85467 C 66.65626,70.56401 79.950794,70.56401 82.98269,84.27335 L 82.98269,97.98269 L 17.017313,97.98269 L 17.017313,84.27335 C 19.684969,70.56401 33.343747,70.56401 33.343747,56.85467 C 33.343747,43.14533 19.995933,43.14533 17.017313,29.43599 L 17.017313,22.58132 z"
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth="5.83727"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+}
+
+function MapIconGlyph({ option }) {
+  if (option?.value === "sunagakure") {
+    return <SunagakureIcon />;
+  }
+
+  return <span>{option?.glyph || "✦"}</span>;
+}
+
 const mapIconOptions = [
+  { value: "sunagakure", label: "Sunagakure", glyph: "sunagakure" },
   { value: "shuriken", label: "Shuriken", glyph: "✦" },
   { value: "village", label: "Vila", glyph: "⌂" },
   { value: "question", label: "Interrogação", glyph: "?" },
@@ -481,9 +530,7 @@ export default function MyNinjaDesktopInfoEditor({
               <div className="mnd-map-icon-editor">
                 <div className="mnd-map-icon-preview">
                   <div className="mnd-map-icon-preview__button">
-                    <span className="mnd-map-icon-preview__fallback">
-                      {currentMapIcon.glyph}
-                    </span>
+                    <MapIconGlyph option={currentMapIcon} />
                   </div>
 
                   <span className="mnd-map-icon-preview__caption">
@@ -503,7 +550,7 @@ export default function MyNinjaDesktopInfoEditor({
                       }
                       onClick={() => updateField("mapIcon", option.value)}
                     >
-                      {option.glyph} <span>{option.label}</span>
+                      <MapIconGlyph option={option} /> <span>{option.label}</span>
                     </button>
                   ))}
                 </div>
