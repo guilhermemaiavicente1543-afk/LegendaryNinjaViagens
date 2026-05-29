@@ -775,7 +775,79 @@ export default function MyNinjaDesktopHall({
                   </article>
                 </div>
               </section>
-<div className="mnd-page-bottom-spacer" aria-hidden="true" />
+
+<section className="mnd-official-profile-board">
+                <MyNinjaDesktopInfoEditor
+                  character={character}
+                  onCharacterUpdated={onCharacterUpdated}
+                />
+
+                <div className="mnd-official-profile-grid">
+                  <article className="mnd-official-card">
+                    <header>
+                      <span>Identidade</span>
+                    </header>
+
+                    <dl>
+                      <div><dt>Nome</dt><dd>{data.name}</dd></div>
+                      <div><dt>Player</dt><dd>{data.player}</dd></div>
+                      <div><dt>Gênero</dt><dd>{data.gender}</dd></div>
+                      <div><dt>Idade</dt><dd>{data.age}</dd></div>
+                      <div><dt>Aniversário</dt><dd>{data.birthday}</dd></div>
+                      <div><dt>Altura / Peso</dt><dd>{data.heightWeight}</dd></div>
+                    </dl>
+                  </article>
+
+                  <article className="mnd-official-card">
+                    <header>
+                      <span>Afiliação e Origem</span>
+                    </header>
+
+                    <dl>
+                      <div><dt>Aldeia ou Organização</dt><dd>{data.organization}</dd></div>
+                      <div><dt>Origem</dt><dd>{data.origin}</dd></div>
+                      <div><dt>Clã ou Parentesco</dt><dd>{data.clan}</dd></div>
+                      <div><dt>Kekkei Genkai ou Hiden</dt><dd>{data.kekkei}</dd></div>
+                      <div><dt>Traços Únicos</dt><dd>{data.uniqueTraits}</dd></div>
+                      <div><dt>Pontos de Habilidade</dt><dd>{data.skillPoints}</dd></div>
+                    </dl>
+                  </article>
+
+                  <article className="mnd-official-card mnd-official-map-card">
+                    <header>
+                      <span>Ícone do Mapa</span>
+                    </header>
+
+                    <div className="mnd-official-map-preview">
+                      <div className="mnd-official-map-circle">
+                        {String(character?.icon_url || "").startsWith("http") ? (
+                          <img src={character.icon_url} alt="Ícone do mapa" />
+                        ) : (
+                          <ShurikenIcon />
+                        )}
+                      </div>
+
+                      <strong>
+                        {{
+                          shuriken: "Shuriken",
+                          village: "Vila",
+                          question: "Interrogação",
+                          castle: "Castelo",
+                          warning: "Exclamação",
+                          paw: "Patinha"
+                        }[character?.icon_url] ||
+                          (String(character?.icon_url || "").startsWith("http")
+                            ? "Imagem personalizada"
+                            : "Personalizado")}
+                      </strong>
+
+                      <span>Selecione ou altere o ícone em Editar informações.</span>
+                    </div>
+                  </article>
+                </div>
+              </section>
+
+              <div className="mnd-page-bottom-spacer" aria-hidden="true" />
       </main>
       </div>
     </section>
