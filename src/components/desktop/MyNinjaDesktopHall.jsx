@@ -217,9 +217,45 @@ export default function MyNinjaDesktopHall({
   const selectedSection = sheetSections[activeSheetSection] || sheetSections.proofs;
 
   const handleOpenSheet = () => {
+    let opened = false;
+
     if (typeof onOpenFullSheet === "function") {
       onOpenFullSheet();
+      opened = true;
     }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("ln-open-character-full-sheet"));
+      window.dispatchEvent(new CustomEvent("ln-open-ficha-complementar"));
+      opened = true;
+    }
+
+    if (typeof document !== "undefined") {
+      const legacyButtons = Array.from(
+        document.querySelectorAll(
+          ".ln-meu-ninja-legacy-content button, .ln-meu-ninja-legacy-content [role='button']"
+        )
+      );
+
+      const legacySheetButton = legacyButtons.find((button) => {
+        const text = String(button.textContent || "").toLowerCase();
+
+        return (
+          text.includes("ficha complementar") ||
+          text.includes("dossiê shinobi") ||
+          text.includes("dossie shinobi") ||
+          text.includes("abrir ficha") ||
+          text.includes("editar ficha")
+        );
+      });
+
+      if (legacySheetButton) {
+        legacySheetButton.click();
+        opened = true;
+      }
+    }
+
+    return opened;
   };
 
   const handleEdit = () => {
