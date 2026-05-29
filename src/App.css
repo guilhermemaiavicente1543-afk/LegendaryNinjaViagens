@@ -33626,3 +33626,87 @@ body:has(.mnd-desktop-shell) {
 .mnds-record-head strong {
   overflow-wrap: anywhere;
 }
+
+/* =========================================================
+   FIX — Upload ações ocultas, medicina em gavetas e scroll geral
+   ========================================================= */
+
+/* Procedimentos médicos ficam como gavetas */
+.mnds-medical-drawer {
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.mnds-medical-drawer:not(.is-open) {
+  padding-bottom: 14px !important;
+}
+
+.mnds-medical-drawer:not(.is-open) > :not(.mnds-record-head) {
+  display: none !important;
+}
+
+/* O board do perfil não deve ter scroll próprio */
+@media (min-width: 761px) {
+  .mnd-profile-card {
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    padding-bottom: 140px !important;
+  }
+
+  .mnd-profile-card::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .mnd-character-info-board {
+    padding-bottom: 180px !important;
+  }
+
+  .mnd-character-info-board article:last-child {
+    margin-bottom: 160px !important;
+  }
+
+  .mnd-main-grid {
+    align-items: start !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .mnd-main-grid > *,
+  .mnd-sheet-card,
+  .mnd-profile-card {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .mnd-page,
+  .mnd-content,
+  .mnd-desktop-shell,
+  #root:has(.mnd-desktop-shell) {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+
+  body:has(.mnd-desktop-shell) {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+  }
+
+  .mnd-content {
+    padding-bottom: 520px !important;
+  }
+}
+
+/* Evita que algum container superior corte o fim do board */
+html:has(.mnd-desktop-shell),
+body:has(.mnd-desktop-shell) {
+  height: auto !important;
+  max-height: none !important;
+}

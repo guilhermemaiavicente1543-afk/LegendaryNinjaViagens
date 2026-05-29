@@ -270,6 +270,7 @@ export default function MyNinjaDesktopSheet({
   const [uploadingHiddenActionIndex, setUploadingHiddenActionIndex] = useState(null);
   const [openInventoryIndex, setOpenInventoryIndex] = useState(null);
   const [openHiddenActionIndex, setOpenHiddenActionIndex] = useState(null);
+  const [openMedicalProcedureIndex, setOpenMedicalProcedureIndex] = useState(null);
   const [openProofIndex, setOpenProofIndex] = useState(null);
 
   const [techniques, setTechniques] = useState([]);
@@ -534,24 +535,49 @@ export default function MyNinjaDesktopSheet({
         safeName +
         ".webp";
 
-      const { error: uploadError } = await supabase.storage
-        .from(PROFILE_SHEET_BUCKET)
-        .upload(storagePath, compressedBlob, {
-          contentType: "image/webp",
-          upsert: false,
-        });
+      const bucketCandidates = Array.from(
+        new Set(
+          [
+            PROFILE_SHEET_BUCKET,
+            "character-assets",
+            "character-portraits",
+            "profile-sheets",
+            "ln-character-assets"
+          ].filter(Boolean)
+        )
+      );
 
-      if (uploadError) {
-        throw new Error(uploadError.message);
+      let usedBucket = "";
+      let lastUploadError = null;
+
+      for (const bucketName of bucketCandidates) {
+        const { error: uploadError } = await supabase.storage
+          .from(bucketName)
+          .upload(storagePath, compressedBlob, {
+            contentType: "image/webp",
+            upsert: false,
+          });
+
+        if (!uploadError) {
+          usedBucket = bucketName;
+          break;
+        }
+
+        lastUploadError = uploadError;
+      }
+
+      if (!usedBucket) {
+        throw new Error(lastUploadError?.message || "Nenhum bucket disponível para upload.");
       }
 
       const { data: publicData } = supabase.storage
-        .from(PROFILE_SHEET_BUCKET)
+        .from(usedBucket)
         .getPublicUrl(storagePath);
 
       patchArrayItem("hiddenActionRecords", index, {
         imageUrl: publicData.publicUrl,
         storagePath,
+        storageBucket: usedBucket,
         originalName: file.name,
         compressedSize: compressedBlob.size,
       });
@@ -629,6 +655,7 @@ export default function MyNinjaDesktopSheet({
 
       setMessage("Ficha complementar salva com sucesso.");
       setOpenInventoryIndex(null);
+      setOpenMedicalProcedureIndex(null);
       setOpenHiddenActionIndex(null);
     } catch (error) {
       setMessage();
@@ -745,49 +772,73 @@ export default function MyNinjaDesktopSheet({
       </Field>
 
       <div className="mnds-list">
-        {(sheet.medicalProcedures || []).map((procedure, index) => (
-          <article className="mnds-record" key={"medical-procedure-" + index}>
-            <div className="mnds-record-head">
-              <strong>{procedure.title || "Procedimento #" + (index + 1)}</strong>
+        {(sheet.medicalProcedures || []).map((procedure, index) => {
+          const isOpen = openMedicalProcedureIndex === index;
 
-              <button type="button" onClick={() => removeArrayItem("medicalProcedures", index)}>
-                Remover
-              </button>
-            </div>
+          return (
+            <article
+              className={isOpen ? "mnds-record mnds-medical-drawer is-open" : "mnds-record mnds-medical-drawer"}
+              key={"medical-procedure-" + index}
+            >
+              <div className="mnds-record-head">
+                <strong>{procedure.title || "Procedimento #" + (index + 1)}</strong>
 
-            <div className="mnds-grid two">
-              <Field label="Procedimento">
-                <TextInput
-                  value={procedure.title}
-                  onChange={(value) => updateArrayItem("medicalProcedures", index, "title", value)}
-                  placeholder="Ex.: Implante, cirurgia, exame..."
-                />
-              </Field>
+                <div className="mnds-record-actions">
+                  <button type="button" onClick={() => setOpenMedicalProcedureIndex(isOpen ? null : index)}>
+                    {isOpen ? "Fechar" : "Abrir"}
+                  </button>
 
-              <Field label="Data">
-                <TextInput
-                  value={procedure.date}
-                  onChange={(value) => updateArrayItem("medicalProcedures", index, "date", value)}
-                  placeholder="Ex.: 29/05/2026"
-                />
-              </Field>
-            </div>
+                  <button type="button" onClick={() => removeArrayItem("medicalProcedures", index)}>
+                    Remover
+                  </button>
+                </div>
+              </div>
 
-            <Field label="Descrição do procedimento">
-              <TextArea
-                value={procedure.description}
-                onChange={(value) => updateArrayItem("medicalProcedures", index, "description", value)}
-                placeholder="Detalhe o procedimento, resultado e observações médicas."
-              />
-            </Field>
-          </article>
-        ))}
+              {isOpen ? (
+                <div className="mnds-drawer-body">
+                  <div className="mnds-grid two">
+                    <Field label="Procedimento">
+                      <TextInput
+                        value={procedure.title}
+                        onChange={(value) => updateArrayItem("medicalProcedures", index, "title", value)}
+                        placeholder="Ex.: Implante, cirurgia, exame..."
+                      />
+                    </Field>
+
+                    <Field label="Data">
+                      <TextInput
+                        value={procedure.date}
+                        onChange={(value) => updateArrayItem("medicalProcedures", index, "date", value)}
+                        placeholder="Ex.: 29/05/2026"
+                      />
+                    </Field>
+                  </div>
+
+                  <Field label="Descrição do procedimento">
+                    <TextArea
+                      value={procedure.description}
+                      onChange={(value) => updateArrayItem("medicalProcedures", index, "description", value)}
+                      placeholder="Detalhe o procedimento, resultado e observações médicas."
+                    />
+                  </Field>
+                </div>
+              ) : null}
+            </article>
+          );
+        })}
       </div>
 
       <button
         type="button"
         className="mnds-add-button"
-        onClick={() => addArrayItem("medicalProcedures", { title: "", date: "", description: "" })}
+        onClick={() => {
+          const nextIndex = Array.isArray(sheet.medicalProcedures)
+            ? sheet.medicalProcedures.length
+            : 0;
+
+          addArrayItem("medicalProcedures", { title: "", date: "", description: "" });
+          setOpenMedicalProcedureIndex(nextIndex);
+        }}
       >
         Adicionar procedimento
       </button>
