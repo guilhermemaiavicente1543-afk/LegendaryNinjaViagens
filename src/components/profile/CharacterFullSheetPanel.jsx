@@ -1034,7 +1034,17 @@ export default function CharacterFullSheetPanel({ user, character, onCharacterUp
                 </div>
 
                 {renderSectionContent(section)}
-              </section>
+              
+      <div className="ln-sheet-bottom-save-auto">
+        <button
+          type="button"
+          className="ln-sheet-save-bottom-button"
+          onClick={saveSheet} disabled={isSaving}
+        >
+          Salvar Ficha Complementar
+        </button>
+      </div>
+</section>
             );
           })}
         </div>

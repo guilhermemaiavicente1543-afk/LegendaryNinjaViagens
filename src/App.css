@@ -29588,3 +29588,229 @@ main.app .floating-sound-button:active {
   
 
 }
+
+/* LN AJUSTES MEU NINJA — SHURIKEN / PROVAS / SAVE / HALL / LOCALIZACAO */
+
+/* Shuriken SVG reutilizável */
+.ln-shuriken-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  vertical-align: -0.18em;
+}
+
+.ln-shuriken-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.78));
+  transform-origin: 50% 50%;
+}
+
+.ln-shuriken-icon:hover svg {
+  animation: ln-shuriken-spin 1.2s linear infinite;
+}
+
+.ln-shuriken-inline {
+  width: 17px;
+  height: 17px;
+}
+
+.ln-shuriken-icon--title {
+  width: 26px;
+  height: 26px;
+}
+
+@keyframes ln-shuriken-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Remove visualmente o antigo número/código de confirmação do Registro de Provas */
+.ln-proof-confirmation-field,
+.proof-confirmation-field,
+.confirmation-number-field,
+.confirmation-code-field,
+.field-confirmation,
+.field-confirmation-number,
+.field-confirmation-code,
+[data-field="confirmationNumber"],
+[data-field="confirmationCode"],
+[data-field="confirmation_code"],
+[data-field="codigoConfirmacao"],
+[data-field="numeroConfirmacao"],
+input[name*="confirmation" i],
+input[id*="confirmation" i],
+input[placeholder*="confirmation" i],
+input[name*="confirmacao" i],
+input[id*="confirmacao" i],
+input[placeholder*="confirmação" i],
+input[placeholder*="confirmacao" i],
+input[name*="protocolo" i],
+input[id*="protocolo" i],
+input[placeholder*="protocolo" i] {
+  display: none !important;
+}
+
+.ln-sheet-field:has(input[name*="confirmation" i]),
+.ln-sheet-field:has(input[id*="confirmation" i]),
+.ln-sheet-field:has(input[placeholder*="confirma" i]),
+.ln-sheet-field:has(input[name*="confirmacao" i]),
+.ln-sheet-field:has(input[id*="confirmacao" i]),
+.ln-sheet-field:has(input[name*="protocolo" i]),
+.ln-sheet-field:has(input[id*="protocolo" i]),
+.profile-sheet-field:has(input[name*="confirmation" i]),
+.profile-sheet-field:has(input[id*="confirmation" i]),
+.profile-sheet-field:has(input[placeholder*="confirma" i]),
+.profile-sheet-field:has(input[name*="confirmacao" i]),
+.profile-sheet-field:has(input[id*="confirmacao" i]),
+.profile-sheet-field:has(input[name*="protocolo" i]),
+.profile-sheet-field:has(input[id*="protocolo" i]),
+.form-field:has(input[name*="confirmation" i]),
+.form-field:has(input[id*="confirmation" i]),
+.form-field:has(input[placeholder*="confirma" i]),
+.form-field:has(input[name*="confirmacao" i]),
+.form-field:has(input[id*="confirmacao" i]),
+.form-field:has(input[name*="protocolo" i]),
+.form-field:has(input[id*="protocolo" i]) {
+  display: none !important;
+}
+
+/* Segundo botão inferior da Ficha Complementar */
+.ln-sheet-bottom-save-auto {
+  margin-top: 28px;
+  padding-top: 18px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ln-sheet-save-bottom-button,
+.ln-sheet-bottom-save-auto button {
+  width: 100% !important;
+  min-height: 48px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(224, 123, 32, 0.38) !important;
+  background: linear-gradient(135deg, #e07b20, #b85e10) !important;
+  color: #120b05 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.03em !important;
+  box-shadow: 0 12px 28px rgba(224, 123, 32, 0.18) !important;
+  cursor: pointer !important;
+}
+
+.ln-sheet-save-bottom-button:disabled,
+.ln-sheet-bottom-save-auto button:disabled {
+  opacity: 0.58 !important;
+  cursor: not-allowed !important;
+}
+
+/* Topo LN Digital Hall fixado no Meu Ninja mobile */
+@media (max-width: 760px) {
+  .lnm-topbar,
+  .lnm-mobile-topbar,
+  .lnm-hall-topbar,
+  .lnm-header,
+  .my-ninja-mobile-topbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 2147482000 !important;
+    width: 100vw !important;
+    min-height: 58px !important;
+    background: rgba(13, 13, 13, 0.96) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .lnm-mobile-shell,
+  .my-ninja-mobile-shell,
+  .lnm-page,
+  .my-ninja-mobile-page {
+    padding-top: 72px !important;
+  }
+}
+
+/* Aba Localização integrada ao board cinza escuro */
+.lnm-location-card,
+.lnm-location-card--merged,
+.my-ninja-location-card,
+.mobile-location-card,
+.location-board,
+.location-map-zone,
+.player-location-card {
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 22px !important;
+  color: #e8e2d6 !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28) !important;
+}
+
+.lnm-location-grid,
+.location-info-grid,
+.my-ninja-location-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.lnm-location-item,
+.location-info-item,
+.my-ninja-location-item {
+  width: 100% !important;
+  text-align: left !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
+  background: #1a1a1a !important;
+  padding: 13px 14px !important;
+  color: #e8e2d6 !important;
+}
+
+.lnm-location-label,
+.location-info-label,
+.my-ninja-location-label {
+  color: #9e9080 !important;
+  font-size: 0.72rem !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+.lnm-location-note,
+.location-note,
+.my-ninja-location-note {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 12px !important;
+  text-align: left !important;
+  border: 1px solid rgba(224, 123, 32, 0.18) !important;
+  border-radius: 16px !important;
+  background: rgba(224, 123, 32, 0.08) !important;
+  padding: 13px 14px !important;
+  color: #e8e2d6 !important;
+}
+
+/* Mata resquícios conhecidos de board antigo da localização */
+.old-location-board,
+.location-board-old,
+.mobile-location-board-old,
+.my-ninja-location-board-old,
+.lnm-location-old-board,
+.lnm-old-location-board {
+  display: none !important;
+}
+
+/* Garante que restos de botões da prévia HTML não apareçam */
+.meu-ninja-preview-v2-link,
+#ln-preview-v2-floating-link {
+  display: none !important;
+}
