@@ -34001,3 +34001,216 @@ body:has(.mnd-desktop-shell) {
   scrollbar-width: thin !important;
   scrollbar-color: #ff7a1a #161310 !important;
 }
+
+/* =========================================================
+   BOARDS EDITÁVEIS DO TOPO — visual igual aos boards escondidos
+   ========================================================= */
+
+.mnd-info-editor-panel--board-style {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.mnd-edit-top-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1.3fr 0.62fr;
+  gap: 20px;
+  align-items: start;
+  width: 100%;
+}
+
+.mnd-info-card {
+  border: 1px solid rgba(255, 136, 36, 0.18);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0)),
+    radial-gradient(circle at top right, rgba(255, 128, 32, 0.08), transparent 42%),
+    rgba(18, 15, 13, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 18px 40px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+.mnd-info-card__head {
+  padding: 18px 22px 6px;
+}
+
+.mnd-info-card__head span {
+  display: inline-block;
+  color: #ff922f;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mnd-info-card__body {
+  padding: 8px 22px 22px;
+}
+
+.mnd-info-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 210px) 1fr;
+  align-items: center;
+  gap: 18px;
+  min-height: 58px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.mnd-info-row:first-child {
+  border-top: none;
+}
+
+.mnd-info-row__label {
+  color: rgba(233, 227, 220, 0.62);
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.mnd-info-row__input {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 0;
+  border: none !important;
+  outline: none;
+  background: transparent !important;
+  color: #f2ece6 !important;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.mnd-info-row__select {
+  cursor: pointer;
+}
+
+.mnd-info-row__input::placeholder {
+  color: rgba(233, 227, 220, 0.34);
+}
+
+.mnd-info-row__input:focus {
+  color: #ffffff !important;
+}
+
+.mnd-duo-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mnd-info-card--mapicon .mnd-info-card__body {
+  padding-top: 12px;
+}
+
+.mnd-map-icon-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 22px 24px;
+}
+
+.mnd-map-icon-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mnd-map-icon-preview__button {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 136, 36, 0.18);
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 62%),
+    rgba(12, 10, 9, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mnd-map-icon-preview__fallback {
+  color: #ece6df;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.mnd-map-icon-preview__caption {
+  color: rgba(233, 227, 220, 0.74);
+  font-size: 0.95rem;
+}
+
+.mnd-map-icon-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.mnd-map-icon-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 136, 36, 0.12);
+  background: rgba(255,255,255,0.02);
+  color: #e6ddd5;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.mnd-map-icon-choice:hover {
+  border-color: rgba(255, 136, 36, 0.34);
+  background: rgba(255, 136, 36, 0.06);
+}
+
+.mnd-map-icon-choice.is-active {
+  border-color: rgba(255, 136, 36, 0.52);
+  background: linear-gradient(180deg, rgba(255, 136, 36, 0.18), rgba(255, 136, 36, 0.08));
+  color: #fff4e8;
+}
+
+.mnd-map-icon-choice span {
+  font-size: 0.93rem;
+  font-weight: 600;
+}
+
+.mnd-traits-board-card {
+  margin-top: 20px;
+}
+
+.mnd-trait-editor--inside-card {
+  border: 0 !important;
+  background: transparent !important;
+  margin-top: 0 !important;
+  padding: 8px 22px 22px !important;
+}
+
+@media (max-width: 1200px) {
+  .mnd-edit-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mnd-map-icon-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .mnd-info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px 0;
+  }
+
+  .mnd-info-row__input {
+    text-align: left;
+  }
+
+  .mnd-map-icon-grid {
+    grid-template-columns: 1fr;
+  }
+}
