@@ -717,7 +717,9 @@ export default function MyNinjaDesktopHall({
               </article>
             </section>
           )}
-        </main>
+        
+        <div className="mnd-page-bottom-spacer" aria-hidden="true" />
+      </main>
       </div>
     </section>
   );

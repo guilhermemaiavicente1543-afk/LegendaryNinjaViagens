@@ -33871,3 +33871,133 @@ body:has(.mnd-desktop-shell) {
   scrollbar-width: thin !important;
   scrollbar-color: #ff7a1a #161310 !important;
 }
+
+/* =========================================================
+   SCROLL HARD FIX — Meu Ninja Desktop
+   Destrava containers pais + cria espaço real no JSX
+   ========================================================= */
+
+/* Qualquer ancestral que contenha o Meu Ninja desktop não pode cortar a rolagem */
+body:has(.mnd-desktop-shell),
+body:has(.mnd-desktop-shell) *:has(.mnd-desktop-shell) {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-x: hidden !important;
+  contain: none !important;
+}
+
+/* O body/html/root precisam aceitar a rolagem real */
+html:has(.mnd-desktop-shell),
+body:has(.mnd-desktop-shell),
+#root:has(.mnd-desktop-shell) {
+  height: auto !important;
+  min-height: 100vh !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Estrutura principal sem corte */
+.mnd-desktop-shell,
+.mnd-page,
+.mnd-content,
+.mnd-main-grid {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* Espaço real no final da página. Não é só padding: é elemento no DOM. */
+.mnd-page-bottom-spacer {
+  display: block !important;
+  width: 100% !important;
+  height: 760px !important;
+  min-height: 760px !important;
+  flex: 0 0 760px !important;
+  grid-column: 1 / -1 !important;
+  pointer-events: none !important;
+}
+
+/* Backup extra caso algum navegador ignore o spacer em grid/flex */
+#root:has(.mnd-desktop-shell)::after,
+.mnd-page::after,
+.mnd-content::after {
+  content: "";
+  display: block !important;
+  width: 100% !important;
+  height: 420px !important;
+  min-height: 420px !important;
+  flex: 0 0 420px !important;
+  grid-column: 1 / -1 !important;
+}
+
+/* Board esquerdo: sem scroll próprio, acompanha a página */
+@media (min-width: 761px) {
+  .mnd-profile-card {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 80px !important;
+  }
+
+  .mnd-profile-card::after {
+    display: none !important;
+    content: none !important;
+    height: 0 !important;
+  }
+
+  .mnd-profile-card::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .mnd-profile-card {
+    scrollbar-width: none !important;
+  }
+
+  .mnd-main-grid {
+    align-items: start !important;
+    overflow: visible !important;
+  }
+
+  /* Ficha complementar continua com scroll próprio */
+  .mnds-board {
+    height: min(760px, calc(100vh - 135px)) !important;
+    min-height: 560px !important;
+    max-height: min(760px, calc(100vh - 135px)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: 180px !important;
+    padding-right: 18px !important;
+    scrollbar-gutter: stable both-edges !important;
+    overscroll-behavior: contain !important;
+  }
+}
+
+/* Barra principal visível */
+body:has(.mnd-desktop-shell)::-webkit-scrollbar {
+  width: 13px !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-track {
+  background: #161310 !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+  border-radius: 999px !important;
+  border: 2px solid #161310 !important;
+}
+
+body:has(.mnd-desktop-shell) {
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a #161310 !important;
+}
