@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import MyNinjaDesktopSheet from "./MyNinjaDesktopSheet";
+import CharacterSkillTree from "../CharacterSkillTree";
 
 function valueFrom(character, keys, fallback = "—") {
   for (const key of keys) {
@@ -501,39 +502,19 @@ export default function MyNinjaDesktopHall({
           )}
 
           {activeTab === "tree" && (
-            <section className="mnd-teia-grid">
-              <article className="mnd-card">
+            <section className="mnd-real-teia-section">
+              <article className="mnd-card mnd-real-teia-card">
                 <div className="mnd-section-kicker">TEIA DE HABILIDADES</div>
                 <h3>Teia Shinobi</h3>
                 <p>
-                  Visão resumida do caminho técnico do personagem. A teia real pode
-                  continuar sendo carregada pelo componente original do sistema.
+                  Use seus pontos para desbloquear habilidades do personagem.
                 </p>
 
-                <dl className="mnd-data-list">
-                  <div><dt>Estilo principal</dt><dd>{data.style}</dd></div>
-                  <div><dt>Clã</dt><dd>{data.clan}</dd></div>
-                  <div><dt>Pontos disponíveis</dt><dd>{data.skillPoints}</dd></div>
-                </dl>
-              </article>
-
-              <article className="mnd-card mnd-teia-board">
-                <div className="mnd-teia-node">
-                  <span>Base</span>
-                  <strong>Controle de Chakra</strong>
-                  <p>Fundamento para progressão técnica.</p>
-                </div>
-
-                <div className="mnd-teia-node">
-                  <span>Especialização</span>
-                  <strong>{data.style}</strong>
-                  <p>Caminho principal do personagem.</p>
-                </div>
-
-                <div className="mnd-teia-node">
-                  <span>Avançado</span>
-                  <strong>{data.clan !== "—" ? data.clan : "Desenvolvimento"}</strong>
-                  <p>Área vinculada à progressão narrativa.</p>
+                <div className="mnd-real-teia-wrapper">
+                  <CharacterSkillTree
+                    character={character}
+                    onCharacterUpdated={onCharacterUpdated}
+                  />
                 </div>
               </article>
             </section>

@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 
+const PROFILE_SHEET_BUCKET = "character-assets";
+
 const EMPTY_PROOF = {
   title: "",
   status: "Pendente",
   description: "",
   imageUrl: "",
+  storagePath: "",
+  originalName: "",
+  compressedSize: "",
 };
 
 const EMPTY_CONTRACT = {
@@ -16,6 +21,7 @@ const EMPTY_CONTRACT = {
 };
 
 const EMPTY_ITEM = {
+  kind: "item",
   name: "",
   quantity: "",
   description: "",
@@ -111,6 +117,77 @@ function normalizeSheet(profileSheet) {
   };
 }
 
+function formatFileSize(size) {
+  const number = Number(size || 0);
+
+  if (!number) return "";
+
+  if (number < 1024) return ;
+
+  if (number < 1024 * 1024) return ;
+
+  return ;
+}
+
+function slugify(value) {
+  return String(value || "arquivo")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+}
+
+function loadImageFromFile(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Não foi possível carregar a imagem."));
+    };
+
+    image.src = objectUrl;
+  });
+}
+
+async function compressImage(file) {
+  const image = await loadImageFromFile(file);
+  const canvas = document.createElement("canvas");
+  const maxSide = 1600;
+
+  const ratio = Math.min(1, maxSide / Math.max(image.width, image.height));
+
+  canvas.width = Math.max(1, Math.round(image.width * ratio));
+  canvas.height = Math.max(1, Math.round(image.height * ratio));
+
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    throw new Error("Não foi possível preparar a imagem.");
+  }
+
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error("Não foi possível comprimir a imagem."));
+      },
+      "image/webp",
+      0.82
+    );
+  });
+}
+
 function Field({ label, children }) {
   return (
     <label className="mnds-field">
@@ -173,10 +250,45 @@ export default function MyNinjaDesktopSheet({
   const [sheet, setSheet] = useState(() => normalizeSheet(character?.profile_sheet));
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [uploadingProofIndex, setUploadingProofIndex] = useState(null);
+
+  const [techniques, setTechniques] = useState([]);
+  const [techniquesLoading, setTechniquesLoading] = useState(false);
+  const [techniqueSearch, setTechniqueSearch] = useState("");
+  const [techniqueRankFilter, setTechniqueRankFilter] = useState("Todos");
 
   useEffect(() => {
     setSheet(normalizeSheet(character?.profile_sheet));
   }, [character?.id, character?.profile_sheet]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadTechniques() {
+      if (!isSupabaseConfigured || !supabase) return;
+
+      setTechniquesLoading(true);
+
+      const { data, error } = await supabase
+        .from("techniques")
+        .select("*")
+        .order("name", { ascending: true });
+
+      if (!cancelled) {
+        if (!error) {
+          setTechniques(data || []);
+        }
+
+        setTechniquesLoading(false);
+      }
+    }
+
+    loadTechniques();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const sections = useMemo(
     () => [
@@ -191,6 +303,28 @@ export default function MyNinjaDesktopSheet({
     ],
     []
   );
+
+  const techniqueRanks = useMemo(() => {
+    const ranks = new Set(["Todos"]);
+
+    techniques.forEach((technique) => {
+      if (technique.rank) ranks.add(technique.rank);
+    });
+
+    return Array.from(ranks);
+  }, [techniques]);
+
+  const filteredTechniques = useMemo(() => {
+    const search = techniqueSearch.trim().toLowerCase();
+
+    return techniques.filter((technique) => {
+      const text = `${technique.name || ""} ${technique.original_name || ""} ${technique.classification || ""} ${technique.nature || ""}`.toLowerCase();
+      const matchesSearch = !search || text.includes(search);
+      const matchesRank = techniqueRankFilter === "Todos" || technique.rank === techniqueRankFilter;
+
+      return matchesSearch && matchesRank;
+    });
+  }, [techniques, techniqueSearch, techniqueRankFilter]);
 
   const updateObject = (key, field, value) => {
     setSheet((current) => ({
@@ -217,6 +351,21 @@ export default function MyNinjaDesktopSheet({
     });
   };
 
+  const patchArrayItem = (key, index, patch) => {
+    setSheet((current) => {
+      const list = Array.isArray(current[key]) ? [...current[key]] : [];
+      list[index] = {
+        ...(list[index] || {}),
+        ...patch,
+      };
+
+      return {
+        ...current,
+        [key]: list,
+      };
+    });
+  };
+
   const addArrayItem = (key, emptyItem) => {
     setSheet((current) => ({
       ...current,
@@ -230,6 +379,93 @@ export default function MyNinjaDesktopSheet({
       [key]: (Array.isArray(current[key]) ? current[key] : []).filter((_, itemIndex) => itemIndex !== index),
     }));
   };
+
+  async function uploadProofImage(index, file) {
+    setMessage("");
+
+    if (!file) return;
+
+    if (!file.type?.startsWith("image/")) {
+      setMessage("Envie uma imagem válida.");
+      return;
+    }
+
+    if (!character?.id) {
+      setMessage("Crie ou carregue um ninja antes de anexar imagens.");
+      return;
+    }
+
+    if (!isSupabaseConfigured || !supabase) {
+      setMessage("Supabase não está configurado.");
+      return;
+    }
+
+    setUploadingProofIndex(index);
+
+    try {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !userData?.user?.id) {
+        throw new Error(userError?.message || "Faça login para enviar imagens.");
+      }
+
+      const compressedBlob = await compressImage(file);
+      const safeName = slugify(file.name.replace(/\.[^.]+$/, ""));
+      const storagePath = `${userData.user.id}/${character.id}/academic-proofs/${Date.now()}-${safeName}.webp`;
+
+      const { error: uploadError } = await supabase.storage
+        .from(PROFILE_SHEET_BUCKET)
+        .upload(storagePath, compressedBlob, {
+          contentType: "image/webp",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
+
+      const { data: publicData } = supabase.storage
+        .from(PROFILE_SHEET_BUCKET)
+        .getPublicUrl(storagePath);
+
+      patchArrayItem("academicProofs", index, {
+        imageUrl: publicData.publicUrl,
+        storagePath,
+        originalName: file.name,
+        compressedSize: compressedBlob.size,
+      });
+
+      setMessage("Imagem anexada à prova. Clique em salvar ficha para gravar.");
+    } catch (error) {
+      setMessage();
+    } finally {
+      setUploadingProofIndex(null);
+    }
+  }
+
+  function addTechniqueToInventory(technique) {
+    const record = {
+      kind: "jutsu",
+      techniqueId: technique.id,
+      name: technique.name || "Técnica sem nome",
+      originalName: technique.original_name || "",
+      rank: technique.rank || "",
+      classification: technique.classification || "",
+      nature: technique.nature || "",
+      total: technique.total ?? "",
+      description: technique.description || technique.details || "",
+      source: "shinobidex",
+      quantity: "1",
+      notes: "Adicionado a partir da Shinobidex / ANCED.",
+    };
+
+    setSheet((current) => ({
+      ...current,
+      inventoryRecords: [...(Array.isArray(current.inventoryRecords) ? current.inventoryRecords : []), record],
+    }));
+
+    setMessage();
+  }
 
   async function saveSheet() {
     setMessage("");
@@ -266,7 +502,7 @@ export default function MyNinjaDesktopSheet({
 
       setMessage("Ficha complementar salva com sucesso.");
     } catch (error) {
-      setMessage(`Erro ao salvar ficha: ${error.message}`);
+      setMessage();
     } finally {
       setIsSaving(false);
     }
@@ -276,12 +512,12 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Registro de Provas"
-        description="Comprovações oficiais do personagem: treinos, cenas, aprovações, prints e decisões do mestre. Sem número de confirmação."
+        description="Comprovações oficiais do personagem: treinos, cenas, aprovações, prints, imagens e decisões do mestre. Sem número de confirmação."
       />
 
       <div className="mnds-list">
         {(sheet.academicProofs || []).map((proof, index) => (
-          <article className="mnds-record" key={`proof-${index}`}>
+          <article className="mnds-record" key={index}>
             <div className="mnds-record-head">
               <strong>Prova #{index + 1}</strong>
               <button type="button" onClick={() => removeArrayItem("academicProofs", index)}>
@@ -307,13 +543,35 @@ export default function MyNinjaDesktopSheet({
               </Field>
             </div>
 
-            <Field label="Imagem / Print / Link">
-              <TextInput
-                value={proof.imageUrl || proof.image_url || proof.url}
-                onChange={(value) => updateArrayItem("academicProofs", index, "imageUrl", value)}
-                placeholder="Cole aqui o link da imagem, print ou referência"
-              />
+            <Field label="Imagem / Print">
+              <div className="mnds-file-row">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => uploadProofImage(index, event.target.files?.[0])}
+                />
+
+                <span>
+                  {uploadingProofIndex === index
+                    ? "Enviando imagem..."
+                    : proof.originalName || "Escolha uma imagem/print"}
+                </span>
+              </div>
             </Field>
+
+            {proof.imageUrl ? (
+              <div className="mnds-proof-preview">
+                <a href={proof.imageUrl} target="_blank" rel="noreferrer">
+                  Abrir imagem anexada
+                </a>
+
+                <img src={proof.imageUrl} alt={proof.title || "Prova anexada"} />
+
+                {proof.compressedSize ? (
+                  <small>Arquivo otimizado: {formatFileSize(proof.compressedSize)}</small>
+                ) : null}
+              </div>
+            ) : null}
 
             <Field label="Descrição">
               <TextArea
@@ -384,7 +642,7 @@ export default function MyNinjaDesktopSheet({
 
       <div className="mnds-list">
         {(sheet.contracts || []).map((contract, index) => (
-          <article className="mnds-record" key={`contract-${index}`}>
+          <article className="mnds-record" key={index}>
             <div className="mnds-record-head">
               <strong>Contrato #{index + 1}</strong>
               <button type="button" onClick={() => removeArrayItem("contracts", index)}>
@@ -431,42 +689,121 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Inventário"
-        description="Itens e equipamentos dentro da Ficha Complementar, sem sistema de raridade."
+        description="Itens, equipamentos e jutsus adicionados a partir da Shinobidex / ANCED."
       />
+
+      <div className="mnds-inventory-actions">
+        <button type="button" className="mnds-add-button" onClick={() => addArrayItem("inventoryRecords", EMPTY_ITEM)}>
+          Adicionar item
+        </button>
+      </div>
+
+      <div className="mnds-shinobidex-picker">
+        <div className="mnds-picker-head">
+          <div>
+            <strong>Adicionar jutsu da Shinobidex</strong>
+            <p>{techniquesLoading ? "Carregando técnicas..." : String(filteredTechniques.length) + " técnica(s) encontrada(s)."}</p>
+          </div>
+        </div>
+
+        <div className="mnds-grid two">
+          <Field label="Buscar técnica">
+            <TextInput
+              value={techniqueSearch}
+              onChange={setTechniqueSearch}
+              placeholder="Nome, classificação, natureza..."
+            />
+          </Field>
+
+          <Field label="Rank">
+            <SelectInput
+              value={techniqueRankFilter}
+              onChange={setTechniqueRankFilter}
+              options={techniqueRanks}
+            />
+          </Field>
+        </div>
+
+        <div className="mnds-technique-list">
+          {filteredTechniques.slice(0, 12).map((technique) => (
+            <article className="mnds-technique-card" key={technique.id}>
+              <div>
+                <span>{technique.rank || "—"}</span>
+                <strong>{technique.name || "Técnica sem nome"}</strong>
+                {technique.original_name ? <small>{technique.original_name}</small> : null}
+
+                <p>
+                  {[technique.classification, technique.nature, technique.total ? String(technique.total) + " pts" : ""]
+                    .filter(Boolean)
+                    .join(" • ")}
+                </p>
+              </div>
+
+              <button type="button" onClick={() => addTechniqueToInventory(technique)}>
+                Adicionar
+              </button>
+            </article>
+          ))}
+
+          {!techniquesLoading && filteredTechniques.length === 0 ? (
+            <div className="mnds-empty">Nenhuma técnica encontrada.</div>
+          ) : null}
+        </div>
+      </div>
 
       <div className="mnds-list">
         {(sheet.inventoryRecords || []).map((item, index) => (
-          <article className="mnds-record" key={`item-${index}`}>
+          <article className={item.kind === "jutsu" ? "mnds-record is-jutsu" : "mnds-record"} key={index}>
             <div className="mnds-record-head">
-              <strong>Item #{index + 1}</strong>
+              <strong>{item.kind === "jutsu" ? "Jutsu" : "Item"} #{index + 1}</strong>
               <button type="button" onClick={() => removeArrayItem("inventoryRecords", index)}>
                 Remover
               </button>
             </div>
 
             <div className="mnds-grid two">
-              <Field label="Nome do item">
+              <Field label={item.kind === "jutsu" ? "Nome da técnica" : "Nome do item"}>
                 <TextInput
                   value={item.name}
                   onChange={(value) => updateArrayItem("inventoryRecords", index, "name", value)}
-                  placeholder="Ex.: Kunai especial"
+                  placeholder="Nome"
                 />
               </Field>
 
-              <Field label="Quantidade">
+              <Field label={item.kind === "jutsu" ? "Rank" : "Quantidade"}>
                 <TextInput
-                  value={item.quantity}
-                  onChange={(value) => updateArrayItem("inventoryRecords", index, "quantity", value)}
-                  placeholder="Ex.: 3"
+                  value={item.kind === "jutsu" ? item.rank : item.quantity}
+                  onChange={(value) => updateArrayItem("inventoryRecords", index, item.kind === "jutsu" ? "rank" : "quantity", value)}
+                  placeholder={item.kind === "jutsu" ? "Rank ANCED" : "Quantidade"}
                 />
               </Field>
             </div>
+
+            {item.kind === "jutsu" ? (
+              <div className="mnds-grid two">
+                <Field label="Classificação">
+                  <TextInput
+                    value={item.classification}
+                    onChange={(value) => updateArrayItem("inventoryRecords", index, "classification", value)}
+                    placeholder="Ninjutsu, Genjutsu..."
+                  />
+                </Field>
+
+                <Field label="Natureza">
+                  <TextInput
+                    value={item.nature}
+                    onChange={(value) => updateArrayItem("inventoryRecords", index, "nature", value)}
+                    placeholder="Katon, Suiton..."
+                  />
+                </Field>
+              </div>
+            ) : null}
 
             <Field label="Descrição">
               <TextArea
                 value={item.description}
                 onChange={(value) => updateArrayItem("inventoryRecords", index, "description", value)}
-                placeholder="Descrição e função do item."
+                placeholder="Descrição e função."
               />
             </Field>
 
@@ -480,10 +817,6 @@ export default function MyNinjaDesktopSheet({
           </article>
         ))}
       </div>
-
-      <button type="button" className="mnds-add-button" onClick={() => addArrayItem("inventoryRecords", EMPTY_ITEM)}>
-        Adicionar item
-      </button>
     </div>
   );
 
@@ -496,7 +829,7 @@ export default function MyNinjaDesktopSheet({
 
       <div className="mnds-list">
         {(sheet.missionRecords || []).map((mission, index) => (
-          <article className="mnds-record" key={`mission-${index}`}>
+          <article className="mnds-record" key={index}>
             <div className="mnds-record-head">
               <strong>Missão #{index + 1}</strong>
               <button type="button" onClick={() => removeArrayItem("missionRecords", index)}>
@@ -591,7 +924,7 @@ export default function MyNinjaDesktopSheet({
 
       <div className="mnds-list">
         {(sheet.hiddenActionRecords || []).map((action, index) => (
-          <article className="mnds-record" key={`hidden-${index}`}>
+          <article className="mnds-record" key={index}>
             <div className="mnds-record-head">
               <strong>Ação oculta #{index + 1}</strong>
               <button type="button" onClick={() => removeArrayItem("hiddenActionRecords", index)}>
