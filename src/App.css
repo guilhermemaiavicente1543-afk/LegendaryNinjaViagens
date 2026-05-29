@@ -32133,3 +32133,72 @@ body:has(.mnd-desktop-shell) {
   scrollbar-width: thin !important;
   scrollbar-color: #ff7a1a rgba(0, 0, 0, 0.32) !important;
 }
+
+/* =========================================================
+   FIX — Scroll geral da página Meu Ninja desktop
+   ========================================================= */
+
+html:has(.mnd-desktop-shell),
+body:has(.mnd-desktop-shell) {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+}
+
+#root:has(.mnd-desktop-shell),
+.app:has(.mnd-desktop-shell),
+.mnd-desktop-shell,
+.mnd-page,
+.mnd-content {
+  height: auto !important;
+  min-height: 100vh !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.mnd-content {
+  padding-bottom: 180px !important;
+}
+
+@media (min-width: 761px) {
+  .mnds-board {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 640px !important;
+    overflow: visible !important;
+    padding-bottom: 120px !important;
+  }
+
+  .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 18px !important;
+    z-index: 5 !important;
+  }
+
+  .mnds-menu {
+    position: sticky !important;
+    top: 96px !important;
+    max-height: calc(100vh - 120px) !important;
+    overflow-y: auto !important;
+  }
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-track {
+  background: #161310 !important;
+}
+
+body:has(.mnd-desktop-shell)::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff7a1a, #8a4210) !important;
+  border-radius: 999px !important;
+  border: 2px solid #161310 !important;
+}
+
+body:has(.mnd-desktop-shell) {
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7a1a #161310 !important;
+}

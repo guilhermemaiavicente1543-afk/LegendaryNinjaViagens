@@ -62,6 +62,18 @@ const DEFAULT_SHEET = {
   narrativeDevelopment: "",
 };
 
+function getTechniqueRank(technique) {
+  return technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
+}
+
+function getTechniquePoints(technique) {
+  return technique?.anced_total ?? technique?.total ?? "";
+}
+
+function getTechniqueDescription(technique) {
+  return technique?.rpg_effect || technique?.summary || technique?.description || technique?.details || "";
+}
+
 function normalizeSheet(profileSheet) {
   const raw = profileSheet && typeof profileSheet === "object" ? profileSheet : {};
 
@@ -276,9 +288,9 @@ export default function MyNinjaDesktopSheet({
       setTechniquesLoading(true);
 
       const attempts = [
-        () => supabase.from("techniques").select("*").order("name", { ascending: true }),
-        () => supabase.from("techniques").select("*").order("created_at", { ascending: false }),
-        () => supabase.from("techniques").select("*"),
+        () => supabase.from("technique_catalog").select("*").order("name", { ascending: true }),
+        () => supabase.from("technique_catalog").select("*").order("created_at", { ascending: false }),
+        () => supabase.from("technique_catalog").select("*"),
       ];
 
       let lastError = null;
@@ -321,7 +333,7 @@ export default function MyNinjaDesktopSheet({
       ["inventory", "Inventário"],
       ["missions", "Atividades e Missões"],
       ["status", "Status do Personagem"],
-      ["hidden", "APR Especial / Ações Ocultas"],
+      ["hidden", "Ações Ocultas"],
       ["narrative", "Desenvolvimento Narrativo"],
     ],
     []
@@ -331,7 +343,8 @@ export default function MyNinjaDesktopSheet({
     const ranks = new Set(["Todos"]);
 
     techniques.forEach((technique) => {
-      if (technique.rank) ranks.add(technique.rank);
+      const rank = getTechniqueRank(technique);
+      if (rank) ranks.add(rank);
     });
 
     return Array.from(ranks);
@@ -341,13 +354,20 @@ export default function MyNinjaDesktopSheet({
     const search = techniqueSearch.trim().toLowerCase();
 
     return techniques.filter((technique) => {
-      const text = `${technique.name || ""} ${technique.original_name || ""} ${technique.classification || ""} ${technique.nature || ""}`.toLowerCase();
+      const text = String((technique.name || "") + " " + (technique.original_name || "") + " " + (technique.classification || "") + " " + (technique.nature || "") + " " + (technique.anced_rank || "") + " " + (technique.wiki_rank || "") + " " + (technique.summary || "") + " " + (technique.rpg_effect || "")).toLowerCase();
       const matchesSearch = !search || text.includes(search);
-      const matchesRank = techniqueRankFilter === "Todos" || technique.rank === techniqueRankFilter;
+      const matchesRank = techniqueRankFilter === "Todos" || getTechniqueRank(technique) === techniqueRankFilter;
 
       return matchesSearch && matchesRank;
     });
   }, [techniques, techniqueSearch, techniqueRankFilter]);
+
+  const updateRootField = (field, value) => {
+    setSheet((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
 
   const updateObject = (key, field, value) => {
     setSheet((current) => ({
@@ -472,11 +492,11 @@ export default function MyNinjaDesktopSheet({
       techniqueId: technique.id,
       name: technique.name || "Técnica sem nome",
       originalName: technique.original_name || "",
-      rank: technique.rank || "",
+      rank: getTechniqueRank(technique),
       classification: technique.classification || "",
       nature: technique.nature || "",
-      total: technique.total ?? "",
-      description: technique.description || technique.details || "",
+      total: getTechniquePoints(technique),
+      description: getTechniqueDescription(technique),
       source: "shinobidex",
       quantity: "1",
       notes: "Adicionado a partir da Shinobidex / ANCED.",
@@ -670,51 +690,35 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Contratos e Vínculos"
-        description="Pactos, invocações, laços especiais, vínculos políticos e relações narrativas."
+        description="Contratos de invocação, vínculos especiais e casos excepcionais do personagem."
       />
 
-      <div className="mnds-list">
-        {(sheet.contracts || []).map((contract, index) => (
-          <article className="mnds-record" key={index}>
-            <div className="mnds-record-head">
-              <strong>Contrato #{index + 1}</strong>
-              <button type="button" onClick={() => removeArrayItem("contracts", index)}>
-                Remover
-              </button>
-            </div>
+      <Field label="Invocação Mestre">
+        <TextArea
+          value={sheet.masterContract || sheet.masterSummon || ""}
+          onChange={(value) => updateRootField("masterContract", value)}
+          placeholder="Contrato principal do personagem. Ex.: invocação mestre, pacto central ou vínculo dominante."
+          rows={5}
+        />
+      </Field>
 
-            <div className="mnds-grid two">
-              <Field label="Título">
-                <TextInput
-                  value={contract.title}
-                  onChange={(value) => updateArrayItem("contracts", index, "title", value)}
-                  placeholder="Ex.: Contrato de invocação"
-                />
-              </Field>
+      <Field label="Invocação secundária">
+        <TextArea
+          value={sheet.secondaryContract || sheet.secondarySummon || ""}
+          onChange={(value) => updateRootField("secondaryContract", value)}
+          placeholder="Contrato secundário, vínculo auxiliar, invocação complementar ou pacto menor."
+          rows={5}
+        />
+      </Field>
 
-              <Field label="Tipo">
-                <TextInput
-                  value={contract.type}
-                  onChange={(value) => updateArrayItem("contracts", index, "type", value)}
-                  placeholder="Invocação, pacto, vínculo, organização..."
-                />
-              </Field>
-            </div>
-
-            <Field label="Descrição">
-              <TextArea
-                value={contract.description}
-                onChange={(value) => updateArrayItem("contracts", index, "description", value)}
-                placeholder="Detalhe o vínculo, condição, origem e validade."
-              />
-            </Field>
-          </article>
-        ))}
-      </div>
-
-      <button type="button" className="mnds-add-button" onClick={() => addArrayItem("contracts", EMPTY_CONTRACT)}>
-        Adicionar contrato ou vínculo
-      </button>
+      <Field label="Casos Especiais">
+        <TextArea
+          value={sheet.specialContractCases || sheet.specialCases || ""}
+          onChange={(value) => updateRootField("specialContractCases", value)}
+          placeholder="Casos especiais, exceções, observações administrativas ou vínculos raros."
+          rows={5}
+        />
+      </Field>
     </div>
   );
 
@@ -761,12 +765,12 @@ export default function MyNinjaDesktopSheet({
           {filteredTechniques.slice(0, 12).map((technique) => (
             <article className="mnds-technique-card" key={technique.id}>
               <div>
-                <span>{technique.rank || "—"}</span>
+                <span>{getTechniqueRank(technique) || "—"}</span>
                 <strong>{technique.name || "Técnica sem nome"}</strong>
                 {technique.original_name ? <small>{technique.original_name}</small> : null}
 
                 <p>
-                  {[technique.classification, technique.nature, technique.total ? String(technique.total) + " pts" : ""]
+                  {[technique.classification, technique.nature, getTechniquePoints(technique) ? String(getTechniquePoints(technique)) + " pts" : ""]
                     .filter(Boolean)
                     .join(" • ")}
                 </p>
@@ -909,40 +913,65 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Status do Personagem"
-        description="Condição atual, bloqueios, disponibilidade narrativa, ferimentos e restrições."
+        description="Valores numéricos e atributos complementares do personagem."
       />
 
       <div className="mnds-grid two">
-        <Field label="Condição atual">
+        <Field label="Chakra total">
           <TextInput
-            value={sheet.characterStatus?.condition}
-            onChange={(value) => updateObject("characterStatus", "condition", value)}
-            placeholder="Ex.: Disponível, ferido, preso..."
+            value={sheet.totalChakra || ""}
+            onChange={(value) => updateRootField("totalChakra", value)}
+            placeholder="0"
           />
         </Field>
 
-        <Field label="Localização narrativa">
+        <Field label="Estamina total">
           <TextInput
-            value={sheet.characterStatus?.location}
-            onChange={(value) => updateObject("characterStatus", "location", value)}
-            placeholder="Ex.: Amegakure"
+            value={sheet.totalStamina || ""}
+            onChange={(value) => updateRootField("totalStamina", value)}
+            placeholder="0"
+          />
+        </Field>
+
+        <Field label="Recuperação de chakra">
+          <TextInput
+            value={sheet.chakraRecovery || ""}
+            onChange={(value) => updateRootField("chakraRecovery", value)}
+            placeholder="0"
+          />
+        </Field>
+
+        <Field label="Recuperação de estamina">
+          <TextInput
+            value={sheet.staminaRecovery || ""}
+            onChange={(value) => updateRootField("staminaRecovery", value)}
+            placeholder="0"
+          />
+        </Field>
+
+        <Field label="Velocidade">
+          <TextInput
+            value={sheet.speed || ""}
+            onChange={(value) => updateRootField("speed", value)}
+            placeholder="Velocidade atual, bônus e origem."
+          />
+        </Field>
+
+        <Field label="Percepção">
+          <TextInput
+            value={sheet.perception || ""}
+            onChange={(value) => updateRootField("perception", value)}
+            placeholder="Percepção atual, bônus e origem."
           />
         </Field>
       </div>
 
-      <Field label="Restrições">
+      <Field label="Outros atributos">
         <TextArea
-          value={sheet.characterStatus?.restrictions}
-          onChange={(value) => updateObject("characterStatus", "restrictions", value)}
-          placeholder="Bloqueios, punições, limitações ou condições especiais."
-        />
-      </Field>
-
-      <Field label="Observações">
-        <TextArea
-          value={sheet.characterStatus?.notes}
-          onChange={(value) => updateObject("characterStatus", "notes", value)}
-          placeholder="Observações gerais de status."
+          value={sheet.otherStats || ""}
+          onChange={(value) => updateRootField("otherStats", value)}
+          placeholder="Outros atributos, modificadores, bônus e penalidades."
+          rows={5}
         />
       </Field>
     </div>
@@ -951,7 +980,7 @@ export default function MyNinjaDesktopSheet({
   const renderHidden = () => (
     <div className="mnds-section">
       <SectionHeader
-        title="APR Especial / Ações Ocultas"
+        title="Ações Ocultas"
         description="Ações sigilosas, APR especial, decisões ocultas e registros privados."
       />
 
@@ -1004,20 +1033,80 @@ export default function MyNinjaDesktopSheet({
     <div className="mnds-section">
       <SectionHeader
         title="Desenvolvimento Narrativo"
-        description="Evolução do personagem, arcos, marcos históricos e progressão narrativa."
+        description="Informações de personalidade, motivações, evolução e características únicas."
       />
 
-      <Field label="Resumo narrativo">
+      <Field label="Motivação">
         <TextArea
-          value={sheet.narrativeDevelopment}
-          onChange={(value) =>
-            setSheet((current) => ({
-              ...current,
-              narrativeDevelopment: value,
-            }))
-          }
-          placeholder="Arcos, marcos, evolução, conflitos, mudanças importantes e conquistas."
-          rows={8}
+          value={sheet.motivation || ""}
+          onChange={(value) => updateRootField("motivation", value)}
+          placeholder="O que move o personagem?"
+          rows={4}
+        />
+      </Field>
+
+      <Field label="Desenvolvimento">
+        <TextArea
+          value={sheet.development || sheet.narrativeDevelopment || ""}
+          onChange={(value) => updateRootField("development", value)}
+          placeholder="Mudanças, aprendizados e evolução ao longo do RPG."
+          rows={5}
+        />
+      </Field>
+
+      <Field label="Peculiaridade(s)">
+        <TextArea
+          value={sheet.peculiarities || ""}
+          onChange={(value) => updateRootField("peculiarities", value)}
+          placeholder="Características únicas do personagem."
+          rows={4}
+        />
+      </Field>
+
+      <div className="mnds-grid two">
+        <Field label="Mania(s)">
+          <TextArea
+            value={sheet.manias || ""}
+            onChange={(value) => updateRootField("manias", value)}
+            placeholder="Hábitos repetitivos ou comportamentos marcantes."
+            rows={4}
+          />
+        </Field>
+
+        <Field label="Defeito(s)">
+          <TextArea
+            value={sheet.defects || ""}
+            onChange={(value) => updateRootField("defects", value)}
+            placeholder="Defeitos, fraquezas e pontos negativos."
+            rows={4}
+          />
+        </Field>
+      </div>
+
+      <div className="mnds-grid two">
+        <Field label="Comida(s) preferida(s)">
+          <TextInput
+            value={sheet.favoriteFoods || ""}
+            onChange={(value) => updateRootField("favoriteFoods", value)}
+            placeholder="Comidas preferidas."
+          />
+        </Field>
+
+        <Field label="Comida que não gosta">
+          <TextInput
+            value={sheet.dislikedFoods || ""}
+            onChange={(value) => updateRootField("dislikedFoods", value)}
+            placeholder="Comidas que não aprecia."
+          />
+        </Field>
+      </div>
+
+      <Field label="Informações adicionais">
+        <TextArea
+          value={sheet.additionalInfo || ""}
+          onChange={(value) => updateRootField("additionalInfo", value)}
+          placeholder="Qualquer informação extra relevante."
+          rows={5}
         />
       </Field>
     </div>
