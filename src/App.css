@@ -34679,3 +34679,211 @@ body:has(.mnd-desktop-shell) .mnd-overview-board-card dd {
     text-align: left !important;
   }
 }
+
+/* =========================================================
+   RESET OFICIAL — Perfil desktop LN
+   Este bloco ignora os boards antigos e usa só o board oficial
+   ========================================================= */
+
+/* Esconde qualquer resto antigo/duplicado de boards */
+body:has(.mnd-official-profile-board) .mnd-profile-overview-boards,
+body:has(.mnd-official-profile-board) .mnd-character-info-board,
+body:has(.mnd-official-profile-board) .ln-premium-profile-board,
+body:has(.mnd-official-profile-board) .profile-section-card,
+body:has(.mnd-official-profile-board) .profile-info-board,
+body:has(.mnd-official-profile-board) .character-info-board,
+body:has(.mnd-official-profile-board) .character-profile-extra,
+body:has(.mnd-official-profile-board) .identity-board,
+body:has(.mnd-official-profile-board) .affiliation-board,
+body:has(.mnd-official-profile-board) .map-icon-board {
+  display: none !important;
+}
+
+/* Nunca esconda o board oficial */
+.mnd-official-profile-board,
+.mnd-official-profile-board * {
+  box-sizing: border-box !important;
+}
+
+.mnd-official-profile-board {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 26px !important;
+  margin-bottom: 80px !important;
+  grid-column: 1 / -1 !important;
+}
+
+/* O editor fica acima do grid, no mesmo visual */
+.mnd-official-profile-board .mnd-info-editor-shell {
+  margin: 0 0 20px !important;
+}
+
+/* Grid amplo: este é o design do segundo board */
+.mnd-official-profile-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(230px, 0.52fr) !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+/* Card oficial */
+.mnd-official-card {
+  min-width: 0 !important;
+  width: 100% !important;
+  border: 1px solid rgba(255, 136, 36, 0.18) !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0)),
+    radial-gradient(circle at top right, rgba(255, 128, 32, 0.08), transparent 42%),
+    rgba(18, 15, 13, 0.92) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 18px 40px rgba(0, 0, 0, 0.22) !important;
+  overflow: hidden !important;
+}
+
+/* Título laranja */
+.mnd-official-card header {
+  padding: 20px 22px 8px !important;
+}
+
+.mnd-official-card header span {
+  display: inline-block !important;
+  color: #ff922f !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+/* Linhas de resposta */
+.mnd-official-card dl {
+  margin: 0 !important;
+  padding: 8px 22px 22px !important;
+}
+
+.mnd-official-card dl div {
+  display: grid !important;
+  grid-template-columns: minmax(170px, 240px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: center !important;
+  min-height: 48px !important;
+  padding: 8px 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.055) !important;
+}
+
+.mnd-official-card dl div:first-child {
+  border-top: none !important;
+}
+
+.mnd-official-card dt {
+  min-width: 0 !important;
+  color: rgba(233, 227, 220, 0.62) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.25 !important;
+  font-weight: 500 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+}
+
+.mnd-official-card dd {
+  min-width: 0 !important;
+  margin: 0 !important;
+  color: #f2ece6 !important;
+  font-size: 0.95rem !important;
+  font-weight: 750 !important;
+  line-height: 1.35 !important;
+  text-align: right !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+/* Ícone do mapa */
+.mnd-official-map-card {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mnd-official-map-preview {
+  flex: 1 !important;
+  padding: 18px 22px 24px !important;
+  display: grid !important;
+  place-items: center !important;
+  gap: 12px !important;
+  text-align: center !important;
+}
+
+.mnd-official-map-circle {
+  width: 96px !important;
+  height: 96px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 136, 36, 0.18) !important;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 62%),
+    rgba(12, 10, 9, 0.95) !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.mnd-official-map-circle svg {
+  width: 42px !important;
+  height: 42px !important;
+  opacity: 0.86 !important;
+}
+
+.mnd-official-map-circle img {
+  width: 58px !important;
+  height: 58px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.mnd-official-map-preview strong {
+  max-width: 100% !important;
+  color: rgba(233, 227, 220, 0.82) !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.mnd-official-map-preview span {
+  color: rgba(233, 227, 220, 0.48) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.35 !important;
+}
+
+/* O card esquerdo antigo não deve tentar carregar boards extras */
+.mnd-profile-card {
+  overflow: visible !important;
+}
+
+/* Responsivo */
+@media (max-width: 1360px) and (min-width: 761px) {
+  .mnd-official-profile-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .mnd-official-map-card {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .mnd-official-profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mnd-official-card dl div {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .mnd-official-card dd {
+    text-align: left !important;
+  }
+}
