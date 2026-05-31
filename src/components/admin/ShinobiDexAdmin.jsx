@@ -5,6 +5,7 @@ import LnSelect from "../ui/LnSelect";
 const STATUS_OPTIONS = ["draft", "approved", "needs_review", "archived"];
 const RANK_OPTIONS = ["", "E", "D", "C", "B", "A", "S", "SS"];
 const CONFIDENCE_OPTIONS = ["baixa", "média", "alta"];
+const PAGE_SIZE = 120;
 
 const emptyForm = {
   name: "",
@@ -43,30 +44,61 @@ export default function ShinobiDexAdmin() {
   const [form, setForm] = useState(emptyForm);
 
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("draft");
+  const [statusFilter, setStatusFilter] = useState("needs_review");
   const [confidenceFilter, setConfidenceFilter] = useState("Todas");
   const [rankFilter, setRankFilter] = useState("Todos");
+  const [page, setPage] = useState(1);
+  const [resultTotal, setResultTotal] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [ancedReports, setAncedReports] = useState([]);
+  const [isReportsLoading, setIsReportsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     loadStats();
-    loadTechniques();
-  }, [statusFilter, confidenceFilter, rankFilter]);
+    loadAncedReports();
+  }, []);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      loadTechniques();
+    }, 250);
+
+    return () => window.clearTimeout(timeout);
+  }, [statusFilter, confidenceFilter, rankFilter, search, page]);
 
   async function loadStats() {
     if (!isSupabaseConfigured || !supabase) return;
 
-    const { data, error } = await supabase
-      .from("technique_catalog")
-      .select("id,status,anced_confidence");
+    const PAGE_SIZE = 1000;
+    let from = 0;
+    let allRows = [];
 
-    if (error) return;
+    while (true) {
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error } = await supabase
+        .from("technique_catalog")
+        .select("id,status,anced_confidence")
+        .order("name", { ascending: true })
+        .range(from, to);
+
+      if (error) {
+        setMessage(`Erro ao carregar estatísticas: ${error.message}`);
+        return;
+      }
+
+      allRows = [...allRows, ...(data || [])];
+
+      if (!data || data.length < PAGE_SIZE) break;
+
+      from += PAGE_SIZE;
+    }
 
     const nextStats = {
-      total: data.length,
+      total: allRows.length,
       draft: 0,
       approved: 0,
       needs_review: 0,
@@ -76,7 +108,7 @@ export default function ShinobiDexAdmin() {
       alta: 0
     };
 
-    for (const item of data) {
+    for (const item of allRows) {
       if (item.status && nextStats[item.status] !== undefined) {
         nextStats[item.status] += 1;
       }
@@ -89,6 +121,48 @@ export default function ShinobiDexAdmin() {
     setStats(nextStats);
   }
 
+  async function loadAncedReports() {
+    if (!isSupabaseConfigured || !supabase) return;
+
+    setIsReportsLoading(true);
+
+    const { data, error } = await supabase
+      .from("anced_error_reports")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    setIsReportsLoading(false);
+
+    if (error) {
+      setMessage(`Erro ao carregar denúncias ANCED: ${error.message}`);
+      return;
+    }
+
+    setAncedReports(data || []);
+  }
+
+  async function updateAncedReportStatus(reportId, nextStatus) {
+    if (!supabase || !reportId) return;
+
+    const payload = {
+      status: nextStatus,
+      resolved_at: nextStatus === "resolved" ? new Date().toISOString() : null
+    };
+
+    const { error } = await supabase
+      .from("anced_error_reports")
+      .update(payload)
+      .eq("id", reportId);
+
+    if (error) {
+      setMessage(`Erro ao atualizar denúncia: ${error.message}`);
+      return;
+    }
+
+    await loadAncedReports();
+  }
+
   async function loadTechniques() {
     if (!isSupabaseConfigured || !supabase) {
       setMessage("Supabase não está configurado.");
@@ -98,11 +172,15 @@ export default function ShinobiDexAdmin() {
     setIsLoading(true);
     setMessage("");
 
+    const safePage = Math.max(1, Number(page || 1));
+    const from = (safePage - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
     let query = supabase
       .from("technique_catalog")
-      .select("*")
-      .order("updated_at", { ascending: false })
-      .limit(120);
+      .select("*", { count: "exact" })
+      .order("name", { ascending: true })
+      .range(from, to);
 
     if (statusFilter !== "Todos") {
       query = query.eq("status", statusFilter);
@@ -125,7 +203,7 @@ export default function ShinobiDexAdmin() {
       );
     }
 
-    const { data, error } = await query;
+    const { data, error, count } = await query;
 
     setIsLoading(false);
 
@@ -134,10 +212,21 @@ export default function ShinobiDexAdmin() {
       return;
     }
 
-    setTechniques(data || []);
+    const nextData = data || [];
+    setResultTotal(count ?? nextData.length);
+    setTechniques(nextData);
 
-    if (!selected && data?.length) {
-      selectTechnique(data[0]);
+    if (nextData.length) {
+      const selectedStillVisible = selected?.id
+        ? nextData.some((item) => item.id === selected.id)
+        : false;
+
+      if (!selectedStillVisible) {
+        selectTechnique(nextData[0]);
+      }
+    } else {
+      setSelected(null);
+      setForm(emptyForm);
     }
   }
 
@@ -234,6 +323,12 @@ export default function ShinobiDexAdmin() {
     };
   }, []);
 
+  const totalPages = Math.max(1, Math.ceil(resultTotal / PAGE_SIZE));
+  const firstResult = resultTotal === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const lastResult = Math.min(page * PAGE_SIZE, resultTotal);
+  const canGoPrevious = page > 1;
+  const canGoNext = page < totalPages;
+
   return (
     <section className="shinobidex-admin">
       <div className="shinobidex-admin-stats">
@@ -261,6 +356,11 @@ export default function ShinobiDexAdmin() {
           <strong>{stats.media}</strong>
           <span>Confiança média</span>
         </article>
+
+        <article>
+          <strong>{ancedReports.filter((report) => report.status === "open").length}</strong>
+          <span>Denúncias ANCED</span>
+        </article>
       </div>
 
       <div className="shinobidex-admin-toolbar">
@@ -268,7 +368,10 @@ export default function ShinobiDexAdmin() {
           Buscar técnica
           <input
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
             onKeyDown={(event) => {
               if (event.key === "Enter") loadTechniques();
             }}
@@ -280,7 +383,10 @@ export default function ShinobiDexAdmin() {
           Status
           <LnSelect
             value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
+            onChange={(event) => {
+              setStatusFilter(event.target.value);
+              setPage(1);
+            }}
           >
             <option>Todos</option>
             {STATUS_OPTIONS.map((item) => (
@@ -295,7 +401,10 @@ export default function ShinobiDexAdmin() {
           Confiança
           <LnSelect
             value={confidenceFilter}
-            onChange={(event) => setConfidenceFilter(event.target.value)}
+            onChange={(event) => {
+              setConfidenceFilter(event.target.value);
+              setPage(1);
+            }}
           >
             <option>Todas</option>
             {CONFIDENCE_OPTIONS.map((item) => (
@@ -308,7 +417,10 @@ export default function ShinobiDexAdmin() {
           Rank ANCED
           <LnSelect
             value={rankFilter}
-            onChange={(event) => setRankFilter(event.target.value)}
+            onChange={(event) => {
+              setRankFilter(event.target.value);
+              setPage(1);
+            }}
           >
             <option>Todos</option>
             {RANK_OPTIONS.filter(Boolean).map((item) => (
@@ -324,11 +436,103 @@ export default function ShinobiDexAdmin() {
 
       {message && <p className="auth-message">{message}</p>}
 
+      <section className="shinobidex-admin-reports">
+        <div className="shinobidex-admin-reports-header">
+          <div>
+            <p className="eyebrow">ShinobiDex ADM</p>
+            <h3>Denúncias de erro no ANCED</h3>
+          </div>
+
+          <button type="button" onClick={loadAncedReports}>
+            {isReportsLoading ? "Atualizando..." : "Atualizar denúncias"}
+          </button>
+        </div>
+
+        {ancedReports.length === 0 ? (
+          <p className="shinobidex-admin-report-empty">
+            Nenhuma denúncia de ANCED registrada.
+          </p>
+        ) : (
+          <div className="shinobidex-admin-report-list">
+            {ancedReports.map((report) => (
+              <article key={report.id} className={`shinobidex-admin-report-card is-${report.status}`}>
+                <div>
+                  <strong>{report.technique_name}</strong>
+                  <small>
+                    Status: {report.status} · ANCED: {report.anced_rank || "?"}
+                    {report.anced_total ? ` (${report.anced_total} pts)` : ""}
+                  </small>
+                </div>
+
+                <p>{report.report_text}</p>
+
+                {report.anced_details && (
+                  <details>
+                    <summary>Ver cálculo ANCED registrado</summary>
+                    <p>{report.anced_details}</p>
+                  </details>
+                )}
+
+                <div className="shinobidex-admin-report-actions">
+                  <button
+                    type="button"
+                    onClick={() => updateAncedReportStatus(report.id, "reviewing")}
+                  >
+                    Em análise
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => updateAncedReportStatus(report.id, "resolved")}
+                  >
+                    Resolver
+                  </button>
+
+                  <button
+                    type="button"
+                    className="ghost"
+                    onClick={() => updateAncedReportStatus(report.id, "archived")}
+                  >
+                    Arquivar
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
       <div className="shinobidex-admin-layout">
         <aside className="shinobidex-admin-list">
           <div className="shinobidex-admin-list-header">
-            <strong>{isLoading ? "Carregando..." : `${techniques.length} resultado(s)`}</strong>
-            <small>Mostrando até 120 por vez</small>
+            <strong>{isLoading ? "Carregando..." : `${resultTotal} resultado(s)`}</strong>
+            <small>
+              {resultTotal === 0
+                ? "Nenhum resultado encontrado"
+                : `Mostrando ${firstResult}–${lastResult} de ${resultTotal}`}
+            </small>
+
+            <div className="shinobidex-admin-pagination">
+              <button
+                type="button"
+                disabled={!canGoPrevious || isLoading}
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+              >
+                Anterior
+              </button>
+
+              <span>
+                Página {page} de {totalPages}
+              </span>
+
+              <button
+                type="button"
+                disabled={!canGoNext || isLoading}
+                onClick={() => setPage((current) => current + 1)}
+              >
+                Próxima
+              </button>
+            </div>
           </div>
 
           {techniques.map((technique) => (

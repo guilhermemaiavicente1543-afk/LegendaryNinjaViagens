@@ -265,12 +265,6 @@ export default function AncedCalculatorPage({ user, onBack }) {
             de técnicas do RPG.
           </p>
         </div>
-
-        {onBack && (
-          <button type="button" onClick={onBack}>
-            Voltar ao Hall
-          </button>
-        )}
       </header>
 
       {message && <p className="anced-calc-message">{message}</p>}

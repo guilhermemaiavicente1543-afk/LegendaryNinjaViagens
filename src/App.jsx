@@ -13,7 +13,7 @@ import {
 import { CRS, divIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
-import MyNinjaPage from "./components/MyNinjaPage";
+import "./styles/hall-back-button.css";
 import AuthPage from "./components/auth/AuthPage";
 import AdminPanel from "./components/admin/AdminPanel";
 import SkillTreePage from "./components/SkillTreePage";
@@ -26,6 +26,10 @@ import AncedCalculatorPage from "./components/anced/AncedCalculatorPage";
 import LegendsPage from "./components/legends/LegendsPage";
 import PlayerKnowledgeAssistant from "./components/knowledge/PlayerKnowledgeAssistant";
 import LnSelect from "./components/ui/LnSelect";
+import MyNinjaCleanPage from "./components/MyNinjaCleanPage";
+import HallBackButton from "./components/ui/HallBackButton";
+
+const CREATE_NINJA_AFTER_AUTH_KEY = "ln-create-ninja-after-auth";
 
 /*
   Mapa com grade:
@@ -689,6 +693,16 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!session?.user) return;
+
+    if (localStorage.getItem(CREATE_NINJA_AFTER_AUTH_KEY) === "1") {
+      localStorage.removeItem(CREATE_NINJA_AFTER_AUTH_KEY);
+      setActivePage("my-ninja");
+      setIsPanelOpen(false);
+    }
+  }, [session?.user?.id]);
+
   async function handleLogout() {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
@@ -1023,7 +1037,36 @@ export default function App() {
       arrivalAt,
     };
 
+    const selectedTravelCharacterIdForTravel = String(selectedTravelCharacter.id);
+
+    const shouldCancelPreviousTravel = (currentTravel) =>
+      String(currentTravel.characterId) === selectedTravelCharacterIdForTravel &&
+      getTravelProgress(currentTravel, now) < 1;
+
+    const hasPreviousUnfinishedTravel = travels.some(shouldCancelPreviousTravel);
+
+    if (hasPreviousUnfinishedTravel) {
+      setTravels((currentTravels) =>
+        currentTravels.filter((currentTravel) => !shouldCancelPreviousTravel(currentTravel))
+      );
+    }
+
     saveCharacterLocation(selectedTravelCharacter.id, endCoord);
+
+    if (hasPreviousUnfinishedTravel && isSupabaseConfigured && supabase && session?.user) {
+      const { error: cancelPreviousTravelError } = await supabase
+        .from("travels")
+        .delete()
+        .eq("character_id", selectedTravelCharacter.id)
+        .eq("status", "active");
+
+      if (cancelPreviousTravelError) {
+        console.error(
+          "Erro ao cancelar viagem anterior antes de iniciar nova viagem:",
+          cancelPreviousTravelError.message
+        );
+      }
+    }
 
     if (isSupabaseConfigured && supabase && session?.user) {
       await supabase
@@ -1256,21 +1299,13 @@ export default function App() {
         {activePage === "map" ? "☰ Controles do Mapa" : "☰ Configurações"}
       </button>
 
-      {activePage !== "hall" && (
-        <button className="ln-hall-return-button"
-         
-          type="button"
-          onClick={() => {
-            setActivePage("hall");
-            setIsPanelOpen(false);
-          }}
-        >
-          <span className="ln-hall-return-button__seal">忍</span>
-          <span className="ln-hall-return-button__text">
-            <small>LN Digital</small>
-            <strong>Hall</strong>
-          </span>
-        </button>
+      {["map", "anced", "shinobidex", "admin", "my-ninja"].includes(activePage) && (
+        <HallBackButton
+          onClick={() => setActivePage("hall")}
+          className={`ln-hall-back-button--compact ln-hall-back-button-app-return ${
+            activePage === "my-ninja" ? "ln-hall-back-button-my-ninja-mobile-only" : ""
+          }`}
+        />
       )}
 
       {isPanelOpen && (
@@ -1364,6 +1399,8 @@ export default function App() {
           </button>
         </div>
 
+        {/* OTIMIZAÇÃO: controles do mapa só renderizam na página Mapa. */}
+        {activePage === "map" && (<>
         <div className="map-controls-card">
           <section className="map-control-section">
             <h3>
@@ -1652,6 +1689,9 @@ export default function App() {
           <br />
           <strong>Imagem:</strong> 1080 × 903px
         </div>
+        </>
+        )}
+
       </aside>
 
       {activePage === "map" && points.length > 0 && (
@@ -2153,7 +2193,27 @@ export default function App() {
             formatTime={formatTime}
           />
         ) : (
-          <MyNinjaPage
+          <MyNinjaCleanPage
+            onNavigate={(label) => {
+              if (label === "Sair") {
+                handleLogout();
+                return;
+              }
+
+              const routes = {
+                "Início": "hall",
+                "Mapa": "map",
+                "Hall das Lendas": "legends",
+              };
+
+              const nextPage = routes[label];
+
+              if (nextPage) {
+                setActivePage(nextPage);
+                setIsPanelOpen(false);
+              }
+            }}
+            session={session}
             travels={travels}
             now={now}
             getCoordinate={getCoordinate}

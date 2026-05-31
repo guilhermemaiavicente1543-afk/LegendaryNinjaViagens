@@ -445,10 +445,6 @@ export default function LegendsPage({ onBack }) {
               <strong>Hall of Legends</strong>
             </div>
           </div>
-
-          <button type="button" onClick={onBack}>
-            Voltar ao Hall
-          </button>
         </header>
 
         <section className="legends-toolbar legends-toolbar-cinematic">

@@ -1,0 +1,121 @@
+/* =====================================================
+   LN DIGITAL — Tema Shinobi Fantasy RPG
+   Camada visual oficial nova
+   ===================================================== */
+
+:root {
+  --ln-fantasy-bg: #15110e;
+  --ln-fantasy-bg-2: #211711;
+  --ln-fantasy-card: rgba(30, 22, 16, 0.92);
+  --ln-fantasy-card-soft: rgba(255, 255, 255, 0.035);
+  --ln-fantasy-border: rgba(255, 122, 0, 0.24);
+  --ln-fantasy-border-strong: rgba(255, 122, 0, 0.58);
+  --ln-fantasy-orange: #ff7a00;
+  --ln-fantasy-orange-soft: rgba(255, 122, 0, 0.12);
+  --ln-fantasy-cream: #f7ead0;
+  --ln-fantasy-muted: rgba(247, 234, 208, 0.62);
+  --ln-fantasy-shadow: 0 18px 44px rgba(0, 0, 0, 0.48);
+  --ln-fantasy-glow: 0 0 28px rgba(255, 122, 0, 0.22);
+  --ln-fantasy-radius: 1.15rem;
+}
+
+/* Superfície base */
+.ln-fantasy-surface {
+  border: 1px solid var(--ln-fantasy-border);
+  border-radius: var(--ln-fantasy-radius);
+  background:
+    radial-gradient(circle at top right, rgba(255, 122, 0, 0.1), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.18)),
+    var(--ln-fantasy-card);
+  box-shadow: var(--ln-fantasy-shadow);
+}
+
+/* Botão principal fantasy */
+.ln-fantasy-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+
+  border: 2px solid var(--ln-fantasy-orange);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 30%),
+    linear-gradient(180deg, #2a1d14 0%, #100b08 100%);
+
+  color: var(--ln-fantasy-cream);
+  padding: 0.72rem 1rem;
+  cursor: pointer;
+
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  box-shadow:
+    0 0 0 2px #4a2d18,
+    0 6px 0 #050302,
+    0 14px 26px rgba(0, 0, 0, 0.52),
+    0 0 22px rgba(255, 122, 0, 0.24),
+    inset 0 2px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.62);
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.ln-fantasy-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow:
+    0 0 0 2px #5b351b,
+    0 8px 0 #050302,
+    0 18px 32px rgba(0, 0, 0, 0.62),
+    0 0 34px rgba(255, 122, 0, 0.44),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.68);
+}
+
+.ln-fantasy-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 0 0 2px #4a2d18,
+    0 3px 0 #050302,
+    0 10px 18px rgba(0, 0, 0, 0.55),
+    inset 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Campos fantasy */
+.ln-fantasy-field {
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 0.85rem;
+  background: rgba(0, 0, 0, 0.24);
+  color: var(--ln-fantasy-cream);
+  padding: 0.8rem 0.9rem;
+}
+
+.ln-fantasy-field:focus {
+  border-color: var(--ln-fantasy-border-strong);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+  outline: none;
+}
+
+/* Títulos fantasy */
+.ln-fantasy-title {
+  color: var(--ln-fantasy-cream);
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-shadow:
+    1px 1px 0 #000,
+    0 0 16px rgba(255, 122, 0, 0.26);
+}
+
+.ln-fantasy-kicker {
+  color: var(--ln-fantasy-orange);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}

@@ -1,0 +1,3217 @@
+:root {
+  --mn-background: #1a1815;
+  --mn-foreground: #f3ede3;
+  --mn-card: #211e1a;
+  --mn-border: #322d27;
+  --mn-muted: #2a2622;
+  --mn-muted-fg: #a89f93;
+  --mn-sidebar: #161310;
+  --mn-sidebar-border: #2a2622;
+  --mn-orange: #ff7a1a;
+  --mn-orange-soft: #ff9a4d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.mn-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--mn-background);
+  color: var(--mn-foreground);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+.mn-page button {
+  font: inherit;
+}
+
+.mn-sidebar {
+  width: 240px;
+  flex: 0 0 240px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--mn-sidebar-border);
+  background: var(--mn-sidebar);
+}
+
+.mn-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 24px 18px;
+}
+
+.mn-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--mn-orange);
+  border-radius: 10px;
+  color: var(--mn-orange);
+}
+
+.mn-brand-star {
+  width: 24px;
+  height: 24px;
+}
+
+.mn-brand-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  color: var(--mn-orange);
+}
+
+.mn-brand-title {
+  margin-top: 1px;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.mn-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px 20px;
+}
+
+.mn-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #beb4a4;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  text-align: left;
+  transition: background .16s ease, color .16s ease, transform .16s ease;
+}
+
+.mn-nav-item:hover {
+  background: #221d18;
+  color: var(--mn-foreground);
+}
+
+.mn-nav-item.is-active {
+  color: var(--mn-orange);
+  background: #221d18;
+  box-shadow: inset 2px 0 0 var(--mn-orange);
+}
+
+.mn-shell {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mn-topbar {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--mn-border);
+  background: rgba(26, 24, 21, .86);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.mn-ghost-button,
+.mn-avatar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--mn-muted-fg);
+  cursor: pointer;
+}
+
+.mn-ghost-button:hover,
+.mn-avatar-button:hover {
+  color: var(--mn-foreground);
+}
+
+.mn-avatar-button {
+  gap: 8px;
+}
+
+.mn-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--mn-border);
+  background: var(--mn-card);
+}
+
+.mn-avatar-star {
+  width: 20px;
+  height: 20px;
+}
+
+.mn-online-dot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--mn-orange);
+  box-shadow: 0 0 0 2px var(--mn-background);
+}
+
+.mn-main {
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 32px 36px;
+}
+
+.mn-card,
+.mn-hero {
+  border: 1px solid var(--mn-border);
+  background: var(--mn-card);
+  border-radius: 16px;
+}
+
+.mn-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 34px 40px;
+}
+
+.mn-hero-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mn-hero h1 {
+  margin: 0;
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: .95;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+}
+
+.mn-hero p {
+  max-width: 580px;
+  margin: 12px 0 0;
+  color: var(--mn-muted-fg);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.mn-hero-star {
+  width: 36px;
+  height: 36px;
+  color: var(--mn-orange);
+  flex: 0 0 auto;
+}
+
+.mn-hero-watermark {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  width: 128px;
+  height: 128px;
+  transform: translateY(-50%);
+  color: rgba(243, 237, 227, .06);
+  pointer-events: none;
+}
+
+.mn-character-head {
+  padding: 24px 32px 0;
+}
+
+.mn-character-head-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.mn-character-head h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.mn-head-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mn-muted-fg);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.mn-dot-sep,
+.mn-orange {
+  color: var(--mn-orange);
+}
+
+.mn-tabs {
+  display: flex;
+  gap: 32px;
+  margin-top: 24px;
+  border-bottom: 1px solid var(--mn-border);
+  overflow-x: auto;
+}
+
+.mn-tabs button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--mn-muted-fg);
+  padding: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mn-tabs button:hover {
+  color: var(--mn-foreground);
+}
+
+.mn-tabs button.is-active {
+  color: var(--mn-orange);
+  border-bottom-color: var(--mn-orange);
+}
+
+.mn-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.mn-profile-card,
+.mn-dossier-card,
+.mn-info-card,
+.mn-map-icon-card,
+.mn-slot-card {
+  padding: 24px;
+}
+
+.mn-profile-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+}
+
+.mn-photo-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mn-photo-box {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--mn-border);
+  background: rgba(0, 0, 0, .25);
+}
+
+.mn-photo-box img,
+.mn-map-icon-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mn-photo-placeholder {
+  width: 64px;
+  height: 64px;
+  color: rgba(243, 237, 227, .15);
+}
+
+.mn-outline-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--mn-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .25);
+  color: var(--mn-muted-fg);
+  padding: 10px 14px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mn-outline-button:hover {
+  color: var(--mn-foreground);
+  border-color: rgba(255, 122, 26, .45);
+}
+
+.mn-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mn-section-kicker,
+.mn-card-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mn-orange);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .2em;
+}
+
+.mn-alert-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 122, 26, .6);
+  border-radius: 8px;
+  background: rgba(255, 122, 26, .08);
+  color: var(--mn-orange);
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.mn-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mn-chip-row span {
+  border: 1px solid var(--mn-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .25);
+  color: var(--mn-muted-fg);
+  padding: 9px 14px;
+  font-size: 12px;
+}
+
+.mn-dossier-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.mn-dossier-header h3 {
+  margin: 8px 0 0;
+  font-size: 24px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.mn-dossier-header p {
+  max-width: 470px;
+  margin: 8px 0 0;
+  color: var(--mn-muted-fg);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.mn-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--mn-orange);
+  color: var(--mn-background);
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mn-primary-button:hover {
+  filter: brightness(1.1);
+}
+
+.mn-dossier-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.mn-dossier-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.mn-dossier-list button {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .25);
+  color: rgba(243, 237, 227, .86);
+  padding: 11px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mn-dossier-list button:hover {
+  background: rgba(0, 0, 0, .4);
+}
+
+.mn-dossier-list button.is-active {
+  background: var(--mn-orange);
+  color: var(--mn-background);
+  font-weight: 800;
+}
+
+.mn-dossier-list button span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  text-align: left;
+}
+
+.mn-white-dot,
+.mn-green-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.mn-white-dot {
+  background: rgba(255, 255, 255, .85);
+}
+
+.mn-green-dot {
+  background: #10b981;
+}
+
+.mn-dossier-preview {
+  border: 1px solid var(--mn-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .25);
+  padding: 20px;
+}
+
+.mn-dossier-preview-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.mn-preview-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(255, 122, 26, .08);
+  color: var(--mn-orange);
+}
+
+.mn-preview-icon .mn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.mn-dossier-preview h4 {
+  margin: 0;
+  color: var(--mn-orange);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.mn-dossier-preview p {
+  margin: 5px 0 0;
+  color: var(--mn-muted-fg);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.mn-dossier-preview label {
+  display: block;
+  margin-top: 20px;
+  color: var(--mn-muted-fg);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.mn-confirmation-box {
+  margin-top: 8px;
+  border: 1px solid var(--mn-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .3);
+  color: var(--mn-muted-fg);
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.mn-bottom-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 320px;
+  gap: 24px;
+}
+
+.mn-info-card ul {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.mn-info-card li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.mn-info-card li.with-border {
+  border-bottom: 1px solid rgba(50, 45, 39, .65);
+}
+
+.mn-info-card li span {
+  color: var(--mn-muted-fg);
+}
+
+.mn-info-card li strong {
+  color: rgba(168, 159, 147, .72);
+  font-weight: 700;
+  text-align: right;
+}
+
+.mn-map-icon-preview {
+  display: grid;
+  place-items: center;
+  margin-top: 24px;
+  color: var(--mn-muted-fg);
+  font-size: 12px;
+}
+
+.mn-map-icon-circle {
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--mn-border);
+  background: rgba(0, 0, 0, .25);
+}
+
+.mn-map-placeholder {
+  width: 40px;
+  height: 40px;
+  color: rgba(243, 237, 227, .2);
+}
+
+.mn-slot-card {
+  min-height: 520px;
+}
+
+.mn-placeholder-panel {
+  min-height: 440px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  text-align: center;
+  border: 1px dashed rgba(255, 122, 26, .35);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, .18);
+  padding: 28px;
+}
+
+.mn-placeholder-star {
+  width: 56px;
+  height: 56px;
+  color: rgba(255, 122, 26, .65);
+}
+
+.mn-placeholder-panel h3 {
+  margin: 0;
+  color: var(--mn-orange);
+  font-size: 24px;
+}
+
+.mn-placeholder-panel p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--mn-muted-fg);
+  line-height: 1.7;
+}
+
+.mn-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.mn-small-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1180px) {
+  .mn-profile-grid,
+  .mn-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mn-dossier-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1023px) {
+  .mn-sidebar {
+    display: none;
+  }
+
+  .mn-topbar {
+    height: 58px;
+    padding: 0 16px;
+  }
+
+  .mn-main {
+    padding: 14px 14px 26px;
+    gap: 16px;
+  }
+
+  .mn-hero {
+    padding: 26px 20px;
+  }
+
+  .mn-hero-watermark {
+    right: 12px;
+    width: 96px;
+    height: 96px;
+  }
+
+  .mn-character-head {
+    padding: 20px 18px 0;
+  }
+
+  .mn-character-head-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mn-head-meta {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+
+  .mn-tabs {
+    gap: 22px;
+  }
+
+  .mn-profile-card,
+  .mn-dossier-card,
+  .mn-info-card,
+  .mn-map-icon-card,
+  .mn-slot-card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  .mn-profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mn-photo-box {
+    max-width: 280px;
+  }
+
+  .mn-dossier-header {
+    flex-direction: column;
+  }
+
+  .mn-primary-button {
+    width: 100%;
+  }
+
+  .mn-info-card li {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mn-info-card li strong {
+    text-align: left;
+  }
+}
+
+/* Ficha principal dentro do Meu Ninja */
+.mn-sheet-card {
+  margin-top: 1.5rem;
+}
+
+.mn-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.mn-sheet-header h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1.45rem;
+  color: var(--mn-foreground);
+}
+
+.mn-sheet-header p {
+  max-width: 720px;
+  margin: 0.45rem 0 0;
+  color: var(--mn-muted-fg);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.mn-sheet-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.mn-sheet-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--mn-muted-fg);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mn-sheet-form input,
+.mn-sheet-form select,
+.mn-sheet-form textarea {
+  width: 100%;
+  border: 1px solid var(--mn-border);
+  border-radius: 0.85rem;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--mn-foreground);
+  padding: 0.85rem 0.95rem;
+  outline: none;
+  font-size: 0.95rem;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.mn-sheet-form input:focus,
+.mn-sheet-form select:focus,
+.mn-sheet-form textarea:focus {
+  border-color: rgba(255, 122, 26, 0.72);
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.1);
+}
+
+.mn-sheet-form textarea {
+  resize: vertical;
+}
+
+.mn-sheet-form option {
+  background: #1a1815;
+  color: #f3ede3;
+}
+
+.mn-sheet-wide,
+.mn-sheet-message,
+.mn-sheet-actions {
+  grid-column: 1 / -1;
+}
+
+.mn-sheet-message {
+  margin: 0;
+  color: var(--mn-orange);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mn-sheet-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mn-map-icon-preview img {
+  max-width: 72px;
+  max-height: 72px;
+  object-fit: contain;
+}
+
+@media (max-width: 760px) {
+  .mn-sheet-form {
+    grid-template-columns: 1fr;
+  }
+
+  .mn-sheet-actions {
+    justify-content: stretch;
+  }
+
+  .mn-sheet-actions .mn-primary-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =====================================================
+   FIX — Meu Ninja Clean: rolagem e ficha visível
+   ===================================================== */
+
+.app-my-ninja,
+.app-my-ninja .mapArea,
+.app-my-ninja > section,
+.app-my-ninja main {
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.app-my-ninja {
+  display: block !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: #1a1815 !important;
+}
+
+.mn-page {
+  min-height: 100dvh !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  align-items: stretch !important;
+}
+
+.mn-shell {
+  min-height: 100dvh !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.mn-main {
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding-bottom: 120px !important;
+}
+
+.mn-profile-grid,
+.mn-bottom-grid,
+.mn-sheet-card,
+.mn-card {
+  position: relative !important;
+}
+
+.mn-profile-grid {
+  z-index: 1 !important;
+}
+
+.mn-sheet-card {
+  display: block !important;
+  z-index: 3 !important;
+  clear: both !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.mn-bottom-grid {
+  z-index: 1 !important;
+  margin-top: 1.5rem !important;
+}
+
+/* A ficha não pode ser cortada por nenhum card interno */
+.mn-sheet-card *,
+.mn-sheet-form,
+.mn-sheet-form label {
+  max-height: none !important;
+}
+
+/* Se algum container antigo do App.css estiver cobrindo a página */
+.app-my-ninja .panel,
+.app-my-ninja .panelBackdrop,
+.app-my-ninja .mobileConfigButton {
+  display: none !important;
+}
+
+/* Sidebar fica fixa só visualmente no desktop, sem travar a rolagem do conteúdo */
+@media (min-width: 1024px) {
+  .mn-sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    height: 100dvh !important;
+    align-self: flex-start !important;
+  }
+
+  .mn-shell {
+    width: calc(100vw - 240px) !important;
+  }
+}
+
+/* No mobile, a página inteira deve rolar normalmente */
+@media (max-width: 1023px) {
+  .mn-page {
+    display: block !important;
+  }
+
+  .mn-sidebar {
+    display: none !important;
+  }
+
+  .mn-shell {
+    width: 100% !important;
+  }
+
+  .mn-main {
+    padding-bottom: 96px !important;
+  }
+}
+
+/* Select pesquisável — Traço único */
+.mn-trait-select {
+  position: relative;
+  width: 100%;
+}
+
+.mn-trait-select-trigger {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--mn-border);
+  border-radius: 0.85rem;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--mn-foreground);
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mn-trait-select-trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mn-trait-select-panel {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  right: 0;
+  border: 1px solid rgba(255, 122, 26, 0.36);
+  border-radius: 0.9rem;
+  background: #161310;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+  padding: 0.65rem;
+}
+
+.mn-trait-select-panel input {
+  width: 100%;
+  margin-bottom: 0.55rem;
+  border: 1px solid var(--mn-border);
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--mn-foreground);
+  padding: 0.75rem 0.85rem;
+  outline: none;
+}
+
+.mn-trait-select-list {
+  max-height: 220px;
+  overflow-y: auto;
+  display: grid;
+  gap: 0.35rem;
+  padding-right: 0.15rem;
+}
+
+.mn-trait-select-list button {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--mn-foreground);
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mn-trait-select-list button:hover,
+.mn-trait-select-list button.is-selected {
+  border-color: rgba(255, 122, 26, 0.5);
+  background: rgba(255, 122, 26, 0.12);
+  color: var(--mn-orange);
+}
+
+.mn-trait-select-list button.mn-trait-empty {
+  cursor: default;
+  color: var(--mn-muted-fg);
+}
+
+/* Traços Únicos — select pesquisável múltiplo */
+.mn-trait-selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.mn-trait-selected-list span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  border: 1px solid rgba(255, 122, 26, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.1);
+  color: var(--mn-orange);
+  padding: 0.38rem 0.5rem 0.38rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.mn-trait-selected-list span button {
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--mn-orange);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.mn-trait-select-list button {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.mn-trait-select-list button strong {
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.mn-trait-select-list button small {
+  color: var(--mn-muted-fg);
+  font-size: 0.72rem;
+}
+
+.mn-trait-select-list button.is-selected strong,
+.mn-trait-select-list button.is-selected small {
+  color: var(--mn-orange);
+}
+
+/* FIX — Meu Ninja visível sobre o fundo global */
+.app-my-ninja {
+  display: block !important;
+  width: 100vw !important;
+  min-height: 100dvh !important;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: #1a1815 !important;
+}
+
+.app-my-ninja .mn-page {
+  position: relative !important;
+  z-index: 20 !important;
+  display: flex !important;
+  min-height: 100dvh !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.app-my-ninja .mn-shell,
+.app-my-ninja .mn-main,
+.app-my-ninja .mn-card,
+.app-my-ninja .mn-hero {
+  position: relative !important;
+  z-index: 21 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.app-my-ninja::before,
+.app-my-ninja::after {
+  pointer-events: none !important;
+}
+
+/* Cards de Identidade / Origem / Ícone agora dentro do perfil */
+.mn-profile-card > .mn-bottom-grid {
+  margin-top: 1rem !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.75rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-card {
+  padding: 1rem !important;
+  border-radius: 0.9rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-title {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.16em !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list {
+  margin-top: 0.75rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list li {
+  padding: 0.45rem 0 !important;
+  gap: 0.75rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list span {
+  font-size: 0.76rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list strong {
+  font-size: 0.78rem !important;
+  text-align: right !important;
+  max-width: 55% !important;
+  overflow-wrap: anywhere !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview {
+  margin-top: 0.75rem !important;
+  min-height: auto !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview > div {
+  width: 4.25rem !important;
+  height: 4.25rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview img {
+  max-width: 3.4rem !important;
+  max-height: 3.4rem !important;
+}
+
+@media (max-width: 900px) {
+  .mn-profile-card > .mn-bottom-grid .mn-info-list strong {
+    max-width: 100% !important;
+  }
+}
+
+/* Design refinado — campos da Ficha Complementar */
+.mn-dossier-preview {
+  background:
+    linear-gradient(180deg, rgba(255, 122, 26, 0.045), rgba(0, 0, 0, 0.18)),
+    rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(255, 122, 26, 0.16) !important;
+  border-radius: 1rem !important;
+  padding: 1.1rem !important;
+}
+
+.mn-dossier-editor {
+  gap: 1.1rem !important;
+}
+
+.mn-dossier-editor h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--mn-orange) !important;
+  font-size: 1.18rem !important;
+  letter-spacing: 0.02em;
+}
+
+.mn-dossier-editor h4::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--mn-orange);
+  box-shadow: 0 0 18px rgba(255, 122, 26, 0.45);
+}
+
+.mn-dossier-form {
+  padding: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(255, 122, 26, 0.08), transparent 34%),
+    rgba(0, 0, 0, 0.18);
+}
+
+.mn-dossier-form label {
+  position: relative;
+}
+
+.mn-dossier-form input,
+.mn-dossier-form select,
+.mn-dossier-form textarea {
+  min-height: 44px;
+  border: 1px solid rgba(255, 122, 26, 0.16) !important;
+  border-radius: 0.9rem !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.22)),
+    rgba(0, 0, 0, 0.3) !important;
+  color: var(--mn-foreground) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.mn-dossier-form textarea {
+  line-height: 1.55;
+  min-height: 104px;
+}
+
+.mn-dossier-form input:hover,
+.mn-dossier-form select:hover,
+.mn-dossier-form textarea:hover {
+  border-color: rgba(255, 122, 26, 0.34) !important;
+}
+
+.mn-dossier-form input:focus,
+.mn-dossier-form select:focus,
+.mn-dossier-form textarea:focus {
+  border-color: rgba(255, 122, 26, 0.78) !important;
+  box-shadow:
+    0 0 0 3px rgba(255, 122, 26, 0.1),
+    0 0 24px rgba(255, 122, 26, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 122, 26, 0.055), rgba(0, 0, 0, 0.22)),
+    rgba(0, 0, 0, 0.34) !important;
+}
+
+.mn-dossier-form input::placeholder,
+.mn-dossier-form textarea::placeholder {
+  color: rgba(168, 159, 147, 0.62);
+}
+
+.mn-dossier-form .mn-primary-button {
+  justify-self: start;
+  min-height: 42px;
+  border-radius: 0.85rem;
+  box-shadow: 0 10px 24px rgba(255, 122, 26, 0.16);
+}
+
+.mn-dossier-record {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(0, 0, 0, 0.18)),
+    rgba(0, 0, 0, 0.18) !important;
+  border-color: rgba(255, 122, 26, 0.12) !important;
+}
+
+.mn-dossier-record summary {
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.mn-dossier-record summary:hover {
+  background: rgba(255, 122, 26, 0.07);
+  color: var(--mn-orange);
+}
+
+.mn-dossier-record-body {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.mn-dossier-empty {
+  background:
+    linear-gradient(135deg, rgba(255, 122, 26, 0.08), rgba(0, 0, 0, 0.16)) !important;
+  border-color: rgba(255, 122, 26, 0.22) !important;
+  color: var(--mn-muted-fg) !important;
+}
+
+/* =====================================================
+   Dossiê Shinobi — design limpo integrado ao Meu Ninja
+   Remove aparência de formulário pesado/forçado
+   ===================================================== */
+
+.mn-dossier-card .mn-dossier-preview {
+  background: rgba(0, 0, 0, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.055) !important;
+  border-radius: 1.1rem !important;
+  padding: 1rem !important;
+  box-shadow: none !important;
+}
+
+.mn-dossier-card .mn-dossier-editor {
+  display: grid !important;
+  gap: 1rem !important;
+}
+
+.mn-dossier-card .mn-dossier-editor h4 {
+  margin: 0 !important;
+  color: #f3ede3 !important;
+  font-size: 1.05rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.mn-dossier-card .mn-dossier-editor > p {
+  margin: -0.35rem 0 0 !important;
+  max-width: 680px !important;
+  color: rgba(232, 226, 214, 0.62) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.55 !important;
+}
+
+/* O formulário vira uma área discreta de registro, sem “caixote” */
+.mn-dossier-card .mn-dossier-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.95rem 1rem !important;
+  padding: 0.85rem 0 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.055) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Labels mais parecidos com legenda de dossiê */
+.mn-dossier-card .mn-dossier-form label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.3rem !important;
+  color: rgba(232, 226, 214, 0.48) !important;
+  font-size: 0.66rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+}
+
+/* Campos sem aparência de input padrão */
+.mn-dossier-card .mn-dossier-form input,
+.mn-dossier-card .mn-dossier-form select,
+.mn-dossier-card .mn-dossier-form textarea {
+  width: 100% !important;
+  min-height: 42px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #f3ede3 !important;
+  padding: 0.62rem 0.05rem !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font-size: 0.92rem !important;
+  line-height: 1.45 !important;
+}
+
+.mn-dossier-card .mn-dossier-form textarea {
+  min-height: 82px !important;
+  resize: vertical !important;
+}
+
+/* Foco elegante: só linha laranja, sem caixa brilhante */
+.mn-dossier-card .mn-dossier-form input:focus,
+.mn-dossier-card .mn-dossier-form select:focus,
+.mn-dossier-card .mn-dossier-form textarea:focus {
+  border-bottom-color: rgba(255, 122, 26, 0.92) !important;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 122, 26, 0.035)
+  ) !important;
+  box-shadow: none !important;
+}
+
+.mn-dossier-card .mn-dossier-form input::placeholder,
+.mn-dossier-card .mn-dossier-form textarea::placeholder {
+  color: rgba(158, 144, 128, 0.62) !important;
+}
+
+.mn-dossier-card .mn-dossier-form option {
+  background: #17130f !important;
+  color: #f3ede3 !important;
+}
+
+.mn-dossier-card .mn-dossier-wide {
+  grid-column: 1 / -1 !important;
+}
+
+/* Botão mais integrado ao dossiê */
+.mn-dossier-card .mn-dossier-form .mn-primary-button {
+  justify-self: start !important;
+  min-height: 38px !important;
+  border-radius: 999px !important;
+  padding: 0.65rem 1rem !important;
+  box-shadow: none !important;
+}
+
+/* Registros salvos como gavetas elegantes */
+.mn-dossier-card .mn-dossier-records {
+  display: grid !important;
+  gap: 0.55rem !important;
+}
+
+.mn-dossier-card .mn-dossier-record {
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 0.85rem !important;
+  background: rgba(255, 255, 255, 0.025) !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.mn-dossier-card .mn-dossier-record summary {
+  padding: 0.75rem 0.85rem !important;
+  color: #f3ede3 !important;
+  font-size: 0.86rem !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+}
+
+.mn-dossier-card .mn-dossier-record summary:hover {
+  background: rgba(255, 122, 26, 0.055) !important;
+  color: #ff8a2b !important;
+}
+
+.mn-dossier-card .mn-dossier-record summary small {
+  color: #ff8a2b !important;
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+}
+
+.mn-dossier-card .mn-dossier-record-body {
+  border-top: 1px solid rgba(255, 255, 255, 0.055) !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+  padding: 0.85rem !important;
+}
+
+/* Estado vazio mais sutil */
+.mn-dossier-card .mn-dossier-empty {
+  border: 1px dashed rgba(255, 255, 255, 0.09) !important;
+  border-radius: 0.85rem !important;
+  background: rgba(255, 255, 255, 0.018) !important;
+  color: rgba(232, 226, 214, 0.58) !important;
+  padding: 0.85rem !important;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .mn-dossier-card .mn-dossier-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mn-dossier-card .mn-dossier-preview {
+    padding: 0.85rem !important;
+  }
+}
+
+/* Upload de imagem — Registro de Provas */
+.mn-dossier-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border: 1px solid rgba(255, 122, 26, 0.18);
+  border-radius: 0.9rem;
+  background: rgba(255, 122, 26, 0.055);
+  padding: 0.75rem;
+}
+
+.mn-dossier-image-preview img {
+  width: 76px;
+  height: 76px;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mn-dossier-image-preview span {
+  color: var(--mn-muted-fg);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.mn-dossier-form input[type="file"] {
+  cursor: pointer;
+}
+
+.mn-dossier-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Upload customizado — Provas e Ações Ocultas */
+.mn-file-field {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  align-self: end;
+}
+
+.mn-file-field > span {
+  width: 100%;
+  color: rgba(232, 226, 214, 0.48);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.mn-file-picker {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  cursor: pointer;
+}
+
+.mn-file-picker input {
+  display: none !important;
+}
+
+.mn-file-picker > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid rgba(255, 122, 26, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.1);
+  color: #ff8a2b;
+  padding: 0.62rem 0.95rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.mn-file-picker:hover > span {
+  border-color: rgba(255, 122, 26, 0.72);
+  background: rgba(255, 122, 26, 0.16);
+  transform: translateY(-1px);
+}
+
+.mn-file-clear {
+  min-height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(232, 226, 214, 0.72);
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.mn-file-clear:hover {
+  color: #ff8a2b;
+  border-color: rgba(255, 122, 26, 0.34);
+}
+
+.mn-dossier-record-image {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #ff8a2b;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.mn-dossier-record-image img {
+  width: 58px;
+  height: 58px;
+  border-radius: 0.65rem;
+  object-fit: cover;
+  border: 1px solid rgba(255, 122, 26, 0.22);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.mn-dossier-record-image:hover span {
+  text-decoration: underline;
+}
+
+/* =====================================================
+   FIX — Cards do perfil em linha horizontal no desktop
+   Identidade / Afiliação e Origem / Ícone do Mapa
+   ===================================================== */
+
+/* Remove o empilhamento antigo dentro do card de perfil */
+.mn-profile-card > .mn-bottom-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.75rem !important;
+  margin-top: 1rem !important;
+  align-items: stretch !important;
+}
+
+/* Cards menores e mais compactos */
+.mn-profile-card > .mn-bottom-grid .mn-card,
+.mn-profile-card > .mn-bottom-grid .mn-info-card,
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-card {
+  min-height: auto !important;
+  padding: 0.85rem !important;
+  border-radius: 0.95rem !important;
+  background: rgba(0, 0, 0, 0.14) !important;
+}
+
+/* Título dos cards menor */
+.mn-profile-card > .mn-bottom-grid .mn-info-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  margin-bottom: 0.65rem !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.16em !important;
+  line-height: 1.2 !important;
+}
+
+/* Lista interna compacta */
+.mn-profile-card > .mn-bottom-grid .mn-info-list {
+  display: grid !important;
+  gap: 0.45rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Acaba com o espaço enorme entre pergunta e resposta */
+.mn-profile-card > .mn-bottom-grid .mn-info-list li {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) !important;
+  gap: 0.35rem !important;
+  align-items: start !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* Perguntas */
+.mn-profile-card > .mn-bottom-grid .mn-info-list li span {
+  color: rgba(232, 226, 214, 0.58) !important;
+  font-size: 0.68rem !important;
+  line-height: 1.25 !important;
+  text-align: left !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+/* Respostas */
+.mn-profile-card > .mn-bottom-grid .mn-info-list li strong {
+  justify-self: start !important;
+  max-width: 100% !important;
+  color: rgba(243, 237, 227, 0.82) !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  text-align: left !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Card do ícone do mapa mais compacto */
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-card {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+  margin-top: 0.35rem !important;
+  min-height: auto !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview > div {
+  width: 3.5rem !important;
+  height: 3.5rem !important;
+  border-radius: 0.8rem !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview img {
+  max-width: 2.9rem !important;
+  max-height: 2.9rem !important;
+  object-fit: contain !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-map-icon-preview span {
+  font-size: 0.72rem !important;
+  color: rgba(232, 226, 214, 0.58) !important;
+}
+
+/* Em telas desktop menores, usa 2 colunas para não esmagar */
+@media (max-width: 1320px) {
+  .mn-profile-card > .mn-bottom-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .mn-profile-card > .mn-bottom-grid .mn-map-icon-card {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* No mobile volta a empilhar */
+@media (max-width: 760px) {
+  .mn-profile-card > .mn-bottom-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mn-profile-card > .mn-bottom-grid .mn-map-icon-card {
+    grid-column: auto !important;
+  }
+}
+
+/* =====================================================
+   Ficha visual oficial — boards compactos e horizontais
+   ===================================================== */
+
+.mn-profile-card > .mn-profile-summary-grid,
+.mn-profile-card > .mn-bottom-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.8rem !important;
+  margin-top: 1rem !important;
+  align-items: stretch !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-summary-card {
+  min-height: auto !important;
+  padding: 0.9rem !important;
+  border-radius: 1rem !important;
+  background: rgba(0, 0, 0, 0.14) !important;
+}
+
+.mn-summary-card-narrative,
+.mn-summary-card-map {
+  grid-column: 1 / -1 !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-title {
+  margin-bottom: 0.7rem !important;
+  font-size: 0.64rem !important;
+  letter-spacing: 0.16em !important;
+}
+
+/* Linhas compactas: acaba com o espaço gigante entre pergunta e resposta */
+.mn-profile-card > .mn-bottom-grid .mn-info-list {
+  display: grid !important;
+  gap: 0.5rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list li {
+  display: grid !important;
+  grid-template-columns: 0.88fr 1.12fr !important;
+  gap: 0.4rem !important;
+  align-items: start !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list li span {
+  color: rgba(232, 226, 214, 0.56) !important;
+  font-size: 0.7rem !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-info-list li strong {
+  justify-self: start !important;
+  max-width: 100% !important;
+  color: rgba(243, 237, 227, 0.84) !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Board narrativo: texto longo em bloco, não espremido */
+.mn-summary-card-narrative .mn-info-list li {
+  grid-template-columns: 1fr !important;
+  gap: 0.25rem !important;
+  padding-bottom: 0.65rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055) !important;
+}
+
+.mn-summary-card-narrative .mn-info-list li:last-child {
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.mn-summary-card-narrative .mn-info-list li strong {
+  white-space: pre-wrap !important;
+  font-size: 0.76rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Board Mídia e Mapa */
+.mn-media-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.mn-media-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.65rem;
+}
+
+.mn-media-preview > div {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 0.75rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 122, 26, 0.16);
+  flex: 0 0 auto;
+}
+
+.mn-media-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mn-media-preview span {
+  color: rgba(232, 226, 214, 0.62);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.mn-media-url-list {
+  margin-top: 0.25rem !important;
+}
+
+/* Se o espaço apertar, empilha */
+@media (max-width: 1320px) {
+  .mn-profile-card > .mn-profile-summary-grid,
+  .mn-profile-card > .mn-bottom-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mn-summary-card-narrative,
+  .mn-summary-card-map {
+    grid-column: auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .mn-media-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================
+   FIX — Ficha visual sem espaços enormes
+   ===================================================== */
+
+/* Todas as linhas dos boards visuais ficam próximas e legíveis */
+.mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li,
+.mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li {
+  display: grid !important;
+  grid-template-columns: 135px minmax(0, 1fr) !important;
+  gap: 0.55rem !important;
+  align-items: start !important;
+  padding: 0.25rem 0 !important;
+  border: 0 !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li span,
+.mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li span {
+  justify-self: start !important;
+  text-align: left !important;
+  color: rgba(232, 226, 214, 0.56) !important;
+  font-size: 0.7rem !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li strong,
+.mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li strong {
+  justify-self: start !important;
+  text-align: left !important;
+  max-width: 100% !important;
+  color: rgba(243, 237, 227, 0.88) !important;
+  font-size: 0.74rem !important;
+  font-weight: 850 !important;
+  line-height: 1.4 !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Narrativa continua em linhas, mas sem jogar resposta para o canto direito */
+.mn-summary-card-narrative .mn-info-list li {
+  grid-template-columns: 135px minmax(0, 1fr) !important;
+  gap: 0.55rem !important;
+  padding: 0.35rem 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045) !important;
+}
+
+.mn-summary-card-narrative .mn-info-list li:last-child {
+  border-bottom: 0 !important;
+}
+
+.mn-summary-card-narrative .mn-info-list li strong {
+  white-space: pre-wrap !important;
+}
+
+/* Novo board de ícone do mapa, sem foto duplicada e sem URL */
+.mn-map-icon-visual-board {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 5rem;
+}
+
+.mn-map-icon-large-preview {
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 0.9rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 122, 26, 0.18);
+}
+
+.mn-map-icon-large-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mn-map-icon-visual-board strong {
+  display: block;
+  color: rgba(243, 237, 227, 0.9);
+  font-size: 0.86rem;
+  margin-bottom: 0.2rem;
+}
+
+.mn-map-icon-visual-board span {
+  display: block;
+  color: rgba(232, 226, 214, 0.54);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+/* Remove qualquer resto visual antigo do board de mídia */
+.mn-media-board,
+.mn-media-url-list {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li,
+  .mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li,
+  .mn-summary-card-narrative .mn-info-list li {
+    grid-template-columns: 1fr !important;
+    gap: 0.2rem !important;
+  }
+
+  .mn-map-icon-visual-board {
+    align-items: flex-start;
+  }
+}
+
+/* =====================================================
+   FIX — Ficha visual sem espaços enormes
+   ===================================================== */
+
+/* Todas as linhas dos boards visuais ficam próximas e legíveis */
+.mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li,
+.mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li {
+  display: grid !important;
+  grid-template-columns: 135px minmax(0, 1fr) !important;
+  gap: 0.55rem !important;
+  align-items: start !important;
+  padding: 0.25rem 0 !important;
+  border: 0 !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li span,
+.mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li span {
+  justify-self: start !important;
+  text-align: left !important;
+  color: rgba(232, 226, 214, 0.56) !important;
+  font-size: 0.7rem !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li strong,
+.mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li strong {
+  justify-self: start !important;
+  text-align: left !important;
+  max-width: 100% !important;
+  color: rgba(243, 237, 227, 0.88) !important;
+  font-size: 0.74rem !important;
+  font-weight: 850 !important;
+  line-height: 1.4 !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Narrativa continua em linhas, mas sem jogar resposta para o canto direito */
+.mn-summary-card-narrative .mn-info-list li {
+  grid-template-columns: 135px minmax(0, 1fr) !important;
+  gap: 0.55rem !important;
+  padding: 0.35rem 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045) !important;
+}
+
+.mn-summary-card-narrative .mn-info-list li:last-child {
+  border-bottom: 0 !important;
+}
+
+.mn-summary-card-narrative .mn-info-list li strong {
+  white-space: pre-wrap !important;
+}
+
+/* Novo board de ícone do mapa, sem foto duplicada e sem URL */
+.mn-map-icon-visual-board {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 5rem;
+}
+
+.mn-map-icon-large-preview {
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 0.9rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 122, 26, 0.18);
+}
+
+.mn-map-icon-large-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mn-map-icon-visual-board strong {
+  display: block;
+  color: rgba(243, 237, 227, 0.9);
+  font-size: 0.86rem;
+  margin-bottom: 0.2rem;
+}
+
+.mn-map-icon-visual-board span {
+  display: block;
+  color: rgba(232, 226, 214, 0.54);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+/* Remove qualquer resto visual antigo do board de mídia */
+.mn-media-board,
+.mn-media-url-list {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .mn-profile-card > .mn-bottom-grid .mn-summary-card .mn-info-list li,
+  .mn-profile-card > .mn-profile-summary-grid .mn-summary-card .mn-info-list li,
+  .mn-summary-card-narrative .mn-info-list li {
+    grid-template-columns: 1fr !important;
+    gap: 0.2rem !important;
+  }
+
+  .mn-map-icon-visual-board {
+    align-items: flex-start;
+  }
+}
+
+/* Botão Editar perfil — abre/fecha ficha editável */
+.mn-profile-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0 0;
+}
+
+.mn-profile-edit-button {
+  min-height: 42px;
+  border: 1px solid rgba(255, 122, 26, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.1);
+  color: #ff8a2b;
+  padding: 0.7rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.mn-profile-edit-button:hover {
+  border-color: rgba(255, 122, 26, 0.72);
+  background: rgba(255, 122, 26, 0.16);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 760px) {
+  .mn-profile-edit-actions {
+    justify-content: stretch;
+  }
+
+  .mn-profile-edit-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =====================================================
+   Ajuste do topo do Perfil do Personagem
+   ===================================================== */
+
+.mn-profile-info {
+  position: relative !important;
+  min-width: 0 !important;
+}
+
+.mn-profile-info-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  width: 100% !important;
+}
+
+.mn-profile-character-name {
+  margin: 0.35rem 0 0.65rem !important;
+  color: rgba(243, 237, 227, 0.94) !important;
+  font-size: clamp(1.35rem, 2.1vw, 2rem) !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.015em !important;
+  line-height: 1.05 !important;
+}
+
+/* Alcunha do tamanho do conteúdo, não esticada */
+.mn-profile-info .mn-alert-chip {
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-self: flex-start !important;
+  justify-self: start !important;
+  flex: 0 1 auto !important;
+  white-space: normal !important;
+  padding-inline: 0.85rem !important;
+}
+
+/* Botão Editar perfil dentro do topo do card */
+.mn-profile-edit-button-inline {
+  flex: 0 0 auto !important;
+  min-height: 36px !important;
+  padding: 0.58rem 0.85rem !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.08em !important;
+  margin-top: -0.15rem !important;
+}
+
+/* Esconde o container antigo, caso alguma regra antiga ainda tente exibir */
+.mn-profile-edit-actions {
+  display: none !important;
+}
+
+/* Mobile: botão abaixo do título da seção para não esmagar */
+@media (max-width: 760px) {
+  .mn-profile-info-head {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.65rem !important;
+  }
+
+  .mn-profile-edit-button-inline {
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: 0 !important;
+  }
+
+  .mn-profile-character-name {
+    font-size: 1.45rem !important;
+  }
+
+  .mn-profile-info .mn-alert-chip {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* =====================================================
+   Mobile — botão Editar perfil no card superior
+   ===================================================== */
+
+/* No desktop, esse botão não aparece. O desktop usa o botão dentro do card Perfil. */
+.mn-character-edit-button-mobile {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .mn-character-head {
+    position: relative !important;
+  }
+
+  .mn-character-head-top {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+  }
+
+  .mn-character-head-top > div {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .mn-character-edit-button-mobile {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.4rem !important;
+    flex: 0 0 auto !important;
+    min-height: 38px !important;
+    border: 1px solid rgba(255, 122, 26, 0.34) !important;
+    border-radius: 999px !important;
+    background: rgba(255, 122, 26, 0.1) !important;
+    color: #ff8a2b !important;
+    padding: 0.58rem 0.78rem !important;
+    font-size: 0.68rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.07em !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+  }
+
+  .mn-character-edit-button-mobile:active {
+    transform: scale(0.98);
+  }
+
+  /* No mobile, escondemos o botão que ficava dentro do card Perfil */
+  .mn-profile-edit-button-inline {
+    display: none !important;
+  }
+}
+
+/* =====================================================
+   Inventário estruturado — Dossiê Shinobi
+   ===================================================== */
+
+.mn-inventory-editor {
+  gap: 1rem !important;
+}
+
+.mn-inventory-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding-bottom: 0.2rem;
+}
+
+.mn-inventory-tabs button {
+  border: 1px solid rgba(255, 122, 26, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.028);
+  color: rgba(232, 226, 214, 0.68);
+  padding: 0.55rem 0.78rem;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.mn-inventory-tabs button:hover,
+.mn-inventory-tabs button.is-active {
+  border-color: rgba(255, 122, 26, 0.68);
+  background: rgba(255, 122, 26, 0.14);
+  color: #ff8a2b;
+}
+
+.mn-inventory-panel {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.mn-inventory-record summary {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.mn-inventory-record summary span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mn-inventory-record summary small {
+  flex: 0 0 auto;
+  color: #ff8a2b;
+}
+
+.mn-inventory-record .mn-dossier-record-body p {
+  margin: 0;
+  color: rgba(232, 226, 214, 0.72);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.mn-inventory-record .mn-dossier-record-body strong {
+  color: rgba(243, 237, 227, 0.9);
+}
+
+.mn-inventory-notes {
+  display: grid;
+  gap: 0.45rem;
+  color: rgba(232, 226, 214, 0.48);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mn-inventory-notes textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 26, 0.16);
+  border-radius: 0.85rem;
+  background: rgba(0, 0, 0, 0.22);
+  color: #f3ede3;
+  padding: 0.85rem;
+  outline: none;
+  resize: vertical;
+  font-size: 0.88rem;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.mn-inventory-notes textarea:focus {
+  border-color: rgba(255, 122, 26, 0.72);
+}
+
+@media (max-width: 760px) {
+  .mn-inventory-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mn-inventory-tabs button {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   Inventário > Técnicas conectado à ShinobiDex
+   ===================================================== */
+
+.mn-technique-picker {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.mn-technique-search-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: rgba(232, 226, 214, 0.58);
+  font-size: 0.76rem;
+}
+
+.mn-technique-search-status button {
+  border: 1px solid rgba(255, 122, 26, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.08);
+  color: #ff8a2b;
+  padding: 0.42rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mn-technique-search-results {
+  max-height: 260px;
+  overflow-y: auto;
+  display: grid;
+  gap: 0.42rem;
+  padding-right: 0.15rem;
+}
+
+.mn-technique-search-results p {
+  margin: 0;
+  border: 1px dashed rgba(255, 255, 255, 0.09);
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.018);
+  color: rgba(232, 226, 214, 0.58);
+  padding: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.mn-technique-search-results button {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 0.82rem;
+  background: rgba(255, 255, 255, 0.025);
+  color: #f3ede3;
+  padding: 0.72rem 0.82rem;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.mn-technique-search-results button:hover,
+.mn-technique-search-results button.is-selected {
+  border-color: rgba(255, 122, 26, 0.56);
+  background: rgba(255, 122, 26, 0.1);
+}
+
+.mn-technique-search-results button strong {
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.mn-technique-search-results button small {
+  color: rgba(232, 226, 214, 0.56);
+  font-size: 0.72rem;
+}
+
+.mn-selected-technique-preview {
+  border: 1px solid rgba(255, 122, 26, 0.22);
+  border-radius: 0.9rem;
+  background: rgba(255, 122, 26, 0.065);
+  padding: 0.8rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.mn-selected-technique-preview span {
+  color: rgba(232, 226, 214, 0.52);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.mn-selected-technique-preview strong {
+  color: #f3ede3;
+  font-size: 0.95rem;
+}
+
+.mn-selected-technique-preview small {
+  color: #ff8a2b;
+  font-size: 0.74rem;
+}
+
+@media (max-width: 760px) {
+  .mn-technique-search-status {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* =====================================================
+   Inventário — deixa botões compactos no desktop
+   ===================================================== */
+
+.mn-inventory-panel .mn-dossier-form .mn-primary-button,
+.mn-inventory-editor .mn-dossier-form .mn-primary-button {
+  width: fit-content !important;
+  max-width: max-content !important;
+  min-width: 0 !important;
+  justify-self: start !important;
+  align-self: end !important;
+  padding: 0.65rem 1rem !important;
+  border-radius: 999px !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 760px) {
+  .mn-inventory-panel .mn-dossier-form .mn-primary-button,
+  .mn-inventory-editor .mn-dossier-form .mn-primary-button {
+    width: 100% !important;
+    max-width: none !important;
+    justify-self: stretch !important;
+    justify-content: center !important;
+  }
+}
+
+/* =====================================================
+   Status e Desenvolvimento Narrativo — Dossiê Shinobi
+   ===================================================== */
+
+.mn-status-grid input[type="number"] {
+  text-align: center !important;
+  font-weight: 900 !important;
+  font-size: 1rem !important;
+}
+
+.mn-status-grid input[type="number"]::-webkit-outer-spin-button,
+.mn-status-grid input[type="number"]::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+.mn-development-grid textarea {
+  min-height: 82px !important;
+}
+
+.mn-development-grid .mn-dossier-wide textarea {
+  min-height: 96px !important;
+}
+
+/* Botão de adicionar técnica mais curto ainda */
+.mn-inventory-panel .mn-dossier-form .mn-primary-button {
+  font-size: 0.72rem !important;
+  padding-inline: 0.9rem !important;
+}
+
+/* =====================================================
+   Mobile — botão circulado abre menu do Hall
+   ===================================================== */
+
+.mn-mobile-menu-backdrop {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .mn-mobile-hall-menu-button .mn-small-icon.is-open {
+    transform: rotate(180deg);
+  }
+
+  .mn-mobile-menu-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    background: rgba(0, 0, 0, 0.54) !important;
+    backdrop-filter: blur(6px) !important;
+  }
+
+  .mn-mobile-hall-menu {
+    width: min(84vw, 340px) !important;
+    min-height: 100dvh !important;
+    padding: 1rem !important;
+    border-left: 1px solid rgba(255, 122, 26, 0.18) !important;
+    background:
+      radial-gradient(circle at top right, rgba(255, 122, 26, 0.12), transparent 32%),
+      #16120f !important;
+    box-shadow: -18px 0 48px rgba(0, 0, 0, 0.42) !important;
+    animation: mnMobileMenuIn 0.18s ease-out both !important;
+    overflow-y: auto !important;
+  }
+
+  .mn-mobile-hall-menu-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.72rem !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 0.85rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  }
+
+  .mn-mobile-hall-menu-head small {
+    display: block !important;
+    color: #ff8a2b !important;
+    font-size: 0.62rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.14em !important;
+  }
+
+  .mn-mobile-hall-menu-head strong {
+    display: block !important;
+    color: #f3ede3 !important;
+    font-size: 1.05rem !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  .mn-mobile-hall-menu-head button {
+    margin-left: auto !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    color: rgba(243, 237, 227, 0.86) !important;
+    font-size: 1.35rem !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+  }
+
+  .mn-mobile-hall-menu-list {
+    display: grid !important;
+    gap: 0.45rem !important;
+  }
+
+  .mn-mobile-hall-menu-list button {
+    width: 100% !important;
+    min-height: 44px !important;
+    border: 1px solid transparent !important;
+    border-radius: 0.85rem !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    color: rgba(232, 226, 214, 0.78) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.72rem !important;
+    padding: 0.72rem 0.85rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 800 !important;
+    text-align: left !important;
+    cursor: pointer !important;
+  }
+
+  .mn-mobile-hall-menu-list button.is-active {
+    border-color: rgba(255, 122, 26, 0.58) !important;
+    background: rgba(255, 122, 26, 0.14) !important;
+    color: #ff8a2b !important;
+  }
+
+  .mn-mobile-hall-menu-list button:active {
+    transform: scale(0.985);
+  }
+}
+
+@keyframes mnMobileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =====================================================
+   FIX — ícone de viagem no botão mobile + botão Alterar foto
+   ===================================================== */
+
+/* O círculo continua sendo círculo; a imagem fica proporcional dentro dele */
+.mn-avatar {
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+}
+
+.mn-avatar .mn-avatar-map-icon {
+  width: 72% !important;
+  height: 72% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 0 !important;
+  display: block !important;
+}
+
+/* Mantém a estética original do botão Alterar foto, mesmo sendo label/input */
+.mn-photo-column .mn-photo-upload-button,
+.mn-photo-column label.mn-outline-button.mn-photo-upload-button {
+  width: 100% !important;
+  min-height: 46px !important;
+  border: 1px solid var(--mn-border) !important;
+  border-radius: 0.75rem !important;
+  background: rgba(0, 0, 0, 0.18) !important;
+  color: var(--mn-muted-fg) !important;
+  padding: 0.75rem 0.95rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  cursor: pointer !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+}
+
+.mn-photo-column .mn-photo-upload-button:hover,
+.mn-photo-column label.mn-outline-button.mn-photo-upload-button:hover {
+  border-color: rgba(255, 122, 26, 0.42) !important;
+  background: rgba(255, 122, 26, 0.08) !important;
+  color: var(--mn-orange) !important;
+  transform: none !important;
+}
+
+.mn-photo-upload-button input {
+  display: none !important;
+}
+
+.mn-photo-upload-button:has(input:disabled) {
+  opacity: 0.65 !important;
+  cursor: wait !important;
+}
+
+/* =====================================================
+   FIX — ícone de viagem no botão mobile + botão Alterar foto
+   ===================================================== */
+
+/* O círculo continua sendo círculo; a imagem fica proporcional dentro dele */
+.mn-avatar {
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+}
+
+.mn-avatar .mn-avatar-map-icon {
+  width: 72% !important;
+  height: 72% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 0 !important;
+  display: block !important;
+}
+
+/* Mantém a estética original do botão Alterar foto, mesmo sendo label/input */
+.mn-photo-column .mn-photo-upload-button,
+.mn-photo-column label.mn-outline-button.mn-photo-upload-button {
+  width: 100% !important;
+  min-height: 46px !important;
+  border: 1px solid var(--mn-border) !important;
+  border-radius: 0.75rem !important;
+  background: rgba(0, 0, 0, 0.18) !important;
+  color: var(--mn-muted-fg) !important;
+  padding: 0.75rem 0.95rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  cursor: pointer !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+}
+
+.mn-photo-column .mn-photo-upload-button:hover,
+.mn-photo-column label.mn-outline-button.mn-photo-upload-button:hover {
+  border-color: rgba(255, 122, 26, 0.42) !important;
+  background: rgba(255, 122, 26, 0.08) !important;
+  color: var(--mn-orange) !important;
+  transform: none !important;
+}
+
+.mn-photo-upload-button input {
+  display: none !important;
+}
+
+.mn-photo-upload-button:has(input:disabled) {
+  opacity: 0.65 !important;
+  cursor: wait !important;
+}
+
+
+
+
+
+
+
+/* =====================================================
+   MEU NINJA — SIDEBAR FIXA POR COLUNA / FINAL
+   Body não rola no desktop.
+   Sidebar fica parada.
+   Conteúdo direito rola sozinho.
+   ===================================================== */
+
+@media (min-width: 1024px) {
+  html:has(.mn-page),
+  body:has(.mn-page) {
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    background: #1a1815 !important;
+  }
+
+  body:has(.mn-page) #root,
+  body:has(.mn-page) .app,
+  body:has(.mn-page) .app-my-ninja {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    background: #1a1815 !important;
+    transform: none !important;
+    contain: none !important;
+  }
+
+  body:has(.mn-page) .mn-page {
+    display: grid !important;
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    background: #1a1815 !important;
+    transform: none !important;
+    contain: none !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 50 !important;
+    padding: 1.35rem 1rem !important;
+    margin: 0 !important;
+    background:
+      radial-gradient(circle at top left, rgba(255, 122, 26, 0.08), transparent 34%),
+      #15110e !important;
+    border-right: 1px solid rgba(255, 122, 26, 0.16) !important;
+    transform: none !important;
+  }
+
+  body:has(.mn-page) .mn-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    margin-left: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: #1a1815 !important;
+  }
+
+  body:has(.mn-page) .mn-topbar {
+    position: relative !important;
+    top: auto !important;
+    z-index: 20 !important;
+    background: transparent !important;
+  }
+
+  body:has(.mn-page) .mn-main {
+    width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #1a1815 !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar::-webkit-scrollbar,
+  body:has(.mn-page) .mn-shell::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar::-webkit-scrollbar-thumb,
+  body:has(.mn-page) .mn-shell::-webkit-scrollbar-thumb {
+    background: rgba(255, 122, 26, 0.34) !important;
+    border-radius: 999px !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar::-webkit-scrollbar-track,
+  body:has(.mn-page) .mn-shell::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.035) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  html:has(.mn-page),
+  body:has(.mn-page) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  body:has(.mn-page) #root,
+  body:has(.mn-page) .app,
+  body:has(.mn-page) .app-my-ninja,
+  body:has(.mn-page) .mn-page,
+  body:has(.mn-page) .mn-shell,
+  body:has(.mn-page) .mn-main {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body:has(.mn-page) .mn-page {
+    display: block !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar {
+    display: none !important;
+  }
+
+  body:has(.mn-page) .mn-shell {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* =====================================================
+   Meu Ninja — edição de perfil como modal geral
+   Desktop e mobile
+   ===================================================== */
+
+.mn-profile-editor-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1.5rem !important;
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.mn-profile-editor-modal {
+  width: min(980px, calc(100vw - 3rem)) !important;
+  max-height: calc(100dvh - 3rem) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 122, 26, 0.22) !important;
+  border-radius: 1.25rem !important;
+  background:
+    radial-gradient(circle at top right, rgba(255, 122, 26, 0.12), transparent 34%),
+    #17130f !important;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.72),
+    0 0 36px rgba(255, 122, 26, 0.14) !important;
+}
+
+.mn-profile-editor-modal-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  flex: 0 0 auto !important;
+  padding: 1rem 1.15rem !important;
+  border-bottom: 1px solid rgba(255, 122, 26, 0.18) !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+}
+
+.mn-profile-editor-modal-head small {
+  display: block !important;
+  color: #ff8a2b !important;
+  font-size: 0.62rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.16em !important;
+}
+
+.mn-profile-editor-modal-head strong {
+  display: block !important;
+  color: #f3ede3 !important;
+  font-size: 1.08rem !important;
+  font-weight: 900 !important;
+}
+
+.mn-profile-editor-modal-head button {
+  width: 2.35rem !important;
+  height: 2.35rem !important;
+  border: 1px solid rgba(255, 122, 26, 0.28) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 122, 26, 0.1) !important;
+  color: #ff8a2b !important;
+  font-size: 1.45rem !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.mn-profile-editor-modal-head button:hover {
+  border-color: rgba(255, 122, 26, 0.7) !important;
+  background: rgba(255, 122, 26, 0.16) !important;
+}
+
+.mn-profile-editor-modal .mn-sheet-card {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 1.15rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.mn-profile-editor-modal .mn-sheet-card::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.mn-profile-editor-modal .mn-sheet-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 122, 26, 0.34) !important;
+  border-radius: 999px !important;
+}
+
+.mn-profile-editor-modal .mn-sheet-actions {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  padding-top: 0.9rem !important;
+  background:
+    linear-gradient(180deg, transparent, #17130f 24%, #17130f 100%) !important;
+}
+
+/* Mobile: modal ocupa a tela inteira */
+@media (max-width: 760px) {
+  .mn-profile-editor-overlay {
+    align-items: stretch !important;
+    padding: 0 !important;
+  }
+
+  .mn-profile-editor-modal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+  }
+
+  .mn-profile-editor-modal-head {
+    padding: 0.95rem 1rem !important;
+  }
+
+  .mn-profile-editor-modal .mn-sheet-card {
+    padding: 1rem !important;
+  }
+
+  .mn-profile-editor-modal .mn-sheet-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mn-profile-editor-modal .mn-sheet-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+
+@media (max-width: 1023px) {
+  .mn-hall-return-sidebar {
+    display: none !important;
+  }
+}
+
+/* =====================================================
+   MEU NINJA — SIDEBAR COM BOTÃO HALL E MENU
+   Mantém os botões da sidebar e adiciona o botão
+   tradicional Voltar pro Hall no topo.
+===================================================== */
+
+@media (min-width: 1024px) {
+  body:has(.mn-page) .mn-page {
+    display: grid !important;
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+  }
+
+  .mn-sidebar-hall-button-wrap {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin: 0 0 0.5rem !important;
+  }
+
+  .mn-sidebar-hall-button-wrap .ln-hall-back-button {
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 235px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .mn-sidebar-hall-button-wrap {
+    display: none !important;
+  }
+}
+

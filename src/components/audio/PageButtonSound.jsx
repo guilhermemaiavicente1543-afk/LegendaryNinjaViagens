@@ -105,6 +105,8 @@ function getSoundType(target) {
 
   if (
     clickable.classList?.contains("ln-hall-return-button") ||
+    clickable.classList?.contains("ln-hall-back-button") ||
+    clickable.classList?.contains("ln-hall-back-button-app-return") ||
     clickable.classList?.contains("backButton") ||
     clickable.classList?.contains("panelBackdrop") ||
     clickable.classList?.contains("closeButton") ||

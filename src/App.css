@@ -34268,8 +34268,7 @@ body:has(.mnd-desktop-shell) {
 }
 
 /* Traços únicos ocupa linha inteira */
-.mnd-character-info-board article.mnd-info-wide,
-.mnd-character-info-board article:has(span:nth-child(1):contains("Traços")) {
+.mnd-character-info-board article.mnd-info-wide {
   grid-column: 1 / -1 !important;
 }
 
@@ -36398,3 +36397,2057 @@ body:has(.mnd-profile-info-stack) .mnd-profile-overview-boards,
 body:has(.mnd-profile-info-stack) .mnd-character-info-board {
   display: none !important;
 }
+
+
+/* ============================================================
+   FIX — Integração mobile/desktop Meu Ninja
+   Objetivo:
+   - O desktop oficial é MyNinjaDesktopHall.
+   - O mobile oficial é MyNinjaMobilePanel + my-ninja-mobile-live-area.
+   - O desktop legado não deve reaparecer.
+   - O conteúdo real de Localização/Teia no mobile aparece na live area.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .mnd-desktop-shell {
+    display: none !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: block !important;
+  }
+
+  .my-ninja-mobile-live-area {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 14px 96px !important;
+    box-sizing: border-box !important;
+  }
+
+  .my-ninja-mobile-live-area:empty {
+    display: none !important;
+  }
+
+  .my-ninja-page .desktop-my-ninja-layout {
+    display: none !important;
+  }
+
+  .my-ninja-page .characters-header {
+    display: none !important;
+  }
+
+  .lnm-mobile-shell {
+    min-height: 100dvh !important;
+    padding-bottom: 96px !important;
+    overflow-x: hidden !important;
+  }
+
+  .lnm-page-content {
+    overflow-x: hidden !important;
+  }
+
+  .lnm-tab-nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+  }
+
+  .lnm-profile-card,
+  .lnm-traits-card,
+  .lnm-dossie-card,
+  .lnm-section-row,
+  .my-ninja-mobile-live-area > * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ln-sheet-portal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+  }
+
+  .ln-sheet-portal-window {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ln-sheet-portal-body {
+    height: calc(100dvh - 72px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 120px !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .mnd-desktop-shell {
+    display: grid !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   MEU NINJA — integração segura desktop/mobile
+   NÃO mexe no board bonito mnd-bottom-grid.
+   Desktop oficial: MyNinjaDesktopHall.
+   Mobile oficial: MyNinjaMobilePanel + my-ninja-mobile-live-area.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  .ln-meu-ninja-legacy-content {
+    display: none !important;
+  }
+
+  .mnd-desktop-shell {
+    display: grid !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .mnd-desktop-shell {
+    display: none !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: block !important;
+  }
+
+  .my-ninja-page .characters-header {
+    display: none !important;
+  }
+
+  .my-ninja-page .desktop-my-ninja-layout {
+    display: none !important;
+  }
+
+  .lnm-mobile-shell {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-height: 100dvh !important;
+    overflow-x: hidden !important;
+    padding-bottom: 96px !important;
+    box-sizing: border-box !important;
+  }
+
+  .lnm-page-content,
+  .my-ninja-mobile-live-area {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .my-ninja-mobile-live-area {
+    display: block !important;
+    padding: 0 14px 110px !important;
+  }
+
+  .my-ninja-mobile-live-area:empty {
+    display: none !important;
+  }
+
+  .lnm-tab-nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    backdrop-filter: blur(14px);
+  }
+
+  .lnm-card,
+  .lnm-profile-card,
+  .lnm-traits-card,
+  .lnm-dossie-card,
+  .lnm-section-row,
+  .my-ninja-mobile-live-area > * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ln-sheet-portal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+  }
+
+  .ln-sheet-portal-window {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ln-sheet-portal-body {
+    height: calc(100dvh - 72px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 120px !important;
+  }
+}
+
+
+/* ============================================================
+   FIX FINAL — Meu Ninja mobile/desktop sem quebrar mnd-bottom-grid
+   Desktop oficial: MyNinjaDesktopHall.
+   Mobile oficial: MyNinjaMobilePanel + my-ninja-mobile-live-area.
+   Board bonito oficial: mnd-bottom-grid.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  .mnd-desktop-shell {
+    display: grid !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: none !important;
+  }
+
+  .my-ninja-mobile-live-area {
+    display: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .mnd-desktop-shell {
+    display: none !important;
+  }
+
+  .ln-meu-ninja-legacy-content {
+    display: block !important;
+  }
+
+  .my-ninja-page .characters-header {
+    display: none !important;
+  }
+
+  .my-ninja-page .desktop-my-ninja-layout {
+    display: none !important;
+  }
+
+  .my-ninja-page,
+  .ln-meu-ninja-legacy-content,
+  .lnm-mobile-shell,
+  .lnm-page-content,
+  .my-ninja-mobile-live-area {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .lnm-mobile-shell {
+    min-height: 100dvh !important;
+    padding-bottom: 96px !important;
+  }
+
+  .my-ninja-mobile-live-area {
+    display: block !important;
+    padding: 0 14px 110px !important;
+  }
+
+  .my-ninja-mobile-live-area:empty {
+    display: none !important;
+  }
+
+  .my-ninja-mobile-live-area .lnm-tab-placeholder {
+    display: none !important;
+  }
+
+  .lnm-tab-nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    backdrop-filter: blur(14px);
+  }
+
+  .lnm-card,
+  .lnm-profile-card,
+  .lnm-traits-card,
+  .lnm-dossie-card,
+  .lnm-section-row,
+  .my-ninja-mobile-live-area > * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ln-sheet-portal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+  }
+
+  .ln-sheet-portal-window {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .ln-sheet-portal-body {
+    height: calc(100dvh - 72px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 120px !important;
+  }
+}
+
+/* ============================================================
+   Ficha Complementar — paridade funcional mobile/desktop
+   O mobile usa a mesma ficha funcional do desktop dentro do portal.
+   Não altera o design geral do Meu Ninja.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .ln-sheet-portal-body .mnds-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+    padding-bottom: 10px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu button {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  .ln-sheet-portal-body .mnds-board {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .ln-sheet-portal-body .mnds-grid,
+  .ln-sheet-portal-body .mnds-grid.two {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ln-sheet-portal-body input,
+  .ln-sheet-portal-body textarea,
+  .ln-sheet-portal-body select,
+  .ln-sheet-portal-body button {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ln-sheet-portal-body .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+  }
+}
+
+/* ============================================================
+   Ficha Complementar — paridade funcional mobile/desktop
+   O mobile usa a mesma ficha funcional do desktop dentro do portal.
+   Não altera o design geral do Meu Ninja.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .ln-sheet-portal-body .mnds-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+    padding-bottom: 10px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu button {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  .ln-sheet-portal-body .mnds-board {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .ln-sheet-portal-body .mnds-grid,
+  .ln-sheet-portal-body .mnds-grid.two {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ln-sheet-portal-body input,
+  .ln-sheet-portal-body textarea,
+  .ln-sheet-portal-body select,
+  .ln-sheet-portal-body button {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .ln-sheet-portal-body .mnds-bottom-save {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+  }
+}
+
+
+/* ============================================================
+   FIX — mostrar todas as abas da Ficha Complementar no mobile
+   Não altera o board mnd-bottom-grid.
+   Apenas impede que o menu da ficha fique preso em Registro de Provas.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .ln-sheet-portal-body .mnds-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    overflow: visible !important;
+    padding: 0 0 14px !important;
+    margin: 0 0 18px !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu button,
+  .ln-sheet-portal-body .mnds-menu > button,
+  .ln-sheet-portal-body .mnds-menu [role="button"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    transform: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 54px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .ln-sheet-portal-body .mnds-menu button:not(.active) {
+    filter: none !important;
+  }
+
+  .ln-sheet-portal-body .mnds-board {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .ln-sheet-portal-body .mnds-board,
+  .ln-sheet-portal-body .mnds-section,
+  .ln-sheet-portal-body .mnds-list,
+  .ln-sheet-portal-body .mnds-record {
+    box-sizing: border-box !important;
+  }
+}
+
+/* ============================================================
+   FIX — botão inferior Salvar Ficha Complementar fixo no mobile
+   Apenas dentro do portal mobile da Ficha Complementar.
+   Não altera desktop nem o board mnd-bottom-grid.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .ln-sheet-portal-body {
+    padding-bottom: 132px !important;
+  }
+
+  .ln-sheet-portal-body .mnds-board {
+    padding-bottom: 132px !important;
+  }
+
+  .ln-sheet-portal-body .mnds-bottom-save,
+  .ln-sheet-portal-body .ln-sheet-bottom-save-auto {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 100000 !important;
+
+    width: 100vw !important;
+    max-width: 100vw !important;
+
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+
+    background:
+      linear-gradient(180deg, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.96) 26%, #050505 100%) !important;
+
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+
+  .ln-sheet-portal-body .mnds-bottom-save button,
+  .ln-sheet-portal-body .ln-sheet-bottom-save-auto button,
+  .ln-sheet-portal-body .ln-sheet-save-bottom-button {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 58px !important;
+  }
+}
+
+/* ============================================================
+   FIX — Desktop Meu Ninja: board bonito abaixo do perfil
+   Mantém mnd-bottom-grid como board oficial.
+   Não altera mobile nem Ficha Complementar funcional.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  .mnd-main-grid.mnd-main-grid--profile-sheet {
+    display: grid !important;
+    grid-template-columns: minmax(360px, 0.95fr) minmax(560px, 1.05fr) !important;
+    align-items: start !important;
+    gap: 24px !important;
+  }
+
+  .mnd-profile-info-stack {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 22px !important;
+  }
+
+  .mnd-profile-info-stack .mnd-profile-card {
+    width: 100% !important;
+  }
+
+  .mnd-profile-info-stack .mnd-bottom-grid {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin: 0 !important;
+  }
+
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card {
+    width: 100% !important;
+    min-height: auto !important;
+  }
+
+  .mnd-main-grid--profile-sheet > .mnd-sheet-card {
+    min-width: 0 !important;
+    align-self: start !important;
+  }
+
+  .mnd-main-grid--profile-sheet .mnds-shell {
+    min-width: 0 !important;
+  }
+}
+
+/* ============================================================
+   FIX CIRÚRGICO — Meu Ninja desktop começa no topo real
+   Força sidebar e página na mesma linha do grid.
+   Remove efeito visual de tela vazia antes do conteúdo.
+   Não altera mobile, ficha complementar nem mnd-bottom-grid.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  body:has(.mnd-desktop-shell) .page-shell,
+  body:has(.mnd-desktop-shell) .main-content,
+  body:has(.mnd-desktop-shell) .characters-page,
+  body:has(.mnd-desktop-shell) .my-ninja-page,
+  body:has(.mnd-desktop-shell) .ln-meu-ninja-legacy-content {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    transform: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .ln-meu-ninja-legacy-content {
+    display: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-desktop-shell {
+    display: grid !important;
+    grid-template-columns: 248px minmax(0, 1fr) !important;
+    grid-template-rows: auto !important;
+    align-items: start !important;
+    align-content: start !important;
+    justify-items: stretch !important;
+
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+
+    height: 100vh !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-page {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+
+    position: relative !important;
+    top: 0 !important;
+
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-page > *:first-child {
+    margin-top: 0 !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-topbar {
+    position: relative !important;
+    top: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-content {
+    margin: 0 !important;
+    padding: 18px 28px 48px !important;
+    min-height: 0 !important;
+    height: auto !important;
+    transform: none !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-hero {
+    margin-top: 0 !important;
+  }
+
+  body:has(.mnd-desktop-shell) .mnd-page-bottom-spacer,
+  body:has(.mnd-desktop-shell) .ln-bg-spacer {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.mnd-desktop-shell) #root::before,
+  body:has(.mnd-desktop-shell) #root::after,
+  body:has(.mnd-desktop-shell) .mnd-page::before,
+  body:has(.mnd-desktop-shell) .mnd-page::after,
+  body:has(.mnd-desktop-shell) .mnd-content::before,
+  body:has(.mnd-desktop-shell) .mnd-content::after {
+    display: none !important;
+    content: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+  }
+}
+
+/* ============================================================
+   FIX — boards do perfil mais compactos e lado a lado no desktop
+   - reduz distância entre pergunta e resposta
+   - coloca os boards lado a lado
+   - dá um pouco mais de espaço para a coluna do perfil
+   - tira um pouco da largura da ficha complementar
+   Não altera mobile.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  /* Ajusta a proporção entre coluna do perfil e ficha complementar */
+  .mnd-main-grid.mnd-main-grid--profile-sheet {
+    grid-template-columns: minmax(760px, 1.18fr) minmax(440px, 0.82fr) !important;
+    gap: 20px !important;
+  }
+
+  /* Boards de baixo em linha */
+  .mnd-profile-info-stack .mnd-bottom-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 220px !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+  }
+
+  /* Cards internos */
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card {
+    padding: 16px 18px !important;
+    min-height: 100% !important;
+  }
+
+  /* Ícone do mapa com largura menor e mais elegante */
+  .mnd-profile-info-stack .mnd-bottom-grid > :last-child {
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+  }
+
+  /* Reduz distância entre label e valor */
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card li,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-info-row,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-detail-row,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-data-row,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-meta-row,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-field-row {
+    display: grid !important;
+    grid-template-columns: minmax(120px, 38%) minmax(0, 62%) !important;
+    gap: 10px !important;
+    align-items: center !important;
+    padding: 9px 0 !important;
+  }
+
+  /* Tira o valor da extrema direita */
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card li > :last-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-info-row > :last-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-detail-row > :last-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-data-row > :last-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-meta-row > :last-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-field-row > :last-child {
+    text-align: left !important;
+    justify-self: start !important;
+  }
+
+  /* Evita que os títulos/labels empurrem demais */
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card li > :first-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-info-row > :first-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-detail-row > :first-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-data-row > :first-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-meta-row > :first-child,
+  .mnd-profile-info-stack .mnd-bottom-grid .mnd-card .mnd-field-row > :first-child {
+    padding-right: 0 !important;
+  }
+}
+
+/* Fallback para desktops um pouco menores */
+@media (min-width: 901px) and (max-width: 1450px) {
+  .mnd-main-grid.mnd-main-grid--profile-sheet {
+    grid-template-columns: minmax(680px, 1.12fr) minmax(420px, 0.88fr) !important;
+  }
+
+  .mnd-profile-info-stack .mnd-bottom-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+
+  .mnd-profile-info-stack .mnd-bottom-grid > :last-child {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
+
+/* ============================================================
+   FIX — botão "Editar perfil" no topo do card do perfil
+   Desktop only. Remove a necessidade da barra "Dados de criação".
+   ============================================================ */
+
+@media (min-width: 901px) {
+  .mnd-profile-card {
+    position: relative !important;
+  }
+
+  .mnd-edit-profile-top {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    z-index: 8 !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+
+    border: 1px solid rgba(255, 133, 31, 0.55) !important;
+    background: linear-gradient(180deg, rgba(255, 138, 26, 0.96), rgba(216, 100, 10, 0.96)) !important;
+    color: #1b0b00 !important;
+    font-weight: 800 !important;
+    font-size: 0.92rem !important;
+    letter-spacing: 0.02em !important;
+    cursor: pointer !important;
+
+    box-shadow:
+      0 10px 22px rgba(255, 120, 20, 0.18),
+      inset 0 1px 0 rgba(255,255,255,0.18) !important;
+  }
+
+  .mnd-edit-profile-top:hover {
+    filter: brightness(1.04) !important;
+  }
+
+  .mnd-edit-profile-top:active {
+    transform: translateY(1px) !important;
+  }
+}
+
+
+/* ============================================================
+   FIX — Editar perfil no canto do card
+   Remove a barra "Dados de criação" do fluxo visual.
+   Mantém o editor funcional em MyNinjaDesktopInfoEditor.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  .mnd-profile-card {
+    position: relative !important;
+  }
+
+  .mnd-edit-profile-top {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    z-index: 12 !important;
+
+    min-height: 36px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+
+    border: 1px solid rgba(255, 132, 28, 0.58) !important;
+    background: rgba(255, 122, 26, 0.12) !important;
+    color: #ff8a24 !important;
+
+    font-weight: 900 !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+
+    cursor: pointer !important;
+    box-shadow: 0 0 18px rgba(255, 122, 26, 0.08) !important;
+  }
+
+  .mnd-edit-profile-top:hover {
+    background: rgba(255, 122, 26, 0.2) !important;
+    border-color: rgba(255, 132, 28, 0.82) !important;
+  }
+
+  .mnd-creation-editor-shell--headless {
+    margin-top: 18px !important;
+  }
+
+  .mnd-creation-editor-shell--headless:empty {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   OTIMIZAÇÃO SEGURA — Mobile Meu Ninja
+   Não altera scroll, height, overflow principal nem renderização.
+   Reduz repaints caros: blur, filtros, sombras e animações.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .lnm-mobile-shell,
+  .lnm-page-content,
+  .lnm-card,
+  .lnm-profile-card,
+  .lnm-traits-card,
+  .lnm-dossie-card,
+  .lnm-section-row,
+  .lnm-tab-nav,
+  .ln-sheet-portal-window,
+  .ln-sheet-portal-header,
+  .ln-sheet-portal-body {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+  }
+
+  .lnm-mobile-shell *,
+  .my-ninja-mobile-live-area *,
+  .ln-sheet-portal-body * {
+    animation: none !important;
+    transition-property: background-color, border-color, color, opacity !important;
+    transition-duration: 80ms !important;
+    will-change: auto !important;
+  }
+
+  .lnm-card,
+  .lnm-profile-card,
+  .lnm-traits-card,
+  .lnm-dossie-card,
+  .lnm-section-row {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22) !important;
+  }
+
+  .lnm-hero-shuriken,
+  .lnm-mobile-shell svg {
+    filter: none !important;
+    drop-shadow: none !important;
+  }
+
+  .lnm-mobile-shell img,
+  .my-ninja-mobile-live-area img,
+  .ln-sheet-portal-body img {
+    max-width: 100% !important;
+    height: auto;
+  }
+}
+
+/* ============================================================
+   RESTAURAÇÃO — uploader antigo de foto no perfil desktop
+   Usa CharacterPortraitUploader / portrait_url como fonte oficial.
+   ============================================================ */
+
+@media (min-width: 901px) {
+  .mnd-legacy-portrait-slot {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .mnd-legacy-portrait-slot .character-portrait-uploader {
+    width: 100% !important;
+    max-width: 230px !important;
+  }
+
+  .mnd-legacy-portrait-slot .character-portrait-frame {
+    width: 180px !important;
+    height: 180px !important;
+    margin: 0 auto !important;
+  }
+
+  .mnd-legacy-portrait-slot .character-portrait-frame img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .mnd-legacy-portrait-slot .character-portrait-uploader button {
+    width: 100% !important;
+  }
+}
+
+
+/* ============================================================
+   OTIMIZAÇÃO — botões não sensibilizam durante scroll mobile
+   Evita engasgo quando o dedo passa por muitos botões/cards.
+   Não remove botões. Eles voltam a funcionar ao parar de rolar.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .lnm-mobile-shell,
+  .lnm-page-content,
+  .my-ninja-mobile-live-area {
+    touch-action: pan-y !important;
+  }
+
+  .lnm-mobile-shell button,
+  .lnm-mobile-shell [role="button"],
+  .lnm-mobile-shell a,
+  .my-ninja-mobile-live-area button,
+  .my-ninja-mobile-live-area [role="button"],
+  .my-ninja-mobile-live-area a {
+    touch-action: manipulation !important;
+  }
+
+  html.lnm-is-scrolling .lnm-mobile-shell button,
+  html.lnm-is-scrolling .lnm-mobile-shell [role="button"],
+  html.lnm-is-scrolling .lnm-mobile-shell a,
+  html.lnm-is-scrolling .my-ninja-mobile-live-area button,
+  html.lnm-is-scrolling .my-ninja-mobile-live-area [role="button"],
+  html.lnm-is-scrolling .my-ninja-mobile-live-area a {
+    pointer-events: none !important;
+  }
+
+  html.lnm-is-scrolling .lnm-tab-nav,
+  html.lnm-is-scrolling .lnm-tab-nav *,
+  html.lnm-is-scrolling .ln-sheet-portal-header,
+  html.lnm-is-scrolling .ln-sheet-portal-header * {
+    pointer-events: auto !important;
+  }
+
+  html.lnm-is-scrolling .lnm-mobile-shell *,
+  html.lnm-is-scrolling .my-ninja-mobile-live-area * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html.lnm-is-scrolling .lnm-card,
+  html.lnm-is-scrolling .lnm-profile-card,
+  html.lnm-is-scrolling .lnm-traits-card,
+  html.lnm-is-scrolling .lnm-dossie-card,
+  html.lnm-is-scrolling .lnm-section-row {
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   OTIMIZAÇÃO — botões não sensibilizam durante scroll mobile
+   Evita engasgo quando o dedo passa por muitos botões/cards.
+   Não remove botões. Eles voltam a funcionar ao parar de rolar.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .lnm-mobile-shell,
+  .lnm-page-content,
+  .my-ninja-mobile-live-area {
+    touch-action: pan-y !important;
+  }
+
+  .lnm-mobile-shell button,
+  .lnm-mobile-shell [role="button"],
+  .lnm-mobile-shell a,
+  .my-ninja-mobile-live-area button,
+  .my-ninja-mobile-live-area [role="button"],
+  .my-ninja-mobile-live-area a {
+    touch-action: manipulation !important;
+  }
+
+  html.lnm-is-scrolling .lnm-mobile-shell button,
+  html.lnm-is-scrolling .lnm-mobile-shell [role="button"],
+  html.lnm-is-scrolling .lnm-mobile-shell a,
+  html.lnm-is-scrolling .my-ninja-mobile-live-area button,
+  html.lnm-is-scrolling .my-ninja-mobile-live-area [role="button"],
+  html.lnm-is-scrolling .my-ninja-mobile-live-area a {
+    pointer-events: none !important;
+  }
+
+  html.lnm-is-scrolling .lnm-tab-nav,
+  html.lnm-is-scrolling .lnm-tab-nav *,
+  html.lnm-is-scrolling .ln-sheet-portal-header,
+  html.lnm-is-scrolling .ln-sheet-portal-header * {
+    pointer-events: auto !important;
+  }
+
+  html.lnm-is-scrolling .lnm-mobile-shell *,
+  html.lnm-is-scrolling .my-ninja-mobile-live-area * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html.lnm-is-scrolling .lnm-card,
+  html.lnm-is-scrolling .lnm-profile-card,
+  html.lnm-is-scrolling .lnm-traits-card,
+  html.lnm-is-scrolling .lnm-dossie-card,
+  html.lnm-is-scrolling .lnm-section-row {
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   OTIMIZAÇÃO REAL — reduzir botões no scroll do Meu Ninja mobile
+   Mantém aparência, mas remove interação duplicada em blocos informativos.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .lnm-menu-item-static,
+  .lnm-section-row-static,
+  .lnm-traits-card-static,
+  .lnm-epithet-badge-static {
+    cursor: default !important;
+    pointer-events: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .lnm-menu-item-static:active,
+  .lnm-section-row-static:active,
+  .lnm-traits-card-static:active,
+  .lnm-epithet-badge-static:active {
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .lnm-section-row-static .lnm-section-chevron {
+    opacity: 0.18 !important;
+  }
+}
+
+/* ============================================================
+   OTIMIZAÇÃO REAL — reduzir botões no scroll do Meu Ninja mobile
+   Mantém aparência, mas remove interação duplicada em blocos informativos.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .lnm-menu-item-static,
+  .lnm-section-row-static,
+  .lnm-traits-card-static,
+  .lnm-epithet-badge-static {
+    cursor: default !important;
+    pointer-events: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .lnm-menu-item-static:active,
+  .lnm-section-row-static:active,
+  .lnm-traits-card-static:active,
+  .lnm-epithet-badge-static:active {
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .lnm-section-row-static .lnm-section-chevron {
+    opacity: 0.18 !important;
+  }
+}
+
+/* ============================================================
+   LIMPEZA — remove resquícios do board mobile azul antigo
+   A tela mobile oficial é lnm-mobile-shell.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .mobile-ninja-board,
+  .mobile-ninja-board-bg,
+  .mobile-board-name,
+  .mobile-board-village,
+  .mobile-board-style,
+  .mobile-board-portrait,
+  .mobile-board-tab,
+  .mobile-board-sheet,
+  .mnm-page,
+  .mnm-character-card,
+  .mnm-sheet-card,
+  .mnm-summary,
+  .mnm-profile-card-simple,
+  .mnm-box {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .lnm-traits-toggle {
+    width: 100% !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: inherit !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .lnm-traits-toggle span {
+    font-weight: 900 !important;
+    color: rgba(255, 244, 230, 0.94) !important;
+  }
+
+  .lnm-traits-toggle small {
+    color: #ff8a24 !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .mnds-toggle-shinobidex {
+    margin: 12px 0 16px !important;
+  }
+}
+
+/* ============================================================
+   Meu Ninja esvaziado para reconstrução
+   A Teia foi preservada, mas não renderizada.
+   ============================================================ */
+
+.mnz-empty-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  color: #fff4e6;
+  background:
+    radial-gradient(circle at top, rgba(255, 122, 26, 0.16), transparent 34%),
+    linear-gradient(180deg, #120905 0%, #050505 100%);
+}
+
+.mnz-empty-card {
+  width: min(720px, 100%);
+  border: 1px solid rgba(255, 122, 26, 0.28);
+  border-radius: 24px;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.36);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
+}
+
+.mnz-empty-eyebrow {
+  margin: 0 0 10px;
+  color: #ff8a24;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.mnz-empty-card h1 {
+  margin: 0 0 12px;
+  font-size: clamp(2.2rem, 6vw, 4.4rem);
+  line-height: 1;
+}
+
+.mnz-empty-card p {
+  margin: 0;
+  color: rgba(255, 244, 230, 0.74);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   Meu Ninja — página limpa para reconstrução
+   Remove plano de fundo, glow e peso visual.
+   ============================================================ */
+
+.mnz-empty-page {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  min-height: 100vh !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 24px !important;
+}
+
+.mnz-empty-card {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  max-width: 720px !important;
+}
+
+.mnz-empty-card h1 {
+  color: #fff4e6 !important;
+}
+
+.mnz-empty-card p {
+  color: rgba(255, 244, 230, 0.72) !important;
+}
+
+
+/* =====================================================
+   MEU NINJA V2 — reconstrução leve
+===================================================== */
+
+/* CSS do Meu Ninja V2 aqui */
+
+
+/* Cadastro Ninja — campos completos da ficha */
+.ln-auth-form-ninja {
+  max-height: min(68vh, 760px);
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.ln-auth-form-section-title {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 122, 26, 0.22);
+  color: #ff7a1a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ln-auth-form-v2 select,
+.ln-auth-form-v2 textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 26, 0.22);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #f3ede3;
+  padding: 0.85rem 0.95rem;
+  outline: none;
+  resize: vertical;
+}
+
+.ln-auth-form-v2 select:focus,
+.ln-auth-form-v2 textarea:focus {
+  border-color: rgba(255, 122, 26, 0.72);
+}
+
+.ln-auth-form-v2 option {
+  background: #1a1815;
+  color: #f3ede3;
+}
+
+/* =====================================================
+   FIX FINAL — Isola Meu Ninja Clean do CSS legado
+   ===================================================== */
+
+body:has(.mn-page) {
+  background: #1a1815 !important;
+  overflow-x: hidden !important;
+}
+
+body:has(.mn-page) #root,
+body:has(.mn-page) .app,
+body:has(.mn-page) .app-my-ninja {
+  display: block !important;
+  position: relative !important;
+  width: 100vw !important;
+  min-width: 100vw !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  background: #1a1815 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body:has(.mn-page) .app::before,
+body:has(.mn-page) .app::after,
+body:has(.mn-page) .app-my-ninja::before,
+body:has(.mn-page) .app-my-ninja::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body:has(.mn-page) .mn-page {
+  display: flex !important;
+  position: relative !important;
+  z-index: 999 !important;
+  width: 100vw !important;
+  min-height: 100dvh !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  background: #1a1815 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body:has(.mn-page) .mn-sidebar,
+body:has(.mn-page) .mn-shell,
+body:has(.mn-page) .mn-topbar,
+body:has(.mn-page) .mn-main,
+body:has(.mn-page) .mn-hero,
+body:has(.mn-page) .mn-card,
+body:has(.mn-page) .mn-sheet-card,
+body:has(.mn-page) .mn-bottom-grid,
+body:has(.mn-page) .mn-profile-grid {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body:has(.mn-page) .mn-shell {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  min-height: 100dvh !important;
+  height: auto !important;
+  overflow: visible !important;
+  background: #1a1815 !important;
+}
+
+body:has(.mn-page) .mn-main {
+  display: block !important;
+  position: relative !important;
+  z-index: 1001 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding-bottom: 140px !important;
+}
+
+/* Esconde restos antigos que ficavam por cima do Meu Ninja */
+body:has(.mn-page) .panel,
+body:has(.mn-page) .panelBackdrop,
+body:has(.mn-page) .mobileConfigButton,
+body:has(.mn-page) .background-overlay,
+body:has(.mn-page) .knowledge-floating-button {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 1023px) {
+  body:has(.mn-page) .mn-page {
+    display: block !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar {
+    display: none !important;
+  }
+
+  body:has(.mn-page) .mn-shell {
+    width: 100vw !important;
+  }
+}
+
+
+
+
+/* =====================================================
+   MEU NINJA — SIDEBAR FIXA POR COLUNA / FINAL
+   Body não rola no desktop.
+   Sidebar fica parada.
+   Conteúdo direito rola sozinho.
+   ===================================================== */
+
+@media (min-width: 1024px) {
+  html:has(.mn-page),
+  body:has(.mn-page) {
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    background: #1a1815 !important;
+  }
+
+  body:has(.mn-page) #root,
+  body:has(.mn-page) .app,
+  body:has(.mn-page) .app-my-ninja {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    background: #1a1815 !important;
+    transform: none !important;
+    contain: none !important;
+  }
+
+  body:has(.mn-page) .mn-page {
+    display: grid !important;
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    background: #1a1815 !important;
+    transform: none !important;
+    contain: none !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 50 !important;
+    padding: 1.35rem 1rem !important;
+    margin: 0 !important;
+    background:
+      radial-gradient(circle at top left, rgba(255, 122, 26, 0.08), transparent 34%),
+      #15110e !important;
+    border-right: 1px solid rgba(255, 122, 26, 0.16) !important;
+    transform: none !important;
+  }
+
+  body:has(.mn-page) .mn-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    margin-left: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: #1a1815 !important;
+  }
+
+  body:has(.mn-page) .mn-topbar {
+    position: relative !important;
+    top: auto !important;
+    z-index: 20 !important;
+    background: transparent !important;
+  }
+
+  body:has(.mn-page) .mn-main {
+    width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #1a1815 !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar::-webkit-scrollbar,
+  body:has(.mn-page) .mn-shell::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar::-webkit-scrollbar-thumb,
+  body:has(.mn-page) .mn-shell::-webkit-scrollbar-thumb {
+    background: rgba(255, 122, 26, 0.34) !important;
+    border-radius: 999px !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar::-webkit-scrollbar-track,
+  body:has(.mn-page) .mn-shell::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.035) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  html:has(.mn-page),
+  body:has(.mn-page) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  body:has(.mn-page) #root,
+  body:has(.mn-page) .app,
+  body:has(.mn-page) .app-my-ninja,
+  body:has(.mn-page) .mn-page,
+  body:has(.mn-page) .mn-shell,
+  body:has(.mn-page) .mn-main {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body:has(.mn-page) .mn-page {
+    display: block !important;
+  }
+
+  body:has(.mn-page) .mn-sidebar {
+    display: none !important;
+  }
+
+  body:has(.mn-page) .mn-shell {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+  }
+}
+
+
+/* ShinobiDex pública — paginação */
+.shinobidex-pagination {
+  width: min(100%, 720px);
+  margin: 0 auto 22px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(22, 18, 14, 0.92), rgba(9, 7, 5, 0.96));
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(255, 214, 137, 0.05);
+}
+
+.shinobidex-pagination span {
+  min-width: 130px;
+  text-align: center;
+  color: rgba(255, 232, 196, 0.86);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobidex-pagination button {
+  min-width: 118px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 122, 0, 0.62);
+  background:
+    radial-gradient(circle at top, rgba(255, 166, 58, 0.28), transparent 62%),
+    linear-gradient(180deg, rgba(65, 38, 18, 0.96), rgba(20, 13, 8, 0.98));
+  color: #ffe8c4;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 0 18px rgba(255, 122, 0, 0.18),
+    inset 0 0 0 1px rgba(255, 236, 190, 0.08);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
+}
+
+.shinobidex-pagination button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(255, 170, 70, 0.95);
+  box-shadow:
+    0 0 26px rgba(255, 122, 0, 0.28),
+    0 10px 22px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(255, 236, 190, 0.12);
+  filter: brightness(1.06);
+}
+
+.shinobidex-pagination button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.shinobidex-pagination button:disabled {
+  opacity: 0.36;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+  box-shadow: none;
+}
+
+@media (max-width: 640px) {
+  .shinobidex-pagination {
+    width: 100%;
+    gap: 10px;
+    padding: 10px 8px;
+  }
+
+  .shinobidex-pagination span {
+    width: 100%;
+    order: -1;
+  }
+
+  .shinobidex-pagination button {
+    flex: 1;
+    min-width: 0;
+    padding: 0 12px;
+    font-size: 0.78rem;
+  }
+}
+
+
+/* ShinobiDex pública — detalhe mobile em sobreposição */
+.shinobidex-detail-close {
+  display: none;
+}
+
+.shinobidex-card {
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 820px) {
+  .shinobidex-layout {
+    display: block;
+  }
+
+  .shinobidex-list {
+    width: 100%;
+  }
+
+  .shinobidex-card {
+    user-select: none;
+  }
+
+  .shinobidex-detail {
+    display: none;
+  }
+
+  .shinobidex-detail.is-open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    width: auto;
+    max-width: none;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 76px 16px 24px;
+    border: 0;
+    border-radius: 0;
+    background:
+      radial-gradient(circle at top, rgba(255, 122, 0, 0.16), transparent 38%),
+      linear-gradient(180deg, rgba(18, 13, 8, 0.98), rgba(4, 3, 2, 0.99));
+    box-shadow: inset 0 0 0 1px rgba(255, 122, 0, 0.20);
+  }
+
+  .shinobidex-detail-close {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 10000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 122, 0, 0.72);
+    background:
+      radial-gradient(circle at top, rgba(255, 166, 58, 0.26), transparent 62%),
+      linear-gradient(180deg, rgba(60, 34, 15, 0.98), rgba(14, 9, 5, 0.98));
+    color: #ffe8c4;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow:
+      0 0 22px rgba(255, 122, 0, 0.22),
+      0 12px 28px rgba(0, 0, 0, 0.38);
+  }
+}
+
+@media (min-width: 821px) {
+  .shinobidex-detail {
+    display: block;
+  }
+
+  .shinobidex-detail-close {
+    display: none;
+  }
+}
+
+
+/* ShinobiDex pública — correção mobile de overlay e scroll */
+.shinobidex-detail-scroll {
+  display: contents;
+}
+
+.shinobidex-card[role="button"] {
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shinobidex-card[role="button"]:focus-visible {
+  outline: 2px solid rgba(255, 122, 0, 0.88);
+  outline-offset: 3px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .shinobidex-card:hover,
+  .shinobidex-card:active {
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .shinobidex-detail {
+    display: none;
+  }
+
+  .shinobidex-detail.is-open {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    flex-direction: column !important;
+    background:
+      radial-gradient(circle at top, rgba(255, 122, 0, 0.16), transparent 38%),
+      linear-gradient(180deg, rgba(18, 13, 8, 0.99), rgba(4, 3, 2, 0.99)) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 122, 0, 0.20) !important;
+    overscroll-behavior: contain;
+    touch-action: none;
+  }
+
+  .shinobidex-detail.is-open .shinobidex-detail-scroll {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    padding: 76px 16px 28px;
+    scrollbar-width: thin;
+  }
+
+  .shinobidex-detail.is-open .shinobidex-detail-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .shinobidex-detail.is-open .shinobidex-detail-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 122, 0, 0.45);
+  }
+
+  .shinobidex-detail-close {
+    position: fixed !important;
+    top: 14px !important;
+    right: 14px !important;
+    z-index: 10000 !important;
+  }
+}
+
+@media (min-width: 821px) {
+  .shinobidex-detail {
+    display: block;
+  }
+
+  .shinobidex-detail-scroll {
+    display: contents;
+  }
+}
+
+
+/* ShinobiDex pública — bloqueio de feedback acidental durante scroll mobile */
+.shinobidex-list {
+  overscroll-behavior: contain;
+}
+
+.shinobidex-card[role="button"] {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+  touch-action: pan-y;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .shinobidex-card,
+  .shinobidex-card[role="button"],
+  .shinobidex-card:focus,
+  .shinobidex-card:active,
+  .shinobidex-card:hover {
+    transform: none !important;
+    filter: none !important;
+    outline: none;
+  }
+
+  .shinobidex-card.active {
+    transform: none !important;
+  }
+}
+
+
+/* ShinobiDex — denúncia de erro no ANCED */
+.shinobidex-anced-report {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 0, 0.13), transparent 46%),
+    rgba(10, 8, 6, 0.72);
+}
+
+.shinobidex-anced-report h3 {
+  margin-bottom: 6px;
+}
+
+.shinobidex-anced-report p {
+  color: rgba(255, 232, 196, 0.78);
+}
+
+.shinobidex-report-toggle,
+.shinobidex-report-actions button,
+.shinobidex-admin-reports button {
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 122, 0, 0.62);
+  background:
+    radial-gradient(circle at top, rgba(255, 166, 58, 0.24), transparent 62%),
+    linear-gradient(180deg, rgba(58, 34, 16, 0.96), rgba(16, 10, 6, 0.98));
+  color: #ffe8c4;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.shinobidex-report-form {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.shinobidex-report-form textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 120px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.30);
+  background: rgba(5, 4, 3, 0.82);
+  color: #ffe8c4;
+  outline: none;
+}
+
+.shinobidex-report-form textarea:focus {
+  border-color: rgba(255, 122, 0, 0.78);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.14);
+}
+
+.shinobidex-report-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shinobidex-report-actions .ghost,
+.shinobidex-admin-reports .ghost {
+  opacity: 0.75;
+}
+
+.shinobidex-report-message {
+  margin-top: 10px;
+  font-weight: 700;
+  color: #ffd28a !important;
+}
+
+/* ShinobiDex ADM — pasta de denúncias ANCED */
+.shinobidex-admin-reports {
+  margin: 18px 0 22px;
+  padding: 16px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 0, 0.11), transparent 42%),
+    rgba(10, 8, 6, 0.72);
+}
+
+.shinobidex-admin-reports-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.shinobidex-admin-reports-header h3 {
+  margin: 0;
+  color: #ffe8c4;
+}
+
+.shinobidex-admin-report-empty {
+  color: rgba(255, 232, 196, 0.72);
+}
+
+.shinobidex-admin-report-list {
+  display: grid;
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.shinobidex-admin-report-card {
+  padding: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.20);
+  border-radius: 16px;
+  background: rgba(3, 3, 3, 0.52);
+}
+
+.shinobidex-admin-report-card strong {
+  display: block;
+  color: #ffe8c4;
+}
+
+.shinobidex-admin-report-card small,
+.shinobidex-admin-report-card p,
+.shinobidex-admin-report-card summary {
+  color: rgba(255, 232, 196, 0.76);
+}
+
+.shinobidex-admin-report-card details {
+  margin-top: 10px;
+}
+
+.shinobidex-admin-report-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  .shinobidex-admin-reports-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .shinobidex-report-actions button,
+  .shinobidex-admin-report-actions button {
+    flex: 1;
+  }
+}
+

@@ -1,0 +1,958 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap');
+
+/* =====================================================
+   LN DIGITAL — Meu Ninja Lovable Skin
+   Visual Shinobi Fantasy inspirado na referência,
+   mas mantendo os cards em preto/carvão, sem marrom.
+   ===================================================== */
+
+.app-my-ninja .mn-page {
+  --ln-skin-bg: #080706;
+  --ln-skin-bg-2: #11100e;
+  --ln-skin-card: rgba(12, 11, 10, 0.96);
+  --ln-skin-card-soft: rgba(17, 16, 14, 0.94);
+  --ln-skin-card-deep: rgba(6, 6, 5, 0.92);
+  --ln-skin-orange: #ff8a20;
+  --ln-skin-orange-soft: rgba(255, 138, 32, 0.12);
+  --ln-skin-gold: #d99a45;
+  --ln-skin-cream: #f2dfc1;
+  --ln-skin-text: rgba(242, 223, 193, 0.82);
+  --ln-skin-muted: rgba(242, 223, 193, 0.56);
+  --ln-skin-border: rgba(255, 138, 32, 0.22);
+  --ln-skin-border-strong: rgba(255, 138, 32, 0.48);
+  --ln-skin-shadow: 0 20px 52px rgba(0, 0, 0, 0.52);
+  --ln-skin-glow: 0 0 26px rgba(255, 138, 32, 0.16);
+
+  color: var(--ln-skin-text) !important;
+  background:
+    radial-gradient(circle at top right, rgba(255, 138, 32, 0.06), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(255, 138, 32, 0.035), transparent 24%),
+    linear-gradient(180deg, #080706 0%, #11100e 100%) !important;
+}
+
+/* Tipografia */
+.app-my-ninja .mn-hero h1,
+.app-my-ninja .mn-character-head h2,
+.app-my-ninja .mn-profile-character-name,
+.app-my-ninja .mn-dossier-header h3,
+.app-my-ninja .mn-dossier-editor h4,
+.app-my-ninja .mn-sheet-card h3 {
+  font-family: "Cinzel", "Cormorant Garamond", Georgia, serif !important;
+  color: var(--ln-skin-cream) !important;
+  letter-spacing: 0.055em !important;
+  text-shadow:
+    1px 1px 0 rgba(0, 0, 0, 0.75),
+    0 0 16px rgba(255, 138, 32, 0.15) !important;
+}
+
+.app-my-ninja .mn-section-kicker,
+.app-my-ninja .mn-info-title,
+.app-my-ninja .mn-brand-kicker,
+.app-my-ninja .mn-dossier-list button,
+.app-my-ninja .mn-tabs button {
+  font-family: "Cinzel", Georgia, serif !important;
+}
+
+/* Fundo principal */
+.app-my-ninja,
+.app-my-ninja .mn-shell,
+.app-my-ninja .mn-main {
+  background:
+    radial-gradient(ellipse at 85% 10%, rgba(255, 138, 32, 0.045), transparent 30%),
+    linear-gradient(180deg, #080706, #11100e) !important;
+}
+
+/* Sidebar */
+.app-my-ninja .mn-sidebar {
+  background:
+    radial-gradient(circle at top center, rgba(255, 138, 32, 0.09), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(0, 0, 0, 0.18)),
+    #070605 !important;
+  border-right: 1px solid rgba(255, 138, 32, 0.24) !important;
+  box-shadow:
+    inset -1px 0 0 rgba(255, 138, 32, 0.08),
+    10px 0 34px rgba(0, 0, 0, 0.28) !important;
+}
+
+.app-my-ninja .mn-sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(255, 138, 32, 0.11);
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+.app-my-ninja .mn-brand {
+  border: 1px solid rgba(255, 138, 32, 0.28) !important;
+  background:
+    radial-gradient(circle at left, rgba(255, 138, 32, 0.12), transparent 46%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.18)),
+    rgba(10, 9, 8, 0.96) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 0 18px rgba(255, 138, 32, 0.08) !important;
+}
+
+.app-my-ninja .mn-brand-title {
+  font-family: "Cinzel", Georgia, serif !important;
+  color: var(--ln-skin-cream) !important;
+  letter-spacing: 0.18em !important;
+}
+
+.app-my-ninja .mn-brand-mark {
+  border: 1px solid rgba(255, 138, 32, 0.46) !important;
+  border-radius: 999px !important;
+  color: var(--ln-skin-orange) !important;
+  box-shadow: 0 0 20px rgba(255, 138, 32, 0.16) !important;
+}
+
+/* Navegação esquerda */
+.app-my-ninja .mn-nav {
+  gap: 0.5rem !important;
+}
+
+.app-my-ninja .mn-nav-item {
+  min-height: 52px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: rgba(242, 223, 193, 0.7) !important;
+  font-family: "Cinzel", Georgia, serif !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+}
+
+.app-my-ninja .mn-nav-item:hover {
+  background: rgba(255, 138, 32, 0.07) !important;
+  border-color: rgba(255, 138, 32, 0.18) !important;
+  color: var(--ln-skin-cream) !important;
+}
+
+.app-my-ninja .mn-nav-item.is-active {
+  background:
+    linear-gradient(90deg, rgba(255, 138, 32, 0.2), rgba(255, 138, 32, 0.04)) !important;
+  border-color: rgba(255, 138, 32, 0.42) !important;
+  color: var(--ln-skin-orange) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 138, 32, 0.9),
+    0 0 20px rgba(255, 138, 32, 0.1) !important;
+}
+
+/* Topbar */
+.app-my-ninja .mn-topbar {
+  background: rgba(8, 7, 6, 0.78) !important;
+  border-bottom: 1px solid rgba(255, 138, 32, 0.12) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+/* Painéis base */
+.app-my-ninja .mn-hero,
+.app-my-ninja .mn-character-head,
+.app-my-ninja .mn-profile-card,
+.app-my-ninja .mn-dossier-card,
+.app-my-ninja .mn-summary-card,
+.app-my-ninja .mn-card,
+.app-my-ninja .mn-sheet-card,
+.app-my-ninja .mn-dossier-editor,
+.app-my-ninja .mn-profile-editor-modal {
+  position: relative !important;
+  border: 1px solid var(--ln-skin-border) !important;
+  border-radius: 20px !important;
+  background:
+    radial-gradient(circle at top right, rgba(255, 138, 32, 0.055), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(0, 0, 0, 0.15)),
+    var(--ln-skin-card) !important;
+  box-shadow: var(--ln-skin-shadow) !important;
+}
+
+/* Moldura interna tipo Panel */
+.app-my-ninja .mn-hero::before,
+.app-my-ninja .mn-character-head::before,
+.app-my-ninja .mn-profile-card::before,
+.app-my-ninja .mn-dossier-card::before,
+.app-my-ninja .mn-summary-card::before,
+.app-my-ninja .mn-card::before,
+.app-my-ninja .mn-dossier-editor::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px solid rgba(255, 138, 32, 0.07);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+/* Cantos ornamentais */
+.app-my-ninja .mn-profile-card::after,
+.app-my-ninja .mn-dossier-card::after,
+.app-my-ninja .mn-summary-card::after,
+.app-my-ninja .mn-character-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) left 10px top 10px / 18px 1px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) left 10px top 10px / 1px 18px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) right 10px top 10px / 18px 1px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) right 10px top 10px / 1px 18px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) left 10px bottom 10px / 18px 1px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) left 10px bottom 10px / 1px 18px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) right 10px bottom 10px / 18px 1px no-repeat,
+    linear-gradient(var(--ln-skin-orange), var(--ln-skin-orange)) right 10px bottom 10px / 1px 18px no-repeat;
+  opacity: 0.34;
+}
+
+/* Hero */
+.app-my-ninja .mn-hero {
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 138, 32, 0.1), transparent 42%),
+    radial-gradient(circle at 82% 88%, rgba(255, 138, 32, 0.065), transparent 48%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.13) 0px, transparent 2px, transparent 4px),
+    rgba(12, 11, 10, 0.96) !important;
+}
+
+.app-my-ninja .mn-hero h1 {
+  font-size: clamp(3rem, 5vw, 5.4rem) !important;
+  line-height: 0.95 !important;
+}
+
+.app-my-ninja .mn-hero p {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-size: 1.08rem !important;
+  color: var(--ln-skin-muted) !important;
+}
+
+/* Character head */
+.app-my-ninja .mn-character-head {
+  background:
+    radial-gradient(ellipse 60% 90% at 85% 55%, rgba(40, 38, 35, 0.86) 0%, transparent 58%),
+    radial-gradient(ellipse 80% 100% at 5% 30%, rgba(255, 138, 32, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(20, 19, 17, 0.98), rgba(10, 9, 8, 0.98)) !important;
+}
+
+.app-my-ninja .mn-character-head h2 {
+  font-size: clamp(2rem, 3.4vw, 3.4rem) !important;
+}
+
+.app-my-ninja .mn-head-meta {
+  color: var(--ln-skin-orange) !important;
+  font-family: "Cinzel", Georgia, serif !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+/* Tabs */
+.app-my-ninja .mn-tabs {
+  border-top: 1px solid rgba(255, 138, 32, 0.1) !important;
+}
+
+.app-my-ninja .mn-tabs button {
+  color: rgba(242, 223, 193, 0.56) !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+.app-my-ninja .mn-tabs button.is-active {
+  color: var(--ln-skin-orange) !important;
+}
+
+.app-my-ninja .mn-tabs button.is-active::after {
+  background:
+    linear-gradient(90deg, transparent, var(--ln-skin-orange), transparent) !important;
+  box-shadow: 0 0 12px rgba(255, 138, 32, 0.28) !important;
+}
+
+/* Foto */
+.app-my-ninja .mn-photo-box {
+  border: 1px solid rgba(255, 138, 32, 0.34) !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(circle at center, rgba(255, 138, 32, 0.09), transparent 55%),
+    rgba(6, 6, 5, 0.72) !important;
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.44),
+    0 0 24px rgba(255, 138, 32, 0.08) !important;
+}
+
+.app-my-ninja .mn-photo-box img {
+  border-radius: 14px !important;
+}
+
+/* Perfil */
+.app-my-ninja .mn-profile-info-head {
+  align-items: center !important;
+}
+
+.app-my-ninja .mn-profile-character-name {
+  font-size: clamp(2rem, 3.2vw, 3.4rem) !important;
+  line-height: 1 !important;
+  margin-top: 0.75rem !important;
+}
+
+.app-my-ninja .mn-alert-chip {
+  width: fit-content !important;
+  border: 1px solid rgba(255, 138, 32, 0.5) !important;
+  border-radius: 9px !important;
+  background:
+    linear-gradient(90deg, rgba(255, 138, 32, 0.14), rgba(255, 138, 32, 0.04), rgba(255, 138, 32, 0.14)) !important;
+  color: var(--ln-skin-orange) !important;
+  font-family: "Cinzel", Georgia, serif !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+}
+
+.app-my-ninja .mn-chip-row span {
+  border: 1px solid rgba(255, 138, 32, 0.2) !important;
+  border-radius: 9px !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  color: rgba(242, 223, 193, 0.66) !important;
+}
+
+/* Boards da ficha visual */
+.app-my-ninja .mn-profile-summary-grid {
+  gap: 1rem !important;
+}
+
+.app-my-ninja .mn-summary-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(0, 0, 0, 0.18)),
+    rgba(9, 9, 8, 0.92) !important;
+}
+
+.app-my-ninja .mn-info-title {
+  color: var(--ln-skin-orange) !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.2em !important;
+}
+
+.app-my-ninja .mn-info-list li {
+  border-bottom: 1px solid rgba(255, 138, 32, 0.08) !important;
+}
+
+.app-my-ninja .mn-info-list li span {
+  color: var(--ln-skin-muted) !important;
+}
+
+.app-my-ninja .mn-info-list li strong {
+  color: var(--ln-skin-cream) !important;
+}
+
+/* Dossiê */
+.app-my-ninja .mn-dossier-card {
+  background:
+    radial-gradient(circle at bottom left, rgba(255, 138, 32, 0.05), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(0, 0, 0, 0.15)),
+    rgba(12, 11, 10, 0.96) !important;
+}
+
+.app-my-ninja .mn-dossier-header h3 {
+  font-size: 2.25rem !important;
+}
+
+.app-my-ninja .mn-dossier-header p {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-size: 1rem !important;
+  color: var(--ln-skin-muted) !important;
+}
+
+.app-my-ninja .mn-dossier-list {
+  gap: 0.48rem !important;
+}
+
+.app-my-ninja .mn-dossier-list button {
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: rgba(242, 223, 193, 0.68) !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+.app-my-ninja .mn-dossier-list button:hover {
+  border-color: rgba(255, 138, 32, 0.22) !important;
+  background: rgba(255, 138, 32, 0.06) !important;
+  color: var(--ln-skin-cream) !important;
+}
+
+.app-my-ninja .mn-dossier-list button.is-active {
+  border-color: rgba(255, 138, 32, 0.52) !important;
+  background:
+    linear-gradient(90deg, rgba(255, 138, 32, 0.2), rgba(255, 138, 32, 0.045)) !important;
+  color: var(--ln-skin-orange) !important;
+  box-shadow: 0 0 18px rgba(255, 138, 32, 0.1) !important;
+}
+
+.app-my-ninja .mn-dossier-preview,
+.app-my-ninja .mn-dossier-editor {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(0, 0, 0, 0.18)),
+    rgba(7, 7, 6, 0.78) !important;
+  border: 1px solid rgba(255, 138, 32, 0.16) !important;
+  border-radius: 14px !important;
+}
+
+/* Botões */
+.app-my-ninja .mn-profile-edit-button,
+.app-my-ninja .mn-character-edit-button-mobile,
+.app-my-ninja .mn-outline-button,
+.app-my-ninja .mn-primary-button,
+.app-my-ninja .mn-sheet-actions button,
+.app-my-ninja .mn-dossier-editor button {
+  border: 1px solid rgba(255, 138, 32, 0.44) !important;
+  border-radius: 10px !important;
+  background:
+    linear-gradient(180deg, rgba(20, 19, 17, 0.98), rgba(6, 6, 5, 0.98)) !important;
+  color: var(--ln-skin-orange) !important;
+  font-family: "Cinzel", Georgia, serif !important;
+  letter-spacing: 0.11em !important;
+  text-transform: uppercase !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 18px rgba(255, 138, 32, 0.08) !important;
+}
+
+/* Inputs */
+.app-my-ninja .mn-page input,
+.app-my-ninja .mn-page textarea,
+.app-my-ninja .mn-page select {
+  border: 1px solid rgba(255, 138, 32, 0.17) !important;
+  border-radius: 10px !important;
+  background: rgba(0, 0, 0, 0.24) !important;
+  color: var(--ln-skin-cream) !important;
+}
+
+.app-my-ninja .mn-page input:focus,
+.app-my-ninja .mn-page textarea:focus,
+.app-my-ninja .mn-page select:focus {
+  border-color: rgba(255, 138, 32, 0.52) !important;
+  box-shadow: 0 0 0 3px rgba(255, 138, 32, 0.1) !important;
+  outline: none !important;
+}
+
+/* Modal de edição */
+.app-my-ninja .mn-profile-editor-overlay {
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.app-my-ninja .mn-profile-editor-modal-head {
+  border-bottom: 1px solid rgba(255, 138, 32, 0.18) !important;
+  background: rgba(0, 0, 0, 0.24) !important;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .app-my-ninja .mn-hero h1 {
+    font-size: clamp(2.4rem, 12vw, 4rem) !important;
+  }
+
+  .app-my-ninja .mn-character-head h2 {
+    font-size: clamp(1.8rem, 9vw, 2.8rem) !important;
+  }
+
+  .app-my-ninja .mn-profile-character-name {
+    font-size: 2rem !important;
+  }
+
+  .app-my-ninja .mn-alert-chip {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+
+/* =====================================================
+   LIMPEZA DE LINHAS DUPLAS / RESQUÍCIOS DE CARD INTERNO
+   Mantém ornamento nos cards grandes e limpa boards internos.
+   ===================================================== */
+
+/* Mantém ornamento só nos cards grandes */
+.app-my-ninja .mn-profile-card::before,
+.app-my-ninja .mn-profile-card::after,
+.app-my-ninja .mn-dossier-card::before,
+.app-my-ninja .mn-dossier-card::after,
+.app-my-ninja .mn-character-head::before,
+.app-my-ninja .mn-character-head::after,
+.app-my-ninja .mn-hero::before {
+  display: block !important;
+}
+
+/* Remove molduras ornamentais dos cards internos */
+.app-my-ninja .mn-summary-card::before,
+.app-my-ninja .mn-summary-card::after,
+.app-my-ninja .mn-dossier-preview::before,
+.app-my-ninja .mn-dossier-preview::after,
+.app-my-ninja .mn-dossier-editor::before,
+.app-my-ninja .mn-dossier-editor::after,
+.app-my-ninja .mn-sheet-card::before,
+.app-my-ninja .mn-sheet-card::after,
+.app-my-ninja .mn-info-card::before,
+.app-my-ninja .mn-info-card::after,
+.app-my-ninja .mn-map-icon-card::before,
+.app-my-ninja .mn-map-icon-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Simplifica os cards internos */
+.app-my-ninja .mn-summary-card,
+.app-my-ninja .mn-info-card,
+.app-my-ninja .mn-map-icon-card,
+.app-my-ninja .mn-dossier-preview,
+.app-my-ninja .mn-dossier-editor,
+.app-my-ninja .mn-sheet-card {
+  border: 1px solid rgba(255, 138, 32, 0.12) !important;
+  box-shadow: none !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(0, 0, 0, 0.12)),
+    rgba(8, 8, 7, 0.72) !important;
+}
+
+/* Limpa linhas internas exageradas */
+.app-my-ninja .mn-info-list li,
+.app-my-ninja .mn-summary-card .mn-info-list li,
+.app-my-ninja .mn-profile-card > .mn-bottom-grid .mn-info-list li,
+.app-my-ninja .mn-profile-card > .mn-profile-summary-grid .mn-info-list li {
+  border-bottom: 1px solid rgba(255, 138, 32, 0.055) !important;
+}
+
+.app-my-ninja .mn-info-list li:last-child,
+.app-my-ninja .mn-summary-card .mn-info-list li:last-child,
+.app-my-ninja .mn-profile-card > .mn-bottom-grid .mn-info-list li:last-child,
+.app-my-ninja .mn-profile-card > .mn-profile-summary-grid .mn-info-list li:last-child {
+  border-bottom: none !important;
+}
+
+/* Remove outline/sombra extra da ficha complementar interna */
+.app-my-ninja .mn-dossier-preview,
+.app-my-ninja .mn-dossier-editor {
+  outline: none !important;
+}
+
+/* Botões da lista do dossiê mais limpos */
+.app-my-ninja .mn-dossier-list button {
+  box-shadow: none !important;
+}
+
+/* Reduz sensação de card dentro de card no lado direito */
+.app-my-ninja .mn-dossier-grid {
+  gap: 1rem !important;
+}
+
+.app-my-ninja .mn-dossier-preview,
+.app-my-ninja .mn-dossier-editor {
+  min-height: auto !important;
+}
+
+/* Boards internos com aparência mais premium e discreta */
+.app-my-ninja .mn-summary-card {
+  border-radius: 14px !important;
+}
+
+.app-my-ninja .mn-summary-card .mn-info-title,
+.app-my-ninja .mn-info-card .mn-info-title,
+.app-my-ninja .mn-map-icon-card .mn-info-title {
+  border-bottom: 1px solid rgba(255, 138, 32, 0.09) !important;
+  padding-bottom: 0.55rem !important;
+  margin-bottom: 0.65rem !important;
+}
+
+/* Remove possíveis cantos falsos herdados em elementos pequenos */
+.app-my-ninja .mn-summary-card,
+.app-my-ninja .mn-info-card,
+.app-my-ninja .mn-map-icon-card {
+  overflow: hidden !important;
+}
+
+
+/* =====================================================
+   LIMPEZA FORTE — remove linhas internas restantes
+   Mantém a estética fantasy, mas sem moldura duplicada.
+   ===================================================== */
+
+/* Remove moldura interna dos cards grandes que estava criando linhas extras */
+.app-my-ninja .mn-hero::before,
+.app-my-ninja .mn-hero::after,
+.app-my-ninja .mn-character-head::before,
+.app-my-ninja .mn-character-head::after,
+.app-my-ninja .mn-profile-card::before,
+.app-my-ninja .mn-profile-card::after,
+.app-my-ninja .mn-dossier-card::before,
+.app-my-ninja .mn-dossier-card::after,
+.app-my-ninja .mn-card::before,
+.app-my-ninja .mn-card::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  border: 0 !important;
+}
+
+/* Remove linhas superiores/inferiores das tabs; deixa só o underline ativo */
+.app-my-ninja .mn-tabs {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-my-ninja .mn-tabs::before,
+.app-my-ninja .mn-tabs::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Remove linha longa no cabeçalho do personagem */
+.app-my-ninja .mn-character-head {
+  box-shadow:
+    0 20px 52px rgba(0, 0, 0, 0.52) !important;
+}
+
+.app-my-ninja .mn-character-head-top,
+.app-my-ninja .mn-profile-info-head,
+.app-my-ninja .mn-dossier-header {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Limpa o painel interno do dossiê: sem cara de card dentro do card */
+.app-my-ninja .mn-dossier-preview,
+.app-my-ninja .mn-dossier-editor {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+/* Remove pseudo-elementos do editor/preview do dossiê */
+.app-my-ninja .mn-dossier-preview::before,
+.app-my-ninja .mn-dossier-preview::after,
+.app-my-ninja .mn-dossier-editor::before,
+.app-my-ninja .mn-dossier-editor::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Remove divisórias horizontais fortes dentro dos formulários */
+.app-my-ninja .mn-dossier-form,
+.app-my-ninja .mn-inventory-panel,
+.app-my-ninja .mn-technique-picker,
+.app-my-ninja .mn-sheet-card {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-my-ninja .mn-dossier-form::before,
+.app-my-ninja .mn-dossier-form::after,
+.app-my-ninja .mn-inventory-panel::before,
+.app-my-ninja .mn-inventory-panel::after,
+.app-my-ninja .mn-technique-picker::before,
+.app-my-ninja .mn-technique-picker::after,
+.app-my-ninja .mn-sheet-card::before,
+.app-my-ninja .mn-sheet-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Remove linha horizontal entre abas do inventário e conteúdo */
+.app-my-ninja .mn-inventory-tabs {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-my-ninja .mn-inventory-tabs::before,
+.app-my-ninja .mn-inventory-tabs::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Mantém os cards internos da ficha limpos, sem cantos falsos */
+.app-my-ninja .mn-summary-card,
+.app-my-ninja .mn-info-card,
+.app-my-ninja .mn-map-icon-card {
+  border: 1px solid rgba(255, 138, 32, 0.12) !important;
+  box-shadow: none !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(0, 0, 0, 0.12)),
+    rgba(8, 8, 7, 0.72) !important;
+}
+
+.app-my-ninja .mn-summary-card::before,
+.app-my-ninja .mn-summary-card::after,
+.app-my-ninja .mn-info-card::before,
+.app-my-ninja .mn-info-card::after,
+.app-my-ninja .mn-map-icon-card::before,
+.app-my-ninja .mn-map-icon-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Suaviza linhas de lista, sem apagar completamente a leitura */
+.app-my-ninja .mn-info-list li,
+.app-my-ninja .mn-dossier-record,
+.app-my-ninja .mn-inventory-record {
+  border-color: rgba(255, 138, 32, 0.07) !important;
+}
+
+/* Remove a borda superior que aparece acima de alguns blocos */
+.app-my-ninja .mn-dossier-preview-top,
+.app-my-ninja .mn-dossier-records,
+.app-my-ninja .mn-technique-search-status {
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Evita que detalhes/accordions pareçam cards duplicados demais */
+.app-my-ninja .mn-dossier-record,
+.app-my-ninja .mn-inventory-record,
+.app-my-ninja .mn-technique-search-results p,
+.app-my-ninja .mn-selected-technique-preview {
+  box-shadow: none !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0.12)),
+    rgba(5, 5, 4, 0.62) !important;
+  border-color: rgba(255, 138, 32, 0.10) !important;
+}
+
+/* Remove possíveis linhas de separação herdadas por títulos */
+.app-my-ninja .mn-info-title,
+.app-my-ninja .mn-section-kicker {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Mantém só o destaque ativo dos menus */
+.app-my-ninja .mn-dossier-list button {
+  box-shadow: none !important;
+}
+
+.app-my-ninja .mn-dossier-list button.is-active {
+  box-shadow: 0 0 14px rgba(255, 138, 32, 0.10) !important;
+}
+
+
+/* =====================================================
+   REDIMENSIONAMENTO — Ficha Complementar / Dossiê
+   Corrige texto colado na borda, botão vazando e painel apertado.
+   ===================================================== */
+
+/* Dá mais respiro ao card inteiro da ficha complementar */
+.app-my-ninja .mn-dossier-card {
+  padding: 1.35rem 1.45rem 1.45rem !important;
+  overflow: visible !important;
+}
+
+/* Aumenta a área útil da Ficha Complementar em desktop */
+@media (min-width: 1280px) {
+  .app-my-ninja .mn-profile-grid {
+    grid-template-columns: minmax(680px, 1.05fr) minmax(620px, 1fr) !important;
+    gap: 1.45rem !important;
+    align-items: start !important;
+  }
+}
+
+/* Dossiê: menu à esquerda menor, conteúdo à direita maior */
+@media (min-width: 900px) {
+  .app-my-ninja .mn-dossier-grid {
+    display: grid !important;
+    grid-template-columns: minmax(250px, 0.82fr) minmax(390px, 1.18fr) !important;
+    gap: 1.25rem !important;
+    align-items: start !important;
+  }
+}
+
+/* Painel interno da categoria selecionada */
+.app-my-ninja .mn-dossier-preview,
+.app-my-ninja .mn-dossier-editor {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+
+  padding: 1.15rem 1.2rem !important;
+  overflow: hidden !important;
+
+  border: 1px solid rgba(255, 138, 32, 0.16) !important;
+  border-radius: 1rem !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(0, 0, 0, 0.12)),
+    rgba(5, 5, 4, 0.64) !important;
+}
+
+/* Garante que nada do formulário estoure a caixa */
+.app-my-ninja .mn-dossier-preview *,
+.app-my-ninja .mn-dossier-editor *,
+.app-my-ninja .mn-dossier-form *,
+.app-my-ninja .mn-inventory-panel * {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Formulários do dossiê com espaçamento mais seguro */
+.app-my-ninja .mn-dossier-form {
+  width: 100% !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 1rem 1.05rem !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Campos largos ocupam a largura inteira */
+.app-my-ninja .mn-dossier-wide,
+.app-my-ninja .mn-dossier-form .mn-dossier-wide {
+  grid-column: 1 / -1 !important;
+}
+
+/* Labels não encostam na borda e não cortam texto */
+.app-my-ninja .mn-dossier-form label,
+.app-my-ninja .mn-dossier-preview label,
+.app-my-ninja .mn-dossier-editor label {
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: visible !important;
+  line-height: 1.35 !important;
+}
+
+/* Inputs e textareas não ultrapassam a caixa */
+.app-my-ninja .mn-dossier-form input,
+.app-my-ninja .mn-dossier-form textarea,
+.app-my-ninja .mn-dossier-form select {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Textarea com altura suficiente para não parecer colado */
+.app-my-ninja .mn-dossier-form textarea {
+  min-height: 92px !important;
+  resize: vertical !important;
+}
+
+/* Botões dentro da Ficha Complementar não podem sair para fora */
+.app-my-ninja .mn-dossier-form button,
+.app-my-ninja .mn-dossier-editor button,
+.app-my-ninja .mn-dossier-preview button,
+.app-my-ninja .mn-inventory-panel button {
+  max-width: 100% !important;
+  white-space: normal !important;
+}
+
+/* Botão principal do dossiê fica compacto, mas dentro do painel */
+.app-my-ninja .mn-dossier-form .mn-primary-button,
+.app-my-ninja .mn-dossier-editor .mn-primary-button,
+.app-my-ninja .mn-inventory-panel .mn-primary-button {
+  width: fit-content !important;
+  max-width: 100% !important;
+  justify-self: start !important;
+  padding: 0.65rem 1rem !important;
+  line-height: 1.1 !important;
+}
+
+/* Área de upload de imagem: impede botão de vazar */
+.app-my-ninja .mn-dossier-form input[type="file"] {
+  width: 100% !important;
+}
+
+.app-my-ninja .mn-dossier-image-preview,
+.app-my-ninja .mn-file-upload,
+.app-my-ninja .mn-upload-control,
+.app-my-ninja .mn-image-upload-control {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Botões de selecionar imagem ficam menores e cabem no card */
+.app-my-ninja .mn-dossier-form label button,
+.app-my-ninja .mn-dossier-form .mn-outline-button,
+.app-my-ninja .mn-dossier-form .mn-photo-upload-button,
+.app-my-ninja .mn-dossier-form .mn-file-button {
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 0.58rem 0.85rem !important;
+  font-size: 0.68rem !important;
+  line-height: 1.1 !important;
+}
+
+/* Registro de provas: o campo de título e imagem não brigam por espaço */
+.app-my-ninja .mn-dossier-card .mn-dossier-form > label {
+  align-self: start !important;
+}
+
+/* Resultados/registros não grudam nas bordas */
+.app-my-ninja .mn-dossier-records,
+.app-my-ninja .mn-inventory-records,
+.app-my-ninja .mn-technique-search-results {
+  width: 100% !important;
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 0.65rem !important;
+}
+
+/* Accordions dentro do painel cabem corretamente */
+.app-my-ninja .mn-dossier-record,
+.app-my-ninja .mn-inventory-record {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* No inventário, o botão Adicionar Técnica fica dentro da coluna */
+.app-my-ninja .mn-inventory-panel .mn-dossier-form .mn-primary-button {
+  justify-self: start !important;
+  align-self: end !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* Mobile/tablet: tudo vira uma coluna, sem vazamento */
+@media (max-width: 899px) {
+  .app-my-ninja .mn-dossier-card {
+    padding: 1rem !important;
+  }
+
+  .app-my-ninja .mn-dossier-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .app-my-ninja .mn-dossier-form {
+    grid-template-columns: 1fr !important;
+    gap: 0.9rem !important;
+  }
+
+  .app-my-ninja .mn-dossier-preview,
+  .app-my-ninja .mn-dossier-editor {
+    padding: 1rem !important;
+  }
+
+  .app-my-ninja .mn-dossier-form .mn-primary-button,
+  .app-my-ninja .mn-dossier-editor .mn-primary-button,
+  .app-my-ninja .mn-inventory-panel .mn-primary-button {
+    width: 100% !important;
+    justify-self: stretch !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Telas desktop médias: evita aperto no painel direito */
+@media (min-width: 900px) and (max-width: 1320px) {
+  .app-my-ninja .mn-dossier-grid {
+    grid-template-columns: minmax(220px, 0.78fr) minmax(360px, 1.22fr) !important;
+  }
+
+  .app-my-ninja .mn-dossier-list button {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.1em !important;
+    padding-inline: 0.72rem !important;
+  }
+}
+
