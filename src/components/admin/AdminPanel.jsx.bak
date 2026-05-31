@@ -1,0 +1,36 @@
+export default function AdminPanel() {
+  return (
+    <section className="admin-page">
+      <div className="admin-card">
+        <p className="eyebrow">Painel do Mestre</p>
+        <h1>Painel ADM</h1>
+        <p>
+          Aqui ficará a área do mestre para visualizar todos os ninjas,
+          localizações, viagens ativas e editar a teia de habilidades.
+        </p>
+
+        <div className="admin-grid">
+          <article>
+            <strong>Todos os Ninjas</strong>
+            <span>Em breve: lista de personagens dos players.</span>
+          </article>
+
+          <article>
+            <strong>Localizações</strong>
+            <span>Em breve: regiões ocupadas e presenças reais.</span>
+          </article>
+
+          <article>
+            <strong>Viagens Ativas</strong>
+            <span>Em breve: controle de rotas e deslocamentos.</span>
+          </article>
+
+          <article>
+            <strong>Editor da Teia</strong>
+            <span>Em breve: criação visual da árvore de habilidades.</span>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}

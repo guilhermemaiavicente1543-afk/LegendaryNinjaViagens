@@ -24,22 +24,3 @@ tmp/
 react
 react-dom
 meu-ninja-codigos.zip
-
-# Local env / secrets
-.env.local
-.env.local.bak*
-.env*.bak*
-
-# Backups locais
-*.bak
-*.bak-*
-*.backup*
-*backup*
-
-# Temporários
-tmp/
-
-# Acidentes
-react
-react-dom
-meu-ninja-codigos.zip
