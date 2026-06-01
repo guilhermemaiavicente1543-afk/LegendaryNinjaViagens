@@ -160,7 +160,7 @@ export default function ShinobiDexPage({ onBack }) {
     if (q) {
       const safe = q.replace(/[%_]/g, "");
       query = query.or(
-        `name.ilike.%${safe}%,name_pt.ilike.%${safe}%,name_en.ilike.%${safe}%,name_es.ilike.%${safe}%,name_fr.ilike.%${safe}%,original_name.ilike.%${safe}%,english_name.ilike.%${safe}%,summary.ilike.%${safe}%,nature.ilike.%${safe}%,classification.ilike.%${safe}%,users_text.ilike.%${safe}%`
+        `name.ilike.%${safe}%,name_pt.ilike.%${safe}%,name_en.ilike.%${safe}%,name_es.ilike.%${safe}%,name_fr.ilike.%${safe}%,original_name.ilike.%${safe}%,english_name.ilike.%${safe}%,summary.ilike.%${safe}%,nature.ilike.%${safe}%,classification.ilike.%${safe}%,users_text.ilike.%${safe}%,yurik_summary.ilike.%${safe}%,yurik_raw_classification.ilike.%${safe}%,yurik_raw_nature.ilike.%${safe}%,yurik_raw_users_text.ilike.%${safe}%,yurik_doujutsu.ilike.%${safe}%`
       );
     }
 
@@ -216,6 +216,55 @@ export default function ShinobiDexPage({ onBack }) {
   }, [filterOptions.natures]);
 
   const filtered = techniques;
+
+  function cleanYurikText(value) {
+    return typeof value === "string" ? value.trim() : "";
+  }
+
+  function getYurikSummary(technique) {
+    return cleanYurikText(technique?.yurik_summary) || cleanYurikText(technique?.summary);
+  }
+
+  function getYurikClassification(technique) {
+    return cleanYurikText(technique?.yurik_raw_classification) || cleanYurikText(technique?.classification);
+  }
+
+  function getYurikNature(technique) {
+    return cleanYurikText(technique?.yurik_raw_nature) || cleanYurikText(technique?.nature);
+  }
+
+  function getYurikDoujutsu(technique) {
+    return cleanYurikText(technique?.yurik_doujutsu);
+  }
+
+  function getYurikReviewTags(technique) {
+    return Array.isArray(technique?.yurik_review_tags) ? technique.yurik_review_tags : [];
+  }
+
+  function renderYurikBadges(technique) {
+    const badges = [];
+
+    const doujutsu = getYurikDoujutsu(technique);
+    if (doujutsu) badges.push(`Dōjutsu: ${doujutsu}`);
+    if (technique?.yurik_is_game_only) badges.push("Game Only");
+    if (technique?.yurik_is_konbijutsu) badges.push("Konbijutsu");
+
+    for (const tag of getYurikReviewTags(technique)) {
+      if (!tag || ["game_only", "konbijutsu", "doujutsu_detectado"].includes(tag)) continue;
+      badges.push(String(tag).replaceAll("_", " "));
+    }
+
+    if (!badges.length) return null;
+
+    return (
+      <div className="shinobidex-yurik-badges">
+        {badges.map((badge) => (
+          <span key={badge}>{badge}</span>
+        ))}
+      </div>
+    );
+  }
+
 
   function blockTechniqueTap(duration = 420) {
     didScrollGestureRef.current = true;
@@ -502,8 +551,8 @@ export default function ShinobiDexPage({ onBack }) {
               <span className="shinobidex-card-body">
                 <strong>{getTechniqueName(technique, language)}</strong>
                 <small>
-                  {technique.classification || "Sem classificação"} ·{" "}
-                  {technique.nature || "Sem natureza"} ·{" "}
+                  {getYurikClassification(technique) || "Sem classificação"} ·{" "}
+                  {getYurikNature(technique) || "Sem natureza"} ·{" "}
                   {technique.status || "draft"}
                 </small>
               </span>
@@ -543,15 +592,22 @@ export default function ShinobiDexPage({ onBack }) {
               </div>
 
               <div className="shinobidex-info-grid">
-                <p><strong>{t("shinobidex.classification")}</strong><span>{selected.classification || "Não identificada"}</span></p>
-                <p><strong>{t("shinobidex.nature")}</strong><span>{selected.nature || "Não identificada"}</span></p>
+                <p><strong>{t("shinobidex.classification")}</strong><span>{getYurikClassification(selected) || "Não identificada"}</span></p>
+                <p><strong>{t("shinobidex.nature")}</strong><span>{getYurikNature(selected) || "Não identificada"}</span></p>
+                {getYurikDoujutsu(selected) && (
+                  <p><strong>Dōjutsu</strong><span>{getYurikDoujutsu(selected)}</span></p>
+                )}
+                {selected?.yurik_raw_users_text && (
+                  <p><strong>Usuários Wiki</strong><span>{selected.yurik_raw_users_text}</span></p>
+                )}
+                {renderYurikBadges(selected)}
                 <p><strong>Tipo</strong><span>{selected.technique_type || "Não identificado"}</span></p>
                 <p><strong>Usuários</strong><span>{selected.users_text || "Não identificados"}</span></p>
               </div>
 
               <section>
                 <h3>{t("shinobidex.summary")}</h3>
-                <p>{selected.summary || "Resumo pendente de adaptação para o RPG."}</p>
+                <p>{getYurikSummary(selected) || "Resumo pendente de adaptação para o RPG."}</p>
               </section>
 
               <section>

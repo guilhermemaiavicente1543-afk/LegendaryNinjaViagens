@@ -199,7 +199,7 @@ export default function ShinobiDexAdmin() {
     if (q) {
       const safe = q.replace(/[%_]/g, "");
       query = query.or(
-        `name.ilike.%${safe}%,original_name.ilike.%${safe}%,summary.ilike.%${safe}%,nature.ilike.%${safe}%,classification.ilike.%${safe}%`
+        `name.ilike.%${safe}%,original_name.ilike.%${safe}%,summary.ilike.%${safe}%,nature.ilike.%${safe}%,classification.ilike.%${safe}%,yurik_summary.ilike.%${safe}%,yurik_raw_nature.ilike.%${safe}%,yurik_raw_classification.ilike.%${safe}%,yurik_raw_users_text.ilike.%${safe}%,yurik_doujutsu.ilike.%${safe}%`
       );
     }
 
@@ -251,6 +251,47 @@ export default function ShinobiDexAdmin() {
       limitations: technique.limitations || "",
       status: technique.status || "draft"
     });
+  }
+
+  function cleanYurikText(value) {
+    return typeof value === "string" ? value.trim() : "";
+  }
+
+  function getYurikAdminSummary(technique) {
+    return cleanYurikText(technique?.yurik_summary) || cleanYurikText(technique?.summary);
+  }
+
+  function getYurikAdminClassification(technique) {
+    return cleanYurikText(technique?.yurik_raw_classification) || cleanYurikText(technique?.classification);
+  }
+
+  function getYurikAdminNature(technique) {
+    return cleanYurikText(technique?.yurik_raw_nature) || cleanYurikText(technique?.nature);
+  }
+
+  function renderYurikAdminBadges(technique) {
+    const badges = [];
+
+    if (technique?.yurik_doujutsu) badges.push(`Dōjutsu: ${technique.yurik_doujutsu}`);
+    if (technique?.yurik_is_game_only) badges.push("Game Only");
+    if (technique?.yurik_is_konbijutsu) badges.push("Konbijutsu");
+
+    if (Array.isArray(technique?.yurik_review_tags)) {
+      for (const tag of technique.yurik_review_tags) {
+        if (!tag || ["game_only", "konbijutsu", "doujutsu_detectado"].includes(tag)) continue;
+        badges.push(String(tag).replaceAll("_", " "));
+      }
+    }
+
+    if (!badges.length) return null;
+
+    return (
+      <div className="shinobidex-yurik-badges shinobidex-yurik-badges-admin">
+        {badges.map((badge) => (
+          <span key={badge}>{badge}</span>
+        ))}
+      </div>
+    );
   }
 
   function updateForm(field, value) {
@@ -549,7 +590,7 @@ export default function ShinobiDexAdmin() {
                 <small>
                   {statusLabel[technique.status] || technique.status} ·{" "}
                   {technique.anced_confidence || "baixa"} ·{" "}
-                  {technique.nature || "sem natureza"}
+                  {getYurikAdminNature(technique) || "sem natureza"}
                 </small>
               </div>
             </button>

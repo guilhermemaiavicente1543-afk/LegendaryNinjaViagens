@@ -38451,3 +38451,49 @@ body:has(.mn-page) .knowledge-floating-button {
   }
 }
 
+
+
+/* ShinobiDex — Motor Yurik */
+.shinobidex-yurik-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.shinobidex-yurik-badges span {
+  border: 1px solid rgba(255, 122, 0, 0.42);
+  background: rgba(255, 122, 0, 0.10);
+  color: #ffb05f;
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.shinobidex-yurik-admin-panel {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 122, 0, 0.08), rgba(0, 0, 0, 0.14)),
+    rgba(16, 13, 10, 0.74);
+  border-radius: 18px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.shinobidex-yurik-admin-panel h4 {
+  margin: 0 0 0.65rem;
+  color: #ffb05f;
+  font-family: "Cinzel", "Cormorant Garamond", serif;
+  letter-spacing: 0.06em;
+}
+
+.shinobidex-yurik-admin-panel p {
+  margin: 0.35rem 0;
+  color: rgba(255, 244, 226, 0.82);
+}
+
+.shinobidex-yurik-admin-panel strong {
+  color: rgba(255, 183, 102, 0.96);
+}
