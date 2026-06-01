@@ -2069,6 +2069,30 @@ export default function MyNinjaCleanPage({ character = EMPTY_CHARACTER, location
   const [isUploadingProfilePhoto, setIsUploadingProfilePhoto] = useState(false);
   const [localCharacter, setLocalCharacter] = useState(() => getInitialCharacter(character));
 
+  useEffect(() => {
+    const nextCharacter = getInitialCharacter(character);
+
+    if (!nextCharacter?.id && !nextCharacter?.characterName) {
+      return;
+    }
+
+    setLocalCharacter((current) => {
+      const sameIdentity =
+        current?.id === nextCharacter?.id &&
+        current?.updatedAt === nextCharacter?.updatedAt &&
+        current?.characterName === nextCharacter?.characterName;
+
+      return sameIdentity ? current : nextCharacter;
+    });
+  }, [
+    character?.id,
+    character?.updatedAt,
+    character?.characterName,
+    character?.ownerEmail,
+    character?.userId,
+  ]);
+
+
   function handleSaveNinjaSheet(nextCharacter) {
     const saved = saveLocalCharacter(nextCharacter);
     setLocalCharacter(saved);
