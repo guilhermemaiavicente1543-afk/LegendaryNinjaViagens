@@ -38497,3 +38497,55 @@ body:has(.mn-page) .knowledge-floating-button {
 .shinobidex-yurik-admin-panel strong {
   color: rgba(255, 183, 102, 0.96);
 }
+
+/* Filtros por eixo ANCED */
+.anced-axis-filter-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 14px;
+  background: rgba(18, 12, 8, 0.58);
+}
+
+.anced-axis-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: rgba(255, 236, 214, 0.78);
+}
+
+.anced-axis-filter span {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 170, 80, 0.95);
+}
+
+.anced-axis-filter select {
+  min-height: 36px;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 10px;
+  background: rgba(10, 8, 6, 0.92);
+  color: #fff4e6;
+  padding: 0 10px;
+}
+
+.anced-axis-clear-button {
+  min-height: 36px;
+  align-self: end;
+  border: 1px solid rgba(255, 122, 0, 0.38);
+  border-radius: 10px;
+  background: rgba(255, 122, 0, 0.12);
+  color: #ffb56b;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.anced-axis-clear-button:hover {
+  background: rgba(255, 122, 0, 0.22);
+}
