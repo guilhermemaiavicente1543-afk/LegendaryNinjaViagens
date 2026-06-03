@@ -331,7 +331,7 @@ function getTechniqueName(technique) {
 }
 
 function getTechniqueRank(technique) {
-  return technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
+  return technique?.anced_curated_rank || technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
 }
 
 function getTechniqueMeta(technique) {

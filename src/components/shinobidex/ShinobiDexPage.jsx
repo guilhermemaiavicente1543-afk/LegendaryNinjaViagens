@@ -3,6 +3,26 @@ import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import { useLanguage } from "../../i18n/LanguageContext";
 import LnSelect from "../ui/LnSelect";
 
+
+const getCuratedAncedRank = (technique) =>
+  technique?.anced_curated_rank || technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
+
+const getCuratedAncedDetails = (technique) =>
+  technique?.anced_curated_details || technique?.anced_details || "";
+
+const getCuratedAncedTotal = (technique) =>
+  technique?.anced_curated_total ?? technique?.anced_total ?? null;
+
+const getCuratedAncedStatus = (technique) =>
+  technique?.anced_curated_status || "";
+
+const getCuratedAncedNeedsReview = (technique) =>
+  Boolean(
+    technique?.anced_needs_review ||
+      technique?.anced_curated_rank === "REVISAR" ||
+      String(technique?.anced_curated_status || "").includes("revisar")
+  );
+
 const RANKS = ["Todos", "E", "D", "C", "B", "A", "S", "SS"];
 const STATUS = ["Todos", "draft", "approved", "needs_review"];
 const PAGE_SIZE = 80;
@@ -165,7 +185,7 @@ export default function ShinobiDexPage({ onBack }) {
     }
 
     if (rank !== "Todos") {
-      query = query.or(`anced_rank.eq.${rank},wiki_rank.eq.${rank}`);
+      query = query.or(`anced_curated_rank.eq.${rank},anced_rank.eq.${rank},wiki_rank.eq.${rank}`);
     }
 
     if (status !== "Todos") {
@@ -387,9 +407,9 @@ export default function ShinobiDexPage({ onBack }) {
     const { error } = await supabase.from("anced_error_reports").insert({
       technique_id: String(selected.id || ""),
       technique_name: getTechniqueName(selected, language) || selected.name || "Técnica sem nome",
-      anced_rank: selected.anced_rank || selected.wiki_rank || "",
+      anced_rank: getCuratedAncedRank(selected),
       anced_total: Number(selected.anced_total || 0),
-      anced_details: selected.anced_details || "",
+      anced_details: getCuratedAncedDetails(selected),
       report_text: cleanText,
       status: "open"
     });
@@ -545,7 +565,7 @@ export default function ShinobiDexPage({ onBack }) {
               onKeyDown={(event) => handleTechniqueKeyDown(event, technique)}
             >
               <span className="shinobidex-rank">
-                {technique.anced_rank || technique.wiki_rank || "?"}
+                {getCuratedAncedRank(technique) || "?"}
               </span>
 
               <span className="shinobidex-card-body">
@@ -585,7 +605,13 @@ export default function ShinobiDexPage({ onBack }) {
 
               <div className="shinobidex-badges">
                 <span>Wiki: {selected.wiki_rank || "?"}</span>
-                <span>ANCED: {selected.anced_rank || "?"}</span>
+                <span>ANCED: {getCuratedAncedRank(selected) || "?"}</span>
+                {getCuratedAncedTotal(selected) !== null && (
+                  <span>Total: {getCuratedAncedTotal(selected)}</span>
+                )}
+                {getCuratedAncedNeedsReview(selected) && (
+                  <span className="shinobidex-review-badge">Revisar ADM</span>
+                )}
                 <span>{selected.anced_total || 0} pts</span>
                 <span>Confiança: {selected.anced_confidence || "baixa"}</span>
                 <span>{selected.status || "draft"}</span>
@@ -617,7 +643,7 @@ export default function ShinobiDexPage({ onBack }) {
 
               <section>
                 <h3>{t("shinobidex.ancedCalculation")}</h3>
-                <p>{selected.anced_details || "Sem detalhes de cálculo."}</p>
+                <p>{getCuratedAncedDetails(selected) || "Sem detalhes de cálculo."}</p>
               </section>
 
               <section className="shinobidex-anced-report">

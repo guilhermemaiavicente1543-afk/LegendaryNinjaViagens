@@ -2,6 +2,26 @@ import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import LnSelect from "../ui/LnSelect";
 
+
+const getCuratedAncedRank = (technique) =>
+  technique?.anced_curated_rank || technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
+
+const getCuratedAncedDetails = (technique) =>
+  technique?.anced_curated_details || technique?.anced_details || "";
+
+const getCuratedAncedTotal = (technique) =>
+  technique?.anced_curated_total ?? technique?.anced_total ?? null;
+
+const getCuratedAncedStatus = (technique) =>
+  technique?.anced_curated_status || "";
+
+const getCuratedAncedNeedsReview = (technique) =>
+  Boolean(
+    technique?.anced_needs_review ||
+      technique?.anced_curated_rank === "REVISAR" ||
+      String(technique?.anced_curated_status || "").includes("revisar")
+  );
+
 const STATUS_OPTIONS = ["draft", "approved", "needs_review", "archived"];
 const RANK_OPTIONS = ["", "E", "D", "C", "B", "A", "S", "SS"];
 const CONFIDENCE_OPTIONS = ["baixa", "média", "alta"];
@@ -191,7 +211,7 @@ export default function ShinobiDexAdmin() {
     }
 
     if (rankFilter !== "Todos") {
-      query = query.eq("anced_rank", rankFilter);
+      query = query.or(`anced_curated_rank.eq.${rankFilter},anced_rank.eq.${rankFilter},wiki_rank.eq.${rankFilter}`);
     }
 
     const q = search.trim();
@@ -237,10 +257,10 @@ export default function ShinobiDexAdmin() {
       original_name: technique.original_name || "",
       english_name: technique.english_name || "",
       wiki_rank: technique.wiki_rank || "",
-      anced_rank: technique.anced_rank || "",
+      anced_rank: technique.anced_rank || technique.anced_curated_rank || "",
       anced_total: technique.anced_total || 0,
       anced_confidence: technique.anced_confidence || "baixa",
-      anced_details: technique.anced_details || "",
+      anced_details: technique.anced_details || technique.anced_curated_details || "",
       classification: technique.classification || "",
       nature: technique.nature || "",
       technique_type: technique.technique_type || "",
@@ -500,17 +520,17 @@ export default function ShinobiDexAdmin() {
                 <div>
                   <strong>{report.technique_name}</strong>
                   <small>
-                    Status: {report.status} · ANCED: {report.anced_rank || "?"}
+                    Status: {report.status} · ANCED: {getCuratedAncedRank(report) || "?"}
                     {report.anced_total ? ` (${report.anced_total} pts)` : ""}
                   </small>
                 </div>
 
                 <p>{report.report_text}</p>
 
-                {report.anced_details && (
+                {getCuratedAncedDetails(report) && (
                   <details>
                     <summary>Ver cálculo ANCED registrado</summary>
-                    <p>{report.anced_details}</p>
+                    <p>{getCuratedAncedDetails(report)}</p>
                   </details>
                 )}
 
@@ -583,7 +603,7 @@ export default function ShinobiDexAdmin() {
               className={selected?.id === technique.id ? "active" : ""}
               onClick={() => selectTechnique(technique)}
             >
-              <span>{technique.anced_rank || technique.wiki_rank || "?"}</span>
+              <span>{getCuratedAncedRank(technique) || "?"}</span>
 
               <div>
                 <strong>{technique.name}</strong>
