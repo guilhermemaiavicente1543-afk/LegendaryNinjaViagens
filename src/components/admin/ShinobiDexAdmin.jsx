@@ -47,6 +47,14 @@ const emptyForm = {
   status: "draft"
 };
 
+
+
+const getAdminEffectiveAncedRank = getCuratedAncedRank;
+const getAdminEffectiveAncedTotal = getCuratedAncedTotal;
+const getAdminEffectiveAncedDetails = getCuratedAncedDetails;
+const getAdminEffectiveAncedStatus = getCuratedAncedStatus;
+const getAdminEffectiveAncedNeedsReview = getCuratedAncedNeedsReview;
+
 export default function ShinobiDexAdmin() {
   const [techniques, setTechniques] = useState([]);
   const [stats, setStats] = useState({
@@ -257,10 +265,10 @@ export default function ShinobiDexAdmin() {
       original_name: technique.original_name || "",
       english_name: technique.english_name || "",
       wiki_rank: technique.wiki_rank || "",
-      anced_rank: technique.anced_rank || technique.anced_curated_rank || "",
+      anced_rank: technique.anced_rank || getAdminEffectiveAncedRank(technique) || "",
       anced_total: technique.anced_total || 0,
       anced_confidence: technique.anced_confidence || "baixa",
-      anced_details: technique.anced_details || technique.anced_curated_details || "",
+      anced_details: technique.anced_details || getAdminEffectiveAncedDetails(technique) || "",
       classification: technique.classification || "",
       nature: technique.nature || "",
       technique_type: technique.technique_type || "",
