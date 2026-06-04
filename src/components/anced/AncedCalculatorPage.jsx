@@ -1,431 +1,405 @@
 import { useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
-import LnSelect from "../ui/LnSelect";
 
-const OPTIONS = {
-  range: [
-    ["Corpo a corpo", 8],
-    ["Curto alcance", 20],
-    ["Médio alcance", 26],
-    ["Longo alcance", 38],
-    ["Todos os alcances", 44]
-  ],
-  users: [
-    ["6+ usuários", 4],
-    ["5 usuários", 12],
-    ["3–4 usuários", 24],
-    ["2 usuários", 34],
-    ["1 usuário", 42]
-  ],
-  classType: [
-    ["Defensiva", 10],
-    ["Ofensiva", 18],
-    ["Suporte", 30],
-    ["Selamento", 32],
-    ["Preparação", 46]
-  ],
-  structure: [
-    ["Taijutsu/Bukijutsu", 6],
-    ["Hiden/Yang", 14],
-    ["Elemental/Yin", 24],
-    ["Não elemental/Kekkei Genkai", 40],
-    ["Kinjutsu/Exclusiva", 48]
-  ],
-  damage: [
-    ["Não causa dano/Incapacitante", 2],
-    ["Ferimentos leves", 16],
-    ["Ferimentos moderados", 22],
-    ["Ferimentos graves/mortais", 34],
-    ["Dizimação/obliteração", 50]
-  ]
-};
-
-const CLASSIFICATIONS = [
-  "Ninjutsu",
-  "Taijutsu",
-  "Genjutsu",
-  "Fuinjutsu",
-  "Senjutsu",
-  "Kenjutsu",
-  "Bukijutsu",
-  "Kekkei Genkai",
-  "Dōjutsu",
-  "Hiden",
-  "Kinjutsu",
-  "Outro"
+const RANGE_OPTIONS = [
+  { label: "Sem alcance", points: 0 },
+  { label: "Corpo a corpo", points: 8 },
+  { label: "Curto (1-10m)", points: 20 },
+  { label: "Médio (10-30m)", points: 26 },
+  { label: "Longo (30-100m)", points: 38 },
+  { label: "Todos os alcances", points: 44 },
 ];
 
-const NATURES = [
-  "Sem natureza definida",
-  "Katon",
-  "Suiton",
-  "Raiton",
-  "Doton",
-  "Fuuton",
-  "Hyoton",
-  "Mokuton",
-  "Youton",
-  "Futton",
-  "Bakuton",
-  "Shoton",
-  "Jiton",
-  "Enton",
-  "Yin",
-  "Yang",
-  "Yin-Yang"
+const USERS_OPTIONS = [
+  { label: "0 usuários válidos", points: 0 },
+  { label: "1 usuário", points: 42 },
+  { label: "2 usuários", points: 34 },
+  { label: "4/3 usuários", points: 24 },
+  { label: "5 usuários", points: 12 },
+  { label: "6+ usuários", points: 4 },
 ];
 
-const initialForm = {
-  name: "",
-  classification: "Ninjutsu",
-  nature: "Sem natureza definida",
-  description: "",
-  range: 0,
-  users: 0,
-  classType: 0,
-  structure: 0,
-  damage: 0,
-  isHealing: false,
-  usesSenjutsu: false,
-  isFillerBoruto: false,
-  speedBonus: 0
-};
+const CLASS_OPTIONS = [
+  { label: "Defensivo", points: 10 },
+  { label: "Ofensivo", points: 18 },
+  { label: "Suporte", points: 30 },
+  { label: "Selamento", points: 32 },
+  { label: "Preparação", points: 46 },
+];
+
+const STRUCTURE_OPTIONS = [
+  { label: "Taijutsu/Bukijutsu", points: 6 },
+  { label: "Hiden/Yang", points: 14 },
+  { label: "Elemental/Yin", points: 24 },
+  { label: "Não elemental/Kekkei Genkai", points: 40 },
+  { label: "Kinjutsu/Kekkei Tōta/Exclusivo", points: 48 },
+];
+
+const DAMAGE_OPTIONS = [
+  { label: "Não causa/Incapacitação", points: 2 },
+  { label: "Ferimentos leves", points: 16 },
+  { label: "Ferimentos moderados", points: 22 },
+  { label: "Ferimentos graves/mortais", points: 34 },
+  { label: "Dizimação/Obliteração", points: 50 },
+];
 
 function getRank(total) {
-  if (total >= 204) return "SS";
-  if (total >= 175) return "S";
-  if (total >= 146) return "A";
-  if (total >= 117) return "B";
-  if (total >= 88) return "C";
-  if (total >= 59) return "D";
+  const value = Number(total || 0);
+  if (value >= 204) return "SS";
+  if (value >= 175) return "S";
+  if (value >= 146) return "A";
+  if (value >= 117) return "B";
+  if (value >= 88) return "C";
+  if (value >= 59) return "D";
   return "E";
 }
 
-function calculate(form) {
-  const range = OPTIONS.range[Number(form.range)];
-  const users = OPTIONS.users[Number(form.users)];
-  const classType = OPTIONS.classType[Number(form.classType)];
-  const structure = OPTIONS.structure[Number(form.structure)];
-  const damage = OPTIONS.damage[Number(form.damage)];
-
-  const speedRaw = Number(form.speedBonus || 0);
-  const speedPoints = Number.isFinite(speedRaw) ? Math.floor(speedRaw / 5) : 0;
-
-  let total = range[1] + users[1] + classType[1] + structure[1] + damage[1];
-
-  const parts = [
-    `${range[0]}: +${range[1]}`,
-    `${users[0]}: +${users[1]}`,
-    `${classType[0]}: +${classType[1]}`,
-    `${structure[0]}: +${structure[1]}`,
-    `${damage[0]}: +${damage[1]}`
-  ];
-
-  if (form.isHealing) {
-    total += 43;
-    parts.push("Técnica de Cura: +43");
-  }
-
-  if (form.usesSenjutsu) {
-    total += 50;
-    parts.push("Usa Senjutsu: +50");
-  }
-
-  if (form.isFillerBoruto) {
-    total += 20;
-    parts.push("Filler Boruto: +20");
-  }
-
-  if (speedPoints > 0) {
-    total += speedPoints;
-    parts.push(`Bônus de velocidade: +${speedPoints}`);
-  }
-
-  return {
-    total,
-    rank: getRank(total),
-    details: parts,
-    selected: {
-      range,
-      users,
-      classType,
-      structure,
-      damage,
-      speedPoints
-    }
-  };
-}
-
-function SelectField({ label, value, options, onChange }) {
-  return (
-    <label className="anced-calc-field">
-      <span>{label}</span>
-      <LnSelect value={value} onChange={(event) => onChange(event.target.value)}>
-        {options.map(([name, points], index) => (
-          <option key={name} value={index}>
-            {name} (+{points})
-          </option>
-        ))}
-      </LnSelect>
-    </label>
-  );
+function optionByPoints(options, points) {
+  return options.find((option) => Number(option.points) === Number(points)) || null;
 }
 
 export default function AncedCalculatorPage({ user, onBack }) {
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState({
+    techniqueName: "",
+    description: "",
+    rangePoints: 0,
+    usersPoints: 42,
+    classPoints: 18,
+    structurePoints: 40,
+    damagePoints: 34,
+    healingBonus: false,
+    senjutsuBonus: false,
+    borutoFillerBonus: false,
+    speedPercent: 0,
+    manualBonusLabel: "",
+    manualBonusPoints: 0,
+    notes: "",
+  });
+
   const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const result = useMemo(() => calculate(form), [form]);
-
-  function update(field, value) {
+  function updateField(field, value) {
     setForm((current) => ({
       ...current,
-      [field]: value
+      [field]: value,
     }));
   }
 
-  function resetForm() {
-    setForm(initialForm);
+  const calculated = useMemo(() => {
+    const speedBonus = Math.floor(Math.max(0, Number(form.speedPercent || 0)) / 5);
+    const healingBonus = form.healingBonus ? 43 : 0;
+    const senjutsuBonus = form.senjutsuBonus ? 50 : 0;
+    const borutoFillerBonus = form.borutoFillerBonus ? 20 : 0;
+    const manualBonus = Number(form.manualBonusPoints || 0);
+
+    const bonusPoints =
+      healingBonus +
+      senjutsuBonus +
+      borutoFillerBonus +
+      speedBonus +
+      manualBonus;
+
+    const total =
+      Number(form.rangePoints || 0) +
+      Number(form.usersPoints || 0) +
+      Number(form.classPoints || 0) +
+      Number(form.structurePoints || 0) +
+      Number(form.damagePoints || 0) +
+      bonusPoints;
+
+    const bonusLabels = [
+      form.healingBonus ? "Cura +43" : "",
+      form.senjutsuBonus ? "Senjutsu +50" : "",
+      form.borutoFillerBonus ? "Filler Boruto +20" : "",
+      speedBonus ? `Velocidade +${speedBonus}` : "",
+      manualBonus ? `${form.manualBonusLabel || "Bônus manual"} +${manualBonus}` : "",
+    ].filter(Boolean);
+
+    return {
+      speedBonus,
+      bonusPoints,
+      bonusLabel: bonusLabels.join("; "),
+      total,
+      rank: getRank(total),
+    };
+  }, [form]);
+
+  async function submitCalculation() {
     setMessage("");
-  }
 
-  async function submitForReview() {
-    setMessage("");
-
-    if (!user?.id) {
-      setMessage("Você precisa estar logado para enviar uma técnica para revisão.");
-      return;
-    }
-
-    if (!form.name.trim()) {
+    if (!form.techniqueName.trim()) {
       setMessage("Informe o nome da técnica antes de enviar.");
       return;
     }
 
-    if (!form.description.trim()) {
-      setMessage("Descreva a técnica antes de enviar para revisão.");
-      return;
-    }
-
-    if (!isSupabaseConfigured || !supabase) {
-      setMessage("Supabase não está configurado.");
-      return;
-    }
-
-    setIsSubmitting(true);
+    const range = optionByPoints(RANGE_OPTIONS, form.rangePoints);
+    const users = optionByPoints(USERS_OPTIONS, form.usersPoints);
+    const classOption = optionByPoints(CLASS_OPTIONS, form.classPoints);
+    const structure = optionByPoints(STRUCTURE_OPTIONS, form.structurePoints);
+    const damage = optionByPoints(DAMAGE_OPTIONS, form.damagePoints);
 
     const payload = {
-      user_id: user.id,
-      name: form.name.trim(),
-      classification: form.classification,
-      nature: form.nature,
-      description: form.description.trim(),
+      user_id: user?.id || null,
+      technique_name: form.techniqueName.trim(),
+      description: form.description.trim() || null,
 
-      calculated_rank: result.rank,
-      calculated_total: result.total,
-      calculation_details: result.details.join(" | "),
+      range_label: range?.label || null,
+      range_points: Number(form.rangePoints || 0),
 
-      range_label: result.selected.range[0],
-      users_label: result.selected.users[0],
-      class_label: result.selected.classType[0],
-      structure_label: result.selected.structure[0],
-      damage_label: result.selected.damage[0],
+      users_label: users?.label || null,
+      users_points: Number(form.usersPoints || 0),
 
-      is_healing: form.isHealing,
-      uses_senjutsu: form.usesSenjutsu,
-      is_filler_boruto: form.isFillerBoruto,
-      speed_bonus: result.selected.speedPoints,
+      class_label: classOption?.label || null,
+      class_points: Number(form.classPoints || 0),
 
+      structure_label: structure?.label || null,
+      structure_points: Number(form.structurePoints || 0),
+
+      damage_label: damage?.label || null,
+      damage_points: Number(form.damagePoints || 0),
+
+      bonus_label: calculated.bonusLabel || null,
+      bonus_points: Number(calculated.bonusPoints || 0),
+
+      total: calculated.total,
+      rank: calculated.rank,
+      notes: form.notes.trim() || null,
       status: "pending",
-      updated_at: new Date().toISOString()
+      source: "anced_calculator_v2",
+      updated_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase.from("anced_submissions").insert(payload);
-
-    setIsSubmitting(false);
-
-    if (error) {
-      setMessage(`Erro ao enviar técnica: ${error.message}`);
+    if (!isSupabaseConfigured || !supabase) {
+      setMessage("Supabase não configurado. Cálculo feito localmente, mas não enviado.");
       return;
     }
 
-    setMessage("Técnica enviada para revisão do ADM.");
-    setForm(initialForm);
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("anced_submissions")
+      .insert(payload);
+
+    setSaving(false);
+
+    if (error) {
+      setMessage(`Erro ao enviar ANCED: ${error.message}`);
+      return;
+    }
+
+    setMessage("ANCED enviado para revisão da administração.");
   }
 
   return (
-    <section className="anced-calc-page">
-      <header className="anced-calc-hero">
+    <main className="anced-page-v2">
+      <header className="anced-page-v2__hero">
         <div>
-          <p className="eyebrow">Sistema ANCED</p>
+          <p className="anced-page-v2__kicker">Legendary Ninja Digital</p>
           <h1>Calculadora ANCED</h1>
           <p>
-            Ferramenta de balanceamento para criação, classificação e ranqueamento
-            de técnicas do RPG.
+            Calcule o rank de uma técnica usando os critérios oficiais da 6ª Temporada.
           </p>
         </div>
+
+
       </header>
 
-      {message && <p className="anced-calc-message">{message}</p>}
+      {message && <div className="anced-page-v2__message">{message}</div>}
 
-      <main className="anced-calc-layout">
-        <section className="anced-calc-card">
+      <section className="anced-page-v2__layout">
+        <form className="anced-page-v2__card" onSubmit={(event) => event.preventDefault()}>
           <h2>Dados da técnica</h2>
 
-          <div className="anced-calc-grid two">
-            <label className="anced-calc-field">
-              <span>Nome da técnica</span>
-              <input
-                value={form.name}
-                onChange={(event) => update("name", event.target.value)}
-                placeholder="Ex.: Katon: Chama Fantasma"
-              />
-            </label>
-
-            <label className="anced-calc-field">
-              <span>Classificação</span>
-              <LnSelect
-                value={form.classification}
-                onChange={(event) => update("classification", event.target.value)}
-              >
-                {CLASSIFICATIONS.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
-              </LnSelect>
-            </label>
-
-            <label className="anced-calc-field">
-              <span>Natureza</span>
-              <LnSelect
-                value={form.nature}
-                onChange={(event) => update("nature", event.target.value)}
-              >
-                {NATURES.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
-              </LnSelect>
-            </label>
-
-            <label className="anced-calc-field">
-              <span>Bônus de velocidade</span>
-              <input
-                type="number"
-                min="0"
-                value={form.speedBonus}
-                onChange={(event) => update("speedBonus", event.target.value)}
-                placeholder="Valor dividido por 5"
-              />
-            </label>
-          </div>
-
-          <label className="anced-calc-field">
-            <span>Descrição</span>
-            <textarea
-              value={form.description}
-              onChange={(event) => update("description", event.target.value)}
-              placeholder="Descreva funcionamento, efeito, custo, limitação e condição de uso."
+          <label>
+            Nome da técnica
+            <input
+              value={form.techniqueName}
+              onChange={(event) => updateField("techniqueName", event.target.value)}
+              placeholder="Ex: Técnica da Prisão de Água"
             />
           </label>
 
-          <div className="anced-calc-grid">
-            <SelectField
-              label="Alcance"
-              value={form.range}
-              options={OPTIONS.range}
-              onChange={(value) => update("range", value)}
+          <label>
+            Descrição / observação
+            <textarea
+              rows={4}
+              value={form.description}
+              onChange={(event) => updateField("description", event.target.value)}
+              placeholder="Descreva funcionamento, condição de uso, dano e fonte."
             />
+          </label>
 
-            <SelectField
-              label="Usuários"
-              value={form.users}
-              options={OPTIONS.users}
-              onChange={(value) => update("users", value)}
-            />
+          <div className="anced-page-v2__grid">
+            <label>
+              Alcance
+              <select
+                value={form.rangePoints}
+                onChange={(event) => updateField("rangePoints", Number(event.target.value))}
+              >
+                {RANGE_OPTIONS.map((option) => (
+                  <option key={option.label} value={option.points}>
+                    {option.label} [+{option.points}]
+                  </option>
+                ))}
+              </select>
+            </label>
 
-            <SelectField
-              label="Classe"
-              value={form.classType}
-              options={OPTIONS.classType}
-              onChange={(value) => update("classType", value)}
-            />
+            <label>
+              Nº de usuários
+              <select
+                value={form.usersPoints}
+                onChange={(event) => updateField("usersPoints", Number(event.target.value))}
+              >
+                {USERS_OPTIONS.map((option) => (
+                  <option key={option.label} value={option.points}>
+                    {option.label} [+{option.points}]
+                  </option>
+                ))}
+              </select>
+            </label>
 
-            <SelectField
-              label="Estrutura"
-              value={form.structure}
-              options={OPTIONS.structure}
-              onChange={(value) => update("structure", value)}
-            />
+            <label>
+              Classe
+              <select
+                value={form.classPoints}
+                onChange={(event) => updateField("classPoints", Number(event.target.value))}
+              >
+                {CLASS_OPTIONS.map((option) => (
+                  <option key={option.label} value={option.points}>
+                    {option.label} [+{option.points}]
+                  </option>
+                ))}
+              </select>
+            </label>
 
-            <SelectField
-              label="Danos"
-              value={form.damage}
-              options={OPTIONS.damage}
-              onChange={(value) => update("damage", value)}
-            />
+            <label>
+              Estrutura
+              <select
+                value={form.structurePoints}
+                onChange={(event) => updateField("structurePoints", Number(event.target.value))}
+              >
+                {STRUCTURE_OPTIONS.map((option) => (
+                  <option key={option.label} value={option.points}>
+                    {option.label} [+{option.points}]
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Danos
+              <select
+                value={form.damagePoints}
+                onChange={(event) => updateField("damagePoints", Number(event.target.value))}
+              >
+                {DAMAGE_OPTIONS.map((option) => (
+                  <option key={option.label} value={option.points}>
+                    {option.label} [+{option.points}]
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Velocidade extra %
+              <input
+                type="number"
+                min="0"
+                value={form.speedPercent}
+                onChange={(event) => updateField("speedPercent", Number(event.target.value))}
+              />
+            </label>
           </div>
 
-          <div className="anced-calc-checks">
+          <div className="anced-page-v2__checks">
             <label>
               <input
                 type="checkbox"
-                checked={form.isHealing}
-                onChange={(event) => update("isHealing", event.target.checked)}
+                checked={form.healingBonus}
+                onChange={(event) => updateField("healingBonus", event.target.checked)}
               />
-              Técnica de Cura (+43)
+              Cura [+43]
             </label>
 
             <label>
               <input
                 type="checkbox"
-                checked={form.usesSenjutsu}
-                onChange={(event) => update("usesSenjutsu", event.target.checked)}
+                checked={form.senjutsuBonus}
+                onChange={(event) => updateField("senjutsuBonus", event.target.checked)}
               />
-              Usa Senjutsu (+50)
+              Necessita Senjutsu [+50]
             </label>
 
             <label>
               <input
                 type="checkbox"
-                checked={form.isFillerBoruto}
-                onChange={(event) => update("isFillerBoruto", event.target.checked)}
+                checked={form.borutoFillerBonus}
+                onChange={(event) => updateField("borutoFillerBonus", event.target.checked)}
               />
-              Filler Boruto (+20)
+              Filler de Boruto [+20]
             </label>
           </div>
-        </section>
 
-        <aside className="anced-calc-result">
-          <p>Resultado</p>
-          <strong>{result.rank}</strong>
-          <span>{result.total} pontos</span>
+          <div className="anced-page-v2__grid">
+            <label>
+              Nome do bônus manual
+              <input
+                value={form.manualBonusLabel}
+                onChange={(event) => updateField("manualBonusLabel", event.target.value)}
+                placeholder="Opcional"
+              />
+            </label>
 
-          <div className="anced-calc-details">
-            {result.details.map((item) => (
-              <small key={item}>{item}</small>
-            ))}
+            <label>
+              Pontos de bônus manual
+              <input
+                type="number"
+                value={form.manualBonusPoints}
+                onChange={(event) => updateField("manualBonusPoints", Number(event.target.value))}
+              />
+            </label>
           </div>
 
-          <div className="anced-calc-actions">
-            <button type="button" onClick={resetForm}>
-              Limpar
-            </button>
+          <label>
+            Observações para ADM
+            <textarea
+              rows={4}
+              value={form.notes}
+              onChange={(event) => updateField("notes", event.target.value)}
+              placeholder="Explique dúvidas, fontes ou justificativa do cálculo."
+            />
+          </label>
 
-            <button
-              type="button"
-              className="primary"
-              onClick={submitForReview}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Enviando..." : "Enviar para revisão"}
-            </button>
+          <button
+            type="button"
+            className="anced-page-v2__submit"
+            onClick={submitCalculation}
+            disabled={saving}
+          >
+            {saving ? "Enviando..." : "Enviar para revisão"}
+          </button>
+        </form>
+
+        <aside className="anced-page-v2__result">
+          <p className="anced-page-v2__kicker">Resultado</p>
+          <strong>{calculated.rank}</strong>
+          <span>{calculated.total} pontos</span>
+
+          <div className="anced-page-v2__sum">
+            <p>Alcance: +{form.rangePoints}</p>
+            <p>Usuários: +{form.usersPoints}</p>
+            <p>Classe: +{form.classPoints}</p>
+            <p>Estrutura: +{form.structurePoints}</p>
+            <p>Danos: +{form.damagePoints}</p>
+            <p>Bônus: +{calculated.bonusPoints}</p>
           </div>
 
-          <small className="anced-calc-note">
-            Técnicas enviadas ficam pendentes até análise do ADM.
+          <small>
+            Ranks: E 0–58, D 59–87, C 88–116, B 117–145, A 146–174, S 175–203, SS 204–230.
           </small>
         </aside>
-      </main>
-    </section>
+      </section>
+    </main>
   );
 }

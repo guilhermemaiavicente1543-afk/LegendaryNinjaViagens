@@ -138,6 +138,7 @@ export default function PlayerLocationMap({
               >
                 <option value="terrestre">Terrestre — 1 província = 12 horas</option>
                 <option value="aquatico">Aquático — 1 província = 9 horas</option>
+                <option value="terrestre_aquatico">Terrestre + Aquático — automático</option>
                 <option value="aereo">Aéreo — 1 província = 6 horas</option>
               </LnSelect>
             </label>

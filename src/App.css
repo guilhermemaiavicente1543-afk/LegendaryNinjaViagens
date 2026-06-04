@@ -38549,3 +38549,1452 @@ body:has(.mn-page) .knowledge-floating-button {
 .anced-axis-clear-button:hover {
   background: rgba(255, 122, 0, 0.22);
 }
+
+/* ShinobiDex unificada — editor ADM inline */
+.shinobidex-page.is-admin-mode {
+  border: 1px solid rgba(255, 122, 0, 0.16);
+}
+
+.shinobidex-admin-inline-editor {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.24);
+  border-radius: 16px;
+  background: rgba(10, 8, 6, 0.58);
+}
+
+.shinobidex-admin-inline-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: rgba(255, 236, 214, 0.82);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.shinobidex-admin-inline-editor input,
+.shinobidex-admin-inline-editor textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 10px;
+  background: rgba(10, 8, 6, 0.9);
+  color: #fff4e6;
+  padding: 10px;
+}
+
+.shinobidex-admin-inline-editor textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.shinobidex-admin-inline-editor .shinobidex-admin-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shinobidex-admin-inline-editor .approve {
+  border: 1px solid rgba(255, 122, 0, 0.42);
+  border-radius: 12px;
+  background: rgba(255, 122, 0, 0.16);
+  color: #ffb56b;
+  font-weight: 900;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+/* =====================================================
+   SHINOBIDEX RESET — placeholder limpo
+===================================================== */
+
+.sdx-reset-page,
+.sdx-reset-admin {
+  min-height: 100dvh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at top, rgba(255, 122, 0, 0.12), transparent 34%),
+    #0d0d0d;
+  color: #e8e2d6;
+}
+
+.sdx-reset-card {
+  width: min(760px, 100%);
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #17130f, #0f0e0d);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  padding: 32px;
+}
+
+.sdx-reset-kicker {
+  margin: 0 0 10px;
+  color: #ff7a00;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.sdx-reset-card h1,
+.sdx-reset-card h2 {
+  margin: 0 0 14px;
+  color: #fff3df;
+}
+
+.sdx-reset-card p {
+  margin: 0;
+  color: #b9aa98;
+  line-height: 1.65;
+}
+
+/* =====================================================
+   SHINOBIDEX V2 ADMIN — ANCED CURATION
+===================================================== */
+
+.shinobidex-v2-admin {
+  min-height: 100dvh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at top, rgba(255, 122, 0, 0.12), transparent 34%),
+    #0c0b0a;
+  color: #efe5d4;
+}
+
+.shinobidex-v2-admin__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.shinobidex-v2-admin__kicker {
+  margin: 0 0 8px;
+  color: #ff7a00;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.shinobidex-v2-admin__header h1 {
+  margin: 0;
+  color: #fff3df;
+}
+
+.shinobidex-v2-admin__header p {
+  margin: 8px 0 0;
+  color: #b8aa99;
+}
+
+.shinobidex-v2-admin__rankbox {
+  min-width: 170px;
+  border: 1px solid rgba(255, 122, 0, 0.35);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #1b140d, #111);
+  padding: 16px;
+  text-align: center;
+}
+
+.shinobidex-v2-admin__rankbox span,
+.shinobidex-v2-admin__rankbox em {
+  display: block;
+  color: #b8aa99;
+  font-style: normal;
+}
+
+.shinobidex-v2-admin__rankbox strong {
+  display: block;
+  margin: 4px 0;
+  color: #ffad55;
+  font-size: 2.3rem;
+}
+
+.shinobidex-v2-admin__message {
+  border: 1px solid rgba(255, 122, 0, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 122, 0, 0.08);
+  padding: 12px;
+  margin-bottom: 16px;
+  color: #ffd6a6;
+}
+
+.shinobidex-v2-admin__layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.shinobidex-v2-admin__sidebar,
+.shinobidex-v2-admin__card {
+  border: 1px solid rgba(255, 122, 0, 0.2);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #17120e, #0f0e0d);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.shinobidex-v2-admin__sidebar {
+  padding: 14px;
+  height: calc(100dvh - 56px);
+  position: sticky;
+  top: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shinobidex-v2-admin__input,
+.shinobidex-v2-admin__form-grid select,
+.shinobidex-v2-admin__form-grid input,
+.shinobidex-v2-admin__notes textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 13px;
+  background: #11100f;
+  color: #f3e6d2;
+  padding: 10px 11px;
+  outline: none;
+}
+
+.shinobidex-v2-admin__list {
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.shinobidex-v2-admin__list-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 13px;
+  background: #141312;
+  color: #efe5d4;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.shinobidex-v2-admin__list-item.active {
+  border-color: rgba(255, 122, 0, 0.55);
+  background: rgba(255, 122, 0, 0.1);
+}
+
+.shinobidex-v2-admin__list-item strong,
+.shinobidex-v2-admin__list-item span {
+  display: block;
+}
+
+.shinobidex-v2-admin__list-item span {
+  margin-top: 4px;
+  color: #9d9082;
+  font-size: 0.78rem;
+}
+
+.shinobidex-v2-admin__main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.shinobidex-v2-admin__empty {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(255, 122, 0, 0.3);
+  border-radius: 20px;
+  color: #a99c8f;
+}
+
+.shinobidex-v2-admin__card {
+  padding: 18px;
+}
+
+.shinobidex-v2-admin__card h2,
+.shinobidex-v2-admin__card h3 {
+  color: #fff3df;
+}
+
+.shinobidex-v2-admin__card h2 {
+  margin-top: 0;
+}
+
+.shinobidex-v2-admin__card a {
+  color: #ff9d37;
+}
+
+.shinobidex-v2-admin__card p {
+  color: #c7b9a6;
+  line-height: 1.65;
+}
+
+.shinobidex-v2-admin__raw-grid,
+.shinobidex-v2-admin__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.shinobidex-v2-admin__raw-grid span {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: #11100f;
+  padding: 10px;
+  color: #aa9d8e;
+}
+
+.shinobidex-v2-admin__raw-grid strong {
+  color: #f0ddbf;
+}
+
+.shinobidex-v2-admin__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shinobidex-v2-admin__chips span {
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 122, 0, 0.08);
+  padding: 6px 10px;
+  color: #f0dec4;
+  font-size: 0.84rem;
+}
+
+.shinobidex-v2-admin__chips.valid span {
+  border-color: rgba(255, 181, 91, 0.38);
+  background: rgba(255, 181, 91, 0.13);
+}
+
+.shinobidex-v2-admin__form-grid label,
+.shinobidex-v2-admin__notes {
+  display: grid;
+  gap: 7px;
+  color: #ffcf98;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.shinobidex-v2-admin__total {
+  display: grid;
+  gap: 5px;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 16px;
+  background: rgba(255, 122, 0, 0.08);
+  padding: 13px;
+  margin: 16px 0;
+}
+
+.shinobidex-v2-admin__total span {
+  color: #b8aa99;
+}
+
+.shinobidex-v2-admin__total strong {
+  color: #ffad55;
+  font-size: 1.25rem;
+}
+
+.shinobidex-v2-admin__save {
+  margin-top: 14px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #ff8b1f, #c85b00);
+  color: #1b1006;
+  font-weight: 950;
+  padding: 13px 18px;
+  cursor: pointer;
+}
+
+.shinobidex-v2-admin__save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .shinobidex-v2-admin {
+    padding: 16px;
+  }
+
+  .shinobidex-v2-admin__header,
+  .shinobidex-v2-admin__layout,
+  .shinobidex-v2-admin__raw-grid,
+  .shinobidex-v2-admin__form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .shinobidex-v2-admin__sidebar {
+    height: 360px;
+    position: relative;
+    top: auto;
+  }
+}
+
+/* =====================================================
+   SHINOBIDEX PUBLIC V2
+===================================================== */
+
+.shinobidex-public-v2 {
+  min-height: 100dvh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at top, rgba(255, 122, 0, 0.13), transparent 34%),
+    linear-gradient(180deg, #0d0b09, #070707);
+  color: #efe5d4;
+}
+
+.shinobidex-public-v2__hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.shinobidex-public-v2__kicker {
+  margin: 0 0 8px;
+  color: #ff7a00;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.shinobidex-public-v2__hero h1 {
+  margin: 0;
+  color: #fff3df;
+  font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.shinobidex-public-v2__hero p {
+  margin: 8px 0 0;
+  color: #b8aa99;
+}
+
+.shinobidex-public-v2__actions {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.shinobidex-public-v2__actions button,
+.shinobidex-public-v2__filters input,
+.shinobidex-public-v2__filters select {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 14px;
+  background: #11100f;
+  color: #f3e6d2;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.shinobidex-public-v2__actions button {
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.shinobidex-public-v2__message,
+.shinobidex-public-v2__loading,
+.shinobidex-public-v2__empty {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 18px;
+  background: rgba(255, 122, 0, 0.08);
+  padding: 18px;
+  color: #ffd6a6;
+}
+
+.shinobidex-public-v2__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.shinobidex-public-v2__stats div,
+.shinobidex-public-v2__card,
+.shinobidex-public-v2__list {
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #17120e, #0f0e0d);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+}
+
+.shinobidex-public-v2__stats div {
+  padding: 14px;
+}
+
+.shinobidex-public-v2__stats span {
+  display: block;
+  color: #a99c8f;
+  font-size: 0.78rem;
+}
+
+.shinobidex-public-v2__stats strong {
+  display: block;
+  margin-top: 4px;
+  color: #ffad55;
+  font-size: 1.7rem;
+}
+
+.shinobidex-public-v2__filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px 230px;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.shinobidex-public-v2__layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.shinobidex-public-v2__list {
+  height: calc(100dvh - 260px);
+  min-height: 420px;
+  overflow: auto;
+  padding: 12px;
+  position: sticky;
+  top: 16px;
+}
+
+.shinobidex-public-v2__count {
+  margin: 0 0 10px;
+  color: #b8aa99;
+  font-size: 0.86rem;
+}
+
+.shinobidex-public-v2__item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  background: #141312;
+  color: #efe5d4;
+  padding: 11px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.shinobidex-public-v2__item.active {
+  border-color: rgba(255, 122, 0, 0.58);
+  background: rgba(255, 122, 0, 0.1);
+}
+
+.shinobidex-public-v2__item strong,
+.shinobidex-public-v2__item span {
+  display: block;
+}
+
+.shinobidex-public-v2__item span {
+  margin-top: 4px;
+  color: #a99c8f;
+  font-size: 0.78rem;
+}
+
+.shinobidex-public-v2__detail {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.shinobidex-public-v2__card {
+  padding: 18px;
+}
+
+.shinobidex-public-v2__title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.shinobidex-public-v2__title-row h2 {
+  margin: 0;
+  color: #fff3df;
+  font-size: clamp(1.5rem, 3vw, 2.8rem);
+}
+
+.shinobidex-public-v2__description {
+  color: #c7b9a6;
+  line-height: 1.7;
+}
+
+.shinobidex-public-v2__card a {
+  color: #ff9d37;
+  font-weight: 800;
+}
+
+.shinobidex-public-v2__rank {
+  min-width: 110px;
+  border: 1px solid rgba(255, 122, 0, 0.35);
+  border-radius: 18px;
+  background: rgba(255, 122, 0, 0.08);
+  padding: 12px;
+  text-align: center;
+}
+
+.shinobidex-public-v2__rank span,
+.shinobidex-public-v2__rank em {
+  display: block;
+  color: #b8aa99;
+  font-style: normal;
+}
+
+.shinobidex-public-v2__rank strong {
+  display: block;
+  color: #ffad55;
+  font-size: 2rem;
+}
+
+.shinobidex-public-v2__anced-grid,
+.shinobidex-public-v2__raw-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.shinobidex-public-v2__anced-grid div,
+.shinobidex-public-v2__raw-grid span {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  background: #11100f;
+  padding: 11px;
+}
+
+.shinobidex-public-v2__anced-grid span {
+  display: block;
+  color: #9d9082;
+  font-size: 0.78rem;
+}
+
+.shinobidex-public-v2__anced-grid strong,
+.shinobidex-public-v2__raw-grid strong {
+  color: #f0ddbf;
+}
+
+.shinobidex-public-v2__status {
+  margin-top: 12px;
+  color: #a99c8f;
+}
+
+.shinobidex-public-v2__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shinobidex-public-v2__chips span {
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 122, 0, 0.08);
+  padding: 6px 10px;
+  color: #f0dec4;
+  font-size: 0.84rem;
+}
+
+.shinobidex-public-v2__chips.muted span {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #b9ad9d;
+}
+
+.shinobidex-public-v2 details summary {
+  cursor: pointer;
+  color: #ffad55;
+  font-weight: 900;
+}
+
+@media (max-width: 950px) {
+  .shinobidex-public-v2 {
+    padding: 16px;
+  }
+
+  .shinobidex-public-v2__hero,
+  .shinobidex-public-v2__layout,
+  .shinobidex-public-v2__title-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .shinobidex-public-v2__stats,
+  .shinobidex-public-v2__filters,
+  .shinobidex-public-v2__anced-grid,
+  .shinobidex-public-v2__raw-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobidex-public-v2__list {
+    height: 360px;
+    min-height: 0;
+    position: relative;
+    top: auto;
+  }
+}
+
+/* =====================================================
+   SHINOBIDEX PUBLIC V2 — FIXES: SCROLL, MOBILE MODAL, REPORT
+===================================================== */
+
+.shinobidex-public-v2__detail {
+  max-height: calc(100dvh - 260px);
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 122, 0, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+.shinobidex-public-v2__detail::-webkit-scrollbar,
+.shinobidex-public-v2__card.main-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.shinobidex-public-v2__detail::-webkit-scrollbar-thumb,
+.shinobidex-public-v2__card.main-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 122, 0, 0.55);
+  border-radius: 999px;
+}
+
+.shinobidex-public-v2__card.main-card {
+  max-height: min(560px, calc(100dvh - 300px));
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 122, 0, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+.shinobidex-public-v2__mobile-close {
+  display: none;
+}
+
+.shinobidex-public-v2__report-button {
+  margin-top: 14px;
+  border: 1px solid rgba(255, 122, 0, 0.38);
+  border-radius: 14px;
+  background: rgba(255, 122, 0, 0.11);
+  color: #ffbf7b;
+  font-weight: 900;
+  padding: 10px 13px;
+  cursor: pointer;
+}
+
+.shinobidex-public-v2__report-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.shinobidex-public-v2__report-modal {
+  width: min(620px, 100%);
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
+  border: 1px solid rgba(255, 122, 0, 0.34);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #1a130e, #0d0c0b);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+  padding: 18px;
+  color: #efe5d4;
+}
+
+.shinobidex-public-v2__report-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.shinobidex-public-v2__report-head h2 {
+  margin: 0;
+  color: #fff3df;
+}
+
+.shinobidex-public-v2__report-head button,
+.shinobidex-public-v2__report-submit,
+.shinobidex-public-v2__report-modal select,
+.shinobidex-public-v2__report-modal textarea {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 14px;
+  background: #11100f;
+  color: #f3e6d2;
+  padding: 10px 12px;
+}
+
+.shinobidex-public-v2__report-modal label {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+  color: #ffcf98;
+  font-weight: 900;
+}
+
+.shinobidex-public-v2__report-modal textarea {
+  resize: vertical;
+}
+
+.shinobidex-public-v2__report-submit {
+  width: 100%;
+  background: linear-gradient(180deg, #ff8b1f, #c85b00);
+  color: #1b1006;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.shinobidex-public-v2__report-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.shinobidex-public-v2__report-message {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 14px;
+  background: rgba(255, 122, 0, 0.08);
+  color: #ffd6a6;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 950px) {
+  .shinobidex-public-v2__detail {
+    display: none;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .shinobidex-public-v2__detail.is-open {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    overflow-y: auto;
+    padding: 14px;
+    background:
+      radial-gradient(circle at top, rgba(255, 122, 0, 0.16), transparent 38%),
+      #090807;
+  }
+
+  .shinobidex-public-v2__mobile-close {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border: 1px solid rgba(255, 122, 0, 0.38);
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ff8b1f, #c85b00);
+    color: #1b1006;
+    font-weight: 950;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+
+  .shinobidex-public-v2__card.main-card {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .shinobidex-public-v2__report-overlay {
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  .shinobidex-public-v2__report-modal {
+    width: 100%;
+    max-height: calc(100dvh - 20px);
+  }
+}
+
+/* =====================================================
+   SHINOBIDEX PUBLIC V2 — PAGINATION PERFORMANCE
+===================================================== */
+
+.shinobidex-public-v2__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 16px;
+}
+
+.shinobidex-public-v2__pagination button {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 14px;
+  background: #11100f;
+  color: #f3e6d2;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.shinobidex-public-v2__pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shinobidex-public-v2__pagination span {
+  color: #ffcf98;
+  font-weight: 900;
+}
+
+.shinobidex-public-v2__list {
+  contain: content;
+}
+
+.shinobidex-public-v2__item {
+  contain: content;
+}
+
+@media (max-width: 950px) {
+  .shinobidex-public-v2__pagination {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .shinobidex-public-v2__pagination button,
+  .shinobidex-public-v2__pagination span {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =====================================================
+   SHINOBIDEX PUBLIC V2 — ANCED AXIS FILTERS
+===================================================== */
+
+.shinobidex-public-v2__filters.shinobidex-public-v2__filters--anced {
+  grid-template-columns: minmax(220px, 1.4fr) repeat(7, minmax(150px, 1fr)) auto;
+  align-items: stretch;
+}
+
+.shinobidex-public-v2__clear-filters {
+  border: 1px solid rgba(255, 122, 0, 0.32);
+  border-radius: 14px;
+  background: rgba(255, 122, 0, 0.1);
+  color: #ffcf98;
+  padding: 10px 12px;
+  font-weight: 950;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.shinobidex-public-v2__clear-filters:hover {
+  background: rgba(255, 122, 0, 0.18);
+}
+
+@media (max-width: 1250px) {
+  .shinobidex-public-v2__filters.shinobidex-public-v2__filters--anced {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .shinobidex-public-v2__filters.shinobidex-public-v2__filters--anced input {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 950px) {
+  .shinobidex-public-v2__filters.shinobidex-public-v2__filters--anced {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobidex-public-v2__clear-filters {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   ANCED PAGE V2
+===================================================== */
+
+.anced-page-v2 {
+  min-height: 100dvh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at top, rgba(255, 122, 0, 0.13), transparent 34%),
+    linear-gradient(180deg, #0d0b09, #070707);
+  color: #efe5d4;
+}
+
+.anced-page-v2__hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.anced-page-v2__kicker {
+  margin: 0 0 8px;
+  color: #ff7a00;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.anced-page-v2__hero h1 {
+  margin: 0;
+  color: #fff3df;
+  font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.anced-page-v2__hero p {
+  margin: 8px 0 0;
+  color: #b8aa99;
+}
+
+.anced-page-v2__hero button,
+.anced-page-v2__submit {
+  border: 1px solid rgba(255, 122, 0, 0.3);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ff8b1f, #c85b00);
+  color: #1b1006;
+  font-weight: 950;
+  padding: 11px 14px;
+  cursor: pointer;
+}
+
+.anced-page-v2__message {
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 16px;
+  background: rgba(255, 122, 0, 0.08);
+  color: #ffd6a6;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.anced-page-v2__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 18px;
+}
+
+.anced-page-v2__card,
+.anced-page-v2__result {
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #17120e, #0f0e0d);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  padding: 18px;
+}
+
+.anced-page-v2__card h2 {
+  margin-top: 0;
+  color: #fff3df;
+}
+
+.anced-page-v2__card label {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+  color: #ffcf98;
+  font-weight: 900;
+}
+
+.anced-page-v2__card input,
+.anced-page-v2__card select,
+.anced-page-v2__card textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 14px;
+  background: #11100f;
+  color: #f3e6d2;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.anced-page-v2__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.anced-page-v2__checks {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.anced-page-v2__checks label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+}
+
+.anced-page-v2__checks input {
+  width: auto;
+}
+
+.anced-page-v2__submit {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.anced-page-v2__result {
+  position: sticky;
+  top: 16px;
+  height: fit-content;
+  text-align: center;
+}
+
+.anced-page-v2__result strong {
+  display: block;
+  color: #ffad55;
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.anced-page-v2__result span {
+  display: block;
+  margin-top: 6px;
+  color: #fff3df;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.anced-page-v2__sum {
+  margin: 18px 0;
+  text-align: left;
+  border: 1px solid rgba(255, 122, 0, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 122, 0, 0.06);
+  padding: 12px;
+}
+
+.anced-page-v2__sum p {
+  margin: 5px 0;
+  color: #d7c7b4;
+}
+
+.anced-page-v2__result small {
+  color: #a99c8f;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .anced-page-v2 {
+    padding: 16px;
+  }
+
+  .anced-page-v2__hero,
+  .anced-page-v2__layout,
+  .anced-page-v2__grid {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .anced-page-v2__result {
+    position: relative;
+    top: auto;
+    order: -1;
+  }
+}
+
+/* =====================================================
+   ANCED PAGE V2 — SCROLL FIX
+===================================================== */
+
+.anced-page-v2 {
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 122, 0, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+.anced-page-v2::-webkit-scrollbar,
+.anced-page-v2__card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.anced-page-v2::-webkit-scrollbar-thumb,
+.anced-page-v2__card::-webkit-scrollbar-thumb {
+  background: rgba(255, 122, 0, 0.55);
+  border-radius: 999px;
+}
+
+.anced-page-v2__layout {
+  min-height: 0;
+}
+
+.anced-page-v2__card {
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  padding-right: 20px;
+}
+
+.anced-page-v2__result {
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .anced-page-v2 {
+    height: 100dvh;
+    overflow-y: auto;
+    padding-bottom: 90px;
+  }
+
+  .anced-page-v2__card,
+  .anced-page-v2__result {
+    max-height: none;
+    overflow: visible;
+    padding-right: 18px;
+  }
+}
+
+/* =====================================================
+   MAPA — controles recolhíveis e HUD de terreno
+===================================================== */
+
+.app-map .map-controls-card.is-hidden {
+  display: none !important;
+}
+
+.app-map .ln-map-panel-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 122, 0, 0.52);
+  border-radius: 999px;
+  background: rgba(18, 12, 7, 0.9);
+  color: #ffb45c;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.app-map .ln-map-panel-close:hover {
+  background: rgba(255, 122, 0, 0.92);
+  color: #160c04;
+}
+
+.app-map .map-controls-card,
+.app-map .ln-terrain-hud {
+  position: relative;
+}
+
+.app-map .ln-map-floating-toggle {
+  position: absolute;
+  z-index: 1300;
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: rgba(16, 13, 10, 0.9);
+  color: #ffb45c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+.app-map .ln-map-floating-toggle:hover {
+  background: rgba(255, 122, 0, 0.92);
+  color: #160c04;
+}
+
+.app-map .ln-map-floating-menu-toggle {
+  left: 18px;
+  bottom: 18px;
+}
+
+.app-map .ln-map-floating-terrain-toggle {
+  left: 18px;
+  top: 18px;
+}
+
+@media (max-width: 760px) {
+  .app-map .ln-map-floating-menu-toggle {
+    left: 12px;
+    bottom: 82px;
+  }
+
+  .app-map .ln-map-floating-terrain-toggle {
+    left: 12px;
+    top: 72px;
+  }
+}
+
+/* =====================================================
+   MAPA NORMAL — cartografia de terreno oculta
+   Os polígonos continuam no localStorage e no cálculo,
+   mas não aparecem visualmente no mapa do player.
+===================================================== */
+
+.app-map .ln-terrain-hud,
+.app-map .ln-map-floating-terrain-toggle {
+  display: none !important;
+}
+
+/* =====================================================
+   MAPA NORMAL — cartografia de terreno oculta
+   Os polígonos continuam no localStorage e no cálculo,
+   mas não aparecem visualmente no mapa do player.
+===================================================== */
+
+.app-map .ln-terrain-hud,
+.app-map .ln-map-floating-terrain-toggle {
+  display: none !important;
+}
+
+/* =====================================================
+   MAPA — viagem até ping
+===================================================== */
+
+.app-map .map-ping-travel-button {
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 122, 0, 0.92);
+  color: #140b04;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.app-map .map-ping-travel-button:hover {
+  filter: brightness(1.08);
+}
+
+/* =====================================================
+   MAPA — viagem até ping
+===================================================== */
+
+.app-map .map-ping-travel-button {
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 122, 0, 0.92);
+  color: #140b04;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.app-map .map-ping-travel-button:hover {
+  filter: brightness(1.08);
+}
+
+/* =====================================================
+   MAPA — perseguição de presenças desconhecidas
+===================================================== */
+
+.app-map .unknown-presence-popup {
+  min-width: 180px;
+  color: #1a120b;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.app-map .unknown-presence-pursuit-button {
+  width: 100%;
+  margin-top: 10px;
+  border: 1px solid rgba(255, 122, 0, 0.7);
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: #ff7a00;
+  color: #160c04;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.app-map .unknown-presence-pursuit-button:hover {
+  filter: brightness(1.08);
+}
+
+/* =====================================================
+   MAPA — painel de perseguição
+===================================================== */
+
+.app-map .map-presence-actions {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.app-map .map-presence-actions button,
+.app-map .map-pursuit-start-button {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: rgba(255, 122, 0, 0.92);
+  color: #150c04;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.app-map .map-pursuit-side-panel {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 1350;
+  width: min(340px, calc(100% - 36px));
+  padding: 16px;
+  border: 1px solid rgba(255, 122, 0, 0.5);
+  border-radius: 18px;
+  background: rgba(14, 12, 10, 0.94);
+  color: #f5eadc;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(10px);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.app-map .map-pursuit-side-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 122, 0, 0.5);
+  border-radius: 999px;
+  background: rgba(18, 12, 7, 0.9);
+  color: #ffb45c;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.app-map .map-pursuit-note {
+  color: #d6c4aa;
+  font-size: 12px;
+}
+
+/* =====================================================
+   MAPA — perseguição direta
+===================================================== */
+
+.app-map .map-presence-actions button {
+  width: 100%;
+  border: 1px solid rgba(255, 122, 0, 0.58);
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: rgba(255, 122, 0, 0.92);
+  color: #150c04;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.app-map .map-presence-actions button:hover {
+  filter: brightness(1.08);
+}

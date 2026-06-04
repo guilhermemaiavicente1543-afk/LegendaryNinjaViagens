@@ -1,537 +1,628 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
-import { useLanguage } from "../../i18n/LanguageContext";
-import LnSelect from "../ui/LnSelect";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
+const PAGE_SIZE = 40;
 
-const getCuratedAncedRank = (technique) =>
-  technique?.anced_curated_rank || technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
+const RANK_ORDER = {
+  SS: 7,
+  S: 6,
+  A: 5,
+  B: 4,
+  C: 3,
+  D: 2,
+  E: 1,
+};
 
-const getCuratedAncedDetails = (technique) =>
-  technique?.anced_curated_details || technique?.anced_details || "";
-
-const getCuratedAncedTotal = (technique) =>
-  technique?.anced_curated_total ?? technique?.anced_total ?? null;
-
-const getCuratedAncedStatus = (technique) =>
-  technique?.anced_curated_status || "";
-
-const getCuratedAncedNeedsReview = (technique) =>
-  Boolean(
-    technique?.anced_needs_review ||
-      technique?.anced_curated_rank === "REVISAR" ||
-      String(technique?.anced_curated_status || "").includes("revisar")
-  );
-
-const RANKS = ["Todos", "E", "D", "C", "B", "A", "S", "SS"];
-const STATUS = ["Todos", "draft", "approved", "needs_review"];
-const PAGE_SIZE = 80;
-
-const LANGUAGES = [
-  { code: "pt", label: "PT-BR" },
-  { code: "en", label: "EN" },
-  { code: "es", label: "ES" },
-  { code: "fr", label: "FR" }
+const RANGE_FILTERS = [
+  { label: "Sem alcance", points: 0 },
+  { label: "Corpo a corpo", points: 8 },
+  { label: "Curto (1-10m)", points: 20 },
+  { label: "Médio (10-30m)", points: 26 },
+  { label: "Longo (30-100m)", points: 38 },
+  { label: "Todos os alcances", points: 44 },
 ];
 
-function getTechniqueName(technique, language) {
-  if (!technique) return "";
+const USERS_FILTERS = [
+  { label: "0 usuários válidos", points: 0 },
+  { label: "1 usuário", points: 42 },
+  { label: "2 usuários", points: 34 },
+  { label: "4/3 usuários", points: 24 },
+  { label: "5 usuários", points: 12 },
+  { label: "6+ usuários", points: 4 },
+];
 
-  if (language === "en") return technique.name_en || technique.name_pt || technique.name;
-  if (language === "es") return technique.name_es || technique.name_pt || technique.name;
-  if (language === "fr") return technique.name_fr || technique.name_pt || technique.name;
+const CLASS_FILTERS = [
+  { label: "Defensivo", points: 10 },
+  { label: "Ofensivo", points: 18 },
+  { label: "Suporte", points: 30 },
+  { label: "Selamento", points: 32 },
+  { label: "Preparação", points: 46 },
+];
 
-  return technique.name_pt || technique.name;
+const STRUCTURE_FILTERS = [
+  { label: "Taijutsu/Bukijutsu", points: 6 },
+  { label: "Hiden/Yang", points: 14 },
+  { label: "Elemental/Yin", points: 24 },
+  { label: "Não elemental/Kekkei Genkai", points: 40 },
+  { label: "Kinjutsu/Kekkei Tōta/Exclusivo", points: 48 },
+];
+
+const DAMAGE_FILTERS = [
+  { label: "Não causa/Incapacitação", points: 2 },
+  { label: "Ferimentos leves", points: 16 },
+  { label: "Ferimentos moderados", points: 22 },
+  { label: "Ferimentos graves/mortais", points: 34 },
+  { label: "Dizimação/Obliteração", points: 50 },
+];
+
+function getRankClass(rank) {
+  return `shinobidex-public-v2__rank rank-${String(rank || "none").toLowerCase()}`;
 }
 
+function formatPoints(label, points) {
+  if (!label && points === null) return "—";
+  if (!label && points === undefined) return "—";
+  return `${label || "—"} ${points !== null && points !== undefined ? `[+${points}]` : ""}`;
+}
 
-function getTechniqueSourceUrl(technique, language) {
-  if (!technique) return "";
+function safeArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
-  if (language === "en") return technique.source_url_en || technique.source_url_pt || technique.source_url || "";
-  if (language === "es") return technique.source_url_es || technique.source_url_pt || technique.source_url || "";
-  if (language === "fr") return technique.source_url_fr || technique.source_url_pt || technique.source_url || "";
+function formatUser(user) {
+  if (!user) return "—";
+  if (typeof user === "string") return user;
+  return user.label ? `${user.name || user.raw} (${user.label})` : user.name || user.raw || "—";
+}
 
-  return technique.source_url_pt || technique.source_url || "";
+async function fetchRankTechniqueIds({
+  rankFilter,
+  statusFilter,
+  rangeFilter,
+  usersFilter,
+  classFilter,
+  structureFilter,
+  damageFilter,
+}) {
+  if (
+    !rankFilter &&
+    !statusFilter &&
+    !rangeFilter &&
+    !usersFilter &&
+    !classFilter &&
+    !structureFilter &&
+    !damageFilter
+  ) {
+    return null;
+  }
+
+  let query = supabase
+    .from("anced_curated_ranks")
+    .select("technique_id")
+    .not("technique_id", "is", null)
+    .limit(5000);
+
+  if (rankFilter) {
+    query = query.eq("rank", rankFilter);
+  }
+
+  if (statusFilter) {
+    query = query.eq("status", statusFilter);
+  }
+
+  if (rangeFilter !== "") {
+    query = query.eq("range_points", Number(rangeFilter));
+  }
+
+  if (usersFilter !== "") {
+    query = query.eq("users_points", Number(usersFilter));
+  }
+
+  if (classFilter !== "") {
+    query = query.eq("class_points", Number(classFilter));
+  }
+
+  if (structureFilter !== "") {
+    query = query.eq("structure_points", Number(structureFilter));
+  }
+
+  if (damageFilter !== "") {
+    query = query.eq("damage_points", Number(damageFilter));
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+
+  return [...new Set((data || []).map((row) => row.technique_id).filter(Boolean))];
+}
+
+function getRankSortValue(rank) {
+  return RANK_ORDER[rank] || 0;
 }
 
 export default function ShinobiDexPage({ onBack }) {
-  const { language, t } = useLanguage();
-  const [techniques, setTechniques] = useState([]);
-  const [search, setSearch] = useState("");
-  const [rank, setRank] = useState("Todos");
-  const [status, setStatus] = useState("Todos");
-  const [classification, setClassification] = useState("Todas");
-  const [nature, setNature] = useState("Todas");
-  const [page, setPage] = useState(1);
-  const [resultTotal, setResultTotal] = useState(0);
-  const [filterOptions, setFilterOptions] = useState({
-    classifications: [],
-    natures: []
-  });
+  const [items, setItems] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const [selectedId, setSelectedId] = useState("");
   const [selected, setSelected] = useState(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const [reportText, setReportText] = useState("");
-  const [reportMessage, setReportMessage] = useState("");
-  const [isReportSubmitting, setIsReportSubmitting] = useState(false);
-  const pointerStartRef = useRef(null);
-  const touchStartRef = useRef(null);
-  const didScrollGestureRef = useRef(false);
-  const suppressClickUntilRef = useRef(0);
-  const listScrollTimerRef = useRef(null);
+  const [selectedRank, setSelectedRank] = useState(null);
+  const [selectedRaw, setSelectedRaw] = useState(null);
+
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [rankFilter, setRankFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [rangeFilter, setRangeFilter] = useState("");
+  const [usersFilter, setUsersFilter] = useState("");
+  const [classFilter, setClassFilter] = useState("");
+  const [structureFilter, setStructureFilter] = useState("");
+  const [damageFilter, setDamageFilter] = useState("");
+  const [page, setPage] = useState(1);
+
+  const [loadingList, setLoadingList] = useState(true);
+  const [loadingDetail, setLoadingDetail] = useState(false);
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
+
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportType, setReportType] = useState("anced");
+  const [reportText, setReportText] = useState("");
+  const [reportSending, setReportSending] = useState(false);
+  const [reportMessage, setReportMessage] = useState("");
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   useEffect(() => {
-    loadFilterOptions();
-  }, []);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      loadTechniques();
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim());
     }, 250);
 
-    return () => window.clearTimeout(timeout);
-  }, [search, rank, status, classification, nature, page]);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
-    setIsDetailOpen(false);
-  }, [search, rank, status, classification, nature, page]);
+    setPage(1);
+  }, [
+    debouncedSearch,
+    rankFilter,
+    statusFilter,
+    rangeFilter,
+    usersFilter,
+    classFilter,
+    structureFilter,
+    damageFilter,
+  ]);
 
   useEffect(() => {
-    if (!isDetailOpen) return;
+    let isMounted = true;
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    async function loadList() {
+      setLoadingList(true);
+      setMessage("");
+
+      try {
+        const filterIds = await fetchRankTechniqueIds({
+          rankFilter,
+          statusFilter,
+          rangeFilter,
+          usersFilter,
+          classFilter,
+          structureFilter,
+          damageFilter,
+        });
+
+        if (Array.isArray(filterIds) && filterIds.length === 0) {
+          if (!isMounted) return;
+          setItems([]);
+          setTotalCount(0);
+          setSelectedId("");
+          setSelected(null);
+          setSelectedRank(null);
+          setSelectedRaw(null);
+          setLoadingList(false);
+          return;
+        }
+
+        const from = (page - 1) * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+
+        let query = supabase
+          .from("shinobidex_techniques")
+          .select("id,name,slug,summary,status,updated_at", { count: "exact" })
+          .order("name", { ascending: true })
+          .range(from, to);
+
+        if (debouncedSearch) {
+          query = query.ilike("name", `%${debouncedSearch}%`);
+        }
+
+        if (Array.isArray(filterIds)) {
+          query = query.in("id", filterIds);
+        }
+
+        const { data: techniqueRows, error, count } = await query;
+
+        if (error) throw error;
+
+        const techniqueIds = (techniqueRows || []).map((row) => row.id);
+
+        let rankRows = [];
+
+        if (techniqueIds.length > 0) {
+          const { data: ranksData, error: ranksError } = await supabase
+            .from("anced_curated_ranks")
+            .select("id,technique_id,total,rank,status,users_label,users_points,updated_at")
+            .in("technique_id", techniqueIds);
+
+          if (ranksError) throw ranksError;
+
+          rankRows = ranksData || [];
+        }
+
+        const rankByTechniqueId = new Map(
+          rankRows.map((rank) => [rank.technique_id, rank])
+        );
+
+        const merged = (techniqueRows || [])
+          .map((technique) => ({
+            ...technique,
+            anced: rankByTechniqueId.get(technique.id) || null,
+          }))
+          .sort((a, b) => {
+            if (rankFilter) return a.name.localeCompare(b.name, "pt-BR");
+
+            const rankDiff =
+              getRankSortValue(b.anced?.rank) - getRankSortValue(a.anced?.rank);
+
+            if (rankDiff !== 0) return rankDiff;
+
+            return a.name.localeCompare(b.name, "pt-BR");
+          });
+
+        if (!isMounted) return;
+
+        setItems(merged);
+        setTotalCount(count || 0);
+
+        if (merged.length > 0) {
+          const selectedStillVisible = merged.some((item) => item.id === selectedId);
+
+          if (!selectedId || !selectedStillVisible) {
+            setSelectedId(merged[0].id);
+          }
+        } else {
+          setSelectedId("");
+          setSelected(null);
+          setSelectedRank(null);
+          setSelectedRaw(null);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setMessage(`Erro ao carregar ShinobiDex: ${error.message}`);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingList(false);
+        }
+      }
+    }
+
+    loadList();
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      isMounted = false;
     };
-  }, [isDetailOpen]);
+  }, [
+    page,
+    debouncedSearch,
+    rankFilter,
+    statusFilter,
+    rangeFilter,
+    usersFilter,
+    classFilter,
+    structureFilter,
+    damageFilter,
+  ]);
 
   useEffect(() => {
+    if (!selectedId) return;
+
+    let isMounted = true;
+
+    async function loadDetail() {
+      setLoadingDetail(true);
+      setMessage("");
+
+      try {
+        const { data: technique, error: techniqueError } = await supabase
+          .from("shinobidex_techniques")
+          .select("*")
+          .eq("id", selectedId)
+          .single();
+
+        if (techniqueError) throw techniqueError;
+
+        const { data: rankRows, error: rankError } = await supabase
+          .from("anced_curated_ranks")
+          .select("*")
+          .eq("technique_id", selectedId)
+          .limit(1);
+
+        if (rankError) throw rankError;
+
+        const { data: rawRows, error: rawError } = await supabase
+          .from("shinobidex_raw_sources")
+          .select("*")
+          .eq("technique_id", selectedId)
+          .limit(1);
+
+        if (rawError) throw rawError;
+
+        if (!isMounted) return;
+
+        setSelected(technique);
+        setSelectedRank(rankRows?.[0] || null);
+        setSelectedRaw(rawRows?.[0] || null);
+      } catch (error) {
+        if (isMounted) {
+          setMessage(`Erro ao abrir técnica: ${error.message}`);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingDetail(false);
+        }
+      }
+    }
+
+    loadDetail();
+
     return () => {
-      if (listScrollTimerRef.current) {
-        window.clearTimeout(listScrollTimerRef.current);
-      }
+      isMounted = false;
     };
-  }, []);
+  }, [selectedId]);
 
+  const stats = useMemo(() => {
+    const withRankOnPage = items.filter((item) => item.anced?.rank).length;
 
-  async function loadFilterOptions() {
-    if (!isSupabaseConfigured || !supabase) return;
-
-    const pageSize = 1000;
-    let from = 0;
-    const classificationsSet = new Set();
-    const naturesSet = new Set();
-
-    while (true) {
-      const to = from + pageSize - 1;
-
-      const { data, error } = await supabase
-        .from("technique_catalog")
-        .select("classification,nature")
-        .order("name", { ascending: true })
-        .range(from, to);
-
-      if (error) return;
-
-      const rows = data || [];
-
-      for (const item of rows) {
-        if (item.classification) classificationsSet.add(item.classification);
-        if (item.nature) naturesSet.add(item.nature);
-      }
-
-      if (rows.length < pageSize) break;
-      from += pageSize;
-    }
-
-    setFilterOptions({
-      classifications: Array.from(classificationsSet).sort(),
-      natures: Array.from(naturesSet).sort()
-    });
-  }
-
-  async function loadTechniques() {
-    if (!isSupabaseConfigured || !supabase) {
-      setMessage("Supabase não está configurado.");
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setMessage("");
-
-    const safePage = Math.max(1, Number(page || 1));
-    const from = (safePage - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-
-    let query = supabase
-      .from("technique_catalog")
-      .select("*", { count: "exact" })
-      .order("name", { ascending: true })
-      .range(from, to);
-
-    const q = search.trim();
-
-    if (q) {
-      const safe = q.replace(/[%_]/g, "");
-      query = query.or(
-        `name.ilike.%${safe}%,name_pt.ilike.%${safe}%,name_en.ilike.%${safe}%,name_es.ilike.%${safe}%,name_fr.ilike.%${safe}%,original_name.ilike.%${safe}%,english_name.ilike.%${safe}%,summary.ilike.%${safe}%,nature.ilike.%${safe}%,classification.ilike.%${safe}%,users_text.ilike.%${safe}%,yurik_summary.ilike.%${safe}%,yurik_raw_classification.ilike.%${safe}%,yurik_raw_nature.ilike.%${safe}%,yurik_raw_users_text.ilike.%${safe}%,yurik_doujutsu.ilike.%${safe}%`
-      );
-    }
-
-    if (rank !== "Todos") {
-      query = query.or(`anced_curated_rank.eq.${rank},anced_rank.eq.${rank},wiki_rank.eq.${rank}`);
-    }
-
-    if (status !== "Todos") {
-      query = query.eq("status", status);
-    }
-
-    if (classification !== "Todas") {
-      query = query.eq("classification", classification);
-    }
-
-    if (nature !== "Todas") {
-      query = query.eq("nature", nature);
-    }
-
-    const { data, error, count } = await query;
-
-    setIsLoading(false);
-
-    if (error) {
-      setMessage(`Erro ao carregar ShinobiDex: ${error.message}`);
-      return;
-    }
-
-    const nextData = data || [];
-
-    setTechniques(nextData);
-    setResultTotal(count ?? nextData.length);
-
-    if (nextData.length) {
-      const selectedStillVisible = selected?.id
-        ? nextData.some((item) => item.id === selected.id)
-        : false;
-
-      if (!selectedStillVisible) {
-        setSelected(nextData[0]);
-      }
-    } else {
-      setSelected(null);
-    }
-  }
-
-  const classifications = useMemo(() => {
-    return ["Todas", ...filterOptions.classifications];
-  }, [filterOptions.classifications]);
-
-  const natures = useMemo(() => {
-    return ["Todas", ...filterOptions.natures];
-  }, [filterOptions.natures]);
-
-  const filtered = techniques;
-
-  function cleanYurikText(value) {
-    return typeof value === "string" ? value.trim() : "";
-  }
-
-  function getYurikSummary(technique) {
-    return cleanYurikText(technique?.yurik_summary) || cleanYurikText(technique?.summary);
-  }
-
-  function getYurikClassification(technique) {
-    return cleanYurikText(technique?.yurik_raw_classification) || cleanYurikText(technique?.classification);
-  }
-
-  function getYurikNature(technique) {
-    return cleanYurikText(technique?.yurik_raw_nature) || cleanYurikText(technique?.nature);
-  }
-
-  function getYurikDoujutsu(technique) {
-    return cleanYurikText(technique?.yurik_doujutsu);
-  }
-
-  function getYurikReviewTags(technique) {
-    return Array.isArray(technique?.yurik_review_tags) ? technique.yurik_review_tags : [];
-  }
-
-  function renderYurikBadges(technique) {
-    const badges = [];
-
-    const doujutsu = getYurikDoujutsu(technique);
-    if (doujutsu) badges.push(`Dōjutsu: ${doujutsu}`);
-    if (technique?.yurik_is_game_only) badges.push("Game Only");
-    if (technique?.yurik_is_konbijutsu) badges.push("Konbijutsu");
-
-    for (const tag of getYurikReviewTags(technique)) {
-      if (!tag || ["game_only", "konbijutsu", "doujutsu_detectado"].includes(tag)) continue;
-      badges.push(String(tag).replaceAll("_", " "));
-    }
-
-    if (!badges.length) return null;
-
-    return (
-      <div className="shinobidex-yurik-badges">
-        {badges.map((badge) => (
-          <span key={badge}>{badge}</span>
-        ))}
-      </div>
-    );
-  }
-
-
-  function blockTechniqueTap(duration = 420) {
-    didScrollGestureRef.current = true;
-    suppressClickUntilRef.current = Date.now() + duration;
-  }
-
-  function isTechniqueTapBlocked() {
-    return didScrollGestureRef.current || Date.now() < suppressClickUntilRef.current;
-  }
-
-  function handleTechniquePointerDown(event) {
-    pointerStartRef.current = {
-      x: event.clientX,
-      y: event.clientY
+    return {
+      total: totalCount,
+      pageCount: items.length,
+      withRankOnPage,
+      page,
+      totalPages,
     };
-    didScrollGestureRef.current = false;
-  }
+  }, [items, totalCount, page, totalPages]);
 
-  function handleTechniquePointerMove(event) {
-    if (!pointerStartRef.current) return;
+  const selectedWithData = useMemo(() => {
+    if (!selected) return null;
 
-    const deltaX = Math.abs(event.clientX - pointerStartRef.current.x);
-    const deltaY = Math.abs(event.clientY - pointerStartRef.current.y);
-
-    if (deltaX > 6 || deltaY > 6) {
-      blockTechniqueTap();
-    }
-  }
-
-  function handleTechniquePointerCancel() {
-    blockTechniqueTap();
-    pointerStartRef.current = null;
-  }
-
-  function handleTechniqueTouchStart(event) {
-    const touch = event.touches?.[0];
-    if (!touch) return;
-
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY
+    return {
+      ...selected,
+      anced: selectedRank,
+      raw: selectedRaw,
     };
-    didScrollGestureRef.current = false;
+  }, [selected, selectedRank, selectedRaw]);
+
+  const validUsers = safeArray(selectedWithData?.anced?.valid_users);
+  const rawUsers = safeArray(selectedWithData?.raw?.raw_users_labeled);
+
+  function selectTechnique(id) {
+    setSelectedId(id);
+    setIsMobileDetailOpen(true);
   }
 
-  function handleTechniqueTouchMove(event) {
-    const touch = event.touches?.[0];
-
-    if (!touch || !touchStartRef.current) {
-      blockTechniqueTap();
-      return;
-    }
-
-    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
-    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
-
-    if (deltaX > 6 || deltaY > 6) {
-      blockTechniqueTap();
-    }
-  }
-
-  function handleTechniqueTouchEnd() {
-    touchStartRef.current = null;
-  }
-
-  function handleTechniqueListScroll() {
-    blockTechniqueTap(520);
-
-    if (listScrollTimerRef.current) {
-      window.clearTimeout(listScrollTimerRef.current);
-    }
-
-    listScrollTimerRef.current = window.setTimeout(() => {
-      didScrollGestureRef.current = false;
-    }, 520);
-  }
-
-  function handleTechniqueSelect(event, technique) {
-    if (isTechniqueTapBlocked()) {
-      event.preventDefault();
-      event.stopPropagation();
-      pointerStartRef.current = null;
-      touchStartRef.current = null;
-      return;
-    }
-
-    pointerStartRef.current = null;
-    touchStartRef.current = null;
-    setSelected(technique);
-    setIsReportOpen(false);
-    setReportText("");
-    setReportMessage("");
-    setIsDetailOpen(true);
-  }
-
-  function handleTechniqueKeyDown(event, technique) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-
-    event.preventDefault();
-    setSelected(technique);
-    setIsReportOpen(false);
-    setReportText("");
-    setReportMessage("");
-    setIsDetailOpen(true);
+  function clearAncedFilters() {
+    setSearch("");
+    setDebouncedSearch("");
+    setRankFilter("");
+    setStatusFilter("");
+    setRangeFilter("");
+    setUsersFilter("");
+    setClassFilter("");
+    setStructureFilter("");
+    setDamageFilter("");
+    setPage(1);
   }
 
   async function submitAncedReport() {
-    if (!selected || !supabase) return;
+    if (!selectedWithData?.id) return;
 
-    const cleanText = reportText.trim();
+    const text = reportText.trim();
 
-    if (cleanText.length < 10) {
-      setReportMessage("Explique o erro com pelo menos 10 caracteres.");
+    if (!text) {
+      setReportMessage("Descreva o erro antes de enviar.");
       return;
     }
 
-    setIsReportSubmitting(true);
+    setReportSending(true);
     setReportMessage("");
 
-    const { error } = await supabase.from("anced_error_reports").insert({
-      technique_id: String(selected.id || ""),
-      technique_name: getTechniqueName(selected, language) || selected.name || "Técnica sem nome",
-      anced_rank: getCuratedAncedRank(selected),
-      anced_total: Number(selected.anced_total || 0),
-      anced_details: getCuratedAncedDetails(selected),
-      report_text: cleanText,
-      status: "open"
-    });
+    const payload = {
+      technique_id: selectedWithData.id,
+      technique_name: selectedWithData.name,
+      report_type: reportType || "anced",
+      message: text,
+      status: "open",
+      page_context: {
+        anced: selectedWithData.anced || null,
+        raw: selectedWithData.raw
+          ? {
+              raw_classification: selectedWithData.raw.raw_classification,
+              raw_nature: selectedWithData.raw.raw_nature,
+              raw_type: selectedWithData.raw.raw_type,
+              raw_range: selectedWithData.raw.raw_range,
+              raw_rank: selectedWithData.raw.raw_rank,
+            }
+          : null,
+      },
+      updated_at: new Date().toISOString(),
+    };
 
-    setIsReportSubmitting(false);
+    const { error } = await supabase
+      .from("anced_error_reports")
+      .insert(payload);
 
     if (error) {
-      setReportMessage(`Erro ao enviar denúncia: ${error.message}`);
+      setReportMessage(`Erro ao enviar report: ${error.message}`);
+      setReportSending(false);
       return;
     }
 
+    setReportMessage("Report enviado. A administração poderá revisar esse ANCED.");
     setReportText("");
-    setReportMessage("Denúncia enviada para a equipe ADM da ShinobiDex.");
-    setIsReportOpen(false);
+
+    setTimeout(() => {
+      setReportOpen(false);
+      setReportMessage("");
+    }, 900);
+
+    setReportSending(false);
   }
 
-  const totalPages = Math.max(1, Math.ceil(resultTotal / PAGE_SIZE));
-  const firstResult = resultTotal === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
-  const lastResult = Math.min(page * PAGE_SIZE, resultTotal);
-  const canGoPrevious = page > 1;
-  const canGoNext = page < totalPages;
-
   return (
-    <section className="shinobidex-page">
-      <header className="shinobidex-hero">
+    <main className="shinobidex-public-v2">
+      <header className="shinobidex-public-v2__hero">
         <div>
-          <p className="eyebrow">LN Digital</p>
-          <h1>{t("shinobidex.title")}</h1>
+          <p className="shinobidex-public-v2__kicker">Legendary Ninja Digital</p>
+          <h1>ShinobiDex</h1>
           <p>
-{t("shinobidex.subtitle")}
+            Catálogo oficial de técnicas com descrição, evidências da Wiki e cálculo ANCED.
           </p>
         </div>
 
-        <div className="shinobidex-actions">
+        <div className="shinobidex-public-v2__actions">
+          {onBack && (
+            <button type="button" onClick={onBack}>
+              Voltar ao Hall
+            </button>
+          )}
 
-          <button type="button" onClick={loadTechniques}>{t("common.update")}</button>
+          <button type="button" onClick={() => window.location.reload()}>
+            Atualizar
+          </button>
         </div>
       </header>
 
-      {message && <p className="shinobidex-message">{message}</p>}
+      {message && <div className="shinobidex-public-v2__message">{message}</div>}
 
-      <div className="shinobidex-filters">
-        <label>
-          {t("common.search")}
-          <input
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setPage(1);
-            }}
-            placeholder="Nome, natureza, usuário, descrição..."
-          />
-        </label>
+      <section className="shinobidex-public-v2__stats">
+        <div>
+          <span>Total filtrado</span>
+          <strong>{stats.total}</strong>
+        </div>
+        <div>
+          <span>Nesta página</span>
+          <strong>{stats.pageCount}</strong>
+        </div>
+        <div>
+          <span>Com rank na página</span>
+          <strong>{stats.withRankOnPage}</strong>
+        </div>
+        <div>
+          <span>Página</span>
+          <strong>
+            {stats.page}/{stats.totalPages}
+          </strong>
+        </div>
+      </section>
 
-        <label>
-          {t("shinobidex.rank")}
-          <LnSelect
-            value={rank}
-            onChange={(event) => {
-              setRank(event.target.value);
-              setPage(1);
-            }}
-          >
-            {RANKS.map((item) => <option key={item}>{item}</option>)}
-          </LnSelect>
-        </label>
+      <section className="shinobidex-public-v2__filters shinobidex-public-v2__filters--anced">
+        <input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Buscar técnica..."
+        />
 
-        <label>
-          {t("shinobidex.classification")}
-          <LnSelect
-            value={classification}
-            onChange={(event) => {
-              setClassification(event.target.value);
-              setPage(1);
-            }}
-          >
-            {classifications.map((item) => <option key={item}>{item}</option>)}
-          </LnSelect>
-        </label>
+        <select value={rankFilter} onChange={(event) => setRankFilter(event.target.value)}>
+          <option value="">Todos os ranks</option>
+          {["SS", "S", "A", "B", "C", "D", "E"].map((rank) => (
+            <option key={rank} value={rank}>
+              Rank {rank}
+            </option>
+          ))}
+        </select>
 
-        <label>
-          {t("shinobidex.nature")}
-          <LnSelect
-            value={nature}
-            onChange={(event) => {
-              setNature(event.target.value);
-              setPage(1);
-            }}
-          >
-            {natures.map((item) => <option key={item}>{item}</option>)}
-          </LnSelect>
-        </label>
+        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+          <option value="">Todos os status</option>
+          <option value="approved">Aprovado</option>
+          <option value="reviewed">Revisado</option>
+          <option value="reviewing">Em revisão</option>
+          <option value="draft_mixed_scraper_users_anced_reference">Draft da lista</option>
+          <option value="draft_manual_lote_scraper_users">Draft manual</option>
+          <option value="needs_anced_manual_curation">Precisa curadoria</option>
+        </select>
 
-        <label>
-          {t("shinobidex.status")}
-          <LnSelect
-            value={status}
-            onChange={(event) => {
-              setStatus(event.target.value);
-              setPage(1);
-            }}
-          >
-            {STATUS.map((item) => <option key={item}>{item}</option>)}
-          </LnSelect>
-        </label>
-      </div>
+        <select value={rangeFilter} onChange={(event) => setRangeFilter(event.target.value)}>
+          <option value="">Todos os alcances</option>
+          {RANGE_FILTERS.map((option) => (
+            <option key={option.label} value={option.points}>
+              {option.label} [+{option.points}]
+            </option>
+          ))}
+        </select>
 
-      <div className="shinobidex-count">
-        {isLoading
-          ? "Carregando técnicas..."
-          : resultTotal === 0
-            ? `0 ${t("shinobidex.found")}`
-            : `${resultTotal} ${t("shinobidex.found")} · Mostrando ${firstResult}–${lastResult} de ${resultTotal}`}
-      </div>
+        <select value={usersFilter} onChange={(event) => setUsersFilter(event.target.value)}>
+          <option value="">Todas as quantidades</option>
+          {USERS_FILTERS.map((option) => (
+            <option key={option.label} value={option.points}>
+              {option.label} [+{option.points}]
+            </option>
+          ))}
+        </select>
 
-      <div className="shinobidex-pagination">
+        <select value={classFilter} onChange={(event) => setClassFilter(event.target.value)}>
+          <option value="">Todas as classes</option>
+          {CLASS_FILTERS.map((option) => (
+            <option key={option.label} value={option.points}>
+              {option.label} [+{option.points}]
+            </option>
+          ))}
+        </select>
+
+        <select value={structureFilter} onChange={(event) => setStructureFilter(event.target.value)}>
+          <option value="">Todas as estruturas</option>
+          {STRUCTURE_FILTERS.map((option) => (
+            <option key={option.label} value={option.points}>
+              {option.label} [+{option.points}]
+            </option>
+          ))}
+        </select>
+
+        <select value={damageFilter} onChange={(event) => setDamageFilter(event.target.value)}>
+          <option value="">Todos os danos</option>
+          {DAMAGE_FILTERS.map((option) => (
+            <option key={option.label} value={option.points}>
+              {option.label} [+{option.points}]
+            </option>
+          ))}
+        </select>
+
         <button
           type="button"
-          disabled={!canGoPrevious || isLoading}
+          className="shinobidex-public-v2__clear-filters"
+          onClick={clearAncedFilters}
+        >
+          Limpar filtros
+        </button>
+      </section>
+
+      <section className="shinobidex-public-v2__pagination">
+        <button
+          type="button"
+          disabled={page <= 1 || loadingList}
           onClick={() => setPage((current) => Math.max(1, current - 1))}
         >
-          Anterior
+          Página anterior
         </button>
 
         <span>
@@ -540,184 +631,291 @@ export default function ShinobiDexPage({ onBack }) {
 
         <button
           type="button"
-          disabled={!canGoNext || isLoading}
-          onClick={() => setPage((current) => current + 1)}
+          disabled={page >= totalPages || loadingList}
+          onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
         >
-          Próxima
+          Próxima página
         </button>
-      </div>
+      </section>
 
-      <div className="shinobidex-layout">
-        <div className="shinobidex-list" onScroll={handleTechniqueListScroll}>
-          {filtered.map((technique) => (
-            <div
-              key={technique.id}
-              role="button"
-              tabIndex={0}
-              className={`shinobidex-card ${selected?.id === technique.id ? "active" : ""}`}
-              onPointerDown={handleTechniquePointerDown}
-              onPointerMove={handleTechniquePointerMove}
-              onPointerCancel={handleTechniquePointerCancel}
-              onTouchStart={handleTechniqueTouchStart}
-              onTouchMove={handleTechniqueTouchMove}
-              onTouchEnd={handleTechniqueTouchEnd}
-              onClick={(event) => handleTechniqueSelect(event, technique)}
-              onKeyDown={(event) => handleTechniqueKeyDown(event, technique)}
-            >
-              <span className="shinobidex-rank">
-                {getCuratedAncedRank(technique) || "?"}
-              </span>
+      {loadingList ? (
+        <section className="shinobidex-public-v2__loading">
+          Carregando página da ShinobiDex...
+        </section>
+      ) : (
+        <section className="shinobidex-public-v2__layout">
+          <aside className="shinobidex-public-v2__list">
+            <p className="shinobidex-public-v2__count">
+              {items.length} técnicas nesta página
+            </p>
 
-              <span className="shinobidex-card-body">
-                <strong>{getTechniqueName(technique, language)}</strong>
-                <small>
-                  {getYurikClassification(technique) || "Sem classificação"} ·{" "}
-                  {getYurikNature(technique) || "Sem natureza"} ·{" "}
-                  {technique.status || "draft"}
-                </small>
-              </span>
-            </div>
-          ))}
-
-          {!isLoading && filtered.length === 0 && (
-            <div className="shinobidex-empty">
-              {t("shinobidex.noResults")}
-            </div>
-          )}
-        </div>
-
-        <aside className={`shinobidex-detail ${isDetailOpen ? "is-open" : ""}`}>
-          <div className="shinobidex-detail-scroll">
-          {selected ? (
-            <>
+            {items.map((technique) => (
               <button
+                key={technique.id}
                 type="button"
-                className="shinobidex-detail-close"
-                onClick={() => setIsDetailOpen(false)}
+                onClick={() => selectTechnique(technique.id)}
+                className={
+                  selectedId === technique.id
+                    ? "shinobidex-public-v2__item active"
+                    : "shinobidex-public-v2__item"
+                }
               >
-                Fechar
+                <strong>{technique.name}</strong>
+                <span>
+                  {technique.anced?.rank ? `Rank ${technique.anced.rank}` : "Sem rank"} ·{" "}
+                  {technique.anced?.total ?? "—"} pts
+                </span>
               </button>
+            ))}
+          </aside>
 
-              <p className="eyebrow">{t("shinobidex.technique")}</p>
-              <h2>{getTechniqueName(selected, language)}</h2>
+          <article
+            className={
+              isMobileDetailOpen
+                ? "shinobidex-public-v2__detail is-open"
+                : "shinobidex-public-v2__detail"
+            }
+          >
+            <button
+              type="button"
+              className="shinobidex-public-v2__mobile-close"
+              onClick={() => setIsMobileDetailOpen(false)}
+            >
+              Fechar técnica
+            </button>
 
-              {selected.original_name && <p className="shinobidex-original">{selected.original_name}</p>}
-
-              <div className="shinobidex-badges">
-                <span>Wiki: {selected.wiki_rank || "?"}</span>
-                <span>ANCED: {getCuratedAncedRank(selected) || "?"}</span>
-                {getCuratedAncedTotal(selected) !== null && (
-                  <span>Total: {getCuratedAncedTotal(selected)}</span>
-                )}
-                {getCuratedAncedNeedsReview(selected) && (
-                  <span className="shinobidex-review-badge">Revisar ADM</span>
-                )}
-                <span>{selected.anced_total || 0} pts</span>
-                <span>Confiança: {selected.anced_confidence || "baixa"}</span>
-                <span>{selected.status || "draft"}</span>
+            {!selectedWithData ? (
+              <div className="shinobidex-public-v2__empty">
+                Selecione uma técnica.
               </div>
-
-              <div className="shinobidex-info-grid">
-                <p><strong>{t("shinobidex.classification")}</strong><span>{getYurikClassification(selected) || "Não identificada"}</span></p>
-                <p><strong>{t("shinobidex.nature")}</strong><span>{getYurikNature(selected) || "Não identificada"}</span></p>
-                {getYurikDoujutsu(selected) && (
-                  <p><strong>Dōjutsu</strong><span>{getYurikDoujutsu(selected)}</span></p>
-                )}
-                {selected?.yurik_raw_users_text && (
-                  <p><strong>Usuários Wiki</strong><span>{selected.yurik_raw_users_text}</span></p>
-                )}
-                {renderYurikBadges(selected)}
-                <p><strong>Tipo</strong><span>{selected.technique_type || "Não identificado"}</span></p>
-                <p><strong>Usuários</strong><span>{selected.users_text || "Não identificados"}</span></p>
+            ) : loadingDetail ? (
+              <div className="shinobidex-public-v2__empty">
+                Carregando técnica...
               </div>
+            ) : (
+              <>
+                <section className="shinobidex-public-v2__card main-card">
+                  <div className="shinobidex-public-v2__title-row">
+                    <div>
+                      <p className="shinobidex-public-v2__kicker">Técnica</p>
+                      <h2>{selectedWithData.name}</h2>
+                    </div>
 
-              <section>
-                <h3>{t("shinobidex.summary")}</h3>
-                <p>{getYurikSummary(selected) || "Resumo pendente de adaptação para o RPG."}</p>
-              </section>
+                    <div className={getRankClass(selectedWithData.anced?.rank)}>
+                      <span>Rank</span>
+                      <strong>{selectedWithData.anced?.rank || "—"}</strong>
+                      <em>{selectedWithData.anced?.total ?? "—"} pts</em>
+                    </div>
+                  </div>
 
-              <section>
-                <h3>{t("shinobidex.rpgEffect")}</h3>
-                <p>{selected.rpg_effect || "Efeito pendente de revisão ADM."}</p>
-              </section>
+                  <p className="shinobidex-public-v2__description">
+                    {selectedWithData.description ||
+                      selectedWithData.summary ||
+                      "Sem descrição cadastrada."}
+                  </p>
 
-              <section>
-                <h3>{t("shinobidex.ancedCalculation")}</h3>
-                <p>{getCuratedAncedDetails(selected) || "Sem detalhes de cálculo."}</p>
-              </section>
+                  {selectedWithData.source_url && (
+                    <a href={selectedWithData.source_url} target="_blank" rel="noreferrer">
+                      Abrir fonte na Wiki
+                    </a>
+                  )}
+                </section>
 
-              <section className="shinobidex-anced-report">
-                <h3>Encontrou erro no ANCED?</h3>
-                <p>
-                  Use este campo para avisar a equipe sobre rank, pontuação ou cálculo incorreto.
-                </p>
+                <section className="shinobidex-public-v2__card">
+                  <p className="shinobidex-public-v2__kicker">ANCED</p>
 
-                {!isReportOpen ? (
+                  <div className="shinobidex-public-v2__anced-grid">
+                    <div>
+                      <span>Alcance</span>
+                      <strong>
+                        {formatPoints(
+                          selectedWithData.anced?.range_label,
+                          selectedWithData.anced?.range_points
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Nº de usuários</span>
+                      <strong>
+                        {formatPoints(
+                          selectedWithData.anced?.users_label,
+                          selectedWithData.anced?.users_points
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Classe</span>
+                      <strong>
+                        {formatPoints(
+                          selectedWithData.anced?.class_label,
+                          selectedWithData.anced?.class_points
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Estrutura</span>
+                      <strong>
+                        {formatPoints(
+                          selectedWithData.anced?.structure_label,
+                          selectedWithData.anced?.structure_points
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Danos</span>
+                      <strong>
+                        {formatPoints(
+                          selectedWithData.anced?.damage_label,
+                          selectedWithData.anced?.damage_points
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Bônus</span>
+                      <strong>
+                        {selectedWithData.anced?.bonus_label || "Sem bônus"}{" "}
+                        {selectedWithData.anced?.bonus_points
+                          ? `[+${selectedWithData.anced.bonus_points}]`
+                          : ""}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="shinobidex-public-v2__status">
+                    Status: <strong>{selectedWithData.anced?.status || "sem registro"}</strong>
+                  </div>
+
                   <button
                     type="button"
-                    className="shinobidex-report-toggle"
+                    className="shinobidex-public-v2__report-button"
                     onClick={() => {
-                      setIsReportOpen(true);
+                      setReportOpen(true);
                       setReportMessage("");
                     }}
                   >
-                    Denunciar erro no ANCED
+                    Reportar erro no ANCED
                   </button>
-                ) : (
-                  <div className="shinobidex-report-form">
-                    <textarea
-                      value={reportText}
-                      onChange={(event) => setReportText(event.target.value)}
-                      placeholder="Explique qual é o erro no ANCED desta técnica..."
-                      rows={5}
-                    />
+                </section>
 
-                    <div className="shinobidex-report-actions">
-                      <button
-                        type="button"
-                        onClick={submitAncedReport}
-                        disabled={isReportSubmitting}
-                      >
-                        {isReportSubmitting ? "Enviando..." : "Enviar denúncia"}
-                      </button>
+                <section className="shinobidex-public-v2__card">
+                  <p className="shinobidex-public-v2__kicker">Evidência da Wiki</p>
 
-                      <button
-                        type="button"
-                        className="ghost"
-                        onClick={() => {
-                          setIsReportOpen(false);
-                          setReportText("");
-                          setReportMessage("");
-                        }}
-                      >
-                        Cancelar
-                      </button>
-                    </div>
+                  <div className="shinobidex-public-v2__raw-grid">
+                    <span>
+                      Classificação: <strong>{selectedWithData.raw?.raw_classification || "—"}</strong>
+                    </span>
+                    <span>
+                      Natureza: <strong>{selectedWithData.raw?.raw_nature || "—"}</strong>
+                    </span>
+                    <span>
+                      Tipo: <strong>{selectedWithData.raw?.raw_type || "—"}</strong>
+                    </span>
+                    <span>
+                      Alcance Wiki: <strong>{selectedWithData.raw?.raw_range || "—"}</strong>
+                    </span>
+                    <span>
+                      Rank Wiki: <strong>{selectedWithData.raw?.raw_rank || "—"}</strong>
+                    </span>
                   </div>
-                )}
+                </section>
 
-                {reportMessage && <p className="shinobidex-report-message">{reportMessage}</p>}
-              </section>
+                <section className="shinobidex-public-v2__card">
+                  <p className="shinobidex-public-v2__kicker">Usuários válidos ANCED</p>
 
-              {selected.source_url && (
-                <a
-                  className="shinobidex-source"
-                  href={getTechniqueSourceUrl(selected, language) || selected.source_url || "#"}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {t("shinobidex.originalSource")}
-                </a>
-              )}
-            </>
-          ) : (
-            <div className="shinobidex-empty detail">
-              {t("shinobidex.noTechnique")}
+                  <div className="shinobidex-public-v2__chips">
+                    {validUsers.length ? (
+                      validUsers.map((user, index) => (
+                        <span key={`${formatUser(user)}-${index}`}>
+                          {formatUser(user)}
+                        </span>
+                      ))
+                    ) : (
+                      <span>Nenhum usuário válido registrado.</span>
+                    )}
+                  </div>
+                </section>
+
+                <details className="shinobidex-public-v2__card">
+                  <summary>Ver usuários brutos capturados</summary>
+
+                  <div className="shinobidex-public-v2__chips muted">
+                    {rawUsers.length ? (
+                      rawUsers.map((user, index) => (
+                        <span key={`${formatUser(user)}-raw-${index}`}>
+                          {formatUser(user)}
+                        </span>
+                      ))
+                    ) : (
+                      <span>Nenhum usuário bruto registrado.</span>
+                    )}
+                  </div>
+                </details>
+              </>
+            )}
+          </article>
+        </section>
+      )}
+
+      {reportOpen && (
+        <div className="shinobidex-public-v2__report-overlay">
+          <section className="shinobidex-public-v2__report-modal">
+            <div className="shinobidex-public-v2__report-head">
+              <div>
+                <p className="shinobidex-public-v2__kicker">Report de erro</p>
+                <h2>{selectedWithData?.name || "Técnica"}</h2>
+              </div>
+
+              <button type="button" onClick={() => setReportOpen(false)}>
+                Fechar
+              </button>
             </div>
-          )}
-          </div>
-        </aside>
-      </div>
-    </section>
+
+            <label>
+              Tipo de erro
+              <select
+                value={reportType}
+                onChange={(event) => setReportType(event.target.value)}
+              >
+                <option value="anced">Erro no cálculo ANCED</option>
+                <option value="users">Erro nos usuários</option>
+                <option value="description">Erro na descrição</option>
+                <option value="wiki_evidence">Erro na evidência da Wiki</option>
+                <option value="other">Outro</option>
+              </select>
+            </label>
+
+            <label>
+              Explique o problema
+              <textarea
+                rows={6}
+                value={reportText}
+                onChange={(event) => setReportText(event.target.value)}
+                placeholder="Ex: A quantidade de usuários deveria ser 2 porque usuários Apenas Game não entram..."
+              />
+            </label>
+
+            {reportMessage && (
+              <div className="shinobidex-public-v2__report-message">
+                {reportMessage}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="shinobidex-public-v2__report-submit"
+              onClick={submitAncedReport}
+              disabled={reportSending}
+            >
+              {reportSending ? "Enviando..." : "Enviar report"}
+            </button>
+          </section>
+        </div>
+      )}
+    </main>
   );
 }

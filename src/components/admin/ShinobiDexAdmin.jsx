@@ -1,869 +1,609 @@
 import { useEffect, useMemo, useState } from "react";
-import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
-import LnSelect from "../ui/LnSelect";
+import { supabase } from "../../lib/supabaseClient";
 
+const RANGE_OPTIONS = [
+  { label: "Sem alcance", points: 0 },
+  { label: "Corpo a corpo", points: 8 },
+  { label: "Curto (1-10m)", points: 20 },
+  { label: "Médio (10-30m)", points: 26 },
+  { label: "Longo (30-100m)", points: 38 },
+  { label: "Todos os alcances", points: 44 },
+];
 
-const getCuratedAncedRank = (technique) =>
-  technique?.anced_curated_rank || technique?.anced_rank || technique?.wiki_rank || technique?.rank || "";
+const USER_OPTIONS = [
+  { label: "0 usuários válidos", count: 0, points: 0 },
+  { label: "1 usuário", count: 1, points: 42 },
+  { label: "2 usuários", count: 2, points: 34 },
+  { label: "4/3 usuários", count: 3, points: 24 },
+  { label: "5 usuários", count: 5, points: 12 },
+  { label: "6+ usuários", count: 6, points: 4 },
+];
 
-const getCuratedAncedDetails = (technique) =>
-  technique?.anced_curated_details || technique?.anced_details || "";
+const CLASS_OPTIONS = [
+  { label: "Defensivo", points: 10 },
+  { label: "Ofensivo", points: 18 },
+  { label: "Suporte", points: 30 },
+  { label: "Selamento", points: 32 },
+  { label: "Preparação", points: 46 },
+];
 
-const getCuratedAncedTotal = (technique) =>
-  technique?.anced_curated_total ?? technique?.anced_total ?? null;
+const STRUCTURE_OPTIONS = [
+  { label: "Taijutsu/Bukijutsu", points: 6 },
+  { label: "Hiden/Yang", points: 14 },
+  { label: "Elemental/Yin", points: 24 },
+  { label: "Não elemental/Kekkei Genkai", points: 40 },
+  { label: "Kinjutsu/Kekkei Tōta/Exclusivo", points: 48 },
+];
 
-const getCuratedAncedStatus = (technique) =>
-  technique?.anced_curated_status || "";
+const DAMAGE_OPTIONS = [
+  { label: "Não causa/Incapacitação", points: 2 },
+  { label: "Ferimentos leves", points: 16 },
+  { label: "Ferimentos moderados", points: 22 },
+  { label: "Ferimentos graves/mortais", points: 34 },
+  { label: "Dizimação/Obliteração", points: 50 },
+];
 
-const getCuratedAncedNeedsReview = (technique) =>
-  Boolean(
-    technique?.anced_needs_review ||
-      technique?.anced_curated_rank === "REVISAR" ||
-      String(technique?.anced_curated_status || "").includes("revisar")
-  );
+const STATUS_OPTIONS = [
+  { label: "Rascunho misto", value: "draft_mixed_scraper_users_anced_reference" },
+  { label: "Lote manual", value: "draft_manual_lote_scraper_users" },
+  { label: "Precisa curadoria manual", value: "needs_anced_manual_curation" },
+  { label: "Em revisão", value: "reviewing" },
+  { label: "Revisado", value: "reviewed" },
+  { label: "Aprovado", value: "approved" },
+];
 
-const STATUS_OPTIONS = ["draft", "approved", "needs_review", "archived"];
-const RANK_OPTIONS = ["", "E", "D", "C", "B", "A", "S", "SS"];
-const CONFIDENCE_OPTIONS = ["baixa", "média", "alta"];
-const PAGE_SIZE = 120;
+function getRank(total) {
+  const value = Number(total || 0);
+  if (value >= 204) return "SS";
+  if (value >= 175) return "S";
+  if (value >= 146) return "A";
+  if (value >= 117) return "B";
+  if (value >= 88) return "C";
+  if (value >= 59) return "D";
+  return "E";
+}
 
-const emptyForm = {
-  name: "",
-  original_name: "",
-  english_name: "",
-  wiki_rank: "",
-  anced_rank: "",
-  anced_total: 0,
-  anced_confidence: "baixa",
-  anced_details: "",
-  classification: "",
-  nature: "",
-  technique_type: "",
-  users_text: "",
-  summary: "",
-  rpg_effect: "",
-  requirements: "",
-  limitations: "",
-  status: "draft"
-};
+function optionFromPoints(options, points) {
+  return options.find((option) => Number(option.points) === Number(points)) || null;
+}
 
+function userOptionFromCount(count) {
+  const value = Number(count || 0);
+  if (value >= 6) return USER_OPTIONS.find((option) => option.count === 6);
+  if (value === 5) return USER_OPTIONS.find((option) => option.count === 5);
+  if (value === 4 || value === 3) return USER_OPTIONS.find((option) => option.count === 3);
+  if (value === 2) return USER_OPTIONS.find((option) => option.count === 2);
+  if (value === 1) return USER_OPTIONS.find((option) => option.count === 1);
+  return USER_OPTIONS.find((option) => option.count === 0);
+}
 
+function safeArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
-const getAdminEffectiveAncedRank = getCuratedAncedRank;
-const getAdminEffectiveAncedTotal = getCuratedAncedTotal;
-const getAdminEffectiveAncedDetails = getCuratedAncedDetails;
-const getAdminEffectiveAncedStatus = getCuratedAncedStatus;
-const getAdminEffectiveAncedNeedsReview = getCuratedAncedNeedsReview;
+function formatUser(user) {
+  if (typeof user === "string") return user;
+  if (!user) return "—";
+  return user.label ? `${user.name || user.raw} (${user.label})` : user.name || user.raw || "—";
+}
 
 export default function ShinobiDexAdmin() {
-  const [techniques, setTechniques] = useState([]);
-  const [stats, setStats] = useState({
-    total: 0,
-    draft: 0,
-    approved: 0,
-    needs_review: 0,
-    archived: 0,
-    baixa: 0,
-    media: 0,
-    alta: 0
-  });
-
-  const [selected, setSelected] = useState(null);
-  const [form, setForm] = useState(emptyForm);
-
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [confidenceFilter, setConfidenceFilter] = useState("Todas");
-  const [rankFilter, setRankFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const [resultTotal, setResultTotal] = useState(0);
+  const [techniques, setTechniques] = useState([]);
+  const [selectedId, setSelectedId] = useState("");
+  const [selected, setSelected] = useState(null);
+  const [rawSource, setRawSource] = useState(null);
+  const [rankRow, setRankRow] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [ancedReports, setAncedReports] = useState([]);
-  const [isReportsLoading, setIsReportsLoading] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    loadStats();
-    loadAncedReports();
-  }, []);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      loadTechniques();
-    }, 250);
-
-    return () => window.clearTimeout(timeout);
-  }, [statusFilter, confidenceFilter, rankFilter, search, page]);
-
-  async function loadStats() {
-    if (!isSupabaseConfigured || !supabase) return;
-
-    const PAGE_SIZE = 1000;
-    let from = 0;
-    let allRows = [];
-
-    while (true) {
-      const to = from + PAGE_SIZE - 1;
-
-      const { data, error } = await supabase
-        .from("technique_catalog")
-        .select("id,status,anced_confidence")
-        .order("name", { ascending: true })
-        .range(from, to);
-
-      if (error) {
-        setMessage(`Erro ao carregar estatísticas: ${error.message}`);
-        return;
-      }
-
-      allRows = [...allRows, ...(data || [])];
-
-      if (!data || data.length < PAGE_SIZE) break;
-
-      from += PAGE_SIZE;
-    }
-
-    const nextStats = {
-      total: allRows.length,
-      draft: 0,
-      approved: 0,
-      needs_review: 0,
-      archived: 0,
-      baixa: 0,
-      media: 0,
-      alta: 0
-    };
-
-    for (const item of allRows) {
-      if (item.status && nextStats[item.status] !== undefined) {
-        nextStats[item.status] += 1;
-      }
-
-      if (item.anced_confidence === "baixa") nextStats.baixa += 1;
-      if (item.anced_confidence === "média") nextStats.media += 1;
-      if (item.anced_confidence === "alta") nextStats.alta += 1;
-    }
-
-    setStats(nextStats);
-  }
-
-  async function loadAncedReports() {
-    if (!isSupabaseConfigured || !supabase) return;
-
-    setIsReportsLoading(true);
-
-    const { data, error } = await supabase
-      .from("anced_error_reports")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(200);
-
-    setIsReportsLoading(false);
-
-    if (error) {
-      setMessage(`Erro ao carregar denúncias ANCED: ${error.message}`);
-      return;
-    }
-
-    setAncedReports(data || []);
-  }
-
-  async function updateAncedReportStatus(reportId, nextStatus) {
-    if (!supabase || !reportId) return;
-
-    const payload = {
-      status: nextStatus,
-      resolved_at: nextStatus === "resolved" ? new Date().toISOString() : null
-    };
-
-    const { error } = await supabase
-      .from("anced_error_reports")
-      .update(payload)
-      .eq("id", reportId);
-
-    if (error) {
-      setMessage(`Erro ao atualizar denúncia: ${error.message}`);
-      return;
-    }
-
-    await loadAncedReports();
-  }
+  const [form, setForm] = useState({
+    rangePoints: "",
+    usersCount: 0,
+    classPoints: "",
+    structurePoints: "",
+    damagePoints: "",
+    bonusLabel: "",
+    bonusPoints: 0,
+    status: "reviewing",
+    reviewNotes: "",
+  });
 
   async function loadTechniques() {
-    if (!isSupabaseConfigured || !supabase) {
-      setMessage("Supabase não está configurado.");
-      return;
-    }
-
-    setIsLoading(true);
+    setLoadingList(true);
     setMessage("");
 
-    const safePage = Math.max(1, Number(page || 1));
-    const from = (safePage - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-
     let query = supabase
-      .from("technique_catalog")
-      .select("*", { count: "exact" })
+      .from("shinobidex_techniques")
+      .select("id,name,slug,status,updated_at")
       .order("name", { ascending: true })
-      .range(from, to);
+      .limit(180);
 
-    if (statusFilter !== "Todos") {
-      query = query.eq("status", statusFilter);
+    if (search.trim()) {
+      query = query.ilike("name", `%${search.trim()}%`);
     }
 
-    if (confidenceFilter !== "Todas") {
-      query = query.eq("anced_confidence", confidenceFilter);
-    }
-
-    if (rankFilter !== "Todos") {
-      query = query.or(`anced_curated_rank.eq.${rankFilter},anced_rank.eq.${rankFilter},wiki_rank.eq.${rankFilter}`);
-    }
-
-    const q = search.trim();
-
-    if (q) {
-      const safe = q.replace(/[%_]/g, "");
-      query = query.or(
-        `name.ilike.%${safe}%,original_name.ilike.%${safe}%,summary.ilike.%${safe}%,nature.ilike.%${safe}%,classification.ilike.%${safe}%,yurik_summary.ilike.%${safe}%,yurik_raw_nature.ilike.%${safe}%,yurik_raw_classification.ilike.%${safe}%,yurik_raw_users_text.ilike.%${safe}%,yurik_doujutsu.ilike.%${safe}%`
-      );
-    }
-
-    const { data, error, count } = await query;
-
-    setIsLoading(false);
+    const { data, error } = await query;
 
     if (error) {
       setMessage(`Erro ao carregar técnicas: ${error.message}`);
+      setLoadingList(false);
       return;
     }
 
-    const nextData = data || [];
-    setResultTotal(count ?? nextData.length);
-    setTechniques(nextData);
+    let rows = data || [];
 
-    if (nextData.length) {
-      const selectedStillVisible = selected?.id
-        ? nextData.some((item) => item.id === selected.id)
-        : false;
+    if (statusFilter) {
+      const ids = rows.map((row) => row.id);
 
-      if (!selectedStillVisible) {
-        selectTechnique(nextData[0]);
+      if (ids.length > 0) {
+        const { data: rankRows, error: rankError } = await supabase
+          .from("anced_curated_ranks")
+          .select("technique_id,status")
+          .in("technique_id", ids);
+
+        if (!rankError) {
+          const statusById = new Map((rankRows || []).map((row) => [row.technique_id, row.status]));
+          rows = rows.filter((row) => statusById.get(row.id) === statusFilter);
+        }
       }
-    } else {
-      setSelected(null);
-      setForm(emptyForm);
     }
+
+    setTechniques(rows);
+    setLoadingList(false);
   }
 
-  function selectTechnique(technique) {
+  async function loadTechniqueDetail(id) {
+    if (!id) return;
+
+    setLoadingDetail(true);
+    setMessage("");
+
+    const { data: technique, error: techniqueError } = await supabase
+      .from("shinobidex_techniques")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (techniqueError) {
+      setMessage(`Erro ao abrir técnica: ${techniqueError.message}`);
+      setLoadingDetail(false);
+      return;
+    }
+
+    const { data: rawRows, error: rawError } = await supabase
+      .from("shinobidex_raw_sources")
+      .select("*")
+      .eq("technique_id", id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (rawError) {
+      setMessage(`Erro ao abrir fonte bruta: ${rawError.message}`);
+      setLoadingDetail(false);
+      return;
+    }
+
+    const { data: rankRows, error: rankError } = await supabase
+      .from("anced_curated_ranks")
+      .select("*")
+      .eq("technique_id", id)
+      .order("updated_at", { ascending: false })
+      .limit(1);
+
+    if (rankError) {
+      setMessage(`Erro ao abrir ANCED: ${rankError.message}`);
+      setLoadingDetail(false);
+      return;
+    }
+
+    const raw = rawRows?.[0] || null;
+    const rank = rankRows?.[0] || null;
+
+    const userOpt = userOptionFromCount(rank?.users_count || 0);
+
     setSelected(technique);
+    setRawSource(raw);
+    setRankRow(rank);
+
     setForm({
-      name: technique.name || "",
-      original_name: technique.original_name || "",
-      english_name: technique.english_name || "",
-      wiki_rank: technique.wiki_rank || "",
-      anced_rank: technique.anced_rank || getAdminEffectiveAncedRank(technique) || "",
-      anced_total: technique.anced_total || 0,
-      anced_confidence: technique.anced_confidence || "baixa",
-      anced_details: technique.anced_details || getAdminEffectiveAncedDetails(technique) || "",
-      classification: technique.classification || "",
-      nature: technique.nature || "",
-      technique_type: technique.technique_type || "",
-      users_text: technique.users_text || "",
-      summary: technique.summary || "",
-      rpg_effect: technique.rpg_effect || "",
-      requirements: technique.requirements || "",
-      limitations: technique.limitations || "",
-      status: technique.status || "draft"
+      rangePoints: rank?.range_points ?? "",
+      usersCount: userOpt?.count ?? 0,
+      classPoints: rank?.class_points ?? "",
+      structurePoints: rank?.structure_points ?? "",
+      damagePoints: rank?.damage_points ?? "",
+      bonusLabel: rank?.bonus_label || "",
+      bonusPoints: Number(rank?.bonus_points || 0),
+      status: rank?.status || "reviewing",
+      reviewNotes: rank?.review_notes || "",
     });
+
+    setLoadingDetail(false);
   }
 
-  function cleanYurikText(value) {
-    return typeof value === "string" ? value.trim() : "";
-  }
+  useEffect(() => {
+    loadTechniques();
+  }, []);
 
-  function getYurikAdminSummary(technique) {
-    return cleanYurikText(technique?.yurik_summary) || cleanYurikText(technique?.summary);
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadTechniques();
+    }, 250);
 
-  function getYurikAdminClassification(technique) {
-    return cleanYurikText(technique?.yurik_raw_classification) || cleanYurikText(technique?.classification);
-  }
+    return () => clearTimeout(timer);
+  }, [search, statusFilter]);
 
-  function getYurikAdminNature(technique) {
-    return cleanYurikText(technique?.yurik_raw_nature) || cleanYurikText(technique?.nature);
-  }
-
-  function renderYurikAdminBadges(technique) {
-    const badges = [];
-
-    if (technique?.yurik_doujutsu) badges.push(`Dōjutsu: ${technique.yurik_doujutsu}`);
-    if (technique?.yurik_is_game_only) badges.push("Game Only");
-    if (technique?.yurik_is_konbijutsu) badges.push("Konbijutsu");
-
-    if (Array.isArray(technique?.yurik_review_tags)) {
-      for (const tag of technique.yurik_review_tags) {
-        if (!tag || ["game_only", "konbijutsu", "doujutsu_detectado"].includes(tag)) continue;
-        badges.push(String(tag).replaceAll("_", " "));
-      }
+  useEffect(() => {
+    if (selectedId) {
+      loadTechniqueDetail(selectedId);
     }
+  }, [selectedId]);
 
-    if (!badges.length) return null;
+  const userOption = useMemo(() => userOptionFromCount(form.usersCount), [form.usersCount]);
 
-    return (
-      <div className="shinobidex-yurik-badges shinobidex-yurik-badges-admin">
-        {badges.map((badge) => (
-          <span key={badge}>{badge}</span>
-        ))}
-      </div>
-    );
-  }
+  const calculated = useMemo(() => {
+    const total =
+      Number(form.rangePoints || 0) +
+      Number(userOption?.points || 0) +
+      Number(form.classPoints || 0) +
+      Number(form.structurePoints || 0) +
+      Number(form.damagePoints || 0) +
+      Number(form.bonusPoints || 0);
 
-  function updateForm(field, value) {
+    return {
+      total,
+      rank: getRank(total),
+    };
+  }, [form, userOption]);
+
+  const rawUsers = safeArray(rawSource?.raw_users_labeled);
+  const validUsers = safeArray(rankRow?.valid_users);
+
+  function updateForm(key, value) {
     setForm((current) => ({
       ...current,
-      [field]: value
+      [key]: value,
     }));
   }
 
-  async function saveTechnique(nextStatus = null) {
-    if (!selected?.id || !supabase) return;
+  async function saveAnced() {
+    if (!selected?.id) return;
 
-    setIsSaving(true);
+    setSaving(true);
     setMessage("");
 
+    const rangeOption = optionFromPoints(RANGE_OPTIONS, form.rangePoints);
+    const classOption = optionFromPoints(CLASS_OPTIONS, form.classPoints);
+    const structureOption = optionFromPoints(STRUCTURE_OPTIONS, form.structurePoints);
+    const damageOption = optionFromPoints(DAMAGE_OPTIONS, form.damagePoints);
+
     const payload = {
-      ...form,
-      status: nextStatus || form.status,
-      anced_total: Number(form.anced_total || 0),
-      reviewed_at:
-        nextStatus === "approved" || form.status === "approved"
-          ? new Date().toISOString()
-          : selected.reviewed_at,
-      updated_at: new Date().toISOString()
+      technique_id: selected.id,
+
+      range_label: rangeOption?.label || null,
+      range_points: form.rangePoints === "" ? null : Number(form.rangePoints),
+
+      users_count: Number(form.usersCount || 0),
+      users_label: userOption?.label || "0 usuários válidos",
+      users_points: Number(userOption?.points || 0),
+      valid_users: rankRow?.valid_users || [],
+
+      class_label: classOption?.label || null,
+      class_points: form.classPoints === "" ? null : Number(form.classPoints),
+
+      structure_label: structureOption?.label || null,
+      structure_points: form.structurePoints === "" ? null : Number(form.structurePoints),
+
+      damage_label: damageOption?.label || null,
+      damage_points: form.damagePoints === "" ? null : Number(form.damagePoints),
+
+      bonus_label: form.bonusLabel || null,
+      bonus_points: Number(form.bonusPoints || 0),
+
+      total: calculated.total,
+      rank: calculated.rank,
+
+      differs_from_pdf:
+        rankRow?.source_pdf_total !== null &&
+        rankRow?.source_pdf_total !== undefined
+          ? Number(rankRow.source_pdf_total) !== Number(calculated.total)
+          : false,
+
+      status: form.status,
+      review_notes: form.reviewNotes,
+      updated_at: new Date().toISOString(),
     };
 
-    const { data, error } = await supabase
-      .from("technique_catalog")
-      .update(payload)
-      .eq("id", selected.id)
-      .select("*")
-      .single();
+    let response;
 
-    setIsSaving(false);
+    if (rankRow?.id) {
+      response = await supabase
+        .from("anced_curated_ranks")
+        .update(payload)
+        .eq("id", rankRow.id)
+        .select("*")
+        .single();
+    } else {
+      response = await supabase
+        .from("anced_curated_ranks")
+        .insert(payload)
+        .select("*")
+        .single();
+    }
 
-    if (error) {
-      setMessage(`Erro ao salvar técnica: ${error.message}`);
+    if (response.error) {
+      setMessage(`Erro ao salvar ANCED: ${response.error.message}`);
+      setSaving(false);
       return;
     }
 
-    setMessage("Técnica atualizada com sucesso.");
-    setSelected(data);
-    selectTechnique(data);
-
-    setTechniques((current) =>
-      current.map((item) => (item.id === data.id ? data : item))
-    );
-
-    loadStats();
+    setRankRow(response.data);
+    setMessage("ANCED salvo com sucesso.");
+    setSaving(false);
   }
-
-  async function deleteTechnique() {
-    if (!selected?.id || !supabase) return;
-
-    const confirmed = window.confirm(
-      `Arquivar "${selected.name}"? Ela sairá da ShinobiDex pública.`
-    );
-
-    if (!confirmed) return;
-
-    await saveTechnique("archived");
-  }
-
-  const statusLabel = useMemo(() => {
-    return {
-      draft: "Rascunho",
-      approved: "Aprovada",
-      needs_review: "Precisa revisão",
-      archived: "Arquivada"
-    };
-  }, []);
-
-  const totalPages = Math.max(1, Math.ceil(resultTotal / PAGE_SIZE));
-  const firstResult = resultTotal === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
-  const lastResult = Math.min(page * PAGE_SIZE, resultTotal);
-  const canGoPrevious = page > 1;
-  const canGoNext = page < totalPages;
 
   return (
-    <section className="shinobidex-admin">
-      <div className="shinobidex-admin-stats">
-        <article>
-          <strong>{stats.total}</strong>
-          <span>Total importado</span>
-        </article>
-
-        <article>
-          <strong>{stats.draft}</strong>
-          <span>Rascunhos</span>
-        </article>
-
-        <article>
-          <strong>{stats.approved}</strong>
-          <span>Aprovadas</span>
-        </article>
-
-        <article>
-          <strong>{stats.baixa}</strong>
-          <span>Confiança baixa</span>
-        </article>
-
-        <article>
-          <strong>{stats.media}</strong>
-          <span>Confiança média</span>
-        </article>
-
-        <article>
-          <strong>{ancedReports.filter((report) => report.status === "open").length}</strong>
-          <span>Denúncias ANCED</span>
-        </article>
-      </div>
-
-      <div className="shinobidex-admin-toolbar">
-        <label>
-          Buscar técnica
-          <input
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setPage(1);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") loadTechniques();
-            }}
-            placeholder="Nome, natureza, classificação..."
-          />
-        </label>
-
-        <label>
-          Status
-          <LnSelect
-            value={statusFilter}
-            onChange={(event) => {
-              setStatusFilter(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option>Todos</option>
-            {STATUS_OPTIONS.map((item) => (
-              <option key={item} value={item}>
-                {statusLabel[item] || item}
-              </option>
-            ))}
-          </LnSelect>
-        </label>
-
-        <label>
-          Confiança
-          <LnSelect
-            value={confidenceFilter}
-            onChange={(event) => {
-              setConfidenceFilter(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option>Todas</option>
-            {CONFIDENCE_OPTIONS.map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </LnSelect>
-        </label>
-
-        <label>
-          Rank ANCED
-          <LnSelect
-            value={rankFilter}
-            onChange={(event) => {
-              setRankFilter(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option>Todos</option>
-            {RANK_OPTIONS.filter(Boolean).map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </LnSelect>
-        </label>
-
-        <button type="button" onClick={loadTechniques}>
-          Filtrar
-        </button>
-      </div>
-
-      {message && <p className="auth-message">{message}</p>}
-
-      <section className="shinobidex-admin-reports">
-        <div className="shinobidex-admin-reports-header">
-          <div>
-            <p className="eyebrow">ShinobiDex ADM</p>
-            <h3>Denúncias de erro no ANCED</h3>
-          </div>
-
-          <button type="button" onClick={loadAncedReports}>
-            {isReportsLoading ? "Atualizando..." : "Atualizar denúncias"}
-          </button>
+    <section className="shinobidex-v2-admin">
+      <header className="shinobidex-v2-admin__header">
+        <div>
+          <p className="shinobidex-v2-admin__kicker">ShinobiDex V2</p>
+          <h1>Curadoria ANCED</h1>
+          <p>
+            Edite os eixos oficiais. Usuários válidos vêm do scraper/Supabase; total e rank são recalculados automaticamente.
+          </p>
         </div>
 
-        {ancedReports.length === 0 ? (
-          <p className="shinobidex-admin-report-empty">
-            Nenhuma denúncia de ANCED registrada.
-          </p>
-        ) : (
-          <div className="shinobidex-admin-report-list">
-            {ancedReports.map((report) => (
-              <article key={report.id} className={`shinobidex-admin-report-card is-${report.status}`}>
-                <div>
-                  <strong>{report.technique_name}</strong>
-                  <small>
-                    Status: {report.status} · ANCED: {getCuratedAncedRank(report) || "?"}
-                    {report.anced_total ? ` (${report.anced_total} pts)` : ""}
-                  </small>
-                </div>
+        <div className="shinobidex-v2-admin__rankbox">
+          <span>Total</span>
+          <strong>{calculated.total}</strong>
+          <em>Rank {calculated.rank}</em>
+        </div>
+      </header>
 
-                <p>{report.report_text}</p>
+      {message && <div className="shinobidex-v2-admin__message">{message}</div>}
 
-                {getCuratedAncedDetails(report) && (
-                  <details>
-                    <summary>Ver cálculo ANCED registrado</summary>
-                    <p>{getCuratedAncedDetails(report)}</p>
-                  </details>
-                )}
+      <div className="shinobidex-v2-admin__layout">
+        <aside className="shinobidex-v2-admin__sidebar">
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Buscar técnica..."
+            className="shinobidex-v2-admin__input"
+          />
 
-                <div className="shinobidex-admin-report-actions">
-                  <button
-                    type="button"
-                    onClick={() => updateAncedReportStatus(report.id, "reviewing")}
-                  >
-                    Em análise
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => updateAncedReportStatus(report.id, "resolved")}
-                  >
-                    Resolver
-                  </button>
-
-                  <button
-                    type="button"
-                    className="ghost"
-                    onClick={() => updateAncedReportStatus(report.id, "archived")}
-                  >
-                    Arquivar
-                  </button>
-                </div>
-              </article>
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+            className="shinobidex-v2-admin__input"
+          >
+            <option value="">Todos os status</option>
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
             ))}
+          </select>
+
+          <div className="shinobidex-v2-admin__list">
+            {loadingList ? (
+              <p>Carregando...</p>
+            ) : (
+              techniques.map((technique) => (
+                <button
+                  key={technique.id}
+                  type="button"
+                  onClick={() => setSelectedId(technique.id)}
+                  className={
+                    selectedId === technique.id
+                      ? "shinobidex-v2-admin__list-item active"
+                      : "shinobidex-v2-admin__list-item"
+                  }
+                >
+                  <strong>{technique.name}</strong>
+                  <span>{technique.status || "—"}</span>
+                </button>
+              ))
+            )}
           </div>
-        )}
-      </section>
-
-      <div className="shinobidex-admin-layout">
-        <aside className="shinobidex-admin-list">
-          <div className="shinobidex-admin-list-header">
-            <strong>{isLoading ? "Carregando..." : `${resultTotal} resultado(s)`}</strong>
-            <small>
-              {resultTotal === 0
-                ? "Nenhum resultado encontrado"
-                : `Mostrando ${firstResult}–${lastResult} de ${resultTotal}`}
-            </small>
-
-            <div className="shinobidex-admin-pagination">
-              <button
-                type="button"
-                disabled={!canGoPrevious || isLoading}
-                onClick={() => setPage((current) => Math.max(1, current - 1))}
-              >
-                Anterior
-              </button>
-
-              <span>
-                Página {page} de {totalPages}
-              </span>
-
-              <button
-                type="button"
-                disabled={!canGoNext || isLoading}
-                onClick={() => setPage((current) => current + 1)}
-              >
-                Próxima
-              </button>
-            </div>
-          </div>
-
-          {techniques.map((technique) => (
-            <button
-              type="button"
-              key={technique.id}
-              className={selected?.id === technique.id ? "active" : ""}
-              onClick={() => selectTechnique(technique)}
-            >
-              <span>{getCuratedAncedRank(technique) || "?"}</span>
-
-              <div>
-                <strong>{technique.name}</strong>
-                <small>
-                  {statusLabel[technique.status] || technique.status} ·{" "}
-                  {technique.anced_confidence || "baixa"} ·{" "}
-                  {getYurikAdminNature(technique) || "sem natureza"}
-                </small>
-              </div>
-            </button>
-          ))}
-
-          {!isLoading && techniques.length === 0 && (
-            <p className="empty-message">Nenhuma técnica encontrada.</p>
-          )}
         </aside>
 
-        <main className="shinobidex-admin-editor">
-          {selected ? (
+        <main className="shinobidex-v2-admin__main">
+          {!selected ? (
+            <div className="shinobidex-v2-admin__empty">
+              Selecione uma técnica para revisar.
+            </div>
+          ) : loadingDetail ? (
+            <div className="shinobidex-v2-admin__empty">
+              Carregando técnica...
+            </div>
+          ) : (
             <>
-              <div className="shinobidex-admin-editor-head">
-                <div>
-                  <p className="eyebrow">Editar técnica</p>
-                  <h2>{selected.name}</h2>
-                  <span>
-                    Fonte: {selected.source_name || "Wiki"} ·{" "}
-                    {selected.source_license || "CC BY-SA 3.0"}
-                  </span>
-                </div>
+              <section className="shinobidex-v2-admin__card">
+                <p className="shinobidex-v2-admin__kicker">Técnica</p>
+                <h2>{selected.name}</h2>
 
                 {selected.source_url && (
                   <a href={selected.source_url} target="_blank" rel="noreferrer">
-                    Abrir fonte
+                    Abrir página da Wiki
                   </a>
                 )}
-              </div>
 
-              <div className="shinobidex-admin-grid two">
-                <label>
-                  Nome
-                  <input
-                    value={form.name}
-                    onChange={(event) => updateForm("name", event.target.value)}
-                  />
-                </label>
+                <p>{selected.description || "Sem descrição registrada."}</p>
+              </section>
 
-                <label>
-                  Nome original
-                  <input
-                    value={form.original_name}
-                    onChange={(event) =>
-                      updateForm("original_name", event.target.value)
-                    }
-                  />
-                </label>
+              <section className="shinobidex-v2-admin__card">
+                <p className="shinobidex-v2-admin__kicker">Evidência bruta</p>
 
-                <label>
-                  Classificação
-                  <input
-                    value={form.classification}
-                    onChange={(event) =>
-                      updateForm("classification", event.target.value)
-                    }
-                  />
-                </label>
+                <div className="shinobidex-v2-admin__raw-grid">
+                  <span>Classificação: <strong>{rawSource?.raw_classification || "—"}</strong></span>
+                  <span>Natureza: <strong>{rawSource?.raw_nature || "—"}</strong></span>
+                  <span>Tipo Wiki: <strong>{rawSource?.raw_type || "—"}</strong></span>
+                  <span>Alcance Wiki: <strong>{rawSource?.raw_range || "—"}</strong></span>
+                  <span>Rank Wiki: <strong>{rawSource?.raw_rank || "—"}</strong></span>
+                </div>
 
-                <label>
-                  Natureza
-                  <input
-                    value={form.nature}
-                    onChange={(event) => updateForm("nature", event.target.value)}
-                  />
-                </label>
+                <h3>Usuários capturados</h3>
+                <div className="shinobidex-v2-admin__chips">
+                  {rawUsers.length ? rawUsers.map((user, index) => (
+                    <span key={`${formatUser(user)}-${index}`}>{formatUser(user)}</span>
+                  )) : <span>Nenhum usuário bruto registrado.</span>}
+                </div>
 
-                <label>
-                  Tipo
-                  <input
-                    value={form.technique_type}
-                    onChange={(event) =>
-                      updateForm("technique_type", event.target.value)
-                    }
-                  />
-                </label>
+                <h3>Usuários válidos ANCED</h3>
+                <div className="shinobidex-v2-admin__chips valid">
+                  {validUsers.length ? validUsers.map((user, index) => (
+                    <span key={`${formatUser(user)}-${index}`}>{formatUser(user)}</span>
+                  )) : <span>Nenhum usuário válido registrado.</span>}
+                </div>
+              </section>
 
-                <label>
-                  Usuários
-                  <input
-                    value={form.users_text}
-                    onChange={(event) => updateForm("users_text", event.target.value)}
-                  />
-                </label>
-              </div>
+              <section className="shinobidex-v2-admin__card">
+                <p className="shinobidex-v2-admin__kicker">Ranqueamento ANCED</p>
 
-              <div className="shinobidex-admin-grid four">
-                <label>
-                  Rank Wiki
-                  <LnSelect
-                    value={form.wiki_rank}
-                    onChange={(event) => updateForm("wiki_rank", event.target.value)}
-                  >
-                    {RANK_OPTIONS.map((item) => (
-                      <option key={item} value={item}>
-                        {item || "Não definido"}
-                      </option>
-                    ))}
-                  </LnSelect>
-                </label>
+                <div className="shinobidex-v2-admin__form-grid">
+                  <label>
+                    Alcance
+                    <select
+                      value={form.rangePoints}
+                      onChange={(event) => updateForm("rangePoints", event.target.value)}
+                    >
+                      <option value="">Selecionar</option>
+                      {RANGE_OPTIONS.map((option) => (
+                        <option key={option.label} value={option.points}>
+                          {option.label} [+{option.points}]
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-                <label>
-                  Rank ANCED
-                  <LnSelect
-                    value={form.anced_rank}
-                    onChange={(event) => updateForm("anced_rank", event.target.value)}
-                  >
-                    {RANK_OPTIONS.map((item) => (
-                      <option key={item} value={item}>
-                        {item || "Não definido"}
-                      </option>
-                    ))}
-                  </LnSelect>
-                </label>
+                  <label>
+                    Nº de usuários
+                    <select
+                      value={form.usersCount}
+                      onChange={(event) => updateForm("usersCount", Number(event.target.value))}
+                    >
+                      {USER_OPTIONS.map((option) => (
+                        <option key={option.label} value={option.count}>
+                          {option.label} [+{option.points}]
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-                <label>
-                  Pontos ANCED
-                  <input
-                    type="number"
-                    value={form.anced_total}
-                    onChange={(event) =>
-                      updateForm("anced_total", event.target.value)
-                    }
-                  />
-                </label>
+                  <label>
+                    Classe
+                    <select
+                      value={form.classPoints}
+                      onChange={(event) => updateForm("classPoints", event.target.value)}
+                    >
+                      <option value="">Selecionar</option>
+                      {CLASS_OPTIONS.map((option) => (
+                        <option key={option.label} value={option.points}>
+                          {option.label} [+{option.points}]
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-                <label>
-                  Confiança
-                  <LnSelect
-                    value={form.anced_confidence}
-                    onChange={(event) =>
-                      updateForm("anced_confidence", event.target.value)
-                    }
-                  >
-                    {CONFIDENCE_OPTIONS.map((item) => (
-                      <option key={item}>{item}</option>
-                    ))}
-                  </LnSelect>
-                </label>
-              </div>
+                  <label>
+                    Estrutura
+                    <select
+                      value={form.structurePoints}
+                      onChange={(event) => updateForm("structurePoints", event.target.value)}
+                    >
+                      <option value="">Selecionar</option>
+                      {STRUCTURE_OPTIONS.map((option) => (
+                        <option key={option.label} value={option.points}>
+                          {option.label} [+{option.points}]
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-              <label>
-                Resumo da técnica
-                <textarea
-                  value={form.summary}
-                  onChange={(event) => updateForm("summary", event.target.value)}
-                />
-              </label>
+                  <label>
+                    Danos
+                    <select
+                      value={form.damagePoints}
+                      onChange={(event) => updateForm("damagePoints", event.target.value)}
+                    >
+                      <option value="">Selecionar</option>
+                      {DAMAGE_OPTIONS.map((option) => (
+                        <option key={option.label} value={option.points}>
+                          {option.label} [+{option.points}]
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-              <label>
-                Efeito adaptado para o RPG
-                <textarea
-                  value={form.rpg_effect}
-                  onChange={(event) => updateForm("rpg_effect", event.target.value)}
-                  placeholder="Escreva aqui o efeito oficial adaptado para o RPG."
-                />
-              </label>
+                  <label>
+                    Bônus / ajuste
+                    <input
+                      value={form.bonusLabel}
+                      onChange={(event) => updateForm("bonusLabel", event.target.value)}
+                      placeholder="Ex: Cura, Senjutsu, Filler Boruto..."
+                    />
+                  </label>
 
-              <div className="shinobidex-admin-grid two">
-                <label>
-                  Requisitos
+                  <label>
+                    Pontos de bônus
+                    <input
+                      type="number"
+                      value={form.bonusPoints}
+                      onChange={(event) => updateForm("bonusPoints", Number(event.target.value))}
+                    />
+                  </label>
+
+                  <label>
+                    Status
+                    <select
+                      value={form.status}
+                      onChange={(event) => updateForm("status", event.target.value)}
+                    >
+                      {STATUS_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="shinobidex-v2-admin__total">
+                  <span>Usuários usados: {userOption?.label} [+{userOption?.points}]</span>
+                  <span>Bônus: +{Number(form.bonusPoints || 0)}</span>
+                  <strong>Total {calculated.total} | Rank {calculated.rank}</strong>
+                </div>
+
+                <label className="shinobidex-v2-admin__notes">
+                  Observações
                   <textarea
-                    value={form.requirements}
-                    onChange={(event) =>
-                      updateForm("requirements", event.target.value)
-                    }
-                    placeholder="Rank, clã, natureza, doujutsu, treinamento..."
+                    rows={6}
+                    value={form.reviewNotes}
+                    onChange={(event) => updateForm("reviewNotes", event.target.value)}
                   />
                 </label>
 
-                <label>
-                  Limitações
-                  <textarea
-                    value={form.limitations}
-                    onChange={(event) =>
-                      updateForm("limitations", event.target.value)
-                    }
-                    placeholder="Custos, riscos, alcance, restrições..."
-                  />
-                </label>
-              </div>
-
-              <label>
-                Detalhes do cálculo ANCED
-                <textarea
-                  value={form.anced_details}
-                  onChange={(event) =>
-                    updateForm("anced_details", event.target.value)
-                  }
-                />
-              </label>
-
-              <label>
-                Status
-                <LnSelect
-                  value={form.status}
-                  onChange={(event) => updateForm("status", event.target.value)}
-                >
-                  {STATUS_OPTIONS.map((item) => (
-                    <option key={item} value={item}>
-                      {statusLabel[item] || item}
-                    </option>
-                  ))}
-                </LnSelect>
-              </label>
-
-              <div className="shinobidex-admin-actions">
                 <button
                   type="button"
-                  onClick={() => saveTechnique()}
-                  disabled={isSaving}
+                  onClick={saveAnced}
+                  disabled={saving}
+                  className="shinobidex-v2-admin__save"
                 >
-                  {isSaving ? "Salvando..." : "Salvar alterações"}
+                  {saving ? "Salvando..." : "Salvar ANCED"}
                 </button>
-
-                <button
-                  type="button"
-                  className="approve"
-                  onClick={() => saveTechnique("approved")}
-                  disabled={isSaving}
-                >
-                  Aprovar
-                </button>
-
-                <button
-                  type="button"
-                  className="review"
-                  onClick={() => saveTechnique("needs_review")}
-                  disabled={isSaving}
-                >
-                  Marcar revisão
-                </button>
-
-                <button
-                  type="button"
-                  className="archive"
-                  onClick={deleteTechnique}
-                  disabled={isSaving}
-                >
-                  Arquivar
-                </button>
-              </div>
+              </section>
             </>
-          ) : (
-            <p className="empty-message">Selecione uma técnica para editar.</p>
           )}
         </main>
       </div>

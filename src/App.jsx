@@ -4,6 +4,7 @@ import {
   ImageOverlay,
   Marker,
   Polyline,
+  Polygon,
   CircleMarker,
   Tooltip,
   Popup,
@@ -11,6 +12,8 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import { CRS, divIcon } from "leaflet";
+import { DEFAULT_LAND_POLYGONS } from "./data/mapTerrainPolygons";
+import { getTerrainAtPoint } from "./lib/map/lnTerrainEngine";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import "./styles/hall-back-button.css";
@@ -66,21 +69,32 @@ const UNIT_NAME = "província";
 const DIAGONAL_COST = 1.41;
 
 const TRAVEL_MODES = {
-  aereo: {
-    label: "Aéreo",
-    hoursPerFiveFeet: 6,
+  terrestre: {
+    label: "Terrestre",
+    hoursPerProvince: 12,
+    hoursPerFiveFeet: 12,
   },
   aquatico: {
     label: "Aquático",
+    hoursPerProvince: 9,
     hoursPerFiveFeet: 9,
   },
-  terrestre: {
-    label: "Terrestre",
-    hoursPerFiveFeet: 12,
+  terrestre_aquatico: {
+    label: "Terrestre + Aquático",
+    hoursPerProvince: 0,
+    hoursPerFiveFeet: 0,
+    hybridTerrain: true,
+  },
+  aereo: {
+    label: "Aéreo",
+    hoursPerProvince: 6,
+    hoursPerFiveFeet: 6,
   },
   teletransporte: {
     label: "Teletransporte",
+    hoursPerProvince: 0,
     hoursPerFiveFeet: 0,
+    instant: true,
   },
 };
 
@@ -193,8 +207,8 @@ function getSmallCellCenter(coord) {
 
 
 function calculateTravel(a, b, travelMode) {
-  const dx = Math.abs(a.globalSmallCol - b.globalSmallCol);
-  const dy = Math.abs(a.globalSmallRow - b.globalSmallRow);
+  const dx = Math.abs(Number(a?.globalSmallCol ?? 0) - Number(b?.globalSmallCol ?? 0));
+  const dy = Math.abs(Number(a?.globalSmallRow ?? 0) - Number(b?.globalSmallRow ?? 0));
 
   const diagonals = Math.min(dx, dy);
   const straights = Math.max(dx, dy) - diagonals;
@@ -202,8 +216,12 @@ function calculateTravel(a, b, travelMode) {
   const smallSquares = diagonals * DIAGONAL_COST + straights;
   const feet = smallSquares * UNIT_PER_SMALL_SQUARE;
 
-  const selectedMode = TRAVEL_MODES[travelMode];
-  const hours = smallSquares * selectedMode.hoursPerFiveFeet;
+  const selectedMode = TRAVEL_MODES[travelMode] || TRAVEL_MODES.terrestre;
+  const hoursPerProvince = Number(
+    selectedMode.hoursPerProvince ?? selectedMode.hoursPerFiveFeet ?? 0
+  );
+
+  const hours = selectedMode.instant ? 0 : smallSquares * hoursPerProvince;
   const days = hours / 24;
 
   return {
@@ -212,12 +230,15 @@ function calculateTravel(a, b, travelMode) {
     diagonals,
     straights,
     smallSquares,
-    macroBlocks: smallSquares / SUBDIVISIONS,
+    macroBlocks: smallSquares,
     feet,
+    provinces: smallSquares,
     hours,
     days,
+    modeKey: travelMode,
     modeLabel: selectedMode.label,
-    hoursPerFiveFeet: selectedMode.hoursPerFiveFeet,
+    hoursPerProvince,
+    hoursPerFiveFeet: hoursPerProvince,
   };
 }
 
@@ -294,6 +315,29 @@ function buildGridLines(showSmallGrid) {
 
 const CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 const TRAVEL_STORAGE_KEY = "legendary-ninja-travels";
+const TERRAIN_POLYGONS_STORAGE_KEY = "ln-map-terrain-polygons-v1";
+
+function readSavedTerrainPolygons() {
+  if (typeof localStorage === "undefined") {
+    return DEFAULT_LAND_POLYGONS;
+  }
+
+  try {
+    const raw = localStorage.getItem(TERRAIN_POLYGONS_STORAGE_KEY);
+    if (!raw) return DEFAULT_LAND_POLYGONS;
+
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : DEFAULT_LAND_POLYGONS;
+  } catch {
+    return DEFAULT_LAND_POLYGONS;
+  }
+}
+
+function saveTerrainPolygonsToStorage(polygons) {
+  if (typeof localStorage === "undefined") return;
+
+  localStorage.setItem(TERRAIN_POLYGONS_STORAGE_KEY, JSON.stringify(polygons || []));
+}
 
 // Em produção, deixe 1.
 // Para teste rápido, você pode trocar para 3600, fazendo 1 segundo real valer 1 hora de viagem.
@@ -700,6 +744,19 @@ function writeCharacterLocations(locations) {
 
 export default function App() {
   const [points, setPoints] = useState([]);
+  const [mapControlsVisible, setMapControlsVisible] = useState(true);
+  const [terrainHudVisible, setTerrainHudVisible] = useState(false);
+  const [terrainEditorEnabled, setTerrainEditorEnabled] = useState(false);
+  const [terrainPolygons, setTerrainPolygons] = useState(() => readSavedTerrainPolygons());
+  const [draftTerrainPoints, setDraftTerrainPoints] = useState([]);
+  const [lastTerrainSample, setLastTerrainSample] = useState(null);
+  const [terrainRectangleMode, setTerrainRectangleMode] = useState(false);
+  const [terrainRectangleStart, setTerrainRectangleStart] = useState(null);
+
+  useEffect(() => {
+    saveTerrainPolygonsToStorage(terrainPolygons);
+  }, [terrainPolygons]);
+
   const [travelMode, setTravelMode] = useState("terrestre");
   const [showImageGrid, setShowImageGrid] = useState(false);
   const [showOverlayGrid, setShowOverlayGrid] = useState(false);
@@ -722,6 +779,7 @@ export default function App() {
   const [travels, setTravels] = useState(() => readSavedTravels());
   const [mapPings, setMapPings] = useState([]);
   const [selectedMapPing, setSelectedMapPing] = useState(null);
+  const [selectedPursuitPresence, setSelectedPursuitPresence] = useState(null);
   const [mapPingImagePreview, setMapPingImagePreview] = useState(null);
   const ignoreNextMapClickRef = useRef(false);
   const [characterLocations, setCharacterLocations] = useState(() =>
@@ -1122,10 +1180,16 @@ async function loadOnlineTravels() {
       return;
     }
 
-    const travelData = calculateTravel(startCoord, endCoord, travelMode);
+    const travelData = calculateTravelForSelectedMode(startCoord, endCoord, travelMode);
+    const activeTravelModifier = endCoord?.travelModifier || null;
+    const travelSpeedMultiplier = Math.max(1, Number(activeTravelModifier?.multiplier || 1));
+    const effectiveTravelHours = travelSpeedMultiplier > 1
+      ? travelData.hours / travelSpeedMultiplier
+      : travelData.hours;
+    const effectiveTravelDays = effectiveTravelHours / 24;
     const startedAt = new Date().toISOString();
     const arrivalAt = new Date(
-      Date.now() + travelData.hours * 60 * 60 * 1000
+      Date.now() + effectiveTravelHours * 60 * 60 * 1000
     ).toISOString();
 
     const newTravel = {
@@ -1133,14 +1197,25 @@ async function loadOnlineTravels() {
       characterId: selectedTravelCharacter.id,
       characterName: selectedTravelCharacter.characterName,
       characterIconUrl: getCharacterImageUrl(selectedTravelCharacter),
-      travelMode,
-      modeLabel: travelData.modeLabel,
+      travelMode: travelData.modeKey || travelMode,
+      terrainSegments: travelData.terrainSegments || [],
+      landProvinces: travelData.landProvinces || 0,
+      waterProvinces: travelData.waterProvinces || 0,
+      landHours: travelData.landHours || 0,
+      waterHours: travelData.waterHours || 0,
+      modeLabel: activeTravelModifier
+        ? `${travelData.modeLabel} (${activeTravelModifier.label || "modificador"} ×${travelSpeedMultiplier})`
+        : travelData.modeLabel,
+      travelModifier: activeTravelModifier,
+      pursuitTarget: endCoord?.pursuitTarget || null,
+      normalDurationHours: travelData.hours,
+      speedMultiplier: travelSpeedMultiplier,
       startCoord,
       endCoord,
-      startCenter: getSmallCellCenter(startCoord),
-      endCenter: getSmallCellCenter(endCoord),
-      durationHours: travelData.hours,
-      durationDays: travelData.days,
+      startCenter: getSelectedPointCenter(startCoord),
+      endCenter: getSelectedPointCenter(endCoord),
+      durationHours: effectiveTravelHours,
+      durationDays: effectiveTravelDays,
       distanceFeet: travelData.feet,
       startedAt,
       arrivalAt,
@@ -1188,14 +1263,16 @@ async function loadOnlineTravels() {
         user_id: session.user.id,
         character_name: selectedTravelCharacter.characterName,
         character_icon_url: getCharacterImageUrl(selectedTravelCharacter),
-        travel_mode: travelMode,
-        mode_label: travelData.modeLabel,
+        travel_mode: travelData.modeKey || travelMode,
+        mode_label: activeTravelModifier
+          ? `${travelData.modeLabel} (${activeTravelModifier.label || "modificador"} ×${travelSpeedMultiplier})`
+          : travelData.modeLabel,
         start_coord: startCoord,
         end_coord: endCoord,
-        start_center: getSmallCellCenter(startCoord),
-        end_center: getSmallCellCenter(endCoord),
-        duration_hours: travelData.hours,
-        duration_days: travelData.days,
+        start_center: getSelectedPointCenter(startCoord),
+        end_center: getSelectedPointCenter(endCoord),
+        duration_hours: effectiveTravelHours,
+        duration_days: effectiveTravelDays,
         distance_feet: travelData.feet,
         started_at: startedAt,
         arrival_at: arrivalAt,
@@ -1271,6 +1348,387 @@ async function loadOnlineTravels() {
 
   const gridLines = useMemo(() => buildGridLines(showSmallGrid), [showSmallGrid]);
 
+
+  function getSelectedPointCenter(point) {
+    const exactPoint = point?.exactPoint || point?.freePoint || point?.clickedPoint;
+
+    if (
+      exactPoint &&
+      Number.isFinite(Number(exactPoint.lat)) &&
+      Number.isFinite(Number(exactPoint.lng))
+    ) {
+      return [Number(exactPoint.lat), Number(exactPoint.lng)];
+    }
+
+    return getSmallCellCenter(point);
+  }
+
+
+
+  function formatTravelPreviewNumber(value, digits = 2) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+      return "-";
+    }
+
+    return number.toFixed(digits);
+  }
+
+  function formatTravelPreviewHours(value) {
+    const hours = Number(value);
+
+    if (!Number.isFinite(hours)) {
+      return "-";
+    }
+
+    if (hours < 1) {
+      return `${Math.round(hours * 60)} min`;
+    }
+
+    if (hours < 24) {
+      return `${hours.toFixed(1)}h`;
+    }
+
+    return `${(hours / 24).toFixed(2)} dias`;
+  }
+
+  function calculateExactTravelPreview(startCoord, endCoord, selectedTravelMode) {
+    if (!startCoord || !endCoord) return null;
+
+    const legacyTravel = calculateTravel(startCoord, endCoord, selectedTravelMode);
+    const startPoint = getSelectedPointCenter(startCoord);
+    const endPoint = getSelectedPointCenter(endCoord);
+
+    if (!Array.isArray(startPoint) || !Array.isArray(endPoint)) {
+      return null;
+    }
+
+    const dx = (Number(endPoint[1]) - Number(startPoint[1])) / smallCellWidth;
+    const dy = (Number(endPoint[0]) - Number(startPoint[0])) / smallCellHeight;
+    const exactSmallSquares = Math.sqrt(dx * dx + dy * dy);
+    const exactMacroBlocks = exactSmallSquares / SUBDIVISIONS;
+
+    const selectedMode = TRAVEL_MODES[selectedTravelMode] || TRAVEL_MODES.terrestre || {};
+    const hoursPerFiveProvinces = Number(
+      selectedMode.hoursPerFiveProvinces ??
+      selectedMode.hoursPerFiveProvince ??
+      selectedMode.hoursPerFive ??
+      0
+    );
+
+    const fallbackHoursPerSmallSquare =
+      Number(legacyTravel?.feet) > 0 && Number(legacyTravel?.hours) >= 0
+        ? Number(legacyTravel.hours) / Number(legacyTravel.feet)
+        : 0;
+
+    const hoursPerSmallSquare =
+      hoursPerFiveProvinces > 0
+        ? hoursPerFiveProvinces / SUBDIVISIONS
+        : fallbackHoursPerSmallSquare;
+
+    const exactHours = selectedMode.instant ? 0 : exactSmallSquares * hoursPerSmallSquare;
+    const exactDays = exactHours / 24;
+
+    return {
+      modeLabel: legacyTravel?.modeLabel || selectedMode.label || selectedTravelMode,
+      legacy: {
+        feet: legacyTravel?.feet,
+        provinces: legacyTravel?.feet,
+        macroBlocks: legacyTravel?.macroBlocks,
+        hours: legacyTravel?.hours,
+        days: legacyTravel?.days,
+      },
+      exact: {
+        feet: exactSmallSquares,
+        provinces: exactSmallSquares,
+        macroBlocks: exactMacroBlocks,
+        hours: exactHours,
+        days: exactDays,
+      },
+      delta: {
+        feet: exactSmallSquares - Number(legacyTravel?.feet || 0),
+        hours: exactHours - Number(legacyTravel?.hours || 0),
+      },
+    };
+  }
+
+
+
+  function getMapPointFromLatLng(latlng) {
+    return {
+      lat: Number(latlng?.lat),
+      lng: Number(latlng?.lng),
+      y: Number(latlng?.lat),
+      x: Number(latlng?.lng),
+    };
+  }
+
+  function getTerrainInfoForLatLng(latlng) {
+    const point = getMapPointFromLatLng(latlng);
+    return {
+      point,
+      ...getTerrainAtPoint(point, terrainPolygons),
+    };
+  }
+
+
+  function buildTerrainRectanglePoints(startPoint, endPoint) {
+    if (!startPoint || !endPoint) return [];
+
+    const lat1 = Number(startPoint.lat);
+    const lng1 = Number(startPoint.lng);
+    const lat2 = Number(endPoint.lat);
+    const lng2 = Number(endPoint.lng);
+
+    if (
+      !Number.isFinite(lat1) ||
+      !Number.isFinite(lng1) ||
+      !Number.isFinite(lat2) ||
+      !Number.isFinite(lng2)
+    ) {
+      return [];
+    }
+
+    return [
+      [lat1, lng1],
+      [lat1, lng2],
+      [lat2, lng2],
+      [lat2, lng1],
+    ];
+  }
+
+  function saveTerrainRectangle(startPoint, endPoint) {
+    const rectanglePoints = buildTerrainRectanglePoints(startPoint, endPoint);
+
+    if (rectanglePoints.length < 4) {
+      alert("Não consegui formar o quadrado/retângulo de terreno.");
+      return;
+    }
+
+    const polygonName = prompt(
+      "Nome da área de terra:",
+      `Área retangular ${terrainPolygons.length + 1}`
+    );
+
+    if (!polygonName) {
+      setTerrainRectangleStart(null);
+      return;
+    }
+
+    const newPolygon = {
+      id: `land-rect-${Date.now()}`,
+      name: polygonName,
+      type: "land",
+      shape: "rectangle",
+      points: rectanglePoints,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTerrainPolygons((current) => [...current, newPolygon]);
+    setTerrainRectangleStart(null);
+    setLastTerrainSample({
+      point: endPoint,
+      terrain: "land",
+      label: "Terra",
+      polygon: newPolygon,
+      saved: true,
+    });
+  }
+
+  function cancelTerrainRectangle() {
+    setTerrainRectangleStart(null);
+  }
+
+  function toggleTerrainRectangleMode() {
+    setTerrainRectangleMode((current) => {
+      const next = !current;
+
+      if (!next) {
+        setTerrainRectangleStart(null);
+      }
+
+      return next;
+    });
+  }
+
+  function saveDraftTerrainPolygon() {
+    if (draftTerrainPoints.length < 3) {
+      alert("Marque pelo menos 3 pontos para fechar uma área de terra.");
+      return;
+    }
+
+    const polygonName = prompt(
+      "Nome da área de terra:",
+      `Área de terra ${terrainPolygons.length + 1}`
+    );
+
+    if (!polygonName) {
+      return;
+    }
+
+    const newPolygon = {
+      id: `land-${Date.now()}`,
+      name: polygonName,
+      type: "land",
+      points: draftTerrainPoints,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTerrainPolygons((current) => [...current, newPolygon]);
+    setDraftTerrainPoints([]);
+    setLastTerrainSample({
+      point: draftTerrainPoints[draftTerrainPoints.length - 1],
+      terrain: "land",
+      label: "Terra",
+      polygon: newPolygon,
+      saved: true,
+    });
+  }
+
+  function undoDraftTerrainPoint() {
+    setDraftTerrainPoints((current) => current.slice(0, -1));
+  }
+
+  function clearDraftTerrainPolygon() {
+    setDraftTerrainPoints([]);
+  }
+
+  async function exportTerrainPolygons() {
+    const json = JSON.stringify(terrainPolygons, null, 2);
+
+    try {
+      await navigator.clipboard?.writeText(json);
+      alert("Polígonos copiados para a área de transferência.");
+    } catch {
+      console.log("Polígonos de terreno:", json);
+      alert("Não consegui copiar automaticamente. O JSON foi enviado para o console.");
+    }
+  }
+
+  function clearLastTerrainPolygon() {
+    const last = terrainPolygons[terrainPolygons.length - 1];
+
+    if (!last) {
+      alert("Nenhum polígono salvo para remover.");
+      return;
+    }
+
+    if (!confirm(`Remover o último polígono salvo: ${last.name}?`)) {
+      return;
+    }
+
+    setTerrainPolygons((current) => current.slice(0, -1));
+  }
+
+
+  function setTravelDestinationFromLatLng(latlng, options = {}) {
+    const coord = getCoordinate(latlng);
+
+    if (!coord) {
+      alert("O destino selecionado está fora da área válida do mapa.");
+      return false;
+    }
+
+    const exactPoint = {
+      lat: Number(latlng.lat),
+      lng: Number(latlng.lng),
+      y: Number(latlng.lat),
+      x: Number(latlng.lng),
+    };
+
+    const terrainInfo = getTerrainAtPoint(exactPoint, terrainPolygons);
+
+    setLastTerrainSample({
+      point: exactPoint,
+      ...terrainInfo,
+    });
+
+    setPoints([
+      {
+        ...coord,
+        exactPoint,
+        freePoint: exactPoint,
+        clickedPoint: exactPoint,
+        terrain: terrainInfo.terrain,
+        terrainLabel: terrainInfo.label,
+        destinationSource: options.source || "map",
+        destinationName: options.name || coord.label,
+        destinationId: options.id || "",
+        travelModifier: options.travelModifier || null,
+        pursuitTarget: options.pursuitTarget || null,
+      },
+    ]);
+
+    return true;
+  }
+
+
+  function preparePursuitToUnknownPresence(presence) {
+    if (!presence?.position) {
+      alert("Não foi possível localizar esta presença no mapa.");
+      return;
+    }
+
+    const lat = Number(presence.position[0]);
+    const lng = Number(presence.position[1]);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      alert("Esta presença não possui coordenada válida para perseguição.");
+      return;
+    }
+
+    const ok = setTravelDestinationFromLatLng(
+      { lat, lng },
+      {
+        source: "pursuit",
+        id: presence.id || "",
+        name: presence.characterName || "Presença desconhecida",
+        travelModifier: {
+          type: "pursuit",
+          multiplier: 6,
+          label: "Perseguição",
+          reason: "Perseguidor recebe 6x velocidade dentro da mesma região.",
+        },
+        pursuitTarget: {
+          travelId: presence.id || "",
+          characterName: presence.characterName || "Presença desconhecida",
+          coord: presence.coord || null,
+          sameProvince: !!presence.sameProvince,
+        },
+      }
+    );
+
+    if (ok) {
+      alert("Destino de perseguição marcado. Ao iniciar a viagem, o tempo será dividido por 6.");
+    }
+  }
+
+  function prepareTravelToMapPing(ping) {
+    if (!ping) return;
+
+    const lat = Number(ping.lat);
+    const lng = Number(ping.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      alert("Este ping não possui coordenada válida para viagem.");
+      return;
+    }
+
+    const ok = setTravelDestinationFromLatLng(
+      { lat, lng },
+      {
+        source: "ping",
+        id: ping.id,
+        name: ping.title || ping.name || "Ping do mapa",
+      }
+    );
+
+    if (ok) {
+      setSelectedMapPing(null);
+    }
+  }
+
   function handleMapClick(latlng) {
     if (ignoreNextMapClickRef.current) {
       ignoreNextMapClickRef.current = false;
@@ -1286,7 +1744,269 @@ async function loadOnlineTravels() {
       return;
     }
 
-    setPoints([coord]);
+    const exactPoint = {
+      lat: Number(latlng.lat),
+      lng: Number(latlng.lng),
+      y: Number(latlng.lat),
+      x: Number(latlng.lng),
+    };
+
+    const terrainInfo = getTerrainAtPoint(exactPoint, terrainPolygons);
+
+    setLastTerrainSample({
+      point: exactPoint,
+      ...terrainInfo,
+    });
+
+    if (terrainEditorEnabled) {
+      if (terrainRectangleMode) {
+        if (!terrainRectangleStart) {
+          setTerrainRectangleStart(exactPoint);
+          return;
+        }
+
+        saveTerrainRectangle(terrainRectangleStart, exactPoint);
+        return;
+      }
+
+      setDraftTerrainPoints((current) => [
+        ...current,
+        [exactPoint.lat, exactPoint.lng],
+      ]);
+      return;
+    }
+
+    setTravelDestinationFromLatLng(latlng);
+  }
+
+
+  function getHoursPerProvinceForTravelMode(modeKey) {
+    const mode = TRAVEL_MODES[modeKey] || TRAVEL_MODES.terrestre;
+
+    return Number(mode.hoursPerProvince ?? mode.hoursPerFiveFeet ?? 0);
+  }
+
+  function getHybridRoutePoint(startPoint, endPoint, progress) {
+    return [
+      Number(startPoint[0]) + (Number(endPoint[0]) - Number(startPoint[0])) * progress,
+      Number(startPoint[1]) + (Number(endPoint[1]) - Number(startPoint[1])) * progress,
+    ];
+  }
+
+  function getDistanceInProvincesBetweenCenters(startPoint, endPoint) {
+    if (!Array.isArray(startPoint) || !Array.isArray(endPoint)) return 0;
+
+    const dx = (Number(endPoint[1]) - Number(startPoint[1])) / smallCellWidth;
+    const dy = (Number(endPoint[0]) - Number(startPoint[0])) / smallCellHeight;
+
+    if (!Number.isFinite(dx) || !Number.isFinite(dy)) return 0;
+
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function getTerrainTravelModeForPoint(point) {
+    const terrainInfo = getTerrainAtPoint(
+      {
+        lat: point[0],
+        lng: point[1],
+      },
+      terrainPolygons
+    );
+
+    return terrainInfo.terrain === "land" ? "terrestre" : "aquatico";
+  }
+
+  function getTravelModeLabel(modeKey) {
+    if (modeKey === "terrestre") return "Terrestre";
+    if (modeKey === "aquatico") return "Aquático";
+    if (modeKey === "aereo") return "Aéreo";
+    if (modeKey === "teletransporte") return "Teletransporte";
+    if (modeKey === "terrestre_aquatico") return "Terrestre + Aquático";
+    return modeKey || "-";
+  }
+
+  function calculateTerrestrialAquaticTravel(startCoord, endCoord) {
+    const startPoint = getSelectedPointCenter(startCoord);
+    const endPoint = getSelectedPointCenter(endCoord);
+
+    if (!Array.isArray(startPoint) || !Array.isArray(endPoint)) {
+      return calculateTravel(startCoord, endCoord, "terrestre");
+    }
+
+    const totalDistance = getDistanceInProvincesBetweenCenters(startPoint, endPoint);
+
+    if (!Number.isFinite(totalDistance) || totalDistance <= 0) {
+      return {
+        dx: 0,
+        dy: 0,
+        diagonals: 0,
+        straights: 0,
+        smallSquares: 0,
+        macroBlocks: 0,
+        feet: 0,
+        provinces: 0,
+        hours: 0,
+        days: 0,
+        modeKey: "terrestre_aquatico",
+        modeLabel: "Terrestre + Aquático",
+        hoursPerProvince: 0,
+        hoursPerFiveFeet: 0,
+        terrainSegments: [],
+        landProvinces: 0,
+        waterProvinces: 0,
+        landHours: 0,
+        waterHours: 0,
+      };
+    }
+
+    const samples = 120;
+    const rawSegments = [];
+
+    for (let i = 0; i < samples; i += 1) {
+      const startProgress = i / samples;
+      const endProgress = (i + 1) / samples;
+      const middleProgress = (startProgress + endProgress) / 2;
+
+      const segmentStart = getHybridRoutePoint(startPoint, endPoint, startProgress);
+      const segmentEnd = getHybridRoutePoint(startPoint, endPoint, endProgress);
+      const segmentMiddle = getHybridRoutePoint(startPoint, endPoint, middleProgress);
+
+      const modeKey = getTerrainTravelModeForPoint(segmentMiddle);
+      const distanceProvinces = getDistanceInProvincesBetweenCenters(segmentStart, segmentEnd);
+      const hoursPerProvince = getHoursPerProvinceForTravelMode(modeKey);
+      const hours = distanceProvinces * hoursPerProvince;
+
+      const last = rawSegments[rawSegments.length - 1];
+
+      if (last && last.modeKey === modeKey) {
+        last.endPoint = segmentEnd;
+        last.distanceProvinces += distanceProvinces;
+        last.hours += hours;
+      } else {
+        rawSegments.push({
+          modeKey,
+          modeLabel: getTravelModeLabel(modeKey),
+          terrain: modeKey === "terrestre" ? "land" : "water",
+          terrainLabel: modeKey === "terrestre" ? "Terra" : "Água",
+          startPoint: segmentStart,
+          endPoint: segmentEnd,
+          distanceProvinces,
+          hours,
+        });
+      }
+    }
+
+    let cursorHours = 0;
+
+    const terrainSegments = rawSegments.map((segment, index) => {
+      const startHour = cursorHours;
+      const endHour = cursorHours + segment.hours;
+      cursorHours = endHour;
+
+      return {
+        ...segment,
+        index,
+        startHour,
+        endHour,
+      };
+    });
+
+    const landProvinces = terrainSegments
+      .filter((segment) => segment.modeKey === "terrestre")
+      .reduce((sum, segment) => sum + segment.distanceProvinces, 0);
+
+    const waterProvinces = terrainSegments
+      .filter((segment) => segment.modeKey === "aquatico")
+      .reduce((sum, segment) => sum + segment.distanceProvinces, 0);
+
+    const landHours = landProvinces * getHoursPerProvinceForTravelMode("terrestre");
+    const waterHours = waterProvinces * getHoursPerProvinceForTravelMode("aquatico");
+    const totalHours = landHours + waterHours;
+    const totalProvinces = landProvinces + waterProvinces;
+
+    return {
+      dx: Math.abs(Number(startCoord?.globalSmallCol ?? 0) - Number(endCoord?.globalSmallCol ?? 0)),
+      dy: Math.abs(Number(startCoord?.globalSmallRow ?? 0) - Number(endCoord?.globalSmallRow ?? 0)),
+      diagonals: 0,
+      straights: totalProvinces,
+      smallSquares: totalProvinces,
+      macroBlocks: totalProvinces,
+      feet: totalProvinces,
+      provinces: totalProvinces,
+      hours: totalHours,
+      days: totalHours / 24,
+      modeKey: "terrestre_aquatico",
+      modeLabel: "Terrestre + Aquático",
+      hoursPerProvince: null,
+      hoursPerFiveFeet: null,
+      terrainSegments,
+      landProvinces,
+      waterProvinces,
+      landHours,
+      waterHours,
+      hasLand: landProvinces > 0.01,
+      hasWater: waterProvinces > 0.01,
+    };
+  }
+
+  function calculateTravelForSelectedMode(startCoord, endCoord, selectedTravelMode) {
+    try {
+      if (selectedTravelMode === "terrestre_aquatico") {
+        return calculateTerrestrialAquaticTravel(startCoord, endCoord);
+      }
+
+      return calculateTravel(startCoord, endCoord, selectedTravelMode);
+    } catch (error) {
+      console.error("Erro no cálculo de viagem. Usando fallback terrestre:", error);
+
+      try {
+        return calculateTravel(startCoord, endCoord, "terrestre");
+      } catch {
+        return {
+          feet: 0,
+          provinces: 0,
+          macroBlocks: 0,
+          hours: 0,
+          days: 0,
+          modeKey: "terrestre",
+          modeLabel: "Terrestre",
+          terrainSegments: [],
+          landProvinces: 0,
+          waterProvinces: 0,
+          landHours: 0,
+          waterHours: 0,
+        };
+      }
+    }
+  }
+
+
+  function formatHybridTravelNumber(value, digits = 2) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+      return "0.00";
+    }
+
+    return number.toFixed(digits);
+  }
+
+  function formatHybridTravelHours(value) {
+    const hours = Number(value);
+
+    if (!Number.isFinite(hours) || hours <= 0) {
+      return "0h";
+    }
+
+    if (hours < 1) {
+      return `${Math.round(hours * 60)} min`;
+    }
+
+    if (hours < 24) {
+      return `${hours.toFixed(1)}h`;
+    }
+
+    return `${(hours / 24).toFixed(2)} dias`;
   }
 
   const currentTravelOrigin =
@@ -1294,10 +2014,53 @@ async function loadOnlineTravels() {
       ? getCurrentCoordinateForCharacter(selectedTravelCharacter.id)
       : null;
 
-  const travel =
-    points.length >= 1 && currentTravelOrigin
-      ? calculateTravel(currentTravelOrigin, points[0], travelMode)
+  const travel = (() => {
+    if (!(points.length >= 1 && currentTravelOrigin)) {
+      return null;
+    }
+
+    try {
+      return calculateTravelForSelectedMode(currentTravelOrigin, points[0], travelMode);
+    } catch (error) {
+      console.error("Erro ao calcular preview da viagem:", error);
+      window.__lnLastTravelPreviewError = error;
+
+      try {
+        return calculateTravel(currentTravelOrigin, points[0], "terrestre");
+      } catch {
+        return {
+          feet: 0,
+          provinces: 0,
+          macroBlocks: 0,
+          hours: 0,
+          days: 0,
+          modeKey: "terrestre",
+          modeLabel: "Terrestre",
+          terrainSegments: [],
+          landProvinces: 0,
+          waterProvinces: 0,
+          landHours: 0,
+          waterHours: 0,
+          fallback: true,
+        };
+      }
+    }
+  })();
+
+  const exactTravelPreview =
+    points.length >= 1 && currentTravelOrigin && travelMode !== "terrestre_aquatico"
+      ? calculateExactTravelPreview(currentTravelOrigin, points[0], travelMode)
       : null;
+
+  useEffect(() => {
+    if (!exactTravelPreview) return;
+
+    window.__lnTravelPreview = exactTravelPreview;
+
+    if (import.meta.env.DEV) {
+      console.info("[LN Digital] Preview de viagem por coordenada exata:", exactTravelPreview);
+    }
+  }, [exactTravelPreview]);
 
   if (isAuthLoading) {
     return (
@@ -1386,6 +2149,8 @@ async function loadOnlineTravels() {
 
             return {
               id: travel.id,
+              targetTravelId: travel.id,
+              targetCharacterId: travel.characterId,
               characterName: travel.characterName || travel.character_name || "Personagem desconhecido",
               position: currentPoint,
               coord: currentCoord,
@@ -1510,7 +2275,16 @@ async function loadOnlineTravels() {
 
         {/* OTIMIZAÇÃO: controles do mapa só renderizam na página Mapa. */}
         {activePage === "map" && (<>
-        <div className="map-controls-card">
+        <div className={`map-controls-card ${mapControlsVisible ? "" : "is-hidden"}`}>
+            <button
+              type="button"
+              className="ln-map-panel-close"
+              onClick={() => setMapControlsVisible(false)}
+              title="Ocultar menu do mapa"
+              aria-label="Ocultar menu do mapa"
+            >
+              ×
+            </button>
           <section className="map-control-section">
             <h3>
               <span className="map-control-section-icon">⌘</span>
@@ -1524,6 +2298,7 @@ async function loadOnlineTravels() {
               >
                 <option value="terrestre">Terrestre — 1 província = 12 horas</option>
                 <option value="aquatico">Aquático — 1 província = 9 horas</option>
+                <option value="terrestre_aquatico">Terrestre + Aquático — automático</option>
                 <option value="aereo">Aéreo — 1 província = 6 horas</option>
                 <option value="teletransporte">Teletransporte — imediato</option>
               </LnSelect>
@@ -1699,6 +2474,20 @@ async function loadOnlineTravels() {
                 Região atual: {selectedMapPresence.currentCoord.macroLabel || "-"}
               </small>
             )}
+
+            {unknownPresenceMarkers.length > 0 && (
+              <div className="map-presence-actions">
+                {unknownPresenceMarkers.map((presence) => (
+                  <button
+                    key={`presence-action-${presence.id}`}
+                    type="button"
+                    onClick={() => setSelectedPursuitPresence(presence)}
+                  >
+                    Ver presença {presence.sameProvince ? `em ${presence.coord?.label || "província"}` : `na região ${presence.coord?.macroLabel || ""}`}
+                  </button>
+                ))}
+              </div>
+            )}
           </section>
         </div>
 
@@ -1871,6 +2660,7 @@ async function loadOnlineTravels() {
                 >
                   <option value="terrestre">Terrestre — 1 província = 12h</option>
                   <option value="aquatico">Aquático — 1 província = 9h</option>
+                  <option value="terrestre_aquatico">Terrestre + Aquático — automático</option>
                   <option value="aereo">Aéreo — 1 província = 6h</option>
                   <option value="teletransporte">Teletransporte — imediato</option>
                 </LnSelect>
@@ -1917,6 +2707,53 @@ async function loadOnlineTravels() {
                   <span>◎</span>
                   Limpar pontos
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTravelMode("terrestre_aquatico")}
+                  title="Usar rota automática entre terra e água"
+                >
+                  <span>≈</span>
+                  Terrestre + Aquático
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTerrainEditorEnabled((value) => !value)}
+                  title="Marcar áreas de terra no mapa"
+                >
+                  <span>◈</span>
+                  Terreno ADM: {terrainEditorEnabled ? "ON" : "OFF"}
+                </button>
+
+                {terrainEditorEnabled && (
+                  <>
+                    <button type="button" onClick={undoDraftTerrainPoint}>
+                      <span>↶</span>
+                      Desfazer ponto ({draftTerrainPoints.length})
+                    </button>
+
+                    <button type="button" onClick={saveDraftTerrainPolygon}>
+                      <span>✓</span>
+                      Salvar terra
+                    </button>
+
+                    <button type="button" onClick={clearDraftTerrainPolygon}>
+                      <span>×</span>
+                      Limpar desenho
+                    </button>
+
+                    <button type="button" onClick={exportTerrainPolygons}>
+                      <span>⇩</span>
+                      Exportar terreno
+                    </button>
+
+                    <button type="button" onClick={clearLastTerrainPolygon}>
+                      <span>⌫</span>
+                      Remover último
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="mobile-map-travel-tools">
@@ -1991,6 +2828,225 @@ async function loadOnlineTravels() {
             </div>
           )}
 
+        {false && terrainHudVisible && (
+        <aside
+          className="ln-terrain-hud"
+          style={{
+            position: "absolute",
+            left: 18,
+            top: 18,
+            zIndex: 1200,
+            width: "min(360px, calc(100% - 36px))",
+            padding: "12px",
+            borderRadius: 16,
+            border: "1px solid rgba(255, 122, 0, 0.48)",
+            background: "rgba(14, 12, 10, 0.92)",
+            color: "#f5eadc",
+            boxShadow: "0 18px 44px rgba(0, 0, 0, 0.38)",
+            backdropFilter: "blur(10px)",
+            fontSize: 12,
+            lineHeight: 1.35,
+          }}
+        >
+          <button
+            type="button"
+            className="ln-map-panel-close"
+            onClick={() => setTerrainHudVisible(false)}
+            title="Ocultar cartografia de terreno"
+            aria-label="Ocultar cartografia de terreno"
+          >
+            ×
+          </button>
+
+          <strong
+            style={{
+              display: "block",
+              marginBottom: 8,
+              color: "#ff9a32",
+              fontSize: 12,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            Cartografia de Terreno
+          </strong>
+
+          <div style={{ display: "grid", gap: 6 }}>
+            <button
+              type="button"
+              onClick={() => setTerrainEditorEnabled((value) => !value)}
+              style={{
+                border: "1px solid rgba(255, 122, 0, 0.5)",
+                borderRadius: 999,
+                padding: "8px 10px",
+                background: terrainEditorEnabled ? "#ff7a00" : "rgba(255, 122, 0, 0.12)",
+                color: terrainEditorEnabled ? "#130b04" : "#ffb45c",
+                fontWeight: 800,
+                cursor: "pointer",
+              }}
+            >
+              Terreno ADM: {terrainEditorEnabled ? "ON" : "OFF"}
+            </button>
+
+            <div>
+              Último clique:{" "}
+              <b>
+                {lastTerrainSample
+                  ? `${lastTerrainSample.label}${lastTerrainSample.polygon?.name ? ` · ${lastTerrainSample.polygon.name}` : ""}`
+                  : "nenhum"}
+              </b>
+            </div>
+
+            <div style={{ color: "#d6c4aa" }}>
+              Polígonos salvos: {terrainPolygons.length} · Pontos em desenho: {draftTerrainPoints.length}
+              {terrainRectangleMode && (
+                <>
+                  {" "}· Quadrado: {terrainRectangleStart ? "marque o canto oposto" : "marque o 1º canto"}
+                </>
+              )}
+            </div>
+
+            {terrainEditorEnabled && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                <button type="button" onClick={toggleTerrainRectangleMode}>
+                  Modo quadrado: {terrainRectangleMode ? "ON" : "OFF"}
+                </button>
+
+                {terrainRectangleStart && (
+                  <button type="button" onClick={cancelTerrainRectangle}>
+                    Cancelar quadrado
+                  </button>
+                )}
+
+                <button type="button" onClick={undoDraftTerrainPoint}>
+                  Desfazer ponto
+                </button>
+                <button type="button" onClick={saveDraftTerrainPolygon}>
+                  Salvar terra
+                </button>
+                <button type="button" onClick={clearDraftTerrainPolygon}>
+                  Limpar desenho
+                </button>
+                <button type="button" onClick={clearLastTerrainPolygon}>
+                  Remover último
+                </button>
+              </div>
+            )}
+          </div>
+        </aside>
+        )}
+
+
+        {!mapControlsVisible && (
+          <button
+            type="button"
+            className="ln-map-floating-toggle ln-map-floating-menu-toggle"
+            onClick={() => setMapControlsVisible(true)}
+          >
+            Mostrar menu
+          </button>
+        )}
+
+
+        {travelMode === "terrestre_aquatico" && travel && (
+          <aside
+            className="ln-hybrid-travel-panel"
+            style={{
+              position: "absolute",
+              right: 18,
+              bottom: 18,
+              zIndex: 1180,
+              width: "min(360px, calc(100% - 36px))",
+              padding: "12px 14px",
+              borderRadius: 16,
+              border: "1px solid rgba(255, 122, 0, 0.48)",
+              background: "rgba(14, 12, 10, 0.90)",
+              color: "#f5eadc",
+              boxShadow: "0 18px 44px rgba(0, 0, 0, 0.38)",
+              backdropFilter: "blur(10px)",
+              fontSize: 12,
+              lineHeight: 1.4,
+              pointerEvents: "none",
+            }}
+          >
+            <strong
+              style={{
+                display: "block",
+                marginBottom: 6,
+                color: "#ff9a32",
+                fontSize: 12,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              Viagem Terra + Água
+            </strong>
+
+            <div>
+              Total: <b>{formatHybridTravelHours(travel?.hours)}</b>
+            </div>
+
+            <div>
+              Terra: <b>{formatHybridTravelHours(travel?.landHours)}</b>{" "}
+              · {formatHybridTravelNumber(travel?.landProvinces)} prov.
+            </div>
+
+            <div>
+              Água: <b>{formatHybridTravelHours(travel?.waterHours)}</b>{" "}
+              · {formatHybridTravelNumber(travel?.waterProvinces)} prov.
+            </div>
+
+            <div style={{ marginTop: 6, color: "#d6c4aa" }}>
+              Trechos detectados: {Array.isArray(travel?.terrainSegments) ? travel.terrainSegments.length : 0}
+            </div>
+
+            {travel?.fallback && (
+              <div style={{ marginTop: 6, color: "#fca5a5" }}>
+                Fallback terrestre ativado.
+              </div>
+            )}
+          </aside>
+        )}
+
+
+        {selectedPursuitPresence && (
+          <aside className="map-pursuit-side-panel">
+            <button
+              type="button"
+              className="map-pursuit-side-close"
+              onClick={() => setSelectedPursuitPresence(null)}
+              aria-label="Fechar perseguição"
+            >
+              ×
+            </button>
+
+            <strong>Presença detectada</strong>
+
+            <p>
+              Região: <b>{selectedPursuitPresence.coord?.macroLabel || "-"}</b>
+              <br />
+              Província:{" "}
+              <b>
+                {selectedPursuitPresence.sameProvince
+                  ? selectedPursuitPresence.coord?.label || "-"
+                  : "não revelada"}
+              </b>
+            </p>
+
+            <p className="map-pursuit-note">
+              Perseguidor recebe velocidade ×6. O tempo da viagem será dividido por 6 ao iniciar.
+            </p>
+
+            <button
+              type="button"
+              className="map-pursuit-start-button"
+              onClick={() => preparePursuitToUnknownPresence(selectedPursuitPresence)}
+            >
+              Iniciar perseguição
+            </button>
+          </aside>
+        )}
+
         <MapContainer
           crs={CRS.Simple}
           bounds={imageBounds}
@@ -2050,6 +3106,64 @@ async function loadOnlineTravels() {
 
           <ClickHandler onMapClick={handleMapClick} />
 
+          {false && terrainPolygons.map((polygon) => (
+            <Polygon
+              key={polygon.id}
+              positions={polygon.points}
+              pathOptions={{
+                color: "#22c55e",
+                weight: 2,
+                opacity: 0.86,
+                fillColor: "#22c55e",
+                fillOpacity: terrainEditorEnabled ? 0.18 : 0.08,
+              }}
+              interactive={false}
+            />
+          ))}
+
+          {false && draftTerrainPoints.length >= 2 && (
+            <Polyline
+              positions={draftTerrainPoints}
+              pathOptions={{
+                color: "#f97316",
+                weight: 3,
+                opacity: 0.95,
+                dashArray: "8 8",
+              }}
+              interactive={false}
+            />
+          )}
+
+          {false && terrainEditorEnabled && terrainRectangleStart && (
+            <CircleMarker
+              center={[terrainRectangleStart.lat, terrainRectangleStart.lng]}
+              radius={7}
+              pathOptions={{
+                color: "#38bdf8",
+                fillColor: "#38bdf8",
+                fillOpacity: 0.95,
+                weight: 2,
+              }}
+              interactive={false}
+            />
+          )}
+
+          {false && terrainEditorEnabled &&
+            draftTerrainPoints.map((point, index) => (
+              <CircleMarker
+                key={`terrain-draft-${index}`}
+                center={point}
+                radius={5}
+                pathOptions={{
+                  color: "#f97316",
+                  fillColor: "#f97316",
+                  fillOpacity: 0.95,
+                  weight: 2,
+                }}
+                interactive={false}
+              />
+            ))}
+
           {unknownPresenceMarkers.map((presence) => (
             <Marker
               key={`unknown-presence-${presence.id}`}
@@ -2078,7 +3192,7 @@ async function loadOnlineTravels() {
           {points.map((point, index) => (
             <CircleMarker
               key={index}
-              center={getSmallCellCenter(point)}
+              center={getSelectedPointCenter(point)}
               radius={8}
               pathOptions={{
                 color: index === 0 ? "#22c55e" : "#ef4444",
@@ -2095,7 +3209,7 @@ async function loadOnlineTravels() {
 
           {points.length >= 1 && currentTravelOrigin && (
             <Polyline
-              positions={[getSmallCellCenter(currentTravelOrigin), getSmallCellCenter(points[0])]}
+              positions={[getSmallCellCenter(currentTravelOrigin), getSelectedPointCenter(points[0])]}
               pathOptions={{
                 color: "#f97316",
                 weight: 4,
@@ -2191,6 +3305,58 @@ async function loadOnlineTravels() {
           )}
 
         </MapContainer>
+
+        {exactTravelPreview && (
+          <aside
+            className="ln-travel-preview-panel"
+            style={{
+              position: "absolute",
+              left: 18,
+              bottom: 18,
+              zIndex: 900,
+              width: "min(360px, calc(100% - 36px))",
+              padding: "12px 14px",
+              borderRadius: 16,
+              border: "1px solid rgba(255, 122, 0, 0.45)",
+              background: "rgba(14, 12, 10, 0.88)",
+              color: "#f5eadc",
+              boxShadow: "0 18px 44px rgba(0, 0, 0, 0.38)",
+              backdropFilter: "blur(10px)",
+              fontSize: 12,
+              lineHeight: 1.4,
+              pointerEvents: "none",
+            }}
+          >
+            <strong
+              style={{
+                display: "block",
+                marginBottom: 6,
+                color: "#ff9a32",
+                fontSize: 12,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              Preview de coordenada livre
+            </strong>
+
+            <div style={{ display: "grid", gap: 4 }}>
+              <span>
+                Atual: {formatTravelPreviewNumber(exactTravelPreview.legacy?.provinces)} prov. ·{" "}
+                {formatTravelPreviewHours(exactTravelPreview.legacy?.hours)}
+              </span>
+              <span>
+                Exato: {formatTravelPreviewNumber(exactTravelPreview.exact?.provinces)} prov. ·{" "}
+                {formatTravelPreviewHours(exactTravelPreview.exact?.hours)}
+              </span>
+              <span style={{ color: "#d6c4aa" }}>
+                Diferença: {formatTravelPreviewNumber(exactTravelPreview.delta?.feet)} prov. ·{" "}
+                {formatTravelPreviewHours(exactTravelPreview.delta?.hours)}
+              </span>
+            </div>
+          </aside>
+        )}
+
 
           {mapPingImagePreview && (
             <div
@@ -2288,7 +3454,19 @@ async function loadOnlineTravels() {
                   <strong>Este local ainda não possui descrição cadastrada.</strong>
                 )}
               </div>
-            </aside>
+            
+              <button
+                type="button"
+                className="map-ping-travel-button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  prepareTravelToMapPing(selectedMapPing);
+                }}
+              >
+                Iniciar viagem até este ping
+              </button>
+</aside>
           )}
         </>
         ) : activePage === "skills" ? (

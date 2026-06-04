@@ -642,49 +642,88 @@ function ShinobiDossierPanel({ ninja, activeDossier }) {
   }
 
   async function loadShinobiDexTechniques() {
-    if (!isSupabaseConfigured || !supabase) {
-      setMessage("Supabase não está configurado para carregar a ShinobiDex.");
-      return;
-    }
+    if (!isSupabaseConfigured || !supabase) return;
 
     setIsLoadingTechniques(true);
 
-    const pageSize = 1000;
-    let from = 0;
-    let allTechniques = [];
-    let keepLoading = true;
+    async function fetchAllRows(table, select, orderBy = null) {
+      const all = [];
+      const pageSize = 1000;
+      let from = 0;
 
-    while (keepLoading) {
-      const to = from + pageSize - 1;
+      while (true) {
+        let query = supabase
+          .from(table)
+          .select(select)
+          .range(from, from + pageSize - 1);
 
-      const { data, error } = await supabase
-        .from("technique_catalog")
-        .select("*")
-        .order("name", { ascending: true })
-        .range(from, to);
+        if (orderBy) {
+          query = query.order(orderBy, { ascending: true });
+        }
 
-      if (error) {
-        setIsLoadingTechniques(false);
-        setMessage(`Erro ao carregar técnicas da ShinobiDex: ${error.message}`);
-        return;
-      }
+        const { data, error } = await query;
 
-      const batch = data || [];
-      allTechniques = [...allTechniques, ...batch];
+        if (error) throw error;
 
-      if (batch.length < pageSize) {
-        keepLoading = false;
-      } else {
+        const rows = data || [];
+        all.push(...rows);
+
+        if (rows.length < pageSize) break;
         from += pageSize;
       }
+
+      return all;
     }
 
-    const sorted = allTechniques.sort((a, b) =>
-      getTechniqueName(a).localeCompare(getTechniqueName(b), "pt-BR")
-    );
+    try {
+      const [techniqueRows, rankRows] = await Promise.all([
+        fetchAllRows(
+          "shinobidex_techniques",
+          "id,name,slug,summary,description,source_url,status,updated_at",
+          "name"
+        ),
+        fetchAllRows(
+          "anced_curated_ranks",
+          "technique_id,total,rank,range_label,users_label,class_label,structure_label,damage_label,status,updated_at"
+        ),
+      ]);
 
-    setShinobiDexTechniques(sorted);
-    setIsLoadingTechniques(false);
+      const rankByTechniqueId = new Map(
+        (rankRows || []).map((rank) => [rank.technique_id, rank])
+      );
+
+      const normalized = (techniqueRows || []).map((technique) => {
+        const anced = rankByTechniqueId.get(technique.id) || null;
+
+        return {
+          ...technique,
+          source: "shinobidex_v2",
+          technique_source: "shinobidex_v2",
+          anced,
+          anced_curated_rank: anced?.rank || "",
+          anced_rank: anced?.rank || "",
+          wiki_rank: anced?.rank || "",
+          rank: anced?.rank || "",
+          anced_total: anced?.total ?? null,
+          classification: anced?.class_label || "",
+          nature: anced?.structure_label || "",
+          raw_classification: anced?.class_label || "",
+          raw_nature: anced?.structure_label || "",
+          raw_type: anced?.damage_label || "",
+          summary: technique.summary || technique.description || "",
+        };
+      });
+
+      const sorted = normalized.sort((a, b) =>
+        getTechniqueName(a).localeCompare(getTechniqueName(b), "pt-BR")
+      );
+
+      setShinobiDexTechniques(sorted);
+    } catch (error) {
+      setMessage(`Erro ao carregar técnicas da nova ShinobiDex: ${error.message}`);
+    } finally {
+      setIsLoadingTechniques(false);
+    }
   }
 
   useEffect(() => {
