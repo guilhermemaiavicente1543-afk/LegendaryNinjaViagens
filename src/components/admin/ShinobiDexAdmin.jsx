@@ -72,9 +72,9 @@ export default function ShinobiDexAdmin() {
   const [form, setForm] = useState(emptyForm);
 
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("needs_review");
+  const [statusFilter, setStatusFilter] = useState("");
   const [confidenceFilter, setConfidenceFilter] = useState("Todas");
-  const [rankFilter, setRankFilter] = useState("Todos");
+  const [rankFilter, setRankFilter] = useState("");
   const [page, setPage] = useState(1);
   const [resultTotal, setResultTotal] = useState(0);
 
