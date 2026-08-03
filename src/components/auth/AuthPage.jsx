@@ -3,6 +3,7 @@ import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import { uniqueTraits } from "../../data/uniqueTraits";
 
 const CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
+const CREATE_NINJA_AFTER_AUTH_KEY = "ln-create-ninja-after-auth";
 
 const EMPTY_FORM = {
   email: "",
@@ -44,7 +45,6 @@ const VILLAGE_OPTIONS = [
   "Outra Organização"
 ];
 
-
 const UNIQUE_TRAIT_OPTIONS = [
   "",
   ...uniqueTraits
@@ -53,7 +53,7 @@ const UNIQUE_TRAIT_OPTIONS = [
 ];
 
 function getFinalVillage(form) {
-  if (form.villageOrOrganization === "Outro") {
+  if (form.villageOrOrganization === "Outra Organização") {
     return form.villageOrOrganizationOther.trim();
   }
 
@@ -110,9 +110,26 @@ function makeCharacterRecord(form, user) {
     characterPhotoUrl: form.characterPhotoUrl.trim(),
     mapIconUrl: form.mapIconUrl.trim(),
 
-    skillPoints: 0,
+    skillPoints: 50,
     unlockedSkillIds: [],
-    currentLocation: null
+    currentLocation: null,
+    profileSheet: {
+      playerName: form.playerName.trim(),
+      phone: form.phone.trim(),
+      characterName: form.characterName.trim(),
+      age: form.age.trim(),
+      clanOrKinship: form.clanOrKinship.trim(),
+      villageOrOrganization: getFinalVillage(form),
+      kekkeiGenkaiOrHiden: form.kekkeiGenkaiOrHiden.trim(),
+      epithet: form.epithet.trim(),
+      appearance: form.appearance.trim(),
+      history: form.history.trim(),
+      equipment: form.equipment.trim(),
+      uniqueTrait: form.uniqueTrait.trim(),
+      characterPhotoUrl: form.characterPhotoUrl.trim(),
+      mapIconUrl: form.mapIconUrl.trim(),
+      currentLocation: null
+    }
   };
 }
 
@@ -136,7 +153,9 @@ async function trySaveCharacterToSupabase(character) {
     equipment: character.equipment,
     unique_trait: character.uniqueTrait,
     character_photo_url: character.characterPhotoUrl,
-    map_icon_url: character.mapIconUrl
+    map_icon_url: character.mapIconUrl,
+    profile_sheet: character.profileSheet,
+    skill_points: character.skillPoints
   };
 
   const { error } = await supabase.from("characters").insert(payload);
@@ -146,7 +165,7 @@ async function trySaveCharacterToSupabase(character) {
   }
 }
 
-export default function AuthPage({ onDemoEnter }) {
+export default function AuthPage({ onAuthSuccess }) {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState(EMPTY_FORM);
   const [message, setMessage] = useState("");
@@ -182,8 +201,11 @@ export default function AuthPage({ onDemoEnter }) {
       }
     }
 
-    if (form.villageOrOrganization === "Outro" && !form.villageOrOrganizationOther.trim()) {
-      return "Informe a aldeia ou organização em Outro.";
+    if (
+      form.villageOrOrganization === "Outra Organização" &&
+      !form.villageOrOrganizationOther.trim()
+    ) {
+      return "Informe a aldeia ou organização em Outra Organização.";
     }
 
     if (form.password.length < 6) {
@@ -209,296 +231,331 @@ export default function AuthPage({ onDemoEnter }) {
 
     setIsLoading(true);
 
-    if (mode === "create") {
-      const validationMessage = validateCreateForm();
+    try {
+      if (mode === "create") {
+        const validationMessage = validateCreateForm();
 
-      if (validationMessage) {
-        setIsLoading(false);
-        setMessage(validationMessage);
+        if (validationMessage) {
+          setMessage(validationMessage);
+          return;
+        }
+
+        const { data, error } = await supabase.auth.signUp({
+          email: form.email.trim(),
+          password: form.password,
+          options: {
+            data: {
+              player_name: form.playerName.trim(),
+              phone: form.phone.trim(),
+              character_name: form.characterName.trim()
+            }
+          }
+        });
+
+        if (error) {
+          setMessage(error.message);
+          return;
+        }
+
+        const character = makeCharacterRecord(form, data?.user);
+        saveCharacterLocally(character);
+        localStorage.setItem(CREATE_NINJA_AFTER_AUTH_KEY, "1");
+
+        if (data?.session) {
+          await trySaveCharacterToSupabase(character);
+          onAuthSuccess?.("my-ninja");
+          return;
+        }
+
+        const { error: loginAfterSignupError } = await supabase.auth.signInWithPassword({
+          email: form.email.trim(),
+          password: form.password
+        });
+
+        await trySaveCharacterToSupabase(character);
+
+        if (!loginAfterSignupError) {
+          onAuthSuccess?.("my-ninja");
+          return;
+        }
+
+        setMessage(
+          "Conta criada e ninja salvo. Confirme o e-mail se necessário; ao entrar, você será levado ao Meu Ninja."
+        );
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signInWithPassword({
         email: form.email.trim(),
-        password: form.password,
-        options: {
-          data: {
-            player_name: form.playerName.trim(),
-            phone: form.phone.trim(),
-            character_name: form.characterName.trim()
-          }
-        }
+        password: form.password
       });
 
       if (error) {
-        setIsLoading(false);
         setMessage(error.message);
         return;
       }
 
-      const character = makeCharacterRecord(form, data?.user);
-      saveCharacterLocally(character);
-      await trySaveCharacterToSupabase(character);
-
+      onAuthSuccess?.("hall");
+    } finally {
       setIsLoading(false);
-      setMessage(
-        "Ninja criado. Se o login não entrar automaticamente, confirme o e-mail e depois use Entrar."
-      );
-      return;
     }
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email: form.email.trim(),
-      password: form.password
-    });
-
-    setIsLoading(false);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setMessage("Entrando...");
   }
 
   const isCreateMode = mode === "create";
 
   return (
-    <main className="ln-auth-page-v2">
-      <section className="ln-auth-card-v2">
-        <div className="ln-auth-brand-v2">
-          <span>忍</span>
-          <div>
-            <small>LN Digital</small>
-            <strong>Hall</strong>
+    <main className="auth-page ln-auth-screen">
+      <section className="ln-auth-shell">
+        <div className="ln-auth-brand">
+          <p className="eyebrow">Legendary Ninja Digital</p>
+          <h1>{isCreateMode ? "Criar Ninja" : "Entrar no LN Digital"}</h1>
+          <p>
+            {isCreateMode
+              ? "Crie sua conta e sua ficha inicial. O ninja ficará conectado automaticamente ao seu login."
+              : "Acesse sua conta para abrir o Hall, Meu Ninja, mapa de viagens e painel do jogador."}
+          </p>
+        </div>
+
+        <form className="ln-auth-card" onSubmit={handleSubmit}>
+          <div className="ln-auth-tabs" role="tablist" aria-label="Modo de autenticação">
+            <button
+              type="button"
+              className={mode === "login" ? "active" : ""}
+              onClick={() => {
+                setMode("login");
+                setMessage("");
+              }}
+            >
+              Login
+            </button>
+
+            <button
+              type="button"
+              className={mode === "create" ? "active" : ""}
+              onClick={() => {
+                setMode("create");
+                setMessage("");
+              }}
+            >
+              Criar Ninja
+            </button>
           </div>
-        </div>
 
-        <div className="ln-auth-heading-v2">
-          <p>{mode === "login" ? "Acesso do Player" : "Cadastro Shinobi"}</p>
-          <h1>{mode === "login" ? "Entrar" : "Criar Ninja"}</h1>
-          <span>
-            {mode === "login"
-              ? "Entre com sua conta para continuar sua jornada."
-              : "O cadastro já é a criação oficial do personagem. Cada player terá apenas um ninja."}
-          </span>
-        </div>
+          <div className="ln-auth-grid two">
+            <label>
+              <span>E-mail</span>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(event) => updateField("email", event.target.value)}
+                placeholder="player@email.com"
+                autoComplete="email"
+              />
+            </label>
 
-        <div className="ln-auth-mode-tabs-v2">
-          <button
-            type="button"
-            className={mode === "login" ? "active" : ""}
-            onClick={() => {
-              setMode("login");
-              setMessage("");
-            }}
-          >
-            Login
-          </button>
+            <label>
+              <span>Senha</span>
+              <input
+                type="password"
+                value={form.password}
+                onChange={(event) => updateField("password", event.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                autoComplete={isCreateMode ? "new-password" : "current-password"}
+              />
+            </label>
+          </div>
 
-          <button
-            type="button"
-            className={mode === "create" ? "active" : ""}
-            onClick={() => {
-              setMode("create");
-              setMessage("");
-            }}
-          >
-            Criar Ninja
-          </button>
-        </div>
-
-        <form className="ln-auth-form-v2 ln-auth-form-ninja" onSubmit={handleSubmit}>
-          <label>
-            E-mail
-            <input
-              type="email"
-              value={form.email}
-              onChange={(event) => updateField("email", event.target.value)}
-              placeholder="player@email.com"
-              autoComplete="email"
-            />
-          </label>
-
-          <label>
-            Senha
-            <input
-              type="password"
-              value={form.password}
-              onChange={(event) => updateField("password", event.target.value)}
-              placeholder="••••••••"
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-            />
-          </label>
+          {!isCreateMode && (
+            <button
+              type="button"
+              className="login-forgot-password-button"
+              onClick={() => {
+                window.dispatchEvent(new Event("open-password-recovery"));
+              }}
+            >
+              Esqueci minha senha
+            </button>
+          )}
 
           {isCreateMode && (
             <>
-              <div className="ln-auth-form-section-title">Dados do player</div>
+              <div className="ln-auth-section-title">
+                <span>Dados do player</span>
+              </div>
 
-              <label>
-                Nome do player
-                <input
-                  value={form.playerName}
-                  onChange={(event) => updateField("playerName", event.target.value)}
-                  placeholder="Seu nome ou apelido"
-                />
-              </label>
+              <div className="ln-auth-grid two">
+                <label>
+                  <span>Nome do player</span>
+                  <input
+                    value={form.playerName}
+                    onChange={(event) => updateField("playerName", event.target.value)}
+                    placeholder="Seu nome ou apelido"
+                  />
+                </label>
 
-              <label>
-                Telefone
-                <input
-                  value={form.phone}
-                  onChange={(event) => updateField("phone", event.target.value)}
-                  placeholder="(00) 00000-0000"
-                />
-              </label>
+                <label>
+                  <span>Telefone</span>
+                  <input
+                    value={form.phone}
+                    onChange={(event) => updateField("phone", event.target.value)}
+                    placeholder="(00) 00000-0000"
+                  />
+                </label>
+              </div>
 
-              <div className="ln-auth-form-section-title">Ficha do personagem</div>
+              <div className="ln-auth-section-title">
+                <span>Ficha do personagem</span>
+              </div>
 
-              <label>
-                Nome do personagem
-                <input
-                  value={form.characterName}
-                  onChange={(event) => updateField("characterName", event.target.value)}
-                  placeholder="Ex: Marik Uchiha"
-                />
-              </label>
+              <div className="ln-auth-grid three">
+                <label>
+                  <span>Nome do personagem</span>
+                  <input
+                    value={form.characterName}
+                    onChange={(event) => updateField("characterName", event.target.value)}
+                    placeholder="Ex: Marik Uchiha"
+                  />
+                </label>
 
-              <label>
-                Idade
-                <input
-                  value={form.age}
-                  onChange={(event) => updateField("age", event.target.value)}
-                  placeholder="Ex: 17"
-                />
-              </label>
+                <label>
+                  <span>Idade</span>
+                  <input
+                    value={form.age}
+                    onChange={(event) => updateField("age", event.target.value)}
+                    placeholder="Ex: 17"
+                  />
+                </label>
 
-              <label>
-                Clã ou Parentesco
-                <input
-                  value={form.clanOrKinship}
-                  onChange={(event) => updateField("clanOrKinship", event.target.value)}
-                  placeholder="Ex: Uchiha, Hyuuga, sem clã..."
-                />
-              </label>
+                <label>
+                  <span>Clã ou Parentesco</span>
+                  <input
+                    value={form.clanOrKinship}
+                    onChange={(event) => updateField("clanOrKinship", event.target.value)}
+                    placeholder="Ex: Uchiha, Hyuuga, sem clã"
+                  />
+                </label>
+              </div>
 
-              <label>
-                Aldeia ou Organização
-                <select
-                  value={form.villageOrOrganization}
-                  onChange={(event) => updateField("villageOrOrganization", event.target.value)}
-                >
-                  {VILLAGE_OPTIONS.map((option) => (
-                    <option key={option || "empty"} value={option}>
-                      {option || "Selecione"}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <div className="ln-auth-grid two">
+                <label>
+                  <span>Aldeia ou Organização</span>
+                  <select
+                    value={form.villageOrOrganization}
+                    onChange={(event) => updateField("villageOrOrganization", event.target.value)}
+                  >
+                    {VILLAGE_OPTIONS.map((option) => (
+                      <option key={option || "empty"} value={option}>
+                        {option || "Selecione"}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-              <label>
-                Kekkei Genkai ou Hiden
-                <input
-                  value={form.kekkeiGenkaiOrHiden}
-                  onChange={(event) => updateField("kekkeiGenkaiOrHiden", event.target.value)}
-                  placeholder="Ex: Sharingan, Byakugan, Nara..."
-                />
-              </label>
+                {form.villageOrOrganization === "Outra Organização" && (
+                  <label>
+                    <span>Qual?</span>
+                    <input
+                      value={form.villageOrOrganizationOther}
+                      onChange={(event) =>
+                        updateField("villageOrOrganizationOther", event.target.value)
+                      }
+                      placeholder="Nome da organização"
+                    />
+                  </label>
+                )}
 
-              <label>
-                Alcunha / Epíteto
-                <input
-                  value={form.epithet}
-                  onChange={(event) => updateField("epithet", event.target.value)}
-                  placeholder="Opcional"
-                />
-              </label>
+                <label>
+                  <span>Kekkei Genkai ou Hiden</span>
+                  <input
+                    value={form.kekkeiGenkaiOrHiden}
+                    onChange={(event) => updateField("kekkeiGenkaiOrHiden", event.target.value)}
+                    placeholder="Ex: Sharingan, Byakugan, Nara"
+                  />
+                </label>
 
-              <label>
-                Aparência
+                <label>
+                  <span>Epíteto</span>
+                  <input
+                    value={form.epithet}
+                    onChange={(event) => updateField("epithet", event.target.value)}
+                    placeholder="Opcional"
+                  />
+                </label>
+              </div>
+
+              <label className="ln-auth-full">
+                <span>Aparência</span>
                 <textarea
                   value={form.appearance}
                   onChange={(event) => updateField("appearance", event.target.value)}
                   placeholder="Descreva a aparência do personagem"
-                  rows={4}
                 />
               </label>
 
-              <label>
-                História
+              <label className="ln-auth-full">
+                <span>História</span>
                 <textarea
                   value={form.history}
                   onChange={(event) => updateField("history", event.target.value)}
                   placeholder="Conte a história inicial do personagem"
-                  rows={5}
                 />
               </label>
 
-              <label>
-                Equipamentos
+              <label className="ln-auth-full">
+                <span>Equipamentos</span>
                 <textarea
                   value={form.equipment}
                   onChange={(event) => updateField("equipment", event.target.value)}
                   placeholder="Liste equipamentos iniciais, armas, itens..."
-                  rows={4}
                 />
               </label>
 
-              <label>
-                Traço único
-                <select
-                  value={form.uniqueTrait}
-                  onChange={(event) => updateField("uniqueTrait", event.target.value)}
-                >
-                  {UNIQUE_TRAIT_OPTIONS.map((option) => (
-                    <option key={option || "empty"} value={option}>
-                      {option || "Selecione"}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <div className="ln-auth-grid three">
+                <label>
+                  <span>Traço único</span>
+                  <select
+                    value={form.uniqueTrait}
+                    onChange={(event) => updateField("uniqueTrait", event.target.value)}
+                  >
+                    {UNIQUE_TRAIT_OPTIONS.map((option) => (
+                      <option key={option || "empty"} value={option}>
+                        {option || "Selecione"}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-              <label>
-                URL da foto do personagem
-                <input
-                  value={form.characterPhotoUrl}
-                  onChange={(event) => updateField("characterPhotoUrl", event.target.value)}
-                  placeholder="https://..."
-                />
-              </label>
+                <label>
+                  <span>Foto do personagem</span>
+                  <input
+                    value={form.characterPhotoUrl}
+                    onChange={(event) => updateField("characterPhotoUrl", event.target.value)}
+                    placeholder="URL da imagem"
+                  />
+                </label>
 
-              <label>
-                URL do ícone do mapa
-                <input
-                  value={form.mapIconUrl}
-                  onChange={(event) => updateField("mapIconUrl", event.target.value)}
-                  placeholder="https://..."
-                />
-              </label>
+                <label>
+                  <span>Ícone do mapa</span>
+                  <input
+                    value={form.mapIconUrl}
+                    onChange={(event) => updateField("mapIconUrl", event.target.value)}
+                    placeholder="Opcional"
+                  />
+                </label>
+              </div>
             </>
           )}
 
-          {message && <p className="ln-auth-message-v2">{message}</p>}
+          {message && <p className="ln-auth-message">{message}</p>}
 
-          <button type="submit" disabled={isLoading}>
+          <button className="ln-auth-submit" type="submit" disabled={isLoading}>
             {isLoading
-              ? "Aguarde..."
-              : mode === "login"
-                ? "Entrar"
-                : "Criar conta e ninja"}
+              ? "Processando..."
+              : isCreateMode
+                ? "Criar conta e conectar Meu Ninja"
+                : "Entrar"}
           </button>
         </form>
-
-        {typeof onDemoEnter === "function" && (
-          <button
-            type="button"
-            className="ln-auth-demo-v2"
-            onClick={onDemoEnter}
-          >
-            Entrar em modo demonstração
-          </button>
-        )}
       </section>
     </main>
   );

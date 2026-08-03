@@ -438,7 +438,21 @@ export default function LegendsPage({ onBack }) {
 
       <section className="legends-main-stage">
         <header className="legends-topbar">
-          <div className="legends-brand-chip">
+          <div
+            className="legends-brand-chip"
+            role="button"
+            tabIndex={0}
+            title="Voltar para a página inicial"
+            aria-label="Voltar para a página inicial"
+            style={{ cursor: "pointer" }}
+            onClick={() => onBack?.()}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onBack?.();
+              }
+            }}
+          >
             <span>忍</span>
             <div>
               <small>LN Digital</small>
