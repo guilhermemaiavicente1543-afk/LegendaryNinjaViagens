@@ -316,7 +316,10 @@ export default function AuthPage({ onAuthSuccess }) {
           </p>
         </div>
 
-        <form className="ln-auth-card" onSubmit={handleSubmit}>
+        <form
+          className={"ln-auth-card " + (isCreateMode ? "is-create-mode" : "is-login-mode")}
+          onSubmit={handleSubmit}
+        >
           <div className="ln-auth-tabs" role="tablist" aria-label="Modo de autenticação">
             <button
               type="button"
