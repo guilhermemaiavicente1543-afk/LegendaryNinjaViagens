@@ -1,3 +1,4 @@
+import PasswordRecoveryWidget from "./PasswordRecoveryWidget";
 import { useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import { uniqueTraits } from "../../data/uniqueTraits";
@@ -305,6 +306,7 @@ export default function AuthPage({ onAuthSuccess }) {
 
   return (
     <main className="auth-page ln-auth-screen">
+      <PasswordRecoveryWidget session={null} />
       <section className="ln-auth-shell">
         <div className="ln-auth-brand">
           <p className="eyebrow">Legendary Ninja Digital</p>
