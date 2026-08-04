@@ -216,6 +216,99 @@ function saveLocalCharacter(character) {
   return saved;
 }
 
+
+async function persistCharacterProfileToSupabase(character = {}) {
+  // LN_PERSIST_CHARACTER_PROFILE_ONLINE_V1
+  //
+  // O localStorage continua sendo um cache rápido, mas a fonte
+  // permanente da ficha passa a ser public.characters.
+  if (!isSupabaseConfigured || !supabase) {
+    return normalizeCharacter(character);
+  }
+
+  let userId = String(
+    character.userId ||
+    character.user_id ||
+    ""
+  ).trim();
+
+  if (!userId) {
+    const { data: authData, error: authError } =
+      await supabase.auth.getUser();
+
+    if (authError) {
+      throw new Error(authError.message);
+    }
+
+    userId = String(authData?.user?.id || "").trim();
+  }
+
+  const characterId = String(character.id || "").trim();
+
+  if (!userId && !characterId) {
+    throw new Error(
+      "Não foi possível identificar o personagem vinculado à conta."
+    );
+  }
+
+  const selectedTraits = getSelectedTraits(character);
+
+  const payload = {
+    player_name: String(character.playerName || "").trim(),
+    phone: String(character.phone || "").trim(),
+    character_name: String(character.characterName || "").trim(),
+    age: String(character.age || "").trim() || null,
+    clan_or_kinship: String(character.clanOrKinship || "").trim(),
+    village_or_organization: finalVillage(character),
+    kekkei_genkai_or_hiden: String(
+      character.kekkeiGenkaiOrHiden || ""
+    ).trim(),
+    epithet: String(character.epithet || "").trim(),
+    appearance: String(character.appearance || "").trim(),
+    history: String(character.history || "").trim(),
+    equipment: String(character.equipment || "").trim(),
+    unique_trait: selectedTraits[0] || "",
+    selected_traits: selectedTraits,
+    character_photo_url: String(
+      character.characterPhotoUrl ||
+      character.portraitUrl ||
+      ""
+    ).trim(),
+    map_icon_url: String(
+      character.mapIconUrl ||
+      character.iconUrl ||
+      ""
+    ).trim(),
+    updated_at: new Date().toISOString(),
+  };
+
+  let query = supabase
+    .from("characters")
+    .update(payload);
+
+  if (userId) {
+    query = query.eq("user_id", userId);
+  } else {
+    query = query.eq("id", characterId);
+  }
+
+  const { data, error } = await query
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    throw new Error(
+      "O Supabase não encontrou o ninja vinculado para atualizar."
+    );
+  }
+
+  return normalizeCharacter(data);
+}
+
 const sidebarItems = [
   ["Início", "home"],
   ["Mapa", "map"],
@@ -2012,7 +2105,7 @@ function NinjaSheetCard({ ninja, onSave }) {
     setDraft((current) => ({ ...current, [field]: value }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const selectedTraits = Array.isArray(draft.selectedTraits) ? draft.selectedTraits.filter(Boolean) : [];
@@ -2047,7 +2140,7 @@ function NinjaSheetCard({ ninja, onSave }) {
       return;
     }
 
-    onSave({
+    await onSave({
       ...draft,
       villageOrOrganization: finalVillage(draft),
       selectedTraits,
@@ -2151,8 +2244,9 @@ export default function MyNinjaCleanPage({
   ]);
 
 
-  function handleSaveNinjaSheet(nextCharacter) {
-    const saved = persistLocally
+  async function handleSaveNinjaSheet(nextCharacter) {
+    // LN_SAVE_NINJA_PROFILE_ONLINE_V1
+    const localSaved = persistLocally
       ? saveLocalCharacter(nextCharacter)
       : normalizeCharacter({
           ...nextCharacter,
@@ -2160,9 +2254,36 @@ export default function MyNinjaCleanPage({
           updatedAt: new Date().toISOString(),
         });
 
-    setLocalCharacter(saved);
-    setIsEditingProfile(false);
-    onSaveSheet?.(saved);
+    setLocalCharacter(localSaved);
+
+    try {
+      const onlineSaved =
+        await persistCharacterProfileToSupabase(localSaved);
+
+      const finalSaved = persistLocally
+        ? saveLocalCharacter(onlineSaved)
+        : normalizeCharacter(onlineSaved);
+
+      setLocalCharacter(finalSaved);
+      setIsEditingProfile(false);
+
+      await Promise.resolve(
+        onSaveSheet?.(finalSaved)
+      );
+
+      return finalSaved;
+    } catch (error) {
+      console.error(
+        "Erro ao salvar ficha online:",
+        error
+      );
+
+      alert(
+        `Não foi possível salvar a ficha no banco:\n\n${error.message}`
+      );
+
+      throw error;
+    }
   }
 
   function handleMobileMenuClick(label) {
