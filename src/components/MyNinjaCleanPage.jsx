@@ -142,37 +142,154 @@ function finalVillage(character) {
 }
 
 function normalizeCharacter(character = {}) {
-  const selectedTraits = getSelectedTraits(character);
-  const village = splitVillage(character.villageOrOrganization || character.village_or_organization);
+  // LN_NORMALIZE_PROFILE_SHEET_V4
+  //
+  // profile_sheet é a cópia integral e permanente da ficha.
+  // Os campos de cima da tabela continuam sendo usados pelo mapa.
+  const profileSheet =
+    character?.profileSheet &&
+    typeof character.profileSheet === "object"
+      ? character.profileSheet
+      : character?.profile_sheet &&
+        typeof character.profile_sheet === "object"
+        ? character.profile_sheet
+        : {};
+
+  const source = {
+    ...character,
+    ...profileSheet,
+  };
+
+  const selectedTraits =
+    getSelectedTraits(source);
+
+  const village = splitVillage(
+    source.villageOrOrganization ||
+    source.village_or_organization
+  );
 
   const normalized = {
     ...EMPTY_CHARACTER,
     ...character,
-    id: character.id || "",
-    userId: character.userId || character.user_id || "",
-    ownerEmail: character.ownerEmail || character.owner_email || "",
-    playerName: character.playerName || character.player_name || "",
-    phone: character.phone || "",
-    characterName: character.characterName || character.character_name || character.name || "",
-    age: character.age || "",
-    clanOrKinship: character.clanOrKinship || character.clan_or_kinship || "",
-    villageOrOrganization: character.villageOrOrganization === "Outro" ? "Outro" : village.villageOrOrganization,
-    villageOrOrganizationOther: character.villageOrOrganizationOther || village.villageOrOrganizationOther,
-    kekkeiGenkaiOrHiden: character.kekkeiGenkaiOrHiden || character.kekkei_genkai_or_hiden || "",
-    epithet: character.epithet || "",
-    appearance: character.appearance || "",
-    history: character.history || "",
-    equipment: character.equipment || "",
+    ...profileSheet,
+
+    id:
+      character.id ||
+      source.id ||
+      "",
+
+    userId:
+      character.userId ||
+      character.user_id ||
+      source.userId ||
+      source.user_id ||
+      "",
+
+    ownerEmail:
+      character.ownerEmail ||
+      character.owner_email ||
+      source.ownerEmail ||
+      source.owner_email ||
+      "",
+
+    playerName:
+      source.playerName ||
+      source.player_name ||
+      "",
+
+    phone:
+      source.phone ||
+      "",
+
+    characterName:
+      source.characterName ||
+      source.character_name ||
+      source.name ||
+      "",
+
+    age:
+      source.age ??
+      "",
+
+    clanOrKinship:
+      source.clanOrKinship ||
+      source.clan_or_kinship ||
+      "",
+
+    villageOrOrganization:
+      source.villageOrOrganization === "Outro"
+        ? "Outro"
+        : village.villageOrOrganization,
+
+    villageOrOrganizationOther:
+      source.villageOrOrganizationOther ||
+      village.villageOrOrganizationOther,
+
+    kekkeiGenkaiOrHiden:
+      source.kekkeiGenkaiOrHiden ||
+      source.kekkei_genkai_or_hiden ||
+      "",
+
+    epithet:
+      source.epithet ||
+      "",
+
+    appearance:
+      source.appearance ||
+      "",
+
+    history:
+      source.history ||
+      "",
+
+    equipment:
+      source.equipment ||
+      "",
+
     selectedTraits,
     selected_traits: selectedTraits,
-    uniqueTrait: selectedTraits[0] || character.uniqueTrait || character.unique_trait || "",
-    characterPhotoUrl: character.characterPhotoUrl || character.portraitUrl || character.portrait_url || character.photoUrl || character.photo_url || "",
-    mapIconUrl: character.mapIconUrl || character.iconUrl || character.icon_url || character.map_icon_url || "",
-    skillPoints: character.skillPoints ?? character.skill_points ?? 0,
+
+    uniqueTrait:
+      selectedTraits[0] ||
+      source.uniqueTrait ||
+      source.unique_trait ||
+      "",
+
+    characterPhotoUrl:
+      source.characterPhotoUrl ||
+      source.character_photo_url ||
+      source.portraitUrl ||
+      source.portrait_url ||
+      source.photoUrl ||
+      source.photo_url ||
+      "",
+
+    mapIconUrl:
+      source.mapIconUrl ||
+      source.map_icon_url ||
+      source.iconUrl ||
+      source.icon_url ||
+      "",
+
+    skillPoints:
+      source.skillPoints ??
+      source.skill_points ??
+      0,
+
+    profileSheet,
+    profile_sheet: profileSheet,
+
+    updatedAt:
+      source.updatedAt ||
+      source.updated_at ||
+      "",
   };
 
-  normalized.portraitUrl = normalized.characterPhotoUrl;
-  normalized.iconUrl = normalized.mapIconUrl;
+  normalized.portraitUrl =
+    normalized.characterPhotoUrl;
+
+  normalized.iconUrl =
+    normalized.mapIconUrl;
 
   return normalized;
 }
@@ -217,124 +334,104 @@ function saveLocalCharacter(character) {
 }
 
 
-async function persistCharacterProfileToSupabase(character = {}) {
-  // LN_MEUNINJA_ONLINE_SAVE_V3
-  if (!isSupabaseConfigured || !supabase) {
-    throw new Error("O Supabase não está configurado.");
-  }
-
-  const {
-    data: authData,
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError) {
-    throw new Error(authError.message);
-  }
-
-  const userId = String(
-    authData?.user?.id || ""
-  ).trim();
-
-  if (!userId) {
-    throw new Error(
-      "A sessão autenticada do jogador não foi encontrada."
-    );
-  }
+function buildMyNinjaProfilePayload(character = {}) {
+  const normalized =
+    normalizeCharacter(character);
 
   const selectedTraits =
-    getSelectedTraits(character);
+    getSelectedTraits(normalized);
 
-  const payload = {
-    player_name: String(
-      character.playerName || ""
-    ).trim(),
+  return {
+    player_name:
+      normalized.playerName,
 
-    phone: String(
-      character.phone || ""
-    ).trim(),
+    phone:
+      normalized.phone,
 
-    character_name: String(
-      character.characterName || ""
-    ).trim(),
+    character_name:
+      normalized.characterName,
 
     age:
-      String(character.age || "").trim() ||
-      null,
+      String(normalized.age ?? ""),
 
-    clan_or_kinship: String(
-      character.clanOrKinship || ""
-    ).trim(),
+    clan_or_kinship:
+      normalized.clanOrKinship,
 
     village_or_organization:
-      finalVillage(character),
+      finalVillage(normalized),
 
-    kekkei_genkai_or_hiden: String(
-      character.kekkeiGenkaiOrHiden || ""
-    ).trim(),
+    kekkei_genkai_or_hiden:
+      normalized.kekkeiGenkaiOrHiden,
 
-    epithet: String(
-      character.epithet || ""
-    ).trim(),
+    epithet:
+      normalized.epithet,
 
-    appearance: String(
-      character.appearance || ""
-    ).trim(),
+    appearance:
+      normalized.appearance,
 
-    history: String(
-      character.history || ""
-    ).trim(),
+    history:
+      normalized.history,
 
-    equipment: String(
-      character.equipment || ""
-    ).trim(),
+    equipment:
+      normalized.equipment,
 
     unique_trait:
       selectedTraits[0] || "",
 
-    character_photo_url: String(
-      character.characterPhotoUrl ||
-      character.portraitUrl ||
-      ""
-    ).trim(),
+    selected_traits:
+      selectedTraits,
 
-    map_icon_url: String(
-      character.mapIconUrl ||
-      character.iconUrl ||
-      ""
-    ).trim(),
+    character_photo_url:
+      normalized.characterPhotoUrl ||
+      normalized.portraitUrl ||
+      "",
+
+    map_icon_url:
+      normalized.mapIconUrl ||
+      normalized.iconUrl ||
+      "",
   };
+}
+
+async function persistCharacterProfileToSupabase(
+  character = {}
+) {
+  // LN_SAVE_MY_NINJA_RPC_V4
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error(
+      "O Supabase não está configurado."
+    );
+  }
+
+  const payload =
+    buildMyNinjaProfilePayload(character);
 
   const {
     data,
     error,
-  } = await supabase
-    .from("characters")
-    .update(payload)
-    .eq("user_id", userId)
-    .select("*")
-    .maybeSingle();
+  } = await supabase.rpc(
+    "ln_save_my_ninja",
+    {
+      p_profile: payload,
+    }
+  );
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (!data) {
+  const savedRow =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if (!savedRow) {
     throw new Error(
-      "Nenhum ninja vinculado a esta conta foi encontrado."
+      "O Supabase não devolveu o personagem salvo."
     );
   }
 
-  return normalizeCharacter({
-    ...data,
-    id: data.id,
-    userId: data.user_id || userId,
-    ownerEmail:
-      authData?.user?.email || "",
-    updatedAt:
-      data.updated_at ||
-      new Date().toISOString(),
-  });
+  return normalizeCharacter(savedRow);
 }
 
 const sidebarItems = [
@@ -2249,31 +2346,23 @@ export default function MyNinjaCleanPage({
   const [localCharacter, setLocalCharacter] = useState(() => getInitialCharacter(character));
 
   useEffect(() => {
-    const nextCharacter = getInitialCharacter(character);
+    const nextCharacter =
+      getInitialCharacter(character);
 
-    if (!nextCharacter?.id && !nextCharacter?.characterName) {
+    if (
+      !nextCharacter?.id &&
+      !nextCharacter?.characterName &&
+      !nextCharacter?.playerName
+    ) {
       return;
     }
 
-    setLocalCharacter((current) => {
-      const sameIdentity =
-        current?.id === nextCharacter?.id &&
-        current?.updatedAt === nextCharacter?.updatedAt &&
-        current?.characterName === nextCharacter?.characterName;
-
-      return sameIdentity ? current : nextCharacter;
-    });
-  }, [
-    character?.id,
-    character?.updatedAt,
-    character?.characterName,
-    character?.ownerEmail,
-    character?.userId,
-  ]);
+    setLocalCharacter(nextCharacter);
+  }, [character]);
 
 
   async function handleSaveNinjaSheet(nextCharacter) {
-    const preparedCharacter =
+    const prepared =
       normalizeCharacter({
         ...nextCharacter,
         villageOrOrganization:
@@ -2283,7 +2372,7 @@ export default function MyNinjaCleanPage({
     try {
       const onlineSaved =
         await persistCharacterProfileToSupabase(
-          preparedCharacter
+          prepared
         );
 
       const finalSaved = persistLocally
@@ -2321,31 +2410,60 @@ export default function MyNinjaCleanPage({
   }
 
   async function handleProfilePhotoUpload(event) {
-    const file = event.target.files?.[0];
+    // LN_SAVE_PROFILE_PHOTO_RPC_V4
+    const file =
+      event.target.files?.[0];
 
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
     setIsUploadingProfilePhoto(true);
 
     try {
-      const uploaded = await uploadDossierImage(file, ninja, "profile-photos");
+      const uploaded =
+        await uploadDossierImage(
+          file,
+          ninja,
+          "profile-photos"
+        );
 
-      const nextCharacter = {
-        ...ninja,
-        characterPhotoUrl: uploaded?.imageUrl || "",
-        portraitUrl: uploaded?.imageUrl || "",
-        updatedAt: new Date().toISOString(),
-      };
+      const nextCharacter =
+        normalizeCharacter({
+          ...ninja,
 
-      const saved = persistLocally
-        ? saveLocalCharacter(nextCharacter)
-        : normalizeCharacter(nextCharacter);
+          characterPhotoUrl:
+            uploaded?.imageUrl || "",
 
-      setLocalCharacter(saved);
-      onSaveSheet?.(saved);
+          portraitUrl:
+            uploaded?.imageUrl || "",
+        });
+
+      const onlineSaved =
+        await persistCharacterProfileToSupabase(
+          nextCharacter
+        );
+
+      const finalSaved = persistLocally
+        ? saveLocalCharacter(onlineSaved)
+        : onlineSaved;
+
+      setLocalCharacter(finalSaved);
+
+      await Promise.resolve(
+        onSaveSheet?.(finalSaved)
+      );
+
       onChangePhoto?.(uploaded);
     } catch (error) {
-      alert(`Erro ao enviar foto de perfil: ${error.message}`);
+      console.error(
+        "[LN Digital] Erro ao salvar foto:",
+        error
+      );
+
+      alert(
+        `A foto NÃO foi salva no perfil.\n\n${error.message}`
+      );
     } finally {
       setIsUploadingProfilePhoto(false);
       event.target.value = "";

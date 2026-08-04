@@ -6611,7 +6611,7 @@ function preparePursuitToUnknownPresence(presence) {
           />
         ) : (
           <MyNinjaCleanPage
-            // LN_MEUNINJA_ONLINE_CHARACTER_PROP_V3
+            // LN_MY_NINJA_ONLINE_PROP_V4
             character={
               selectedTravelCharacter ||
               travelCharacters[0] ||
