@@ -4785,9 +4785,28 @@ function preparePursuitToUnknownPresence(presence) {
   if (!session) {
     return (
       <AuthPage
-        onAuthSuccess={() => {
+        onAuthSuccess={(requestedPage = "hall") => {
+          // LN_AUTH_ROUTE_AFTER_SIGNUP_V2
+          //
+          // Preserva o Meu Ninja caso o listener da sessão tenha
+          // processado o cadastro antes desta função terminar.
+          const hasPendingNinjaCreation =
+            localStorage.getItem(CREATE_NINJA_AFTER_AUTH_KEY) === "1";
+
           setIsDemoMode(false);
-          setActivePage("hall");
+          setIsPanelOpen(false);
+
+          setActivePage((currentPage) => {
+            if (
+              requestedPage === "my-ninja" ||
+              hasPendingNinjaCreation ||
+              currentPage === "my-ninja"
+            ) {
+              return "my-ninja";
+            }
+
+            return "hall";
+          });
         }}
       />
     );

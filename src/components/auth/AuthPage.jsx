@@ -159,7 +159,15 @@ async function trySaveCharacterToSupabase(character) {
     skill_points: character.skillPoints
   };
 
-  const { error } = await supabase.from("characters").insert(payload);
+  // LN_CHARACTER_UPSERT_AFTER_SIGNUP_V2
+  // O trigger já cria a linha do personagem. O upsert completa
+  // essa mesma linha em vez de tentar criar um segundo ninja.
+  const { error } = await supabase
+    .from("characters")
+    .upsert(payload, {
+      onConflict: "user_id",
+      ignoreDuplicates: false,
+    });
 
   if (error) {
     console.warn("Não foi possível salvar personagem no Supabase:", error.message);
@@ -246,9 +254,21 @@ export default function AuthPage({ onAuthSuccess }) {
           password: form.password,
           options: {
             data: {
+              // LN_SIGNUP_FULL_METADATA_V2
               player_name: form.playerName.trim(),
               phone: form.phone.trim(),
-              character_name: form.characterName.trim()
+              character_name: form.characterName.trim(),
+              age: form.age.trim(),
+              clan_or_kinship: form.clanOrKinship.trim(),
+              village_or_organization: getFinalVillage(form),
+              kekkei_genkai_or_hiden: form.kekkeiGenkaiOrHiden.trim(),
+              epithet: form.epithet.trim(),
+              appearance: form.appearance.trim(),
+              history: form.history.trim(),
+              equipment: form.equipment.trim(),
+              unique_trait: form.uniqueTrait.trim(),
+              character_photo_url: form.characterPhotoUrl.trim(),
+              map_icon_url: form.mapIconUrl.trim()
             }
           }
         });
