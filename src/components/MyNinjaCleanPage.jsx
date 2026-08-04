@@ -508,8 +508,10 @@ async function uploadDossierImage(file, ninja, folder = "proofs") {
 }
 
 
-function ShinobiDossierPanel({ ninja, activeDossier }) {
-  const [sheet, setSheet] = useState(() => readProfileSheet(ninja));
+function ShinobiDossierPanel({ ninja, activeDossier, persistLocally = true }) {
+  const [sheet, setSheet] = useState(() =>
+    persistLocally ? readProfileSheet(ninja) : createEmptyProfileSheet()
+  );
   const [message, setMessage] = useState("");
   const [proofDraft, setProofDraft] = useState({ title: "", imageUrl: "", notes: "" });
   const [proofImageFile, setProofImageFile] = useState(null);
@@ -595,6 +597,10 @@ function ShinobiDossierPanel({ ninja, activeDossier }) {
     async function loadProfileSheetFromSupabase() {
       if (!isSupabaseConfigured || !supabase || !ninja?.id) return;
 
+      if (!persistLocally) {
+        setSheet(createEmptyProfileSheet());
+      }
+
       setIsSyncingSheet(true);
 
       const { data, error } = await supabase
@@ -619,7 +625,9 @@ function ShinobiDossierPanel({ ninja, activeDossier }) {
         };
 
         setSheet(nextSheet);
-        saveProfileSheet(ninja, nextSheet);
+        if (persistLocally) {
+          saveProfileSheet(ninja, nextSheet);
+        }
       }
     }
 
@@ -628,7 +636,7 @@ function ShinobiDossierPanel({ ninja, activeDossier }) {
     return () => {
       isMounted = false;
     };
-  }, [ninja?.id]);
+  }, [ninja?.id, persistLocally]);
 
   async function persistToSupabase(nextSheet) {
     if (!isSupabaseConfigured || !supabase || !ninja?.id) return null;
@@ -735,7 +743,10 @@ function ShinobiDossierPanel({ ninja, activeDossier }) {
 
   async function persist(nextSheet, successMessage = "Ficha Complementar salva.") {
     setSheet(nextSheet);
-    saveProfileSheet(ninja, nextSheet);
+
+    if (persistLocally) {
+      saveProfileSheet(ninja, nextSheet);
+    }
 
     setIsSyncingSheet(true);
     const error = await persistToSupabase(nextSheet);
@@ -2100,7 +2111,15 @@ function NinjaSheetCard({ ninja, onSave }) {
   );
 }
 
-export default function MyNinjaCleanPage({ character = EMPTY_CHARACTER, locationSlot = null, skillTreeSlot = null, onNavigate, onChangePhoto, onSaveSheet }) {
+export default function MyNinjaCleanPage({
+  character = EMPTY_CHARACTER,
+  locationSlot = null,
+  skillTreeSlot = null,
+  onNavigate,
+  onChangePhoto,
+  onSaveSheet,
+  persistLocally = true,
+}) {
   const [activeTab, setActiveTab] = useState("perfil");
   const [activeDossier, setActiveDossier] = useState("Registro de Provas");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -2133,7 +2152,14 @@ export default function MyNinjaCleanPage({ character = EMPTY_CHARACTER, location
 
 
   function handleSaveNinjaSheet(nextCharacter) {
-    const saved = saveLocalCharacter(nextCharacter);
+    const saved = persistLocally
+      ? saveLocalCharacter(nextCharacter)
+      : normalizeCharacter({
+          ...nextCharacter,
+          villageOrOrganization: finalVillage(nextCharacter),
+          updatedAt: new Date().toISOString(),
+        });
+
     setLocalCharacter(saved);
     setIsEditingProfile(false);
     onSaveSheet?.(saved);
@@ -2157,11 +2183,16 @@ export default function MyNinjaCleanPage({ character = EMPTY_CHARACTER, location
     try {
       const uploaded = await uploadDossierImage(file, ninja, "profile-photos");
 
-      const saved = saveLocalCharacter({
+      const nextCharacter = {
         ...ninja,
         characterPhotoUrl: uploaded?.imageUrl || "",
         portraitUrl: uploaded?.imageUrl || "",
-      });
+        updatedAt: new Date().toISOString(),
+      };
+
+      const saved = persistLocally
+        ? saveLocalCharacter(nextCharacter)
+        : normalizeCharacter(nextCharacter);
 
       setLocalCharacter(saved);
       onSaveSheet?.(saved);
@@ -2451,7 +2482,11 @@ export default function MyNinjaCleanPage({ character = EMPTY_CHARACTER, location
                     </ul>
 
                     <div className="mn-dossier-preview">
-                      <ShinobiDossierPanel ninja={ninja} activeDossier={activeDossier} />
+                      <ShinobiDossierPanel
+                        ninja={ninja}
+                        activeDossier={activeDossier}
+                        persistLocally={persistLocally}
+                      />
                     </div>
                   </div>
                 </article>
