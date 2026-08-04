@@ -155,9 +155,13 @@ function normalizeCharacter(character = {}) {
         ? character.profile_sheet
         : {};
 
+  /*
+    As colunas principais são a fonte oficial.
+    profile_sheet serve apenas como fallback.
+  */
   const source = {
-    ...character,
     ...profileSheet,
+    ...character,
   };
 
   const selectedTraits =
@@ -344,186 +348,169 @@ function buildMyNinjaProfilePayload(character = {}) {
   const selectedTraits =
     getSelectedTraits(normalized);
 
-  const existingProfileSheet =
-    normalized.profileSheet &&
-    typeof normalized.profileSheet === "object"
-      ? normalized.profileSheet
-      : normalized.profile_sheet &&
-        typeof normalized.profile_sheet === "object"
-        ? normalized.profile_sheet
-        : {};
-
-  const characterPhotoUrl =
-    normalized.characterPhotoUrl ||
-    normalized.portraitUrl ||
-    "";
-
-  const mapIconUrl =
-    normalized.mapIconUrl ||
-    normalized.iconUrl ||
-    "";
-
   return {
     player_name:
-      normalized.playerName,
+      normalized.playerName || "",
 
     phone_number:
-      normalized.phone,
+      normalized.phone || "",
 
     character_name:
-      normalized.characterName,
+      normalized.characterName || "",
 
     age:
-      String(normalized.age ?? "").trim() ||
-      null,
+      String(
+        normalized.age ?? ""
+      ),
 
     clan_or_kinship:
-      normalized.clanOrKinship,
+      normalized.clanOrKinship || "",
 
     village_or_organization:
       finalVillage(normalized),
 
     kekkei_genkai_or_hiden:
-      normalized.kekkeiGenkaiOrHiden,
+      normalized.kekkeiGenkaiOrHiden || "",
 
     epithet:
-      normalized.epithet,
+      normalized.epithet || "",
 
     appearance:
-      normalized.appearance,
+      normalized.appearance || "",
 
     history:
-      normalized.history,
+      normalized.history || "",
 
     equipment:
-      normalized.equipment,
+      normalized.equipment || "",
 
     selected_traits:
       selectedTraits,
 
     portrait_url:
-      characterPhotoUrl,
+      normalized.characterPhotoUrl ||
+      normalized.portraitUrl ||
+      "",
 
     icon_url:
-      mapIconUrl,
-
-    profile_completed:
-      true,
-
-    updated_at:
-      new Date().toISOString(),
-
-    profile_sheet: {
-      ...existingProfileSheet,
-
-      playerName:
-        normalized.playerName,
-
-      phone:
-        normalized.phone,
-
-      characterName:
-        normalized.characterName,
-
-      age:
-        normalized.age,
-
-      clanOrKinship:
-        normalized.clanOrKinship,
-
-      villageOrOrganization:
-        finalVillage(normalized),
-
-      kekkeiGenkaiOrHiden:
-        normalized.kekkeiGenkaiOrHiden,
-
-      epithet:
-        normalized.epithet,
-
-      appearance:
-        normalized.appearance,
-
-      history:
-        normalized.history,
-
-      equipment:
-        normalized.equipment,
-
-      selectedTraits,
-
-      characterPhotoUrl,
-
-      mapIconUrl,
-    },
+      normalized.mapIconUrl ||
+      normalized.iconUrl ||
+      "",
   };
+}
+
+function normalizeVerificationValue(value) {
+  if (Array.isArray(value)) {
+    return JSON.stringify(value);
+  }
+
+  return String(value ?? "").trim();
+}
+
+function isSavedProfileConfirmed(
+  row,
+  payload
+) {
+  const fields = [
+    "player_name",
+    "phone_number",
+    "character_name",
+    "age",
+    "clan_or_kinship",
+    "village_or_organization",
+    "kekkei_genkai_or_hiden",
+    "epithet",
+    "appearance",
+    "history",
+    "equipment",
+    "selected_traits",
+    "portrait_url",
+    "icon_url",
+  ];
+
+  return fields.every((field) =>
+    normalizeVerificationValue(row?.[field]) ===
+    normalizeVerificationValue(payload?.[field])
+  );
+}
+
+async function waitBeforeRetry(milliseconds) {
+  await new Promise((resolve) => {
+    window.setTimeout(resolve, milliseconds);
+  });
 }
 
 async function persistCharacterProfileToSupabase(
   character = {}
 ) {
-  // LN_DIRECT_MY_NINJA_SAVE_V5
+  // LN_ATOMIC_MY_NINJA_PROFILE_V6
   if (!isSupabaseConfigured || !supabase) {
     throw new Error(
       "O Supabase não está configurado."
     );
   }
 
-  const {
-    data: authData,
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError) {
-    throw new Error(authError.message);
-  }
-
-  const userId =
-    authData?.user?.id;
-
-  if (!userId) {
-    throw new Error(
-      "A sessão autenticada do jogador não foi encontrada."
-    );
-  }
-
   const payload =
     buildMyNinjaProfilePayload(character);
 
-  const {
-    data,
-    error,
-  } = await supabase
-    .from("characters")
-    .update(payload)
-    .eq("user_id", userId)
-    .select("*")
-    .maybeSingle();
+  let latestError = null;
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!data) {
-    throw new Error(
-      "Nenhum personagem vinculado a esta conta foi encontrado."
+  /*
+    Uma segunda tentativa é permitida somente quando
+    a primeira não é confirmada. Isso protege o mobile
+    contra pequenas interrupções de conexão sem permitir
+    múltiplos cliques concorrentes.
+  */
+  for (
+    let attempt = 1;
+    attempt <= 2;
+    attempt += 1
+  ) {
+    const {
+      data,
+      error,
+    } = await supabase.rpc(
+      "ln_save_my_ninja_profile",
+      {
+        p_profile: payload,
+      }
     );
+
+    if (!error) {
+      const savedRow =
+        Array.isArray(data)
+          ? data[0]
+          : data;
+
+      if (
+        savedRow &&
+        isSavedProfileConfirmed(
+          savedRow,
+          payload
+        )
+      ) {
+        return normalizeCharacter(savedRow);
+      }
+
+      latestError = new Error(
+        "O banco respondeu, mas não confirmou todos os campos salvos."
+      );
+    } else {
+      latestError =
+        new Error(error.message);
+    }
+
+    if (attempt < 2) {
+      await waitBeforeRetry(350);
+    }
   }
 
-  return normalizeCharacter({
-    ...data,
-
-    userId:
-      data.user_id ||
-      userId,
-
-    ownerEmail:
-      authData?.user?.email ||
-      "",
-
-    profileSheet:
-      data.profile_sheet ||
-      {},
-  });
+  throw (
+    latestError ||
+    new Error(
+      "Não foi possível confirmar o salvamento."
+    )
+  );
 }
 
 const sidebarItems = [
@@ -2317,6 +2304,7 @@ function InfoCard({ title, icon, rows, className = "" }) {
 function NinjaSheetCard({ ninja, onSave }) {
   const [draft, setDraft] = useState(() => normalizeCharacter(ninja));
   const [message, setMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   function updateField(field, value) {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -2325,7 +2313,14 @@ function NinjaSheetCard({ ninja, onSave }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const selectedTraits = Array.isArray(draft.selectedTraits) ? draft.selectedTraits.filter(Boolean) : [];
+    if (isSaving) {
+      return;
+    }
+
+    const selectedTraits =
+      Array.isArray(draft.selectedTraits)
+        ? draft.selectedTraits.filter(Boolean)
+        : [];
 
     const required = [
       ["playerName", "Nome do player"],
@@ -2341,33 +2336,92 @@ function NinjaSheetCard({ ninja, onSave }) {
     ];
 
     for (const [field, label] of required) {
-      if (!String(draft[field] || "").trim()) {
-        setMessage(`Preencha o campo: ${label}.`);
+      if (
+        !String(
+          draft[field] || ""
+        ).trim()
+      ) {
+        setMessage(
+          `Preencha o campo: ${label}.`
+        );
+
         return;
       }
     }
 
-    if (draft.villageOrOrganization === "Outro" && !String(draft.villageOrOrganizationOther || "").trim()) {
-      setMessage("Informe a aldeia ou organização em Outro.");
+    if (
+      draft.villageOrOrganization === "Outro" &&
+      !String(
+        draft.villageOrOrganizationOther || ""
+      ).trim()
+    ) {
+      setMessage(
+        "Informe a aldeia ou organização em Outro."
+      );
+
       return;
     }
 
     if (selectedTraits.length === 0) {
-      setMessage("Selecione ao menos um Traço Único.");
+      setMessage(
+        "Selecione ao menos um Traço Único."
+      );
+
       return;
     }
 
-    await onSave({
-      ...draft,
-      villageOrOrganization: finalVillage(draft),
-      selectedTraits,
-      selected_traits: selectedTraits,
-      uniqueTrait: selectedTraits[0] || "",
-      characterPhotoUrl: draft.characterPhotoUrl || draft.portraitUrl || "",
-      mapIconUrl: draft.mapIconUrl || draft.iconUrl || "",
-    });
+    setIsSaving(true);
+    setMessage(
+      "Salvando e confirmando no Supabase..."
+    );
 
-    setMessage("Ficha salva permanentemente no Supabase.");
+    try {
+      const savedCharacter =
+        await onSave({
+          ...draft,
+
+          villageOrOrganization:
+            finalVillage(draft),
+
+          selectedTraits,
+          selected_traits:
+            selectedTraits,
+
+          uniqueTrait:
+            selectedTraits[0] || "",
+
+          characterPhotoUrl:
+            draft.characterPhotoUrl ||
+            draft.portraitUrl ||
+            "",
+
+          mapIconUrl:
+            draft.mapIconUrl ||
+            draft.iconUrl ||
+            "",
+        });
+
+      if (savedCharacter) {
+        setDraft(
+          normalizeCharacter(
+            savedCharacter
+          )
+        );
+      }
+
+      setMessage(
+        "Ficha confirmada e salva permanentemente."
+      );
+    } catch (error) {
+      setMessage(
+        `Falha ao salvar: ${
+          error?.message ||
+          "erro desconhecido"
+        }`
+      );
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -2414,7 +2468,21 @@ function NinjaSheetCard({ ninja, onSave }) {
         {message && <p className="mn-sheet-message">{message}</p>}
 
         <div className="mn-sheet-actions">
-          <button type="submit" className="mn-primary-button"><SvgIcon name="save" className="mn-small-icon" />Salvar ficha</button>
+          <button
+            type="submit"
+            className="mn-primary-button"
+            disabled={isSaving}
+            aria-busy={isSaving}
+          >
+            <SvgIcon
+              name="save"
+              className="mn-small-icon"
+            />
+
+            {isSaving
+              ? "Salvando..."
+              : "Salvar ficha"}
+          </button>
         </div>
       </form>
     </section>
