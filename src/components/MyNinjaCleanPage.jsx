@@ -443,74 +443,125 @@ async function waitBeforeRetry(milliseconds) {
 async function persistCharacterProfileToSupabase(
   character = {}
 ) {
-  // LN_ATOMIC_MY_NINJA_PROFILE_V6
+  // LN_DIRECT_CHARACTER_ID_SAVE_V7
+  //
+  // O perfil principal é gravado diretamente na linha exata
+  // do personagem. Nenhum dado é confirmado apenas pela
+  // resposta de uma RPC ou pelo estado local do navegador.
   if (!isSupabaseConfigured || !supabase) {
     throw new Error(
       "O Supabase não está configurado."
     );
   }
 
-  const payload =
-    buildMyNinjaProfilePayload(character);
+  const {
+    data: authData,
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  let latestError = null;
-
-  /*
-    Uma segunda tentativa é permitida somente quando
-    a primeira não é confirmada. Isso protege o mobile
-    contra pequenas interrupções de conexão sem permitir
-    múltiplos cliques concorrentes.
-  */
-  for (
-    let attempt = 1;
-    attempt <= 2;
-    attempt += 1
-  ) {
-    const {
-      data,
-      error,
-    } = await supabase.rpc(
-      "ln_save_my_ninja_profile",
-      {
-        p_profile: payload,
-      }
+  if (authError) {
+    throw new Error(
+      `Não foi possível confirmar a sessão: ${authError.message}`
     );
-
-    if (!error) {
-      const savedRow =
-        Array.isArray(data)
-          ? data[0]
-          : data;
-
-      if (
-        savedRow &&
-        isSavedProfileConfirmed(
-          savedRow,
-          payload
-        )
-      ) {
-        return normalizeCharacter(savedRow);
-      }
-
-      latestError = new Error(
-        "O banco respondeu, mas não confirmou todos os campos salvos."
-      );
-    } else {
-      latestError =
-        new Error(error.message);
-    }
-
-    if (attempt < 2) {
-      await waitBeforeRetry(350);
-    }
   }
 
-  throw (
-    latestError ||
-    new Error(
-      "Não foi possível confirmar o salvamento."
+  const userId =
+    String(authData?.user?.id || "").trim();
+
+  const characterId =
+    String(character?.id || "").trim();
+
+  if (!userId) {
+    throw new Error(
+      "A sessão autenticada do jogador não foi encontrada."
+    );
+  }
+
+  if (!characterId) {
+    throw new Error(
+      "O ID do personagem não foi encontrado. A ficha não foi alterada."
+    );
+  }
+
+  const payload = {
+    ...buildMyNinjaProfilePayload(character),
+
+    updated_at:
+      new Date().toISOString(),
+  };
+
+  const {
+    data: updatedRow,
+    error: updateError,
+  } = await supabase
+    .from("characters")
+    .update(payload)
+    .eq("id", characterId)
+    .eq("user_id", userId)
+    .select("*")
+    .maybeSingle();
+
+  if (updateError) {
+    throw new Error(
+      `Falha ao atualizar a linha do personagem: ${updateError.message}`
+    );
+  }
+
+  if (!updatedRow) {
+    throw new Error(
+      "Nenhuma linha foi atualizada. Verifique o vínculo do personagem e as políticas do Supabase."
+    );
+  }
+
+  /*
+    Releitura independente: impede que uma resposta otimista,
+    cache local ou estado do React seja confundido com
+    persistência verdadeira.
+  */
+  const {
+    data: confirmedRow,
+    error: confirmationError,
+  } = await supabase
+    .from("characters")
+    .select("*")
+    .eq("id", characterId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (confirmationError) {
+    throw new Error(
+      `A linha foi atualizada, mas não pôde ser relida: ${confirmationError.message}`
+    );
+  }
+
+  if (!confirmedRow) {
+    throw new Error(
+      "O personagem não foi encontrado durante a confirmação final."
+    );
+  }
+
+  if (
+    !isSavedProfileConfirmed(
+      confirmedRow,
+      payload
     )
-  );
+  ) {
+    throw new Error(
+      "A releitura do banco não contém todos os valores enviados. A ficha não será apresentada como salva."
+    );
+  }
+
+  return normalizeCharacter({
+    ...confirmedRow,
+
+    userId:
+      confirmedRow.user_id ||
+      userId,
+
+    ownerEmail:
+      authData?.user?.email ||
+      "",
+  });
 }
 
 const sidebarItems = [
@@ -2410,7 +2461,7 @@ function NinjaSheetCard({ ninja, onSave }) {
       }
 
       setMessage(
-        "Ficha confirmada e salva permanentemente."
+        "Ficha salva e confirmada pela releitura da tabela characters."
       );
     } catch (error) {
       setMessage(
