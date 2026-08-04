@@ -6618,8 +6618,50 @@ function preparePursuitToUnknownPresence(presence) {
               undefined
             }
             persistLocally={true}
-            onSaveSheet={async () => {
-              await loadOnlineCharacters();
+            onSaveSheet={(savedCharacter) => {
+              // LN_ACCEPT_SAVED_MY_NINJA_V5
+              if (!savedCharacter) {
+                return;
+              }
+
+              setTravelCharacters((currentCharacters) => {
+                const nextCharacters = [
+                  savedCharacter,
+
+                  ...currentCharacters.filter(
+                    (characterItem) =>
+                      String(characterItem.id || "") !==
+                        String(savedCharacter.id || "") &&
+                      String(characterItem.userId || "") !==
+                        String(savedCharacter.userId || "")
+                  ),
+                ];
+
+                localStorage.setItem(
+                  CHARACTER_STORAGE_KEY,
+                  JSON.stringify(nextCharacters)
+                );
+
+                return nextCharacters;
+              });
+
+              setMapCharacters((currentCharacters) => [
+                savedCharacter,
+
+                ...currentCharacters.filter(
+                  (characterItem) =>
+                    String(characterItem.id || "") !==
+                      String(savedCharacter.id || "") &&
+                    String(characterItem.userId || "") !==
+                      String(savedCharacter.userId || "")
+                ),
+              ]);
+
+              if (savedCharacter.id) {
+                setSelectedTravelCharacterId(
+                  savedCharacter.id
+                );
+              }
             }}
             onNavigate={(label) => {
               if (label === "Sair") {

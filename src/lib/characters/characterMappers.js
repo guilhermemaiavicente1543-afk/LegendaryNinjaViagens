@@ -37,7 +37,11 @@ export function dbCharacterToAppCharacter(row, currentUser) {
     updatedAt: row.updated_at || row.updatedAt || row.created_at || "",
 
     playerName: row.player_name || row.playerName || "",
-    phone: row.phone || "",
+    phone:
+      row.phone_number ||
+      row.phone ||
+      row.profile_sheet?.phone ||
+      "",
     characterName: row.character_name || row.characterName || "",
     age: row.age || "",
     gender: row.gender || "",

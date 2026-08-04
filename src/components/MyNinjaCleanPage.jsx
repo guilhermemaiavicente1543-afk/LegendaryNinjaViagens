@@ -198,7 +198,10 @@ function normalizeCharacter(character = {}) {
       "",
 
     phone:
-      source.phone ||
+      character.phone ||
+      character.phone_number ||
+      character.profileSheet?.phone ||
+      character.profile_sheet?.phone ||
       "",
 
     characterName:
@@ -341,18 +344,38 @@ function buildMyNinjaProfilePayload(character = {}) {
   const selectedTraits =
     getSelectedTraits(normalized);
 
+  const existingProfileSheet =
+    normalized.profileSheet &&
+    typeof normalized.profileSheet === "object"
+      ? normalized.profileSheet
+      : normalized.profile_sheet &&
+        typeof normalized.profile_sheet === "object"
+        ? normalized.profile_sheet
+        : {};
+
+  const characterPhotoUrl =
+    normalized.characterPhotoUrl ||
+    normalized.portraitUrl ||
+    "";
+
+  const mapIconUrl =
+    normalized.mapIconUrl ||
+    normalized.iconUrl ||
+    "";
+
   return {
     player_name:
       normalized.playerName,
 
-    phone:
+    phone_number:
       normalized.phone,
 
     character_name:
       normalized.characterName,
 
     age:
-      String(normalized.age ?? ""),
+      String(normalized.age ?? "").trim() ||
+      null,
 
     clan_or_kinship:
       normalized.clanOrKinship,
@@ -375,31 +398,91 @@ function buildMyNinjaProfilePayload(character = {}) {
     equipment:
       normalized.equipment,
 
-    unique_trait:
-      selectedTraits[0] || "",
-
     selected_traits:
       selectedTraits,
 
-    character_photo_url:
-      normalized.characterPhotoUrl ||
-      normalized.portraitUrl ||
-      "",
+    portrait_url:
+      characterPhotoUrl,
 
-    map_icon_url:
-      normalized.mapIconUrl ||
-      normalized.iconUrl ||
-      "",
+    icon_url:
+      mapIconUrl,
+
+    profile_completed:
+      true,
+
+    updated_at:
+      new Date().toISOString(),
+
+    profile_sheet: {
+      ...existingProfileSheet,
+
+      playerName:
+        normalized.playerName,
+
+      phone:
+        normalized.phone,
+
+      characterName:
+        normalized.characterName,
+
+      age:
+        normalized.age,
+
+      clanOrKinship:
+        normalized.clanOrKinship,
+
+      villageOrOrganization:
+        finalVillage(normalized),
+
+      kekkeiGenkaiOrHiden:
+        normalized.kekkeiGenkaiOrHiden,
+
+      epithet:
+        normalized.epithet,
+
+      appearance:
+        normalized.appearance,
+
+      history:
+        normalized.history,
+
+      equipment:
+        normalized.equipment,
+
+      selectedTraits,
+
+      characterPhotoUrl,
+
+      mapIconUrl,
+    },
   };
 }
 
 async function persistCharacterProfileToSupabase(
   character = {}
 ) {
-  // LN_SAVE_MY_NINJA_RPC_V4
+  // LN_DIRECT_MY_NINJA_SAVE_V5
   if (!isSupabaseConfigured || !supabase) {
     throw new Error(
       "O Supabase não está configurado."
+    );
+  }
+
+  const {
+    data: authData,
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  const userId =
+    authData?.user?.id;
+
+  if (!userId) {
+    throw new Error(
+      "A sessão autenticada do jogador não foi encontrada."
     );
   }
 
@@ -409,29 +492,38 @@ async function persistCharacterProfileToSupabase(
   const {
     data,
     error,
-  } = await supabase.rpc(
-    "ln_save_my_ninja",
-    {
-      p_profile: payload,
-    }
-  );
+  } = await supabase
+    .from("characters")
+    .update(payload)
+    .eq("user_id", userId)
+    .select("*")
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  const savedRow =
-    Array.isArray(data)
-      ? data[0]
-      : data;
-
-  if (!savedRow) {
+  if (!data) {
     throw new Error(
-      "O Supabase não devolveu o personagem salvo."
+      "Nenhum personagem vinculado a esta conta foi encontrado."
     );
   }
 
-  return normalizeCharacter(savedRow);
+  return normalizeCharacter({
+    ...data,
+
+    userId:
+      data.user_id ||
+      userId,
+
+    ownerEmail:
+      authData?.user?.email ||
+      "",
+
+    profileSheet:
+      data.profile_sheet ||
+      {},
+  });
 }
 
 const sidebarItems = [
@@ -2275,7 +2367,7 @@ function NinjaSheetCard({ ninja, onSave }) {
       mapIconUrl: draft.mapIconUrl || draft.iconUrl || "",
     });
 
-    setMessage("Ficha salva no Meu Ninja.");
+    setMessage("Ficha salva permanentemente no Supabase.");
   }
 
   return (
@@ -2365,6 +2457,7 @@ export default function MyNinjaCleanPage({
     const prepared =
       normalizeCharacter({
         ...nextCharacter,
+
         villageOrOrganization:
           finalVillage(nextCharacter),
       });
@@ -2380,12 +2473,16 @@ export default function MyNinjaCleanPage({
         : onlineSaved;
 
       setLocalCharacter(finalSaved);
-      setIsEditingProfile(false);
 
       await Promise.resolve(
         onSaveSheet?.(finalSaved)
       );
 
+      /*
+        O modal permanece aberto para que NinjaSheetCard
+        consiga mostrar a confirmação somente depois que
+        o Supabase devolver a linha realmente atualizada.
+      */
       return finalSaved;
     } catch (error) {
       console.error(
