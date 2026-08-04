@@ -645,7 +645,19 @@ export default function App() {
       setTravelCharacters(onlineCharacters);
       localStorage.setItem(CHARACTER_STORAGE_KEY, JSON.stringify(onlineCharacters));
 
-      setSelectedTravelCharacterId((current) => current || onlineCharacters[0].id);
+      // LN_VALIDATE_ONLINE_CHARACTER_SELECTION_V3
+      setSelectedTravelCharacterId((current) => {
+        const currentStillExists =
+          onlineCharacters.some(
+            (character) =>
+              String(character.id) ===
+              String(current)
+          );
+
+        return currentStillExists
+          ? current
+          : onlineCharacters[0].id;
+      });
       return;
     }
 
@@ -6599,6 +6611,16 @@ function preparePursuitToUnknownPresence(presence) {
           />
         ) : (
           <MyNinjaCleanPage
+            // LN_MEUNINJA_ONLINE_CHARACTER_PROP_V3
+            character={
+              selectedTravelCharacter ||
+              travelCharacters[0] ||
+              undefined
+            }
+            persistLocally={true}
+            onSaveSheet={async () => {
+              await loadOnlineCharacters();
+            }}
             onNavigate={(label) => {
               if (label === "Sair") {
                 handleLogout();
