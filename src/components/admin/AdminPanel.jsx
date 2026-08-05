@@ -3,10 +3,13 @@ import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import SkillTreeEditor from "./SkillTreeEditor";
 import CouponManager from "./CouponManager";
 import AppearanceManager from "./AppearanceManager";
-import AdminWorldMap from "./AdminWorldMap";
 import ShinobiDexAdmin from "./ShinobiDexAdmin";
 import SystemKnowledgeManager from "./SystemKnowledgeManager";
 import MapPingManager from "./MapPingManager";
+import AdminWorldMap from "./AdminWorldMap";
+import MyNinjaCleanPage from "../MyNinjaCleanPage";
+import CharacterSkillTree from "../CharacterSkillTree";
+import { dbCharacterToAppCharacter } from "../../lib/characters/characterMappers";
 
 function dbTravelToAppTravel(row) {
   return {
@@ -38,9 +41,27 @@ function formatDateTime(value) {
 }
 
 function getTraitList(character) {
-  return Array.isArray(character?.selected_traits)
-    ? character.selected_traits
-    : [];
+  if (!Array.isArray(character?.selected_traits)) return [];
+
+  return character.selected_traits
+    .map((trait) => {
+      if (typeof trait === "string") {
+        return { id: trait, name: trait };
+      }
+
+      return trait;
+    })
+    .filter((trait) => trait?.name);
+}
+
+function getAccountLabel(profile, character) {
+  return (
+    character?.character_name ||
+    profile?.email ||
+    profile?.display_name ||
+    profile?.id ||
+    ""
+  );
 }
 
 export default function AdminPanel({
@@ -57,6 +78,10 @@ export default function AdminPanel({
   const [travels, setTravels] = useState([]);
   const [selectedCharacterId, setSelectedCharacterId] = useState("");
   const [characterSearch, setCharacterSearch] = useState("");
+  const [accountSearch, setAccountSearch] = useState("");
+  const [accountToDelete, setAccountToDelete] = useState(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [deletingUserId, setDeletingUserId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -262,6 +287,190 @@ export default function AdminPanel({
     });
   }, [characters, characterSearch, profileById]);
 
+  const charactersByUserId = useMemo(() => {
+    return characters.reduce((acc, character) => {
+      const userId = character.user_id;
+
+      if (!userId) return acc;
+
+      if (!acc[userId]) {
+        acc[userId] = [];
+      }
+
+      acc[userId].push(character);
+      return acc;
+    }, {});
+  }, [characters]);
+
+  const filteredAccounts = useMemo(() => {
+    const search = accountSearch.trim().toLowerCase();
+
+    if (!search) return profiles;
+
+    return profiles.filter((profile) => {
+      const accountCharacters = charactersByUserId[profile.id] || [];
+      const searchableText = [
+        profile.display_name,
+        profile.email,
+        profile.role,
+        ...accountCharacters.map((character) => character.character_name),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(search);
+    });
+  }, [profiles, accountSearch, charactersByUserId]);
+
+  const selectedNinjaCharacter = useMemo(() => {
+    if (!selectedCharacter) return null;
+
+    return dbCharacterToAppCharacter(selectedCharacter, {
+      id: selectedOwner?.id || selectedCharacter.user_id,
+      email: selectedOwner?.email || "",
+    });
+  }, [selectedCharacter, selectedOwner]);
+
+  async function saveAdminNinja(nextCharacter) {
+    if (!selectedCharacter?.id || !nextCharacter) return;
+
+    const selectedTraits = Array.isArray(nextCharacter.selectedTraits)
+      ? nextCharacter.selectedTraits.filter(Boolean)
+      : [];
+
+    const nextProfileSheet = {
+      ...(selectedCharacter.profile_sheet || {}),
+      playerName: nextCharacter.playerName || "",
+      phone: nextCharacter.phone || "",
+      characterName: nextCharacter.characterName || "",
+      age: nextCharacter.age || "",
+      clanOrKinship: nextCharacter.clanOrKinship || "",
+      villageOrOrganization: nextCharacter.villageOrOrganization || "",
+      kekkeiGenkaiOrHiden: nextCharacter.kekkeiGenkaiOrHiden || "",
+      epithet: nextCharacter.epithet || "",
+      appearance: nextCharacter.appearance || "",
+      history: nextCharacter.history || "",
+      equipment: nextCharacter.equipment || "",
+      selectedTraits,
+      uniqueTrait: selectedTraits[0] || nextCharacter.uniqueTrait || "",
+      characterPhotoUrl: nextCharacter.characterPhotoUrl || "",
+      mapIconUrl: nextCharacter.mapIconUrl || "",
+    };
+
+    const payload = {
+      player_name: nextCharacter.playerName || "",
+      phone_number: nextCharacter.phone || "",
+      character_name: nextCharacter.characterName || "",
+      age: nextCharacter.age || "",
+      clan_or_kinship: nextCharacter.clanOrKinship || "",
+      village_or_organization: nextCharacter.villageOrOrganization || "",
+      kekkei_genkai_or_hiden: nextCharacter.kekkeiGenkaiOrHiden || "",
+      ninja_style: nextCharacter.ninjaStyle || "",
+      nickname: nextCharacter.epithet || "",
+      appearance: nextCharacter.appearance || "",
+      history: nextCharacter.history || "",
+      equipment: nextCharacter.equipment || "",
+      selected_traits: selectedTraits,
+      portrait_url: nextCharacter.characterPhotoUrl || "",
+      icon_url: nextCharacter.mapIconUrl || "",
+      profile_sheet: nextProfileSheet,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase
+      .from("characters")
+      .update(payload)
+      .eq("id", selectedCharacter.id)
+      .select("*")
+      .single();
+
+    if (error) {
+      setMessage(`Não foi possível salvar o Meu Ninja: ${error.message}`);
+      return;
+    }
+
+    setCharacters((current) =>
+      current.map((character) =>
+        character.id === selectedCharacter.id ? data : character
+      )
+    );
+    setMessage(`Meu Ninja de ${data.character_name} atualizado pelo ADM.`);
+  }
+
+  function openDeleteAccount(profile, character = null) {
+    setAccountToDelete({
+      profile,
+      character,
+      confirmationLabel: getAccountLabel(profile, character),
+    });
+    setDeleteConfirmation("");
+    setMessage("");
+  }
+
+  function closeDeleteAccount() {
+    if (deletingUserId) return;
+    setAccountToDelete(null);
+    setDeleteConfirmation("");
+  }
+
+  async function confirmDeleteAccount() {
+    const targetProfile = accountToDelete?.profile;
+    const expectedConfirmation = accountToDelete?.confirmationLabel || "";
+
+    if (!targetProfile?.id || deleteConfirmation.trim() !== expectedConfirmation) {
+      return;
+    }
+
+    setDeletingUserId(targetProfile.id);
+    setMessage("");
+
+    const { data, error } = await supabase.functions.invoke("admin-delete-user", {
+      body: { userId: targetProfile.id },
+    });
+
+    if (error || data?.error) {
+      let detail = data?.error || error?.message || "Falha desconhecida.";
+
+      if (error?.context && typeof error.context.json === "function") {
+        try {
+          const responseBody = await error.context.json();
+          detail = responseBody?.error || detail;
+        } catch {
+          // Mantém a mensagem original quando a resposta não é JSON.
+        }
+      }
+
+      setMessage(`Não foi possível excluir a conta: ${detail}`);
+      setDeletingUserId("");
+      return;
+    }
+
+    const deletedCharacterIds = new Set(
+      (charactersByUserId[targetProfile.id] || []).map((character) => character.id)
+    );
+
+    setProfiles((current) =>
+      current.filter((profile) => profile.id !== targetProfile.id)
+    );
+    setCharacters((current) =>
+      current.filter((character) => character.user_id !== targetProfile.id)
+    );
+    setTravels((current) =>
+      current.filter((travel) => !deletedCharacterIds.has(travel.characterId))
+    );
+
+    if (deletedCharacterIds.has(selectedCharacterId)) {
+      setSelectedCharacterId("");
+      setAdminView("overview");
+    }
+
+    setMessage(`Conta ${expectedConfirmation} excluída com sucesso.`);
+    setDeletingUserId("");
+    setAccountToDelete(null);
+    setDeleteConfirmation("");
+  }
+
   if (isLoading) {
     return (
       <section className="admin-page">
@@ -282,6 +491,57 @@ export default function AdminPanel({
           <h1>Painel ADM</h1>
           <p>{message || "Você não possui permissão de administrador."}</p>
         </div>
+      </section>
+    );
+  }
+
+  if (adminView === "player-ninja" && selectedCharacter && selectedNinjaCharacter) {
+    return (
+      <section className="admin-ninja-access-page">
+        <header className="admin-ninja-access-header">
+          <div>
+            <p className="eyebrow">Acesso administrativo</p>
+            <h1>Meu Ninja de {selectedCharacter.character_name}</h1>
+            <p>
+              Player: {selectedOwner?.display_name || selectedOwner?.email || "Desconhecido"}
+            </p>
+          </div>
+
+          <button type="button" onClick={() => setAdminView("overview")}>
+            Voltar ao Painel ADM
+          </button>
+        </header>
+
+        {message && <p className="admin-ninja-access-message">{message}</p>}
+
+        <MyNinjaCleanPage
+          character={selectedNinjaCharacter}
+          persistLocally={false}
+          onNavigate={() => setAdminView("overview")}
+          onSaveSheet={saveAdminNinja}
+          locationSlot={(
+            <AdminWorldMap
+              characterRows={[selectedCharacter]}
+              travelRows={selectedTravel ? [selectedTravel] : []}
+              title={`Localização de ${selectedCharacter.character_name}`}
+              description="Visão administrativa da posição salva e da viagem ativa deste personagem."
+            />
+          )}
+          skillTreeSlot={(
+            <CharacterSkillTree
+              character={selectedCharacter}
+              onCharacterUpdated={(updatedCharacter) => {
+                setCharacters((current) =>
+                  current.map((character) =>
+                    character.id === updatedCharacter.id
+                      ? { ...character, ...updatedCharacter }
+                      : character
+                  )
+                );
+              }}
+            />
+          )}
+        />
       </section>
     );
   }
@@ -564,7 +824,6 @@ export default function AdminPanel({
             </button>
           </div>
         </div>
-
         <AdminWorldMap travelRows={[]} enablePingPicker />
         <MapPingManager />
       </section>
@@ -721,8 +980,88 @@ export default function AdminPanel({
           </article>
         </div>
 
-        <AdminWorldMap travelRows={travelRows} />
+        <div className="admin-section">
+          <h2>Contas e jogadores</h2>
+          <p>
+            Abra o Meu Ninja completo de qualquer jogador ou exclua uma conta.
+            Senhas nunca são exibidas ao administrador.
+          </p>
 
+          <div className="admin-search-box">
+            <input
+              value={accountSearch}
+              onChange={(event) => setAccountSearch(event.target.value)}
+              placeholder="Pesquisar por player, e-mail ou personagem..."
+            />
+
+            <span>{filteredAccounts.length} de {profiles.length} contas</span>
+          </div>
+
+          {filteredAccounts.length === 0 ? (
+            <p className="empty-message">Nenhuma conta encontrada.</p>
+          ) : (
+            <div className="admin-table">
+              {filteredAccounts.map((profile) => {
+                const accountCharacters = charactersByUserId[profile.id] || [];
+                const accountCharacter = accountCharacters[0] || null;
+                const isCurrentAccount = profile.id === currentProfile.id;
+                const isProtectedAdmin = profile.role === "admin";
+
+                return (
+                  <article key={profile.id} className="admin-row admin-account-row">
+                    <div>
+                      <strong>
+                        {profile.display_name || accountCharacter?.player_name || "Player sem nome"}
+                      </strong>
+                      <span>{profile.email || "E-mail não disponível"}</span>
+                    </div>
+
+                    <div>
+                      <small>Meu Ninja</small>
+                      <span>{accountCharacter?.character_name || "Nenhum ninja vinculado"}</span>
+                    </div>
+
+                    <div>
+                      <small>Tipo de conta</small>
+                      <span>{isProtectedAdmin ? "Administrador" : "Jogador"}</span>
+                    </div>
+
+                    <div className="admin-account-actions">
+                      <button
+                        type="button"
+                        className="admin-action-button"
+                        disabled={!accountCharacter}
+                        onClick={() => {
+                          setSelectedCharacterId(accountCharacter.id);
+                          setAdminView("player-ninja");
+                          setMessage("");
+                        }}
+                      >
+                        Abrir Meu Ninja
+                      </button>
+
+                      <button
+                        type="button"
+                        className="admin-danger-button"
+                        disabled={isCurrentAccount || isProtectedAdmin}
+                        onClick={() => openDeleteAccount(profile, accountCharacter)}
+                        title={
+                          isCurrentAccount
+                            ? "Você não pode excluir a conta usada nesta sessão."
+                            : isProtectedAdmin
+                              ? "Contas administrativas são protegidas."
+                              : "Excluir conta"
+                        }
+                      >
+                        {isCurrentAccount ? "Conta atual" : isProtectedAdmin ? "Protegida" : "Excluir conta"}
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
         {selectedCharacter && (
           <div className="admin-profile-view">
             <div className="admin-profile-header">
@@ -931,13 +1270,27 @@ export default function AdminPanel({
                     </div>
 
                     <div>
-                      <button
-                        type="button"
-                        className="admin-action-button"
-                        onClick={() => setSelectedCharacterId(character.id)}
-                      >
-                        Ver perfil
-                      </button>
+                      <div className="admin-account-actions">
+                        <button
+                          type="button"
+                          className="admin-action-button"
+                          onClick={() => setSelectedCharacterId(character.id)}
+                        >
+                          Ver resumo
+                        </button>
+
+                        <button
+                          type="button"
+                          className="admin-action-button admin-action-button-secondary"
+                          onClick={() => {
+                            setSelectedCharacterId(character.id);
+                            setAdminView("player-ninja");
+                            setMessage("");
+                          }}
+                        >
+                          Abrir Meu Ninja
+                        </button>
+                      </div>
                     </div>
                   </article>
                 );
@@ -1012,6 +1365,63 @@ export default function AdminPanel({
             </div>
           )}
         </div>
+
+        {accountToDelete && (
+          <div
+            className="admin-delete-overlay"
+            role="presentation"
+            onClick={closeDeleteAccount}
+          >
+            <section
+              className="admin-delete-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="admin-delete-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <p className="eyebrow">Ação irreversível</p>
+              <h2 id="admin-delete-title">Excluir esta conta?</h2>
+              <p>
+                A autenticação, o personagem, as viagens, a teia, o inventário e
+                os arquivos vinculados serão removidos. A senha nunca é acessada.
+              </p>
+
+              <label>
+                Para confirmar, digite exatamente:
+                <strong>{accountToDelete.confirmationLabel}</strong>
+                <input
+                  autoFocus
+                  value={deleteConfirmation}
+                  onChange={(event) => setDeleteConfirmation(event.target.value)}
+                  disabled={Boolean(deletingUserId)}
+                />
+              </label>
+
+              <div className="admin-delete-actions">
+                <button
+                  type="button"
+                  className="admin-cancel-button"
+                  onClick={closeDeleteAccount}
+                  disabled={Boolean(deletingUserId)}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  className="admin-danger-button"
+                  onClick={confirmDeleteAccount}
+                  disabled={
+                    Boolean(deletingUserId) ||
+                    deleteConfirmation.trim() !== accountToDelete.confirmationLabel
+                  }
+                >
+                  {deletingUserId ? "Excluindo..." : "Excluir permanentemente"}
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
       </div>
     </section>
   );
