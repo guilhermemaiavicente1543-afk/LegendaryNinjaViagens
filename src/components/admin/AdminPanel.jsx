@@ -7,6 +7,7 @@ import ShinobiDexAdmin from "./ShinobiDexAdmin";
 import SystemKnowledgeManager from "./SystemKnowledgeManager";
 import MapPingManager from "./MapPingManager";
 import AdminWorldMap from "./AdminWorldMap";
+import AdminAnnouncementsPanel from "../announcements/AdminAnnouncementsPanel";
 import MyNinjaCleanPage from "../MyNinjaCleanPage";
 import CharacterSkillTree from "../CharacterSkillTree";
 import { dbCharacterToAppCharacter } from "../../lib/characters/characterMappers";
@@ -542,6 +543,40 @@ export default function AdminPanel({
             />
           )}
         />
+      </section>
+    );
+  }
+
+  if (adminView === "announcements") {
+    return (
+      <section className="admin-page">
+        <div className="admin-card admin-card-wide">
+          <p className="eyebrow">Painel do Mestre</p>
+          <h1>Novidades do Hall</h1>
+          <p>
+            Publique e organize os avisos exibidos no pergaminho
+            de novidades da entrada do LN Digital.
+          </p>
+
+          <div className="admin-mode-tabs">
+            <button
+              type="button"
+              onClick={() => setAdminView("overview")}
+            >
+              Visão Geral
+            </button>
+
+            <button
+              type="button"
+              className="active"
+              onClick={() => setAdminView("announcements")}
+            >
+              Novidades
+            </button>
+          </div>
+        </div>
+
+        <AdminAnnouncementsPanel />
       </section>
     );
   }

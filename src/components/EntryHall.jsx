@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import HallAnnouncementScroll from "./announcements/HallAnnouncementScroll";
 import { useLanguage } from "../i18n/LanguageContext";
 
 export default function EntryHall({
@@ -260,6 +261,15 @@ export default function EntryHall({
           {t("common.logout")}
         </button>
       </div>
+
+      <HallAnnouncementScroll
+        onOpenMyNinja={onOpenMyNinja}
+        onOpenMap={onOpenMap}
+        onOpenShinobiDex={onOpenShinobiDex}
+        onOpenAnced={onOpenAnced}
+        onOpenLegends={onOpenLegends}
+        onOpenAdmin={onOpenAdmin}
+      />
 
       <button type="button" className="ln-bg-logout desktop-only" onClick={onLogout}>
         {t("common.logout")}
