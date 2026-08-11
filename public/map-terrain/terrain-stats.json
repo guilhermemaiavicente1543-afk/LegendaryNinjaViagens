@@ -1,0 +1,14 @@
+{
+  "width": 1080,
+  "height": 903,
+  "source": "public/mapa-limpo.png",
+  "waterPixels": 1060,
+  "landPixels": 974180,
+  "waterPercent": 0.11,
+  "landPercent": 99.89,
+  "generatedAt": "2026-06-04T18:48:06.035Z",
+  "legend": {
+    "blue": "água detectada",
+    "orange": "terra detectada"
+  }
+}

@@ -24,3 +24,5 @@ tmp/
 react
 react-dom
 meu-ninja-codigos.zip
+.vercel
+.env*

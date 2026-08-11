@@ -1,0 +1,410 @@
+.ln-cartography-page {
+  min-height: 100dvh;
+  color: #f2eadf;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 0, 0.12), transparent 34rem),
+    linear-gradient(135deg, #0d0c0a, #15120f 48%, #090807);
+  padding: 22px;
+  box-sizing: border-box;
+}
+
+.ln-cartography-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.ln-cartography-title p,
+.ln-cartography-kicker {
+  margin: 0 0 6px;
+  color: #ffb05a;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.ln-cartography-title h1 {
+  margin: 0;
+  color: #ff9d2e;
+  font-size: clamp(2.4rem, 4vw, 4.6rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ln-cartography-title span {
+  display: block;
+  margin-top: 8px;
+  color: #b8aa98;
+}
+
+.ln-cartography-title button,
+.ln-cartography-actions button,
+.ln-cartography-list-head button,
+.ln-cartography-list button {
+  font: inherit;
+}
+
+.ln-cartography-title button,
+.ln-cartography-actions button,
+.ln-cartography-list-head button {
+  border: 1px solid rgba(255, 122, 0, 0.42);
+  background: rgba(13, 11, 9, 0.78);
+  color: #ffb05a;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ln-cartography-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+  align-items: start;
+}
+
+.ln-cartography-map-card,
+.ln-cartography-card {
+  border: 1px solid rgba(255, 122, 0, 0.2);
+  background: rgba(13, 11, 9, 0.76);
+  border-radius: 24px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.ln-cartography-map-card {
+  overflow: hidden;
+}
+
+.ln-cartography-map-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 122, 0, 0.16);
+}
+
+.ln-cartography-map-header p,
+.ln-cartography-map-header strong,
+.ln-cartography-map-header span {
+  display: block;
+  margin: 0;
+}
+
+.ln-cartography-map-header strong {
+  color: #ffb05a;
+}
+
+.ln-cartography-map-header span {
+  color: #b8aa98;
+  font-size: 0.88rem;
+}
+
+.ln-cartography-map-scroll {
+  overflow: auto;
+  max-height: calc(100dvh - 180px);
+  background: #090807;
+}
+
+.ln-cartography-map-stage {
+  position: relative;
+  width: 100%;
+  min-width: 820px;
+  aspect-ratio: 2048 / 1713;
+  overflow: hidden;
+  cursor: crosshair;
+  background: #0b0907;
+}
+
+.ln-cartography-map-stage > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  user-select: none;
+  pointer-events: none;
+}
+
+.ln-cartography-ping {
+  position: absolute;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, -92%);
+  cursor: pointer;
+}
+
+.ln-cartography-ping img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.7));
+}
+
+.ln-cartography-ping.is-selected img {
+  transform: scale(1.16);
+  filter:
+    drop-shadow(0 0 8px rgba(255, 122, 0, 0.95))
+    drop-shadow(0 8px 10px rgba(0, 0, 0, 0.7));
+}
+
+.ln-cartography-draft-point {
+  position: absolute;
+  z-index: 7;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(255, 122, 0, 0.96);
+  border: 2px solid rgba(255, 242, 220, 0.95);
+  box-shadow:
+    0 0 0 7px rgba(255, 122, 0, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.ln-cartography-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100dvh - 128px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.ln-cartography-card {
+  padding: 14px;
+}
+
+.ln-cartography-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ln-cartography-form label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: #d8c8b6;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.ln-cartography-form input,
+.ln-cartography-form select,
+.ln-cartography-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 122, 0, 0.22);
+  border-radius: 14px;
+  background: rgba(10, 9, 8, 0.88);
+  color: #f2eadf;
+  padding: 11px 12px;
+  outline: none;
+  font: inherit;
+}
+
+.ln-cartography-coords {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ln-cartography-coords div {
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(10, 9, 8, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ln-cartography-coords span,
+.ln-cartography-coords strong {
+  display: block;
+}
+
+.ln-cartography-coords span {
+  color: #b8aa98;
+  font-size: 0.76rem;
+}
+
+.ln-cartography-coords strong {
+  margin-top: 4px;
+  color: #f2eadf;
+  word-break: break-word;
+}
+
+.ln-cartography-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ln-cartography-actions button:first-child {
+  background: linear-gradient(180deg, #ff922e, #c85800);
+  color: #130a05;
+  border-color: #ff7a00;
+}
+
+.ln-cartography-actions .danger,
+.ln-cartography-list-head .danger {
+  border-color: rgba(255, 70, 30, 0.52);
+  color: #ff9a7a;
+}
+
+.ln-cartography-list-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.ln-cartography-list-head .ghost {
+  padding: 8px 10px;
+  font-size: 0.76rem;
+}
+
+.ln-cartography-message {
+  margin: 10px 0 0;
+  color: #ffb05a;
+  font-size: 0.86rem;
+}
+
+.ln-cartography-empty {
+  color: #b8aa98;
+}
+
+.ln-cartography-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ln-cartography-list button {
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  background: rgba(10, 9, 8, 0.72);
+  color: #f2eadf;
+  border-radius: 14px;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ln-cartography-list button.is-active {
+  border-color: rgba(255, 122, 0, 0.72);
+  background: rgba(38, 24, 12, 0.86);
+}
+
+.ln-cartography-list strong,
+.ln-cartography-list span {
+  display: block;
+}
+
+.ln-cartography-list span {
+  margin-top: 4px;
+  color: #b8aa98;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 980px) {
+  .ln-cartography-page {
+    padding: 14px;
+  }
+
+  .ln-cartography-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ln-cartography-panel {
+    max-height: none;
+  }
+
+  .ln-cartography-map-scroll {
+    max-height: 70dvh;
+  }
+}
+
+/* =========================================================
+   CARTOGRAFIA V2 — zoom e limpeza do mapa antigo
+========================================================= */
+
+.ln-cartography-zoom-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 122, 0, 0.16);
+  background: rgba(10, 9, 8, 0.56);
+}
+
+.ln-cartography-zoom-bar button,
+.ln-cartography-zoom-bar span {
+  min-height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 122, 0, 0.36);
+  background: rgba(13, 11, 9, 0.84);
+  color: #ffb05a;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.ln-cartography-zoom-bar button {
+  cursor: pointer;
+}
+
+.ln-cartography-zoom-bar span {
+  display: inline-grid;
+  place-items: center;
+  margin-left: auto;
+  color: #f2eadf;
+}
+
+.ln-cartography-map-scroll {
+  position: relative;
+  overflow: auto !important;
+}
+
+.ln-cartography-map-stage {
+  transition: width 160ms ease;
+  transform-origin: top left;
+}
+
+
+
+/* =========================================================
+   CORREÇÃO EMERGENCIAL — reexibir mapa da Cartografia
+========================================================= */
+
+{
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+{
+  min-height: 520px !important;
+  width: 100% !important;
+  z-index: 1 !important;
+}
+
+.ln-cartography-page .admin-world-map,
+.ln-cartography-page .mapArea,
+.ln-cartography-page .admin-map,
+.ln-cartography-page .cartography-map,
+.ln-cartography-page .map-ping-map {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

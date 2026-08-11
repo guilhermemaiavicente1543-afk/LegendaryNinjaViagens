@@ -13305,6 +13305,177 @@ body,
     url("/ln-digital-bg.png") center center / cover fixed no-repeat !important;
 }
 
+/* Painel ADM — contas, acesso ao Meu Ninja e exclusão protegida */
+.admin-account-row {
+  grid-template-columns: minmax(180px, 1.1fr) minmax(170px, 1fr) minmax(120px, 0.55fr) minmax(260px, auto);
+}
+
+.admin-account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-action-button-secondary {
+  background: #374151;
+}
+
+.admin-action-button:disabled,
+.admin-danger-button:disabled,
+.admin-cancel-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  filter: grayscale(0.35);
+}
+
+.admin-danger-button,
+.admin-cancel-button,
+.admin-ninja-access-header button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-danger-button {
+  background: #b91c1c;
+}
+
+.admin-cancel-button {
+  background: #374151;
+}
+
+.admin-delete-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+}
+
+.admin-delete-dialog {
+  width: min(560px, 100%);
+  padding: 26px;
+  border: 1px solid #ef4444;
+  border-radius: 20px;
+  background: #151515;
+  color: #f9fafb;
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.62);
+}
+
+.admin-delete-dialog h2 {
+  margin: 4px 0 12px;
+  color: #fecaca;
+}
+
+.admin-delete-dialog label {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  color: #e5e7eb;
+}
+
+.admin-delete-dialog label strong {
+  color: #fca5a5;
+  overflow-wrap: anywhere;
+}
+
+.admin-delete-dialog input {
+  width: 100%;
+  border: 1px solid #7f1d1d;
+  border-radius: 12px;
+  background: #090909;
+  color: #fff;
+  padding: 12px 14px;
+  font: inherit;
+}
+
+.admin-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.admin-ninja-access-page {
+  min-height: 100vh;
+  background: #080808;
+}
+
+.admin-ninja-access-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 14px clamp(16px, 3vw, 42px);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.5);
+  background: rgba(12, 12, 12, 0.96);
+  color: #f9fafb;
+  backdrop-filter: blur(12px);
+}
+
+.admin-ninja-access-header h1,
+.admin-ninja-access-header p {
+  margin: 0;
+}
+
+.admin-ninja-access-header h1 {
+  font-size: clamp(20px, 3vw, 30px);
+}
+
+.admin-ninja-access-header button {
+  flex: 0 0 auto;
+  background: #f97316;
+}
+
+.admin-ninja-access-message {
+  position: fixed;
+  z-index: 1100;
+  top: 96px;
+  right: 18px;
+  max-width: min(420px, calc(100vw - 36px));
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid #f97316;
+  border-radius: 12px;
+  background: #171717;
+  color: #fed7aa;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 900px) {
+  .admin-account-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ninja-access-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-ninja-access-header button,
+  .admin-account-actions > button {
+    width: 100%;
+  }
+
+  .admin-delete-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-delete-actions button {
+    width: 100%;
+  }
+}
+
 /* Remove qualquer azul antigo de cards/containers principais que herdavam fundo */
 .app-admin main,
 .app-shinobidex main,
@@ -41352,354 +41523,6 @@ main.auth-page.ln-auth-screen {
 /* LN_AUTH_POLISH_END */
 
 /* =====================================================
-   PAINEL ADM — CONTAS, MEU NINJA E EXCLUSÃO
-   Recuperado em 2026-08-05
-===================================================== */
-.admin-account-row {
-  grid-template-columns: minmax(180px, 1.1fr) minmax(170px, 1fr) minmax(120px, 0.55fr) minmax(260px, auto);
-}
-
-.admin-account-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.admin-action-button-secondary {
-  background: #374151;
-}
-
-.admin-action-button:disabled,
-.admin-danger-button:disabled,
-.admin-cancel-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.48;
-  filter: grayscale(0.35);
-}
-
-.admin-danger-button,
-.admin-cancel-button,
-.admin-ninja-access-header button {
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  color: #fff;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.admin-danger-button {
-  background: #b91c1c;
-}
-
-.admin-cancel-button {
-  background: #374151;
-}
-
-.admin-delete-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10050;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(8px);
-}
-
-.admin-delete-dialog {
-  width: min(560px, 100%);
-  padding: 26px;
-  border: 1px solid #ef4444;
-  border-radius: 20px;
-  background: #151515;
-  color: #f9fafb;
-  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.62);
-}
-
-.admin-delete-dialog h2 {
-  margin: 4px 0 12px;
-  color: #fecaca;
-}
-
-.admin-delete-dialog label {
-  display: grid;
-  gap: 8px;
-  margin-top: 20px;
-  color: #e5e7eb;
-}
-
-.admin-delete-dialog label strong {
-  color: #fca5a5;
-  overflow-wrap: anywhere;
-}
-
-.admin-delete-dialog input {
-  width: 100%;
-  border: 1px solid #7f1d1d;
-  border-radius: 12px;
-  background: #090909;
-  color: #fff;
-  padding: 12px 14px;
-  font: inherit;
-}
-
-.admin-delete-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.admin-ninja-access-page {
-  min-height: 100vh;
-  background: #080808;
-}
-
-.admin-ninja-access-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 18px;
-  padding: 14px clamp(16px, 3vw, 42px);
-  border-bottom: 1px solid rgba(249, 115, 22, 0.5);
-  background: rgba(12, 12, 12, 0.96);
-  color: #f9fafb;
-  backdrop-filter: blur(12px);
-}
-
-.admin-ninja-access-header h1,
-.admin-ninja-access-header p {
-  margin: 0;
-}
-
-.admin-ninja-access-header h1 {
-  font-size: clamp(20px, 3vw, 30px);
-}
-
-.admin-ninja-access-header button {
-  flex: 0 0 auto;
-  background: #f97316;
-}
-
-.admin-ninja-access-message {
-  position: fixed;
-  z-index: 1100;
-  top: 96px;
-  right: 18px;
-  max-width: min(420px, calc(100vw - 36px));
-  margin: 0;
-  padding: 12px 16px;
-  border: 1px solid #f97316;
-  border-radius: 12px;
-  background: #171717;
-  color: #fed7aa;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
-}
-
-@media (max-width: 900px) {
-  .admin-account-row {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-ninja-access-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .admin-ninja-access-header button,
-  .admin-account-actions > button {
-    width: 100%;
-  }
-
-  .admin-delete-actions {
-    flex-direction: column-reverse;
-  }
-
-  .admin-delete-actions button {
-    width: 100%;
-  }
-}
-/* FIM — PAINEL ADM CONTAS */
-
-
-/* Painel ADM — contas, acesso ao Meu Ninja e exclusão protegida */
-.admin-account-row {
-  grid-template-columns: minmax(180px, 1.1fr) minmax(170px, 1fr) minmax(120px, 0.55fr) minmax(260px, auto);
-}
-
-.admin-account-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.admin-action-button-secondary {
-  background: #374151;
-}
-
-.admin-action-button:disabled,
-.admin-danger-button:disabled,
-.admin-cancel-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.48;
-  filter: grayscale(0.35);
-}
-
-.admin-danger-button,
-.admin-cancel-button,
-.admin-ninja-access-header button {
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  color: #fff;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.admin-danger-button {
-  background: #b91c1c;
-}
-
-.admin-cancel-button {
-  background: #374151;
-}
-
-.admin-delete-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10050;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(8px);
-}
-
-.admin-delete-dialog {
-  width: min(560px, 100%);
-  padding: 26px;
-  border: 1px solid #ef4444;
-  border-radius: 20px;
-  background: #151515;
-  color: #f9fafb;
-  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.62);
-}
-
-.admin-delete-dialog h2 {
-  margin: 4px 0 12px;
-  color: #fecaca;
-}
-
-.admin-delete-dialog label {
-  display: grid;
-  gap: 8px;
-  margin-top: 20px;
-  color: #e5e7eb;
-}
-
-.admin-delete-dialog label strong {
-  color: #fca5a5;
-  overflow-wrap: anywhere;
-}
-
-.admin-delete-dialog input {
-  width: 100%;
-  border: 1px solid #7f1d1d;
-  border-radius: 12px;
-  background: #090909;
-  color: #fff;
-  padding: 12px 14px;
-  font: inherit;
-}
-
-.admin-delete-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.admin-ninja-access-page {
-  min-height: 100vh;
-  background: #080808;
-}
-
-.admin-ninja-access-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 18px;
-  padding: 14px clamp(16px, 3vw, 42px);
-  border-bottom: 1px solid rgba(249, 115, 22, 0.5);
-  background: rgba(12, 12, 12, 0.96);
-  color: #f9fafb;
-  backdrop-filter: blur(12px);
-}
-
-.admin-ninja-access-header h1,
-.admin-ninja-access-header p {
-  margin: 0;
-}
-
-.admin-ninja-access-header h1 {
-  font-size: clamp(20px, 3vw, 30px);
-}
-
-.admin-ninja-access-header button {
-  flex: 0 0 auto;
-  background: #f97316;
-}
-
-.admin-ninja-access-message {
-  position: fixed;
-  z-index: 1100;
-  top: 96px;
-  right: 18px;
-  max-width: min(420px, calc(100vw - 36px));
-  margin: 0;
-  padding: 12px 16px;
-  border: 1px solid #f97316;
-  border-radius: 12px;
-  background: #171717;
-  color: #fed7aa;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
-}
-
-@media (max-width: 900px) {
-  .admin-account-row {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-ninja-access-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .admin-ninja-access-header button,
-  .admin-account-actions > button {
-    width: 100%;
-  }
-
-  .admin-delete-actions {
-    flex-direction: column-reverse;
-  }
-
-  .admin-delete-actions button {
-    width: 100%;
-  }
-}
-
-
-/* =====================================================
    LN HALL — NOVIDADES V3 / POPUP DE PERGAMINHO
 ===================================================== */
 
@@ -42905,3 +42728,1619 @@ main.auth-page.ln-auth-screen {
 /* =====================================================
    FIM NOVIDADES V6
 ===================================================== */
+
+
+/* LN_AUTH_INFORMATION_HELP_V1 */
+.ln-auth-section-help {
+  margin: -4px 0 14px;
+  color: rgba(232, 226, 214, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.ln-auth-card label small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(232, 226, 214, 0.58);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* =====================================================
+   LN CADASTRO — ESTILOS NINJA INICIAIS V1
+===================================================== */
+
+.ln-auth-screen .ln-initial-style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ln-auth-screen .ln-initial-style-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(239, 141, 62, 0.24);
+  border-radius: 16px;
+  background: rgba(5, 6, 8, 0.54);
+}
+
+.ln-auth-screen .ln-initial-style-card.is-disabled {
+  opacity: 0.52;
+}
+
+.ln-auth-screen .ln-initial-style-card > header {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.ln-auth-screen .ln-initial-style-card > header span {
+  color: #ef9348;
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ln-auth-screen .ln-initial-style-card > header strong {
+  color: #fff7ed;
+  font-size: 0.94rem;
+  line-height: 1.35;
+}
+
+.ln-auth-screen .ln-initial-style-select {
+  display: grid;
+  gap: 7px;
+}
+
+.ln-auth-screen .ln-initial-style-select > span {
+  color: rgba(255, 244, 231, 0.75);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.ln-auth-screen .ln-initial-style-select select {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  outline: none;
+  background: rgba(4, 5, 7, 0.82);
+  color: #fffaf4;
+  font: inherit;
+}
+
+.ln-auth-screen .ln-initial-style-description {
+  margin: 12px 0;
+  color: rgba(255, 244, 231, 0.57);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.ln-auth-screen .ln-initial-ability-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ln-auth-screen .ln-initial-ability-list button {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.ln-auth-screen .ln-initial-ability-list button:hover {
+  border-color: rgba(239, 141, 62, 0.52);
+  background: rgba(239, 141, 62, 0.07);
+  transform: translateY(-1px);
+}
+
+.ln-auth-screen .ln-initial-ability-list button.is-selected {
+  border-color: rgba(255, 173, 96, 0.9);
+  background: linear-gradient(135deg, rgba(185, 70, 33, 0.23), rgba(228, 122, 50, 0.11));
+  box-shadow: 0 0 0 3px rgba(224, 112, 43, 0.08);
+}
+
+.ln-auth-screen .ln-initial-ability-list strong {
+  color: #fff4e8;
+  font-size: 0.84rem;
+}
+
+.ln-auth-screen .ln-initial-ability-list span {
+  color: rgba(255, 244, 231, 0.57);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .ln-auth-screen .ln-initial-style-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =====================================================
+   LN CADASTRO — NATUREZA ELEMENTAL INICIAL V1
+===================================================== */
+
+.ln-auth-screen .ln-chakra-element-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 22px;
+}
+
+.ln-auth-screen .ln-chakra-element-grid button {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(5, 6, 8, 0.58);
+  color: #fff7ed;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.ln-auth-screen .ln-chakra-element-grid button:hover {
+  border-color: rgba(239, 141, 62, 0.5);
+  background: rgba(239, 141, 62, 0.07);
+  transform: translateY(-1px);
+}
+
+.ln-auth-screen .ln-chakra-element-grid button.is-selected {
+  border-color: rgba(255, 173, 96, 0.92);
+  background: linear-gradient(135deg, rgba(185, 70, 33, 0.25), rgba(228, 122, 50, 0.12));
+  box-shadow: 0 0 0 3px rgba(224, 112, 43, 0.08);
+}
+
+.ln-auth-screen .ln-chakra-element-grid strong {
+  color: #fff4e8;
+  font-size: 0.9rem;
+}
+
+.ln-auth-screen .ln-chakra-element-grid span {
+  color: #ef9348;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ln-auth-screen .ln-chakra-element-grid small {
+  color: rgba(255, 244, 231, 0.55);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .ln-auth-screen .ln-chakra-element-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .ln-auth-screen .ln-chakra-element-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =====================================================
+   LN CADASTRO — NATUREZAS ELEMENTAIS 1–5 V2
+===================================================== */
+
+.ln-auth-screen .ln-chakra-element-grid button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  transform: none;
+}
+
+.ln-auth-screen .ln-chakra-element-order {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 4px 7px;
+  border: 1px solid rgba(239, 141, 62, 0.3);
+  border-radius: 999px;
+  color: #ffd0aa;
+  background: rgba(239, 141, 62, 0.08);
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+.ln-auth-screen .ln-chakra-element-count {
+  margin: -10px 0 22px;
+  color: rgba(255, 244, 231, 0.62);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   ITA UCHIHA — BOTÃO EMBUTIDO NO CARD
+   A arte já possui "Ver dossiê".
+   O botão React continua funcional, mas invisível.
+===================================================== */
+
+.legend-art-card-button--built-in {
+  opacity: 0 !important;
+}
+
+/* Continua recebendo clique normalmente. */
+.legend-art-card-button--built-in,
+.legend-art-card-button--built-in:hover,
+.legend-art-card-button--built-in:active {
+  filter: none !important;
+}
+
+
+
+/* ==========================================================
+   HALL DAS LENDAS
+   BOTÃO EMBUTIDO — HOVER / CLICK + DOSSIÊ POPUP REAL
+   2026-08
+========================================================== */
+
+/*
+  Os cards novos já possuem o desenho "Ver dossiê"
+  dentro da própria imagem.
+
+  Portanto:
+  - escondemos SOMENTE a imagem do botão React;
+  - mantemos a área real clicável;
+  - usamos essa área para brilho, hover e active.
+*/
+
+.legend-art-card-button--built-in {
+  opacity: 1 !important;
+
+  display: block !important;
+
+  background: transparent !important;
+
+  border: 1px solid transparent !important;
+  border-radius: 5px !important;
+
+  cursor: pointer !important;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease !important;
+}
+
+
+/* Esconde apenas o botão DUPLICADO.
+   O botão desenhado na arte continua visível por baixo. */
+.legend-art-card-button--built-in img {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+
+/* PASSAR O MOUSE */
+.legend-art-card-button--built-in:hover {
+  opacity: 1 !important;
+
+  transform:
+    translateY(-3px)
+    scale(1.018) !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 154, 52, 0.10),
+      rgba(255, 106, 0, 0.04)
+    ) !important;
+
+  border-color:
+    rgba(255, 153, 51, 0.26) !important;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.22),
+    0 0 16px rgba(255, 106, 0, 0.30),
+    inset 0 0 16px rgba(255, 156, 56, 0.08) !important;
+
+  filter:
+    brightness(1.08) !important;
+}
+
+
+/* APERTAR */
+.legend-art-card-button--built-in:active {
+  opacity: 1 !important;
+
+  transform:
+    translateY(2px)
+    scale(0.982) !important;
+
+  background:
+    rgba(87, 26, 0, 0.12) !important;
+
+  box-shadow:
+    inset 0 3px 12px rgba(0, 0, 0, 0.42),
+    0 0 8px rgba(255, 106, 0, 0.18) !important;
+
+  transition-duration: 70ms !important;
+}
+
+
+/* Teclado */
+.legend-art-card-button--built-in:focus-visible {
+  outline:
+    2px solid rgba(255, 122, 0, 0.92) !important;
+
+  outline-offset: 3px !important;
+}
+
+
+/* ==========================================================
+   POPUP DO DOSSIÊ
+========================================================== */
+
+/*
+  Important aqui é proposital:
+  existe CSS antigo que redefine legend-detail-overlay
+  como position: relative.
+*/
+
+body > .legend-detail-overlay,
+.legend-detail-overlay {
+  position: fixed !important;
+
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  width: 100vw !important;
+  height: 100dvh !important;
+
+  z-index: 2147483000 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow:
+    hidden !important;
+
+  padding:
+    clamp(12px, 3vw, 32px) !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 16%,
+      rgba(255, 94, 0, 0.17),
+      transparent 40%
+    ),
+    rgba(0, 0, 0, 0.84) !important;
+
+  backdrop-filter:
+    blur(10px) !important;
+
+  -webkit-backdrop-filter:
+    blur(10px) !important;
+
+  animation:
+    lnLegendOverlayIn 160ms ease-out both !important;
+}
+
+
+/* Janela */
+body > .legend-detail-overlay .legend-detail-card {
+  position: relative !important;
+
+  width:
+    min(820px, calc(100vw - 28px)) !important;
+
+  max-height:
+    calc(100dvh - 40px) !important;
+
+  margin: 0 !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  overscroll-behavior:
+    contain !important;
+
+  z-index:
+    2147483001 !important;
+
+  animation:
+    lnLegendDossierIn 210ms
+    cubic-bezier(.2,.85,.25,1)
+    both !important;
+}
+
+
+/* Hall fica congelado atrás */
+.hall-of-legends-page.legend-popup-open {
+  overflow:
+    hidden !important;
+}
+
+
+/* X sempre acima de tudo dentro do dossiê */
+body > .legend-detail-overlay .legend-detail-close {
+  position:
+    sticky !important;
+
+  top:
+    0 !important;
+
+  float:
+    right !important;
+
+  z-index:
+    30 !important;
+}
+
+
+/* Entrada do fundo */
+@keyframes lnLegendOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* Entrada da janela */
+@keyframes lnLegendDossierIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(16px)
+      scale(0.965);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 700px) {
+
+  body > .legend-detail-overlay {
+    padding:
+      10px !important;
+
+    align-items:
+      center !important;
+  }
+
+  body > .legend-detail-overlay .legend-detail-card {
+    width:
+      calc(100vw - 20px) !important;
+
+    max-height:
+      calc(100dvh - 20px) !important;
+
+    border-radius:
+      18px !important;
+
+    padding:
+      20px !important;
+  }
+
+}
+
+
+/*
+  Celular não possui hover real.
+  Mantemos sensação de pressão no toque.
+*/
+@media (hover: none) {
+
+  .legend-art-card-button--built-in:active {
+    transform:
+      scale(0.97) !important;
+
+    background:
+      rgba(255, 122, 0, 0.08) !important;
+  }
+
+}
+
+
+
+/* =========================================================
+   HALL LEGENDS ADMIN EDITOR
+========================================================= */
+
+.hla-shell {
+  display: grid;
+  grid-template-columns: minmax(230px, 310px) minmax(0, 1fr);
+  gap: 18px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.hla-sidebar,
+.hla-editor {
+  background: #101010;
+  border: 1px solid rgba(255, 122, 0, 0.28);
+  border-radius: 16px;
+}
+
+.hla-sidebar {
+  overflow: hidden;
+}
+
+.hla-sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hla-sidebar-header strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #f3e7d5;
+  font-size: 1rem;
+}
+
+.hla-sidebar-header input {
+  width: 100%;
+  padding: 10px 12px;
+  color: #f4eee6;
+  background: #090909;
+  border: 1px solid rgba(255, 122, 0, 0.3);
+  border-radius: 9px;
+}
+
+.hla-list {
+  max-height: 720px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.hla-legend-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px;
+  margin: 0 0 5px;
+  color: #dcd3c7;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.hla-legend-button:hover {
+  background: rgba(255, 122, 0, 0.06);
+}
+
+.hla-legend-button.active {
+  background: rgba(255, 122, 0, 0.11);
+  border-color: rgba(255, 122, 0, 0.46);
+}
+
+.hla-legend-button span {
+  font-weight: 800;
+}
+
+.hla-legend-button small {
+  margin-top: 3px;
+  color: #8f8376;
+}
+
+.hla-legend-button em {
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  color: #ff861c;
+  font-size: 0.67rem;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.hla-editor {
+  min-width: 0;
+  padding: 22px;
+}
+
+.hla-editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hla-editor-header h2 {
+  margin: 4px 0;
+  color: #f5eadb;
+}
+
+.hla-editor-header > div > span {
+  color: #8f8376;
+}
+
+.hla-reset {
+  padding: 9px 13px;
+  color: #c6b9ac;
+  background: #171717;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.hla-photo-section {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.hla-photo-preview {
+  min-height: 250px;
+  overflow: hidden;
+  background: #080808;
+  border: 1px dashed rgba(255, 122, 0, 0.35);
+  border-radius: 12px;
+}
+
+.hla-photo-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  object-fit: cover;
+}
+
+.hla-photo-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 250px;
+  padding: 22px;
+  color: #9c9185;
+}
+
+.hla-photo-empty strong {
+  margin-bottom: 8px;
+  color: #e8ded2;
+}
+
+.hla-photo-actions {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hla-photo-actions button,
+.hla-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 15px;
+  color: #f4e8db;
+  background: #181818;
+  border: 1px solid rgba(255, 122, 0, 0.35);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.hla-upload {
+  background: #b84e00;
+}
+
+.hla-upload input {
+  display: none;
+}
+
+.hla-field {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.hla-field > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #f0e5d7;
+  font-weight: 800;
+}
+
+.hla-field textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 120px;
+  padding: 14px;
+  color: #eee6dd;
+  line-height: 1.55;
+  background: #090909;
+  border: 1px solid rgba(255, 122, 0, 0.27);
+  border-radius: 10px;
+}
+
+.hla-field textarea:focus,
+.hla-sidebar-header input:focus {
+  outline: none;
+  border-color: rgba(255, 122, 0, 0.75);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.08);
+}
+
+.hla-field small {
+  display: block;
+  margin-top: 6px;
+  color: #786f66;
+}
+
+.hla-message {
+  padding: 11px 13px;
+  color: #f0d7bd;
+  background: rgba(255, 122, 0, 0.08);
+  border: 1px solid rgba(255, 122, 0, 0.2);
+  border-radius: 8px;
+}
+
+.hla-save-bar {
+  position: sticky;
+  bottom: 8px;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 15px;
+}
+
+.hla-save {
+  min-width: 190px;
+  padding: 12px 18px;
+  color: #110800;
+  font-weight: 900;
+  background: #f07913;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.hla-save:disabled,
+.hla-reset:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+@media (max-width: 850px) {
+  .hla-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .hla-list {
+    max-height: 300px;
+  }
+
+  .hla-photo-section {
+    grid-template-columns: 1fr;
+  }
+
+  .hla-photo-preview {
+    max-width: 320px;
+  }
+}
+
+
+
+/* =========================================================
+   HALL DAS LENDAS — CORREÇÃO FINAL DO DOSSIÊ
+   Fotos coloridas + fundo preto
+========================================================= */
+
+/* ---------------------------------------------------------
+   FUNDO DO DOSSIÊ
+--------------------------------------------------------- */
+
+body > .legend-detail-overlay .legend-detail-card,
+body > .legend-detail-overlay .cinematic-detail-card,
+.legend-detail-overlay .legend-detail-card,
+.legend-detail-overlay .cinematic-detail-card {
+  background:
+    linear-gradient(
+      180deg,
+      #090909 0%,
+      #050505 45%,
+      #020202 100%
+    ) !important;
+
+  background-color: #050505 !important;
+
+  color: #eee7dd !important;
+
+  border-color: rgba(225, 96, 0, 0.55) !important;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.85),
+    0 0 30px rgba(220, 80, 0, 0.12) !important;
+}
+
+
+/* Remove qualquer fundo azul/navy herdado de blocos internos */
+
+body > .legend-detail-overlay .legend-detail-content,
+body > .legend-detail-overlay .legend-detail-portrait,
+.legend-detail-overlay .legend-detail-content,
+.legend-detail-overlay .legend-detail-portrait {
+  background-color: transparent !important;
+}
+
+
+/* ---------------------------------------------------------
+   FOTO DA LENDA — SEM PRETO E BRANCO
+--------------------------------------------------------- */
+
+body > .legend-detail-overlay .legend-detail-portrait,
+.legend-detail-overlay .legend-detail-portrait {
+  filter: none !important;
+  -webkit-filter: none !important;
+
+  opacity: 1 !important;
+
+  mix-blend-mode: normal !important;
+}
+
+
+/* A imagem precisa preservar exatamente as cores originais */
+
+body > .legend-detail-overlay .legend-detail-portrait img,
+.legend-detail-overlay .legend-detail-portrait img {
+  display: block !important;
+
+  filter: none !important;
+  -webkit-filter: none !important;
+
+  grayscale: 0 !important;
+
+  opacity: 1 !important;
+
+  mix-blend-mode: normal !important;
+
+  isolation: isolate !important;
+
+  background: transparent !important;
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE CAMADAS QUE POSSAM DESSATURAR A FOTO
+--------------------------------------------------------- */
+
+body > .legend-detail-overlay .legend-detail-portrait::before,
+body > .legend-detail-overlay .legend-detail-portrait::after,
+.legend-detail-overlay .legend-detail-portrait::before,
+.legend-detail-overlay .legend-detail-portrait::after {
+  filter: none !important;
+  -webkit-filter: none !important;
+
+  mix-blend-mode: normal !important;
+}
+
+
+/* ---------------------------------------------------------
+   SEÇÕES INTERNAS
+--------------------------------------------------------- */
+
+body > .legend-detail-overlay .legend-detail-content section,
+.legend-detail-overlay .legend-detail-content section {
+  background:
+    rgba(255, 255, 255, 0.018) !important;
+
+  border-color:
+    rgba(227, 91, 0, 0.16) !important;
+}
+
+
+/* títulos */
+
+body > .legend-detail-overlay .legend-detail-content h2,
+body > .legend-detail-overlay .legend-detail-content h3,
+.legend-detail-overlay .legend-detail-content h2,
+.legend-detail-overlay .legend-detail-content h3 {
+  color: #f2e6d5 !important;
+}
+
+
+/* tags */
+
+body > .legend-detail-overlay .legend-detail-tags span,
+.legend-detail-overlay .legend-detail-tags span {
+  color: #e9ddd0 !important;
+
+  background:
+    rgba(0, 0, 0, 0.65) !important;
+
+  border-color:
+    rgba(229, 89, 0, 0.55) !important;
+}
+
+
+/* botão fechar */
+
+body > .legend-detail-overlay .legend-detail-close,
+.legend-detail-overlay .legend-detail-close {
+  color: #f4e8db !important;
+
+  background:
+    rgba(10, 10, 10, 0.96) !important;
+
+  border-color:
+    rgba(222, 84, 0, 0.55) !important;
+}
+
+body > .legend-detail-overlay .legend-detail-close:hover,
+.legend-detail-overlay .legend-detail-close:hover {
+  background:
+    rgba(210, 72, 0, 0.92) !important;
+
+  color: #fff !important;
+}
+
+
+
+/* =========================================================
+   HALL DAS LENDAS — DOSSIÊ PREENCHENDO TODA A JANELA
+========================================================= */
+
+/*
+  O layout antigo reservava uma coluna lateral.
+  Agora:
+  FOTO
+  ↓
+  CONTEÚDO EM LARGURA TOTAL
+*/
+
+body > .legend-detail-overlay .legend-detail-card,
+.legend-detail-overlay .legend-detail-card,
+body > .legend-detail-overlay .cinematic-detail-card,
+.legend-detail-overlay .cinematic-detail-card {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(0, 1fr) !important;
+
+  grid-template-rows:
+    auto auto !important;
+
+  width:
+    min(900px, calc(100vw - 40px)) !important;
+
+  max-width:
+    900px !important;
+
+  padding:
+    20px !important;
+
+  gap:
+    18px !important;
+
+  background:
+    #050505 !important;
+}
+
+
+/* =========================================================
+   FOTO
+========================================================= */
+
+body > .legend-detail-overlay .legend-detail-portrait,
+.legend-detail-overlay .legend-detail-portrait {
+  grid-column:
+    1 / -1 !important;
+
+  position:
+    relative !important;
+
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  width:
+    100% !important;
+
+  min-width:
+    0 !important;
+
+  height:
+    auto !important;
+
+  min-height:
+    0 !important;
+
+  max-height:
+    380px !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    hidden !important;
+
+  background:
+    #000 !important;
+
+  border:
+    1px solid rgba(220, 90, 0, 0.32) !important;
+
+  border-radius:
+    10px !important;
+}
+
+
+/* mantém foto colorida */
+
+body > .legend-detail-overlay .legend-detail-portrait img,
+.legend-detail-overlay .legend-detail-portrait img {
+  display:
+    block !important;
+
+  width:
+    auto !important;
+
+  max-width:
+    100% !important;
+
+  height:
+    auto !important;
+
+  max-height:
+    380px !important;
+
+  object-fit:
+    contain !important;
+
+  object-position:
+    center center !important;
+
+  filter:
+    none !important;
+
+  -webkit-filter:
+    none !important;
+
+  opacity:
+    1 !important;
+
+  mix-blend-mode:
+    normal !important;
+}
+
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
+body > .legend-detail-overlay .legend-detail-content,
+.legend-detail-overlay .legend-detail-content {
+  grid-column:
+    1 / -1 !important;
+
+  display:
+    block !important;
+
+  width:
+    100% !important;
+
+  max-width:
+    none !important;
+
+  min-width:
+    0 !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  background:
+    transparent !important;
+}
+
+
+/* remove qualquer limite antigo de largura */
+
+body > .legend-detail-overlay .legend-detail-content > *,
+.legend-detail-overlay .legend-detail-content > * {
+  width:
+    100% !important;
+
+  max-width:
+    none !important;
+}
+
+
+/* =========================================================
+   SEÇÕES DO DOSSIÊ
+========================================================= */
+
+body > .legend-detail-overlay .legend-detail-content section,
+.legend-detail-overlay .legend-detail-content section {
+  display:
+    block !important;
+
+  width:
+    100% !important;
+
+  max-width:
+    none !important;
+
+  margin:
+    0 0 14px !important;
+
+  padding:
+    17px 18px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025),
+      rgba(255, 255, 255, 0.01)
+    ) !important;
+
+  border:
+    1px solid rgba(214, 84, 0, 0.18) !important;
+
+  border-radius:
+    8px !important;
+}
+
+
+/* título da seção */
+
+body > .legend-detail-overlay .legend-detail-content section h3,
+.legend-detail-overlay .legend-detail-content section h3 {
+  width:
+    100% !important;
+
+  margin:
+    0 0 10px !important;
+
+  color:
+    #f0e3d3 !important;
+
+  font-size:
+    1rem !important;
+}
+
+
+/* TEXTO — usa toda a largura */
+
+body > .legend-detail-overlay .legend-detail-content section p,
+.legend-detail-overlay .legend-detail-content section p {
+  width:
+    100% !important;
+
+  max-width:
+    none !important;
+
+  margin:
+    0 !important;
+
+  color:
+    #d6d0ca !important;
+
+  font-size:
+    0.97rem !important;
+
+  line-height:
+    1.7 !important;
+
+  text-align:
+    left !important;
+
+  white-space:
+    normal !important;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+body > .legend-detail-overlay .legend-detail-content h2,
+.legend-detail-overlay .legend-detail-content h2 {
+  width:
+    100% !important;
+
+  max-width:
+    none !important;
+}
+
+
+/* tags não ocupam 100% individualmente */
+
+body > .legend-detail-overlay .legend-detail-tags,
+.legend-detail-overlay .legend-detail-tags {
+  display:
+    flex !important;
+
+  flex-wrap:
+    wrap !important;
+
+  gap:
+    8px !important;
+
+  width:
+    100% !important;
+
+  margin-bottom:
+    18px !important;
+}
+
+body > .legend-detail-overlay .legend-detail-tags span,
+.legend-detail-overlay .legend-detail-tags span {
+  width:
+    auto !important;
+
+  max-width:
+    max-content !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  body > .legend-detail-overlay .legend-detail-card,
+  .legend-detail-overlay .legend-detail-card {
+    width:
+      calc(100vw - 18px) !important;
+
+    padding:
+      12px !important;
+
+    gap:
+      12px !important;
+  }
+
+  body > .legend-detail-overlay .legend-detail-portrait,
+  .legend-detail-overlay .legend-detail-portrait {
+    max-height:
+      280px !important;
+  }
+
+  body > .legend-detail-overlay .legend-detail-portrait img,
+  .legend-detail-overlay .legend-detail-portrait img {
+    max-height:
+      280px !important;
+  }
+
+  body > .legend-detail-overlay .legend-detail-content section,
+  .legend-detail-overlay .legend-detail-content section {
+    padding:
+      14px !important;
+  }
+
+}
+
+
+
+/* ==========================================================
+   HALL DAS LENDAS
+   BOTÃO EMBUTIDO — HOVER / CLICK + DOSSIÊ POPUP REAL
+   2026-08
+========================================================== */
+
+/*
+  Os cards novos já possuem o desenho "Ver dossiê"
+  dentro da própria imagem.
+
+  Portanto:
+  - escondemos SOMENTE a imagem do botão React;
+  - mantemos a área real clicável;
+  - usamos essa área para brilho, hover e active.
+*/
+
+.legend-art-card-button--built-in {
+  opacity: 1 !important;
+
+  display: block !important;
+
+  background: transparent !important;
+
+  border: 1px solid transparent !important;
+  border-radius: 5px !important;
+
+  cursor: pointer !important;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease !important;
+}
+
+
+/* Esconde apenas o botão DUPLICADO.
+   O botão desenhado na arte continua visível por baixo. */
+.legend-art-card-button--built-in img {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+
+/* PASSAR O MOUSE */
+.legend-art-card-button--built-in:hover {
+  opacity: 1 !important;
+
+  transform:
+    translateY(-3px)
+    scale(1.018) !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 154, 52, 0.10),
+      rgba(255, 106, 0, 0.04)
+    ) !important;
+
+  border-color:
+    rgba(255, 153, 51, 0.26) !important;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.22),
+    0 0 16px rgba(255, 106, 0, 0.30),
+    inset 0 0 16px rgba(255, 156, 56, 0.08) !important;
+
+  filter:
+    brightness(1.08) !important;
+}
+
+
+/* APERTAR */
+.legend-art-card-button--built-in:active {
+  opacity: 1 !important;
+
+  transform:
+    translateY(2px)
+    scale(0.982) !important;
+
+  background:
+    rgba(87, 26, 0, 0.12) !important;
+
+  box-shadow:
+    inset 0 3px 12px rgba(0, 0, 0, 0.42),
+    0 0 8px rgba(255, 106, 0, 0.18) !important;
+
+  transition-duration: 70ms !important;
+}
+
+
+/* Teclado */
+.legend-art-card-button--built-in:focus-visible {
+  outline:
+    2px solid rgba(255, 122, 0, 0.92) !important;
+
+  outline-offset: 3px !important;
+}
+
+
+/* ==========================================================
+   POPUP DO DOSSIÊ
+========================================================== */
+
+/*
+  Important aqui é proposital:
+  existe CSS antigo que redefine legend-detail-overlay
+  como position: relative.
+*/
+
+body > .legend-detail-overlay,
+.legend-detail-overlay {
+  position: fixed !important;
+
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  width: 100vw !important;
+  height: 100dvh !important;
+
+  z-index: 2147483000 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow:
+    hidden !important;
+
+  padding:
+    clamp(12px, 3vw, 32px) !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 16%,
+      rgba(255, 94, 0, 0.17),
+      transparent 40%
+    ),
+    rgba(0, 0, 0, 0.84) !important;
+
+  backdrop-filter:
+    blur(10px) !important;
+
+  -webkit-backdrop-filter:
+    blur(10px) !important;
+
+  animation:
+    lnLegendOverlayIn 160ms ease-out both !important;
+}
+
+
+/* Janela */
+body > .legend-detail-overlay .legend-detail-card {
+  position: relative !important;
+
+  width:
+    min(820px, calc(100vw - 28px)) !important;
+
+  max-height:
+    calc(100dvh - 40px) !important;
+
+  margin: 0 !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  overscroll-behavior:
+    contain !important;
+
+  z-index:
+    2147483001 !important;
+
+  animation:
+    lnLegendDossierIn 210ms
+    cubic-bezier(.2,.85,.25,1)
+    both !important;
+}
+
+
+/* Hall fica congelado atrás */
+.hall-of-legends-page.legend-popup-open {
+  overflow:
+    hidden !important;
+}
+
+
+/* X sempre acima de tudo dentro do dossiê */
+body > .legend-detail-overlay .legend-detail-close {
+  position:
+    sticky !important;
+
+  top:
+    0 !important;
+
+  float:
+    right !important;
+
+  z-index:
+    30 !important;
+}
+
+
+/* Entrada do fundo */
+@keyframes lnLegendOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* Entrada da janela */
+@keyframes lnLegendDossierIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(16px)
+      scale(0.965);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 700px) {
+
+  body > .legend-detail-overlay {
+    padding:
+      10px !important;
+
+    align-items:
+      center !important;
+  }
+
+  body > .legend-detail-overlay .legend-detail-card {
+    width:
+      calc(100vw - 20px) !important;
+
+    max-height:
+      calc(100dvh - 20px) !important;
+
+    border-radius:
+      18px !important;
+
+    padding:
+      20px !important;
+  }
+
+}
+
+
+/*
+  Celular não possui hover real.
+  Mantemos sensação de pressão no toque.
+*/
+@media (hover: none) {
+
+  .legend-art-card-button--built-in:active {
+    transform:
+      scale(0.97) !important;
+
+    background:
+      rgba(255, 122, 0, 0.08) !important;
+  }
+
+}
+

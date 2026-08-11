@@ -2,6 +2,22 @@ import PasswordRecoveryWidget from "./PasswordRecoveryWidget";
 import { useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import { uniqueTraits } from "../../data/uniqueTraits";
+import {
+  INITIAL_NINJA_STYLE_KEYS,
+  buildNinjaStyleSummary,
+  createNinjaStyleSelection,
+  getInitialNinjaStyleValidationError,
+  getNinjaStyleDefinition,
+  getSecondInitialStyleOptions,
+  normalizeNinjaStyleSelections,
+} from "../../data/ninjaStyleCatalog";
+import {
+  INITIAL_CHAKRA_ELEMENTS,
+  MAX_CHAKRA_NATURES,
+  getInitialChakraElement,
+  isValidInitialChakraNature,
+  normalizeChakraNatures,
+} from "../../data/chakraElementCatalog";
 
 const CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 const CREATE_NINJA_AFTER_AUTH_KEY = "ln-create-ninja-after-auth";
@@ -17,6 +33,8 @@ const EMPTY_FORM = {
   villageOrOrganization: "",
   villageOrOrganizationOther: "",
   kekkeiGenkaiOrHiden: "",
+  chakraNatures: [],
+  ninjaStyleSelections: [],
   epithet: "",
   appearance: "",
   history: "",
@@ -100,78 +118,148 @@ function makeCharacterRecord(form, user) {
     phone: form.phone.trim(),
     characterName: form.characterName.trim(),
     age: form.age.trim(),
+    rank: "E",
     clanOrKinship: form.clanOrKinship.trim(),
     villageOrOrganization: getFinalVillage(form),
     kekkeiGenkaiOrHiden: form.kekkeiGenkaiOrHiden.trim(),
+    chakraNatures: normalizeChakraNatures(form.chakraNatures),
+    chakra_natures: normalizeChakraNatures(form.chakraNatures),
+    ninjaStyle: buildNinjaStyleSummary(form.ninjaStyleSelections),
+    ninjaStyleSelections: normalizeNinjaStyleSelections(form.ninjaStyleSelections),
+    ninja_style_selections: normalizeNinjaStyleSelections(form.ninjaStyleSelections),
     epithet: form.epithet.trim(),
     appearance: form.appearance.trim(),
     history: form.history.trim(),
     equipment: form.equipment.trim(),
     uniqueTrait: form.uniqueTrait.trim(),
+    selectedTraits: form.uniqueTrait.trim() ? [form.uniqueTrait.trim()] : [],
+    selected_traits: form.uniqueTrait.trim() ? [form.uniqueTrait.trim()] : [],
     characterPhotoUrl: form.characterPhotoUrl.trim(),
     mapIconUrl: form.mapIconUrl.trim(),
 
     skillPoints: 50,
     unlockedSkillIds: [],
     currentLocation: null,
-    profileSheet: {
-      playerName: form.playerName.trim(),
-      phone: form.phone.trim(),
-      characterName: form.characterName.trim(),
-      age: form.age.trim(),
-      clanOrKinship: form.clanOrKinship.trim(),
-      villageOrOrganization: getFinalVillage(form),
-      kekkeiGenkaiOrHiden: form.kekkeiGenkaiOrHiden.trim(),
-      epithet: form.epithet.trim(),
-      appearance: form.appearance.trim(),
-      history: form.history.trim(),
-      equipment: form.equipment.trim(),
-      uniqueTrait: form.uniqueTrait.trim(),
-      characterPhotoUrl: form.characterPhotoUrl.trim(),
-      mapIconUrl: form.mapIconUrl.trim(),
-      currentLocation: null
-    }
+
+    // A ficha principal fica nas colunas oficiais de characters.
+    // profile_sheet pertence somente à Ficha Complementar.
+    profileSheet: {}
   };
 }
 
-async function trySaveCharacterToSupabase(character) {
-  if (!isSupabaseConfigured || !supabase || !character.userId) {
-    return;
+function InitialNinjaStylePicker({
+  slot,
+  selection,
+  firstSelection,
+  disabled = false,
+  onChange,
+}) {
+  const availableStyles =
+    slot === 1
+      ? INITIAL_NINJA_STYLE_KEYS.map((styleKey) => ({ styleKey, level: 1 }))
+      : getSecondInitialStyleOptions(firstSelection);
+
+  const selectedStyle = getNinjaStyleDefinition(selection?.style_key);
+  const selectedLevel = Number(selection?.level || 0);
+  const abilities = selectedStyle?.levels?.[selectedLevel] || [];
+
+  function handleStyleChange(event) {
+    const [styleKey, rawLevel] = event.target.value.split(":");
+    const level = Number(rawLevel || 0);
+
+    onChange(
+      createNinjaStyleSelection({
+        slot,
+        styleKey,
+        level,
+        abilityKey: "",
+      })
+    );
   }
 
-  const payload = {
-    user_id: character.userId,
-    player_name: character.playerName,
-    phone: character.phone,
-    character_name: character.characterName,
-    age: character.age,
-    clan_or_kinship: character.clanOrKinship,
-    village_or_organization: character.villageOrOrganization,
-    kekkei_genkai_or_hiden: character.kekkeiGenkaiOrHiden,
-    epithet: character.epithet,
-    appearance: character.appearance,
-    history: character.history,
-    equipment: character.equipment,
-    unique_trait: character.uniqueTrait,
-    character_photo_url: character.characterPhotoUrl,
-    map_icon_url: character.mapIconUrl,
-    profile_sheet: character.profileSheet,
-    skill_points: character.skillPoints
-  };
-
-  // LN_CHARACTER_UPSERT_AFTER_SIGNUP_V2
-  // O trigger já cria a linha do personagem. O upsert completa
-  // essa mesma linha em vez de tentar criar um segundo ninja.
-  const { error } = await supabase
-    .from("characters")
-    .upsert(payload, {
-      onConflict: "user_id",
-      ignoreDuplicates: false,
-    });
-
-  if (error) {
-    console.warn("Não foi possível salvar personagem no Supabase:", error.message);
+  function handleAbilityChange(abilityKey) {
+    onChange(
+      createNinjaStyleSelection({
+        slot,
+        styleKey: selection?.style_key,
+        level: selection?.level,
+        abilityKey,
+      })
+    );
   }
+
+  const selectValue = selection?.style_key
+    ? `${selection.style_key}:${selection.level}`
+    : "";
+
+  return (
+    <section className={`ln-initial-style-card ${disabled ? "is-disabled" : ""}`}>
+      <header>
+        <span>{slot === 1 ? "1º Estilo Ninja" : "2º Estilo Ninja"}</span>
+        <strong>
+          {slot === 1
+            ? "Escolha um Estilo no Nível 1"
+            : "Comece outro Estilo ou evolua o primeiro para o Nível 2"}
+        </strong>
+      </header>
+
+      <label className="ln-initial-style-select">
+        <span>Estilo e nível</span>
+        <select
+          value={selectValue}
+          onChange={handleStyleChange}
+          disabled={disabled}
+        >
+          <option value="">Selecione</option>
+          {availableStyles.map(({ styleKey, level }) => {
+            const style = getNinjaStyleDefinition(styleKey);
+            const isContinuation =
+              slot === 2 && styleKey === firstSelection?.style_key;
+
+            return (
+              <option key={`${styleKey}-${level}`} value={`${styleKey}:${level}`}>
+                {style?.shortName || style?.name} {level}
+                {isContinuation ? " — continuação do primeiro" : ""}
+              </option>
+            );
+          })}
+        </select>
+      </label>
+
+      {selectedStyle && (
+        <>
+          <p className="ln-initial-style-description">
+            {selectedStyle.shortDescription}
+          </p>
+
+          <div
+            className="ln-initial-ability-list"
+            role="radiogroup"
+            aria-label={`Habilidade de ${selectedStyle.name} ${selectedLevel}`}
+          >
+            {abilities.map((item) => {
+              const isSelected = selection?.ability_key === item.key;
+
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  className={isSelected ? "is-selected" : ""}
+                  onClick={() => handleAbilityChange(item.key)}
+                  disabled={disabled}
+                  role="radio"
+                  aria-checked={isSelected}
+                >
+                  <strong>{item.name}</strong>
+                  <span>{item.summary}</span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </section>
+  );
 }
 
 export default function AuthPage({ onAuthSuccess }) {
@@ -185,6 +273,26 @@ export default function AuthPage({ onAuthSuccess }) {
       ...current,
       [field]: value
     }));
+  }
+
+  function updateNinjaStyleSelection(slot, nextSelection) {
+    setForm((current) => {
+      const currentSelections = normalizeNinjaStyleSelections(
+        current.ninjaStyleSelections
+      );
+
+      if (slot === 1) {
+        return {
+          ...current,
+          ninjaStyleSelections: [nextSelection],
+        };
+      }
+
+      return {
+        ...current,
+        ninjaStyleSelections: [currentSelections[0], nextSelection].filter(Boolean),
+      };
+    });
   }
 
   function validateCreateForm() {
@@ -215,6 +323,17 @@ export default function AuthPage({ onAuthSuccess }) {
       !form.villageOrOrganizationOther.trim()
     ) {
       return "Informe a aldeia ou organização em Outra Organização.";
+    }
+
+    if (!isValidInitialChakraNature(form.chakraNatures)) {
+      return "Escolha de 1 a 5 elementos básicos para o personagem. O primeiro será o elemento primário.";
+    }
+
+    const ninjaStyleValidation =
+      getInitialNinjaStyleValidationError(form.ninjaStyleSelections);
+
+    if (ninjaStyleValidation) {
+      return ninjaStyleValidation;
     }
 
     if (form.password.length < 6) {
@@ -256,19 +375,28 @@ export default function AuthPage({ onAuthSuccess }) {
             data: {
               // LN_SIGNUP_FULL_METADATA_V2
               player_name: form.playerName.trim(),
-              phone: form.phone.trim(),
+              phone_number: form.phone.trim(),
               character_name: form.characterName.trim(),
               age: form.age.trim(),
               clan_or_kinship: form.clanOrKinship.trim(),
               village_or_organization: getFinalVillage(form),
               kekkei_genkai_or_hiden: form.kekkeiGenkaiOrHiden.trim(),
+              chakra_natures: normalizeChakraNatures(form.chakraNatures),
+              primary_element:
+                getInitialChakraElement(form.chakraNatures)?.name || "",
+              ninja_style: buildNinjaStyleSummary(form.ninjaStyleSelections),
+              ninja_style_selections: normalizeNinjaStyleSelections(
+                form.ninjaStyleSelections
+              ),
               epithet: form.epithet.trim(),
               appearance: form.appearance.trim(),
               history: form.history.trim(),
               equipment: form.equipment.trim(),
-              unique_trait: form.uniqueTrait.trim(),
-              character_photo_url: form.characterPhotoUrl.trim(),
-              map_icon_url: form.mapIconUrl.trim()
+              selected_traits: form.uniqueTrait.trim()
+                ? [form.uniqueTrait.trim()]
+                : [],
+              portrait_url: form.characterPhotoUrl.trim(),
+              icon_url: form.mapIconUrl.trim()
             }
           }
         });
@@ -283,25 +411,12 @@ export default function AuthPage({ onAuthSuccess }) {
         localStorage.setItem(CREATE_NINJA_AFTER_AUTH_KEY, "1");
 
         if (data?.session) {
-          await trySaveCharacterToSupabase(character);
-          onAuthSuccess?.("my-ninja");
-          return;
-        }
-
-        const { error: loginAfterSignupError } = await supabase.auth.signInWithPassword({
-          email: form.email.trim(),
-          password: form.password
-        });
-
-        await trySaveCharacterToSupabase(character);
-
-        if (!loginAfterSignupError) {
           onAuthSuccess?.("my-ninja");
           return;
         }
 
         setMessage(
-          "Conta criada e ninja salvo. Confirme o e-mail se necessário; ao entrar, você será levado ao Meu Ninja."
+          "Conta e ninja criados. Confirme o e-mail e depois entre; sua ficha e os Estilos Ninja já estarão preenchidos no Meu Ninja."
         );
         return;
       }
@@ -407,6 +522,9 @@ export default function AuthPage({ onAuthSuccess }) {
               <div className="ln-auth-section-title">
                 <span>Dados do player</span>
               </div>
+              <p className="ln-auth-section-help">
+                Estes dados identificam o responsável pela conta. Eles aparecerão automaticamente no Meu Ninja.
+              </p>
 
               <div className="ln-auth-grid two">
                 <label>
@@ -431,6 +549,9 @@ export default function AuthPage({ onAuthSuccess }) {
               <div className="ln-auth-section-title">
                 <span>Ficha do personagem</span>
               </div>
+              <p className="ln-auth-section-help">
+                Preencha com atenção: esta será a ficha oficial inicial do personagem e não precisará ser digitada novamente.
+              </p>
 
               <div className="ln-auth-grid three">
                 <label>
@@ -506,6 +627,91 @@ export default function AuthPage({ onAuthSuccess }) {
                     placeholder="Opcional"
                   />
                 </label>
+              </div>
+
+              <div className="ln-auth-section-title">
+                <span>Naturezas Elementais</span>
+              </div>
+              <p className="ln-auth-section-help">
+                Selecione de 1 a 5 elementos básicos. O primeiro que você escolher será o elemento primário; todos os seguintes serão secundários. Clique novamente em um elemento para removê-lo.
+              </p>
+
+              <div
+                className="ln-chakra-element-grid"
+                role="group"
+                aria-label="Naturezas elementais do personagem"
+              >
+                {INITIAL_CHAKRA_ELEMENTS.map((element) => {
+                  const selectedNatures = normalizeChakraNatures(
+                    form.chakraNatures
+                  );
+                  const selectedIndex = selectedNatures.indexOf(element.name);
+                  const selected = selectedIndex >= 0;
+                  const limitReached =
+                    selectedNatures.length >= MAX_CHAKRA_NATURES;
+
+                  return (
+                    <button
+                      key={element.key}
+                      type="button"
+                      className={selected ? "is-selected" : ""}
+                      disabled={!selected && limitReached}
+                      onClick={() => {
+                        const nextNatures = selected
+                          ? selectedNatures.filter(
+                              (nature) => nature !== element.name
+                            )
+                          : [...selectedNatures, element.name];
+
+                        updateField(
+                          "chakraNatures",
+                          normalizeChakraNatures(nextNatures)
+                        );
+                      }}
+                      aria-pressed={selected}
+                    >
+                      <strong>{element.name}</strong>
+                      <span>{element.label}</span>
+                      <small>{element.summary}</small>
+                      {selected && (
+                        <em className="ln-chakra-element-order">
+                          {selectedIndex === 0
+                            ? "Primário"
+                            : `${selectedIndex + 1}º escolhido · Secundário`}
+                        </em>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <p className="ln-chakra-element-count">
+                {normalizeChakraNatures(form.chakraNatures).length} de {MAX_CHAKRA_NATURES} elementos selecionados.
+                {normalizeChakraNatures(form.chakraNatures).length > 0 &&
+                  ` Primário: ${getInitialChakraElement(form.chakraNatures)?.name || "—"}.`}
+              </p>
+
+              <div className="ln-auth-section-title">
+                <span>Estilos Ninja iniciais</span>
+              </div>
+              <p className="ln-auth-section-help">
+                Você começa com dois E.N. O primeiro sempre inicia no Nível 1. No segundo, escolha outro Estilo no Nível 1 ou continue o primeiro no Nível 2. Cada E.N. concede uma habilidade inicial do nível escolhido.
+              </p>
+
+              <div className="ln-initial-style-grid">
+                <InitialNinjaStylePicker
+                  slot={1}
+                  selection={normalizeNinjaStyleSelections(form.ninjaStyleSelections)[0]}
+                  onChange={(selection) => updateNinjaStyleSelection(1, selection)}
+                />
+
+                <InitialNinjaStylePicker
+                  slot={2}
+                  selection={normalizeNinjaStyleSelections(form.ninjaStyleSelections)[1]}
+                  firstSelection={normalizeNinjaStyleSelections(form.ninjaStyleSelections)[0]}
+                  disabled={!normalizeNinjaStyleSelections(form.ninjaStyleSelections)[0]?.ability_key}
+                  onChange={(selection) => updateNinjaStyleSelection(2, selection)}
+                />
               </div>
 
               <label className="ln-auth-full">

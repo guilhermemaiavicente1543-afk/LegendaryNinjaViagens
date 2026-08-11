@@ -11,6 +11,7 @@ import AdminAnnouncementsPanel from "../announcements/AdminAnnouncementsPanel";
 import MyNinjaCleanPage from "../MyNinjaCleanPage";
 import CharacterSkillTree from "../CharacterSkillTree";
 import { dbCharacterToAppCharacter } from "../../lib/characters/characterMappers";
+import HallLegendsAdmin from "./HallLegendsAdmin";
 
 function dbTravelToAppTravel(row) {
   return {
@@ -361,20 +362,20 @@ export default function AdminPanel({
 
     const payload = {
       player_name: nextCharacter.playerName || "",
-      phone_number: nextCharacter.phone || "",
+      phone: nextCharacter.phone || "",
       character_name: nextCharacter.characterName || "",
       age: nextCharacter.age || "",
       clan_or_kinship: nextCharacter.clanOrKinship || "",
       village_or_organization: nextCharacter.villageOrOrganization || "",
       kekkei_genkai_or_hiden: nextCharacter.kekkeiGenkaiOrHiden || "",
-      ninja_style: nextCharacter.ninjaStyle || "",
-      nickname: nextCharacter.epithet || "",
+      epithet: nextCharacter.epithet || "",
       appearance: nextCharacter.appearance || "",
       history: nextCharacter.history || "",
       equipment: nextCharacter.equipment || "",
+      unique_trait: selectedTraits[0] || nextCharacter.uniqueTrait || "",
       selected_traits: selectedTraits,
-      portrait_url: nextCharacter.characterPhotoUrl || "",
-      icon_url: nextCharacter.mapIconUrl || "",
+      character_photo_url: nextCharacter.characterPhotoUrl || "",
+      map_icon_url: nextCharacter.mapIconUrl || "",
       profile_sheet: nextProfileSheet,
       updated_at: new Date().toISOString(),
     };
@@ -543,6 +544,41 @@ export default function AdminPanel({
             />
           )}
         />
+      </section>
+    );
+  }
+
+
+  if (adminView === "hall-legends") {
+    return (
+      <section className="admin-page">
+        <div className="admin-card admin-card-wide">
+          <p className="eyebrow">Painel do Mestre</p>
+          <h1>Editor do Hall das Lendas</h1>
+          <p>
+            Edite os textos exibidos nos dossiês e gerencie
+            as fotografias oficiais de cada lenda.
+          </p>
+
+          <div className="admin-mode-tabs">
+            <button
+              type="button"
+              onClick={() => setAdminView("overview")}
+            >
+              Visão Geral
+            </button>
+
+            <button
+              type="button"
+              className="active"
+              onClick={() => setAdminView("hall-legends")}
+            >
+              Hall das Lendas
+            </button>
+          </div>
+        </div>
+
+        <HallLegendsAdmin />
       </section>
     );
   }
@@ -859,7 +895,6 @@ export default function AdminPanel({
             </button>
           </div>
         </div>
-        <AdminWorldMap travelRows={[]} enablePingPicker />
         <MapPingManager />
       </section>
     );
@@ -933,6 +968,14 @@ export default function AdminPanel({
         </p>
 
         <div className="admin-mode-tabs">
+          <button
+            type="button"
+            className={adminView === "announcements" ? "active" : ""}
+            onClick={() => setAdminView("announcements")}
+          >
+            Novidades
+          </button>
+
             <button
               type="button"
               className={adminView === "map-pings" ? "active" : ""}
@@ -988,6 +1031,13 @@ export default function AdminPanel({
             onClick={() => setAdminView("tree-editor")}
           >
             Editor da Teia
+          </button>
+          <button
+            type="button"
+            className={adminView === "hall-legends" ? "active" : ""}
+            onClick={() => setAdminView("hall-legends")}
+          >
+            Hall das Lendas
           </button>
         </div>
 

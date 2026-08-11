@@ -1165,7 +1165,10 @@ async function loadOnlineTravels() {
       return;
     }
 
-    const { data, error } = await supabase.rpc("get_map_characters");
+    const { data, error } = await supabase
+      .from("characters")
+      .select("*")
+      .order("updated_at", { ascending: false });
 
     if (error) {
       console.error("Erro ao carregar personagens do mapa:", error.message);

@@ -705,6 +705,44 @@ export default function SkillTreeEditor() {
     }
   }
 
+  function exportTreeJson() {
+    try {
+      const exportedAt = new Date();
+      const payload = {
+        format: "ln-digital-skill-tree",
+        version: 1,
+        name: "Teia Principal",
+        exportedAt: exportedAt.toISOString(),
+        nodes,
+        edges
+      };
+
+      const json = JSON.stringify(payload, null, 2);
+      const blob = new Blob([json], {
+        type: "application/json;charset=utf-8"
+      });
+      const downloadUrl = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      const timestamp = exportedAt
+        .toISOString()
+        .replace(/\.\d{3}Z$/, "Z")
+        .replace(/[:]/g, "-");
+
+      downloadLink.href = downloadUrl;
+      downloadLink.download = `teia-principal-${timestamp}.json`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
+
+      setMessage(
+        `JSON exportado: ${nodes.length} habilidades e ${edges.length} conexões.`
+      );
+    } catch (error) {
+      setMessage(error.message || "Erro ao exportar JSON.");
+    }
+  }
+
   async function saveTree() {
     if (!isSupabaseConfigured || !supabase) {
       setMessage("Supabase não configurado.");
@@ -777,7 +815,19 @@ export default function SkillTreeEditor() {
             <input type="file" accept=".json,application/json" onChange={importJsonFile} />
           </label>
 
-          <button type="button" onClick={() => focusTreeView(1.15)}>
+          <button
+            type="button"
+            className="export-json-button"
+            onClick={exportTreeJson}
+          >
+            Exportar JSON
+          </button>
+
+          <button
+            type="button"
+            className="focus-tree-button"
+            onClick={() => focusTreeView(1.15)}
+          >
             Centralizar visão
           </button>
 

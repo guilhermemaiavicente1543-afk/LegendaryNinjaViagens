@@ -4,6 +4,17 @@
   Extraídos do App.jsx sem alterar as regras existentes.
 */
 
+import {
+  buildNinjaStyleSummary,
+  normalizeNinjaStyleSelections,
+} from "../../data/ninjaStyleCatalog";
+import {
+  normalizeFightingStyles,
+} from "../../data/fightingStyleCatalog";
+import {
+  normalizeChakraNatures,
+} from "../../data/chakraElementCatalog";
+
 export function parseCharacterTraitList(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
 
@@ -27,6 +38,18 @@ export function dbCharacterToAppCharacter(row, currentUser) {
 
   const selectedTraits = parseCharacterTraitList(
     row.selected_traits ?? row.selectedTraits ?? row.unique_trait ?? row.uniqueTrait
+  );
+
+  const ninjaStyleSelections = normalizeNinjaStyleSelections(
+    row.ninja_style_selections ?? row.ninjaStyleSelections ?? []
+  );
+
+  const fightingStyles = normalizeFightingStyles(
+    row.fighting_styles ?? row.fightingStyles ?? []
+  );
+
+  const chakraNatures = normalizeChakraNatures(
+    row.chakra_natures ?? row.chakraNatures ?? row.primary_element ?? []
   );
 
   return {
@@ -53,7 +76,59 @@ export function dbCharacterToAppCharacter(row, currentUser) {
     villageOrOrganizationOther: row.village_or_organization_other || row.villageOrOrganizationOther || "",
     clanOrKinship: row.clan_or_kinship || row.clanOrKinship || "",
     kekkeiGenkaiOrHiden: row.kekkei_genkai_or_hiden || row.kekkeiGenkaiOrHiden || "",
-    ninjaStyle: row.ninja_style || row.ninjaStyle || "",
+    chakraNatures,
+    chakra_natures: chakraNatures,
+    ninjaStyle:
+      row.ninja_style ||
+      row.ninjaStyle ||
+      buildNinjaStyleSummary(ninjaStyleSelections) ||
+      "",
+    ninjaStyleSelections,
+    ninja_style_selections: ninjaStyleSelections,
+    availableNinjaStyleChoices:
+      Number(
+        row.available_ninja_style_choices ??
+        row.availableNinjaStyleChoices ??
+        0
+      ) || 0,
+    available_ninja_style_choices:
+      Number(
+        row.available_ninja_style_choices ??
+        row.availableNinjaStyleChoices ??
+        0
+      ) || 0,
+    sageModeType: row.sage_mode_type || row.sageModeType || "",
+    sage_mode_type: row.sage_mode_type || row.sageModeType || "",
+    sageModeKey: row.sage_mode_key || row.sageModeKey || "",
+    sage_mode_key: row.sage_mode_key || row.sageModeKey || "",
+    sageModeName: row.sage_mode_name || row.sageModeName || "",
+    sage_mode_name: row.sage_mode_name || row.sageModeName || "",
+    sageModeNinjaStyleKey:
+      row.sage_mode_ninja_style_key ||
+      row.sageModeNinjaStyleKey ||
+      "",
+    sage_mode_ninja_style_key:
+      row.sage_mode_ninja_style_key ||
+      row.sageModeNinjaStyleKey ||
+      "",
+    sageModeNinjaStyleName:
+      row.sage_mode_ninja_style_name ||
+      row.sageModeNinjaStyleName ||
+      "",
+    sage_mode_ninja_style_name:
+      row.sage_mode_ninja_style_name ||
+      row.sageModeNinjaStyleName ||
+      "",
+    sageModeRegisteredAt:
+      row.sage_mode_registered_at ||
+      row.sageModeRegisteredAt ||
+      "",
+    sage_mode_registered_at:
+      row.sage_mode_registered_at ||
+      row.sageModeRegisteredAt ||
+      "",
+    fightingStyles,
+    fighting_styles: fightingStyles,
     rank: row.rank || "",
     epithet: row.epithet || "",
 

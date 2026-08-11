@@ -4,10 +4,97 @@ import { uniqueTraits } from "../data/uniqueTraits";
 import { villageOptions } from "../data/characterOptions";
 import { isSupabaseConfigured, supabase } from "../lib/supabaseClient";
 import HallBackButton from "./ui/HallBackButton";
+import {
+  buildNinjaStyleSummary,
+  formatNinjaStyleSelection,
+  getNextNinjaStyleOptions,
+  getNinjaStyleAbilities,
+  getNinjaStyleDefinition,
+  normalizeNinjaStyleSelections,
+} from "../data/ninjaStyleCatalog";
+import {
+  formatSageMode,
+  getSageMode,
+  getSageModesByType,
+  getSageModeStyleOptions,
+  getSageModeTypeLabel,
+  SAGE_MODE_TYPES,
+} from "../data/sageModeCatalog";
+import {
+  FIGHTING_STYLE_CATALOG,
+  formatFightingStyle,
+  getFightingStyle,
+  getFightingStyleStyleOptions,
+  normalizeFightingStyles,
+} from "../data/fightingStyleCatalog";
+import {
+  INITIAL_CHAKRA_ELEMENTS,
+  MAX_CHAKRA_NATURES,
+  formatChakraNatures,
+  getInitialChakraElement,
+  isValidInitialChakraNature,
+  normalizeChakraNatures,
+} from "../data/chakraElementCatalog";
 
 const CHARACTER_STORAGE_KEY = "legendary-ninja-characters";
 const PROFILE_SHEET_STORAGE_KEY = "legendary-ninja-profile-sheets";
 const CHARACTER_PROOFS_BUCKET = "character-proofs";
+
+const NINJA_RANKS = ["E", "D", "C", "B", "A", "S", "SS", "SS+"];
+
+function normalizeNinjaRank(value) {
+  const normalized = String(value || "E")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "");
+
+  return NINJA_RANKS.includes(normalized)
+    ? normalized
+    : "E";
+}
+
+function getAvailableNinjaStyleChoices(character = {}) {
+  return Math.max(
+    0,
+    Number(
+      character?.availableNinjaStyleChoices ??
+      character?.available_ninja_style_choices ??
+      0
+    ) || 0
+  );
+}
+
+function getNinjaStyleAcquisitionLabel(selection = {}) {
+  const acquisitionType = String(
+    selection?.acquisition_type ||
+    selection?.acquisitionType ||
+    ""
+  ).trim();
+
+  const sourceName = String(
+    selection?.source_name ||
+    selection?.sourceName ||
+    ""
+  ).trim();
+
+  switch (acquisitionType) {
+    case "initial":
+      return "Escolha inicial";
+    case "sage_mode":
+      return sourceName
+        ? `Modo Sábio — ${sourceName}`
+        : "Adquirido por Modo Sábio";
+    case "fighting_style":
+      return sourceName
+        ? `Estilo de Luta — ${sourceName}`
+        : "Adquirido por proficiência";
+    case "administrative":
+      return "Ajuste administrativo";
+    case "progression":
+    default:
+      return "Adquirido por crédito de evolução";
+  }
+}
 
 const EMPTY_CHARACTER = {
   id: "",
@@ -17,10 +104,32 @@ const EMPTY_CHARACTER = {
   phone: "",
   characterName: "",
   age: "",
+  rank: "E",
   clanOrKinship: "",
   villageOrOrganization: "",
   villageOrOrganizationOther: "",
   kekkeiGenkaiOrHiden: "",
+  chakraNatures: [],
+  chakra_natures: [],
+  ninjaStyle: "",
+  ninjaStyleSelections: [],
+  ninja_style_selections: [],
+  availableNinjaStyleChoices: 0,
+  available_ninja_style_choices: 0,
+  sageModeType: "",
+  sage_mode_type: "",
+  sageModeKey: "",
+  sage_mode_key: "",
+  sageModeName: "",
+  sage_mode_name: "",
+  sageModeNinjaStyleKey: "",
+  sage_mode_ninja_style_key: "",
+  sageModeNinjaStyleName: "",
+  sage_mode_ninja_style_name: "",
+  sageModeRegisteredAt: "",
+  sage_mode_registered_at: "",
+  fightingStyles: [],
+  fighting_styles: [],
   epithet: "",
   appearance: "",
   history: "",
@@ -144,8 +253,8 @@ function finalVillage(character) {
 function normalizeCharacter(character = {}) {
   // LN_NORMALIZE_PROFILE_SHEET_V4
   //
-  // profile_sheet é a cópia integral e permanente da ficha.
-  // Os campos de cima da tabela continuam sendo usados pelo mapa.
+  // profile_sheet pertence exclusivamente à Ficha Complementar.
+  // Os dados oficiais do perfil vêm das colunas próprias de characters.
   const profileSheet =
     character?.profileSheet &&
     typeof character.profileSheet === "object"
@@ -155,10 +264,6 @@ function normalizeCharacter(character = {}) {
         ? character.profile_sheet
         : {};
 
-  /*
-    As colunas principais são a fonte oficial.
-    profile_sheet serve apenas como fallback.
-  */
   const source = {
     ...profileSheet,
     ...character,
@@ -172,10 +277,29 @@ function normalizeCharacter(character = {}) {
     source.village_or_organization
   );
 
+  const ninjaStyleSelections = normalizeNinjaStyleSelections(
+    source.ninjaStyleSelections ||
+    source.ninja_style_selections ||
+    []
+  );
+
+  const fightingStyles = normalizeFightingStyles(
+    source.fightingStyles ||
+    source.fighting_styles ||
+    []
+  );
+
+  const chakraNatures = normalizeChakraNatures(
+    source.chakraNatures ||
+    source.chakra_natures ||
+    source.primary_element ||
+    []
+  );
+
   const normalized = {
     ...EMPTY_CHARACTER,
-    ...character,
     ...profileSheet,
+    ...character,
 
     id:
       character.id ||
@@ -218,6 +342,9 @@ function normalizeCharacter(character = {}) {
       source.age ??
       "",
 
+    rank:
+      normalizeNinjaRank(source.rank),
+
     clanOrKinship:
       source.clanOrKinship ||
       source.clan_or_kinship ||
@@ -236,6 +363,95 @@ function normalizeCharacter(character = {}) {
       source.kekkeiGenkaiOrHiden ||
       source.kekkei_genkai_or_hiden ||
       "",
+
+    chakraNatures,
+    chakra_natures: chakraNatures,
+
+    ninjaStyle:
+      source.ninjaStyle ||
+      source.ninja_style ||
+      buildNinjaStyleSummary(ninjaStyleSelections) ||
+      "",
+
+    ninjaStyleSelections,
+    ninja_style_selections: ninjaStyleSelections,
+
+    availableNinjaStyleChoices:
+      Number(
+        source.availableNinjaStyleChoices ??
+        source.available_ninja_style_choices ??
+        0
+      ) || 0,
+
+    available_ninja_style_choices:
+      Number(
+        source.availableNinjaStyleChoices ??
+        source.available_ninja_style_choices ??
+        0
+      ) || 0,
+
+    sageModeType:
+      source.sageModeType ||
+      source.sage_mode_type ||
+      "",
+
+    sage_mode_type:
+      source.sageModeType ||
+      source.sage_mode_type ||
+      "",
+
+    sageModeKey:
+      source.sageModeKey ||
+      source.sage_mode_key ||
+      "",
+
+    sage_mode_key:
+      source.sageModeKey ||
+      source.sage_mode_key ||
+      "",
+
+    sageModeName:
+      source.sageModeName ||
+      source.sage_mode_name ||
+      "",
+
+    sage_mode_name:
+      source.sageModeName ||
+      source.sage_mode_name ||
+      "",
+
+    sageModeNinjaStyleKey:
+      source.sageModeNinjaStyleKey ||
+      source.sage_mode_ninja_style_key ||
+      "",
+
+    sage_mode_ninja_style_key:
+      source.sageModeNinjaStyleKey ||
+      source.sage_mode_ninja_style_key ||
+      "",
+
+    sageModeNinjaStyleName:
+      source.sageModeNinjaStyleName ||
+      source.sage_mode_ninja_style_name ||
+      "",
+
+    sage_mode_ninja_style_name:
+      source.sageModeNinjaStyleName ||
+      source.sage_mode_ninja_style_name ||
+      "",
+
+    sageModeRegisteredAt:
+      source.sageModeRegisteredAt ||
+      source.sage_mode_registered_at ||
+      "",
+
+    sage_mode_registered_at:
+      source.sageModeRegisteredAt ||
+      source.sage_mode_registered_at ||
+      "",
+
+    fightingStyles,
+    fighting_styles: fightingStyles,
 
     epithet:
       source.epithet ||
@@ -348,106 +564,84 @@ function buildMyNinjaProfilePayload(character = {}) {
   const selectedTraits =
     getSelectedTraits(normalized);
 
+
+  const characterPhotoUrl =
+    normalized.characterPhotoUrl ||
+    normalized.portraitUrl ||
+    "";
+
+  const mapIconUrl =
+    normalized.mapIconUrl ||
+    normalized.iconUrl ||
+    "";
+
   return {
     player_name:
-      normalized.playerName || "",
+      normalized.playerName,
 
     phone_number:
-      normalized.phone || "",
+      normalized.phone,
 
     character_name:
-      normalized.characterName || "",
+      normalized.characterName,
 
     age:
-      String(
-        normalized.age ?? ""
-      ),
+      String(normalized.age ?? "").trim() ||
+      null,
+
+    rank:
+      normalizeNinjaRank(normalized.rank),
 
     clan_or_kinship:
-      normalized.clanOrKinship || "",
+      normalized.clanOrKinship,
 
     village_or_organization:
       finalVillage(normalized),
 
     kekkei_genkai_or_hiden:
-      normalized.kekkeiGenkaiOrHiden || "",
+      normalized.kekkeiGenkaiOrHiden,
 
+    chakra_natures:
+      normalizeChakraNatures(normalized.chakraNatures),
+
+    /*
+      Estilos Ninja e créditos de E.N. não são enviados pelo salvamento
+      comum da ficha. A progressão usa uma RPC própria e validada no banco.
+    */
     epithet:
-      normalized.epithet || "",
+      normalized.epithet,
 
     appearance:
-      normalized.appearance || "",
+      normalized.appearance,
 
     history:
-      normalized.history || "",
+      normalized.history,
 
     equipment:
-      normalized.equipment || "",
+      normalized.equipment,
 
     selected_traits:
       selectedTraits,
 
     portrait_url:
-      normalized.characterPhotoUrl ||
-      normalized.portraitUrl ||
-      "",
+      characterPhotoUrl,
 
     icon_url:
-      normalized.mapIconUrl ||
-      normalized.iconUrl ||
-      "",
+      mapIconUrl,
+
+    updated_at:
+      new Date().toISOString(),
+
   };
-}
-
-function normalizeVerificationValue(value) {
-  if (Array.isArray(value)) {
-    return JSON.stringify(value);
-  }
-
-  return String(value ?? "").trim();
-}
-
-function isSavedProfileConfirmed(
-  row,
-  payload
-) {
-  const fields = [
-    "player_name",
-    "phone_number",
-    "character_name",
-    "age",
-    "clan_or_kinship",
-    "village_or_organization",
-    "kekkei_genkai_or_hiden",
-    "epithet",
-    "appearance",
-    "history",
-    "equipment",
-    "selected_traits",
-    "portrait_url",
-    "icon_url",
-  ];
-
-  return fields.every((field) =>
-    normalizeVerificationValue(row?.[field]) ===
-    normalizeVerificationValue(payload?.[field])
-  );
-}
-
-async function waitBeforeRetry(milliseconds) {
-  await new Promise((resolve) => {
-    window.setTimeout(resolve, milliseconds);
-  });
 }
 
 async function persistCharacterProfileToSupabase(
   character = {}
 ) {
-  // LN_DIRECT_CHARACTER_ID_SAVE_V7
+  // LN_DIRECT_MY_NINJA_SAVE_V6
   //
-  // O perfil principal é gravado diretamente na linha exata
-  // do personagem. Nenhum dado é confirmado apenas pela
-  // resposta de uma RPC ou pelo estado local do navegador.
+  // Os dados oficiais são salvos nas colunas próprias.
+  // profile_sheet pertence exclusivamente à Ficha Complementar.
   if (!isSupabaseConfigured || !supabase) {
     throw new Error(
       "O Supabase não está configurado."
@@ -460,16 +654,11 @@ async function persistCharacterProfileToSupabase(
   } = await supabase.auth.getUser();
 
   if (authError) {
-    throw new Error(
-      `Não foi possível confirmar a sessão: ${authError.message}`
-    );
+    throw new Error(authError.message);
   }
 
   const userId =
-    String(authData?.user?.id || "").trim();
-
-  const characterId =
-    String(character?.id || "").trim();
+    authData?.user?.id;
 
   if (!userId) {
     throw new Error(
@@ -477,92 +666,443 @@ async function persistCharacterProfileToSupabase(
     );
   }
 
+  let characterId =
+    String(character?.id || "").trim();
+
+  /*
+    Normalmente o Meu Ninja já recebe o id pelo App.jsx.
+    O fallback abaixo cobre contas antigas ou estados locais
+    que ainda estejam sem o id do personagem.
+  */
+  if (!characterId) {
+    const {
+      data: characterRows,
+      error: lookupError,
+    } = await supabase
+      .from("characters")
+      .select("id")
+      .eq("user_id", userId)
+      .order("created_at", {
+        ascending: false,
+      })
+      .limit(1);
+
+    if (lookupError) {
+      throw new Error(
+        `Não foi possível localizar o personagem: ${lookupError.message}`
+      );
+    }
+
+    characterId =
+      String(characterRows?.[0]?.id || "").trim();
+  }
+
   if (!characterId) {
     throw new Error(
-      "O ID do personagem não foi encontrado. A ficha não foi alterada."
+      "Nenhum personagem vinculado a esta conta foi encontrado."
     );
   }
 
-  const payload = {
-    ...buildMyNinjaProfilePayload(character),
-
-    updated_at:
-      new Date().toISOString(),
-  };
+  const payload =
+    buildMyNinjaProfilePayload(character);
 
   const {
-    data: updatedRow,
-    error: updateError,
+    data,
+    error,
   } = await supabase
     .from("characters")
     .update(payload)
     .eq("id", characterId)
     .eq("user_id", userId)
     .select("*")
-    .maybeSingle();
+    .single();
 
-  if (updateError) {
-    throw new Error(
-      `Falha ao atualizar a linha do personagem: ${updateError.message}`
-    );
+  if (error) {
+    throw new Error(error.message);
   }
 
-  if (!updatedRow) {
+  if (!data) {
     throw new Error(
-      "Nenhuma linha foi atualizada. Verifique o vínculo do personagem e as políticas do Supabase."
-    );
-  }
-
-  /*
-    Releitura independente: impede que uma resposta otimista,
-    cache local ou estado do React seja confundido com
-    persistência verdadeira.
-  */
-  const {
-    data: confirmedRow,
-    error: confirmationError,
-  } = await supabase
-    .from("characters")
-    .select("*")
-    .eq("id", characterId)
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (confirmationError) {
-    throw new Error(
-      `A linha foi atualizada, mas não pôde ser relida: ${confirmationError.message}`
-    );
-  }
-
-  if (!confirmedRow) {
-    throw new Error(
-      "O personagem não foi encontrado durante a confirmação final."
-    );
-  }
-
-  if (
-    !isSavedProfileConfirmed(
-      confirmedRow,
-      payload
-    )
-  ) {
-    throw new Error(
-      "A releitura do banco não contém todos os valores enviados. A ficha não será apresentada como salva."
+      "O Supabase não devolveu o personagem depois do salvamento."
     );
   }
 
   return normalizeCharacter({
-    ...confirmedRow,
+    ...data,
 
     userId:
-      confirmedRow.user_id ||
+      data.user_id ||
       userId,
 
     ownerEmail:
       authData?.user?.email ||
       "",
+
+    profileSheet:
+      data.profile_sheet ||
+      {},
   });
 }
+
+
+async function acquireNinjaStyleProgression({
+  styleKey,
+  abilityKey,
+} = {}) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error(
+      "O Supabase não está configurado."
+    );
+  }
+
+  const normalizedStyleKey =
+    String(styleKey || "").trim();
+
+  const normalizedAbilityKey =
+    String(abilityKey || "").trim();
+
+  if (!normalizedStyleKey || !normalizedAbilityKey) {
+    throw new Error(
+      "Escolha o Estilo Ninja e a habilidade antes de confirmar."
+    );
+  }
+
+  const {
+    data: authData,
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  if (!authData?.user?.id) {
+    throw new Error(
+      "A sessão autenticada do jogador não foi encontrada."
+    );
+  }
+
+  const {
+    data,
+    error,
+  } = await supabase.rpc(
+    "ln_acquire_ninja_style",
+    {
+      p_style_key:
+        normalizedStyleKey,
+
+      p_ability_key:
+        normalizedAbilityKey,
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const savedRow =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if (!savedRow) {
+    throw new Error(
+      "O Supabase não devolveu o personagem depois da aquisição do E.N."
+    );
+  }
+
+  return normalizeCharacter({
+    ...savedRow,
+
+    userId:
+      savedRow.user_id ||
+      authData.user.id,
+
+    ownerEmail:
+      authData.user.email ||
+      "",
+
+    profileSheet:
+      savedRow.profile_sheet ||
+      {},
+  });
+}
+
+
+async function removeNinjaStyleProgression({
+  styleKey,
+  level,
+} = {}) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error(
+      "O Supabase não está configurado."
+    );
+  }
+
+  const normalizedStyleKey =
+    String(styleKey || "").trim();
+
+  const normalizedLevel =
+    Number(level) || 0;
+
+  if (!normalizedStyleKey || normalizedLevel < 1) {
+    throw new Error(
+      "Escolha um Estilo Ninja válido para remover."
+    );
+  }
+
+  const {
+    data: authData,
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  if (!authData?.user?.id) {
+    throw new Error(
+      "A sessão autenticada do jogador não foi encontrada."
+    );
+  }
+
+  const { data, error } = await supabase.rpc(
+    "ln_remove_ninja_style",
+    {
+      p_style_key: normalizedStyleKey,
+      p_level: normalizedLevel,
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const savedRow =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if (!savedRow) {
+    throw new Error(
+      "O Supabase não devolveu o personagem depois da remoção do E.N."
+    );
+  }
+
+  return normalizeCharacter({
+    ...savedRow,
+
+    userId:
+      savedRow.user_id ||
+      authData.user.id,
+
+    ownerEmail:
+      authData.user.email ||
+      "",
+
+    profileSheet:
+      savedRow.profile_sheet ||
+      {},
+  });
+}
+
+
+async function registerSageModeAndAcquireNinjaStyle({
+  sageModeType,
+  sageModeKey,
+  styleKey,
+  abilityKey,
+} = {}) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error(
+      "O Supabase não está configurado."
+    );
+  }
+
+  const normalizedType =
+    String(sageModeType || "").trim();
+
+  const normalizedModeKey =
+    String(sageModeKey || "").trim();
+
+  const normalizedStyleKey =
+    String(styleKey || "").trim();
+
+  const normalizedAbilityKey =
+    String(abilityKey || "").trim();
+
+  if (
+    !normalizedType ||
+    !normalizedModeKey ||
+    !normalizedStyleKey ||
+    !normalizedAbilityKey
+  ) {
+    throw new Error(
+      "Informe o tipo, o Modo Sábio, o E.N. recebido e a habilidade."
+    );
+  }
+
+  const {
+    data: authData,
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  if (!authData?.user?.id) {
+    throw new Error(
+      "A sessão autenticada do jogador não foi encontrada."
+    );
+  }
+
+  const { data, error } = await supabase.rpc(
+    "ln_register_sage_mode_and_acquire_ninja_style",
+    {
+      p_sage_mode_type: normalizedType,
+      p_sage_mode_key: normalizedModeKey,
+      p_style_key: normalizedStyleKey,
+      p_ability_key: normalizedAbilityKey,
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const savedRow =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if (!savedRow) {
+    throw new Error(
+      "O Supabase não devolveu o personagem depois do registro do Modo Sábio."
+    );
+  }
+
+  return normalizeCharacter({
+    ...savedRow,
+
+    userId:
+      savedRow.user_id ||
+      authData.user.id,
+
+    ownerEmail:
+      authData.user.email ||
+      "",
+
+    profileSheet:
+      savedRow.profile_sheet ||
+      {},
+  });
+}
+
+
+async function registerFightingStyleAndMaybeAcquireNinjaStyle({
+  fightingStyleKey,
+  gainProficiency = false,
+  styleKey = "",
+  abilityKey = "",
+} = {}) {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error(
+      "O Supabase não está configurado."
+    );
+  }
+
+  const normalizedFightingStyleKey =
+    String(fightingStyleKey || "").trim();
+
+  const normalizedStyleKey =
+    String(styleKey || "").trim();
+
+  const normalizedAbilityKey =
+    String(abilityKey || "").trim();
+
+  if (!normalizedFightingStyleKey) {
+    throw new Error(
+      "Escolha o Estilo de Luta antes de confirmar."
+    );
+  }
+
+  if (
+    gainProficiency &&
+    (!normalizedStyleKey || !normalizedAbilityKey)
+  ) {
+    const fightingStyle = getFightingStyle(
+      normalizedFightingStyleKey
+    );
+
+    if (fightingStyle?.allowedStyleKeys?.length > 0) {
+      throw new Error(
+        "Escolha o E.N. e a habilidade recebidos pela proficiência."
+      );
+    }
+  }
+
+  const {
+    data: authData,
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  if (!authData?.user?.id) {
+    throw new Error(
+      "A sessão autenticada do jogador não foi encontrada."
+    );
+  }
+
+  const { data, error } = await supabase.rpc(
+    "ln_register_fighting_style",
+    {
+      p_fighting_style_key:
+        normalizedFightingStyleKey,
+      p_gain_proficiency:
+        Boolean(gainProficiency),
+      p_style_key:
+        normalizedStyleKey || null,
+      p_ability_key:
+        normalizedAbilityKey || null,
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const savedRow =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if (!savedRow) {
+    throw new Error(
+      "O Supabase não devolveu o personagem depois do registro do Estilo de Luta."
+    );
+  }
+
+  return normalizeCharacter({
+    ...savedRow,
+
+    userId:
+      savedRow.user_id ||
+      authData.user.id,
+
+    ownerEmail:
+      authData.user.email ||
+      "",
+
+    profileSheet:
+      savedRow.profile_sheet ||
+      {},
+  });
+}
+
 
 const sidebarItems = [
   ["Início", "home"],
@@ -2352,10 +2892,1209 @@ function InfoCard({ title, icon, rows, className = "" }) {
   );
 }
 
-function NinjaSheetCard({ ninja, onSave }) {
-  const [draft, setDraft] = useState(() => normalizeCharacter(ninja));
+
+
+function FightingStyleControl({
+  ninja,
+  onRegister,
+}) {
+  const fightingStyles = normalizeFightingStyles(
+    ninja?.fightingStyles ||
+    ninja?.fighting_styles ||
+    []
+  );
+
+  const ninjaStyleSelections = normalizeNinjaStyleSelections(
+    ninja?.ninjaStyleSelections ||
+    ninja?.ninja_style_selections ||
+    []
+  );
+
+  const registeredKeys = new Set(
+    fightingStyles.map((item) => item.styleKey)
+  );
+
+  const availableToLearn = FIGHTING_STYLE_CATALOG.filter(
+    (item) => !registeredKeys.has(item.key)
+  );
+
+  const awaitingProficiency = fightingStyles.filter(
+    (item) => !item.hasProficiency
+  );
+
+  const hasProficiency = fightingStyles.some(
+    (item) => item.hasProficiency
+  );
+
+  const [formMode, setFormMode] = useState("");
+  const [fightingStyleKey, setFightingStyleKey] = useState("");
+  const [styleKey, setStyleKey] = useState("");
+  const [abilityKey, setAbilityKey] = useState("");
   const [message, setMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  const selectedFightingStyle = getFightingStyle(
+    fightingStyleKey
+  );
+
+  const nextOptions = getNextNinjaStyleOptions(
+    ninjaStyleSelections
+  );
+
+  const allowedStyleOptions = selectedFightingStyle
+    ? getFightingStyleStyleOptions(
+        selectedFightingStyle.key
+      ).map((styleOption) => {
+        const progressionOption = nextOptions.find(
+          (option) => option.styleKey === styleOption.key
+        );
+
+        return {
+          ...styleOption,
+          progressionOption,
+        };
+      })
+    : [];
+
+  const selectedStyleOption = allowedStyleOptions.find(
+    (option) => option.key === styleKey
+  ) || null;
+
+  const selectedProgression =
+    selectedStyleOption?.progressionOption || null;
+
+  const abilities = selectedProgression
+    ? getNinjaStyleAbilities(
+        selectedProgression.styleKey,
+        selectedProgression.level
+      )
+    : [];
+
+  const proficiencyNeedsNinjaStyle =
+    formMode === "proficiency" &&
+    (selectedFightingStyle?.allowedStyleKeys?.length || 0) > 0;
+
+  function resetForm() {
+    setFormMode("");
+    setFightingStyleKey("");
+    setStyleKey("");
+    setAbilityKey("");
+    setMessage("");
+  }
+
+  function openForm(mode) {
+    setFormMode(mode);
+    setFightingStyleKey("");
+    setStyleKey("");
+    setAbilityKey("");
+    setMessage("");
+  }
+
+  function closeForm() {
+    if (isSaving) return;
+    resetForm();
+  }
+
+  async function handleConfirm() {
+    if (!selectedFightingStyle) {
+      setMessage("Escolha o Estilo de Luta.");
+      return;
+    }
+
+    if (formMode === "proficiency") {
+      if (hasProficiency) {
+        setMessage(
+          "Este personagem já possui uma proficiência de Estilo de Luta registrada."
+        );
+        return;
+      }
+
+      if (proficiencyNeedsNinjaStyle && !selectedProgression) {
+        setMessage(
+          "Escolha um E.N. válido fornecido por este Estilo de Luta."
+        );
+        return;
+      }
+
+      if (proficiencyNeedsNinjaStyle && !abilityKey) {
+        setMessage(
+          "Escolha a habilidade do novo nível de E.N."
+        );
+        return;
+      }
+    }
+
+    setIsSaving(true);
+    setMessage("");
+
+    try {
+      await onRegister?.({
+        fightingStyleKey: selectedFightingStyle.key,
+        gainProficiency: formMode === "proficiency",
+        styleKey: selectedProgression?.styleKey || "",
+        abilityKey: abilityKey || "",
+      });
+
+      const successMessage =
+        formMode === "proficiency"
+          ? `Proficiência em ${selectedFightingStyle.name} registrada com sucesso.`
+          : `${selectedFightingStyle.name} adicionado à ficha.`;
+
+      setFormMode("");
+      setFightingStyleKey("");
+      setStyleKey("");
+      setAbilityKey("");
+      setMessage(successMessage);
+    } catch (error) {
+      setMessage(
+        error?.message ||
+        "Não foi possível registrar o Estilo de Luta."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  return (
+    <div className="mn-fighting-style-control">
+      <div className="mn-fighting-style-summary">
+        <div>
+          <span>Estilos aprendidos</span>
+          <strong>{fightingStyles.length}/2</strong>
+        </div>
+
+        <div>
+          <span>Proficiência</span>
+          <strong>{hasProficiency ? "1/1" : "0/1"}</strong>
+        </div>
+      </div>
+
+      {fightingStyles.length > 0 ? (
+        <div className="mn-fighting-style-list">
+          {fightingStyles.map((item) => (
+            <article key={item.styleKey} className="mn-fighting-style-item">
+              <div>
+                <strong>{item.styleName}</strong>
+                <small>
+                  {item.hasProficiency
+                    ? "Proficiência conquistada"
+                    : "Aprendido — sem proficiência"}
+                </small>
+              </div>
+
+              {item.hasProficiency && (
+                <span>
+                  {item.ninjaStyleName && item.ninjaStyleLevel
+                    ? `E.N. ${item.ninjaStyleName} ${item.ninjaStyleLevel}`
+                    : "Sem E.N. próprio"}
+                </span>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p className="mn-fighting-style-empty">
+          Nenhum Estilo de Luta registrado.
+        </p>
+      )}
+
+      <div className="mn-fighting-style-actions">
+        <button
+          type="button"
+          className="mn-sage-mode-add-button"
+          disabled={
+            isSaving ||
+            fightingStyles.length >= 2 ||
+            availableToLearn.length === 0
+          }
+          onClick={() => openForm("learn")}
+        >
+          Adicionar Estilo de Luta
+        </button>
+
+        <button
+          type="button"
+          className="mn-style-acquire-button"
+          disabled={
+            isSaving ||
+            hasProficiency ||
+            awaitingProficiency.length === 0
+          }
+          onClick={() => openForm("proficiency")}
+        >
+          Registrar proficiência
+        </button>
+      </div>
+
+      <p className="mn-sage-mode-help">
+        O personagem pode aprender até dois Estilos de Luta. Os bônus e o E.N.
+        do Estilo só são liberados quando a proficiência é registrada.
+      </p>
+
+      {formMode && (
+        <div className="mn-style-acquisition-form mn-fighting-style-form">
+          <label>
+            {formMode === "proficiency"
+              ? "Estilo que recebeu proficiência"
+              : "Estilo de Luta aprendido"}
+            <select
+              value={fightingStyleKey}
+              onChange={(event) => {
+                setFightingStyleKey(event.target.value);
+                setStyleKey("");
+                setAbilityKey("");
+                setMessage("");
+              }}
+            >
+              <option value="">Selecione</option>
+              {(formMode === "proficiency"
+                ? awaitingProficiency.map((item) => getFightingStyle(item.styleKey)).filter(Boolean)
+                : availableToLearn
+              ).map((item) => (
+                <option key={item.key} value={item.key}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {selectedFightingStyle?.requirements && (
+            <div className="mn-fighting-style-requirements">
+              <strong>Requisitos do sistema</strong>
+              <p>{selectedFightingStyle.requirements}</p>
+            </div>
+          )}
+
+          {formMode === "proficiency" &&
+            selectedFightingStyle &&
+            selectedFightingStyle.allowedStyleKeys.length === 0 && (
+              <div className="mn-style-ability-preview">
+                <strong>Proficiência sem novo E.N.</strong>
+                <p>
+                  Este Estilo de Luta possui proficiência e bônus próprios, mas
+                  o sistema enviado não determina um Estilo Ninja adicional.
+                </p>
+              </div>
+            )}
+
+          {proficiencyNeedsNinjaStyle && (
+            <label>
+              Estilo Ninja recebido
+              <select
+                value={styleKey}
+                onChange={(event) => {
+                  setStyleKey(event.target.value);
+                  setAbilityKey("");
+                  setMessage("");
+                }}
+              >
+                <option value="">Selecione</option>
+                {allowedStyleOptions.map((styleOption) => (
+                  <option
+                    key={styleOption.key}
+                    value={styleOption.key}
+                    disabled={!styleOption.progressionOption}
+                  >
+                    {styleOption.name}
+                    {styleOption.progressionOption
+                      ? ` ${styleOption.progressionOption.level}`
+                      : " — Nível 5 já alcançado"}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {selectedProgression && (
+            <label>
+              Habilidade de {selectedProgression.styleName} {selectedProgression.level}
+              <select
+                value={abilityKey}
+                onChange={(event) => {
+                  setAbilityKey(event.target.value);
+                  setMessage("");
+                }}
+              >
+                <option value="">Selecione uma habilidade</option>
+                {abilities.map((abilityItem) => (
+                  <option key={abilityItem.key} value={abilityItem.key}>
+                    {abilityItem.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {selectedProgression && abilityKey && (
+            <div className="mn-style-ability-preview">
+              <strong>
+                {abilities.find((item) => item.key === abilityKey)?.name}
+              </strong>
+              <p>
+                {abilities.find((item) => item.key === abilityKey)?.summary}
+              </p>
+            </div>
+          )}
+
+          <div className="mn-style-acquisition-actions">
+            <button
+              type="button"
+              className="mn-file-clear"
+              disabled={isSaving}
+              onClick={closeForm}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              className="mn-primary-button"
+              disabled={
+                isSaving ||
+                !selectedFightingStyle ||
+                (
+                  proficiencyNeedsNinjaStyle &&
+                  (!selectedProgression || !abilityKey)
+                )
+              }
+              onClick={handleConfirm}
+            >
+              {isSaving
+                ? "Salvando..."
+                : formMode === "proficiency"
+                  ? "Confirmar proficiência"
+                  : "Confirmar Estilo de Luta"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <p className="mn-style-progression-message">
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SageModeControl({
+  ninja,
+  onRegister,
+}) {
+  const selections = normalizeNinjaStyleSelections(
+    ninja?.ninjaStyleSelections ||
+    ninja?.ninja_style_selections ||
+    []
+  );
+
+  const registeredType =
+    ninja?.sageModeType ||
+    ninja?.sage_mode_type ||
+    "";
+
+  const registeredKey =
+    ninja?.sageModeKey ||
+    ninja?.sage_mode_key ||
+    "";
+
+  const hasSageMode =
+    Boolean(registeredType && registeredKey);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [sageModeType, setSageModeType] = useState("");
+  const [sageModeKey, setSageModeKey] = useState("");
+  const [styleKey, setStyleKey] = useState("");
+  const [abilityKey, setAbilityKey] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const modes = sageModeType
+    ? getSageModesByType(sageModeType)
+    : [];
+
+  const selectedMode = getSageMode(
+    sageModeType,
+    sageModeKey
+  );
+
+  const nextOptions = getNextNinjaStyleOptions(selections);
+
+  const allowedStyleOptions = selectedMode
+    ? getSageModeStyleOptions(
+        sageModeType,
+        sageModeKey
+      ).map((styleOption) => {
+        const progressionOption = nextOptions.find(
+          (option) => option.styleKey === styleOption.key
+        );
+
+        return {
+          ...styleOption,
+          progressionOption,
+        };
+      })
+    : [];
+
+  const selectedStyleOption =
+    allowedStyleOptions.find(
+      (option) => option.key === styleKey
+    ) || null;
+
+  const selectedProgression =
+    selectedStyleOption?.progressionOption || null;
+
+  const abilities = selectedProgression
+    ? getNinjaStyleAbilities(
+        selectedProgression.styleKey,
+        selectedProgression.level
+      )
+    : [];
+
+  function resetForm() {
+    setSageModeType("");
+    setSageModeKey("");
+    setStyleKey("");
+    setAbilityKey("");
+    setMessage("");
+  }
+
+  function closeForm() {
+    if (isSaving) return;
+    setIsOpen(false);
+    resetForm();
+  }
+
+  async function handleRegister() {
+    if (!sageModeType) {
+      setMessage("Escolha se o Modo Sábio é Perfeito ou Imperfeito.");
+      return;
+    }
+
+    if (!selectedMode) {
+      setMessage("Escolha qual Modo Sábio foi adquirido.");
+      return;
+    }
+
+    if (selectedMode.allowedStyleKeys.length === 0) {
+      setMessage(
+        selectedMode.unavailableReason ||
+        "Este Modo Sábio ainda não possui E.N. configurado."
+      );
+      return;
+    }
+
+    if (!selectedProgression) {
+      setMessage(
+        "Escolha uma opção de E.N. que ainda possa ser iniciada ou evoluída."
+      );
+      return;
+    }
+
+    if (!abilityKey) {
+      setMessage("Escolha a habilidade do novo nível de E.N.");
+      return;
+    }
+
+    setIsSaving(true);
+    setMessage("");
+
+    try {
+      await onRegister?.({
+        sageModeType,
+        sageModeKey,
+        styleKey: selectedProgression.styleKey,
+        abilityKey,
+      });
+
+      setMessage(
+        `Modo Sábio ${getSageModeTypeLabel(sageModeType)} — ${selectedMode.name} registrado com sucesso.`
+      );
+      setIsOpen(false);
+      resetForm();
+    } catch (error) {
+      setMessage(
+        error?.message ||
+        "Não foi possível registrar o Modo Sábio."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  if (hasSageMode) {
+    return (
+      <div className="mn-sage-mode-control is-registered">
+        <div className="mn-sage-mode-registered">
+          <span>Modo Sábio registrado</span>
+          <strong>{formatSageMode(ninja)}</strong>
+          <small>
+            O Modo Sábio é permanente na ficha e não pode ser trocado pelo jogador.
+          </small>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mn-sage-mode-control">
+      <div className="mn-sage-mode-status">
+        <div>
+          <span>Modo Sábio</span>
+          <strong>Nenhum adquirido</strong>
+        </div>
+
+        <button
+          type="button"
+          className="mn-sage-mode-add-button"
+          disabled={isSaving}
+          onClick={() => {
+            setIsOpen((current) => !current);
+            setMessage("");
+          }}
+        >
+          Adicionar Modo Sábio
+        </button>
+      </div>
+
+      <p className="mn-sage-mode-help">
+        Registre o Modo Sábio somente depois de conquistá-lo no RPG. O tipo e o
+        animal definem quais Estilos Ninja podem ser recebidos.
+      </p>
+
+      {isOpen && (
+        <div className="mn-style-acquisition-form mn-sage-mode-form">
+          <label>
+            Tipo de Modo Sábio
+            <select
+              value={sageModeType}
+              onChange={(event) => {
+                setSageModeType(event.target.value);
+                setSageModeKey("");
+                setStyleKey("");
+                setAbilityKey("");
+                setMessage("");
+              }}
+            >
+              <option value="">Selecione</option>
+              {SAGE_MODE_TYPES.map((type) => (
+                <option key={type.key} value={type.key}>
+                  Modo Sábio {type.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {sageModeType && (
+            <label>
+              Modo Sábio adquirido
+              <select
+                value={sageModeKey}
+                onChange={(event) => {
+                  setSageModeKey(event.target.value);
+                  setStyleKey("");
+                  setAbilityKey("");
+                  setMessage("");
+                }}
+              >
+                <option value="">Selecione</option>
+                {modes.map((modeItem) => (
+                  <option
+                    key={modeItem.key}
+                    value={modeItem.key}
+                    disabled={modeItem.allowedStyleKeys.length === 0}
+                  >
+                    {modeItem.name}
+                    {modeItem.allowedStyleKeys.length === 0
+                      ? " — E.N. ainda não definido"
+                      : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {selectedMode && selectedMode.allowedStyleKeys.length > 0 && (
+            <label>
+              Estilo Ninja recebido
+              <select
+                value={styleKey}
+                onChange={(event) => {
+                  setStyleKey(event.target.value);
+                  setAbilityKey("");
+                  setMessage("");
+                }}
+              >
+                <option value="">Selecione</option>
+                {allowedStyleOptions.map((styleOption) => (
+                  <option
+                    key={styleOption.key}
+                    value={styleOption.key}
+                    disabled={!styleOption.progressionOption}
+                  >
+                    {styleOption.name}
+                    {styleOption.progressionOption
+                      ? ` ${styleOption.progressionOption.level}`
+                      : " — Nível 5 já alcançado"}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {selectedProgression && (
+            <label>
+              Habilidade de {selectedProgression.styleName} {selectedProgression.level}
+              <select
+                value={abilityKey}
+                onChange={(event) => {
+                  setAbilityKey(event.target.value);
+                  setMessage("");
+                }}
+              >
+                <option value="">Selecione uma habilidade</option>
+                {abilities.map((abilityItem) => (
+                  <option key={abilityItem.key} value={abilityItem.key}>
+                    {abilityItem.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {selectedProgression && abilityKey && (
+            <div className="mn-style-ability-preview">
+              <strong>
+                {abilities.find((item) => item.key === abilityKey)?.name}
+              </strong>
+              <p>
+                {abilities.find((item) => item.key === abilityKey)?.summary}
+              </p>
+            </div>
+          )}
+
+          <div className="mn-style-acquisition-actions">
+            <button
+              type="button"
+              className="mn-file-clear"
+              disabled={isSaving}
+              onClick={closeForm}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              className="mn-primary-button"
+              disabled={
+                isSaving ||
+                !selectedMode ||
+                !selectedProgression ||
+                !abilityKey
+              }
+              onClick={handleRegister}
+            >
+              {isSaving
+                ? "Registrando..."
+                : "Confirmar Modo Sábio"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <p className="mn-style-progression-message">
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function NinjaStyleProgressionControl({
+  ninja,
+  onAcquire,
+  onRemove,
+}) {
+  const selections =
+    normalizeNinjaStyleSelections(
+      ninja?.ninjaStyleSelections ||
+      ninja?.ninja_style_selections ||
+      []
+    );
+
+  const availableChoices =
+    Math.max(
+      0,
+      Number(
+        ninja?.availableNinjaStyleChoices ??
+        ninja?.available_ninja_style_choices ??
+        0
+      ) || 0
+    );
+
+  const nextOptions =
+    getNextNinjaStyleOptions(
+      selections
+    );
+
+  const highestLevelByStyle = selections.reduce(
+    (levels, selection) => {
+      const styleKey = String(selection.style_key || "").trim();
+      const level = Number(selection.level) || 0;
+
+      if (styleKey && level > (levels[styleKey] || 0)) {
+        levels[styleKey] = level;
+      }
+
+      return levels;
+    },
+    {}
+  );
+
+  const removableSelections = selections.filter(
+    (selection) =>
+      Number(selection.level) ===
+      highestLevelByStyle[selection.style_key]
+  );
+
+  const [isOpen, setIsOpen] =
+    useState(false);
+
+  const [isRemoveOpen, setIsRemoveOpen] =
+    useState(false);
+
+  const [selectedOptionValue, setSelectedOptionValue] =
+    useState("");
+
+  const [abilityKey, setAbilityKey] =
+    useState("");
+
+  const [removeOptionValue, setRemoveOptionValue] =
+    useState("");
+
+  const [message, setMessage] =
+    useState("");
+
+  const [isSaving, setIsSaving] =
+    useState(false);
+
+  const selectedOption =
+    nextOptions.find(
+      (option) =>
+        `${option.styleKey}:${option.level}` ===
+        selectedOptionValue
+    ) || null;
+
+  const selectedStyle =
+    getNinjaStyleDefinition(
+      selectedOption?.styleKey
+    );
+
+  const abilities =
+    selectedOption
+      ? getNinjaStyleAbilities(
+          selectedOption.styleKey,
+          selectedOption.level
+        )
+      : [];
+
+  const selectedRemoval =
+    removableSelections.find(
+      (selection) =>
+        `${selection.style_key}:${selection.level}` ===
+        removeOptionValue
+    ) || null;
+
+  const removalReturnsCredit =
+    selectedRemoval && [
+      "initial",
+      "progression",
+      "administrative",
+    ].includes(selectedRemoval.acquisition_type);
+
+  useEffect(() => {
+    if (!selectedOptionValue) {
+      return;
+    }
+
+    const optionStillExists =
+      nextOptions.some(
+        (option) =>
+          `${option.styleKey}:${option.level}` ===
+          selectedOptionValue
+      );
+
+    if (!optionStillExists) {
+      setSelectedOptionValue("");
+      setAbilityKey("");
+    }
+  }, [
+    selectedOptionValue,
+    ninja?.ninjaStyleSelections,
+    ninja?.ninja_style_selections,
+  ]);
+
+  function closeAcquisition() {
+    if (isSaving) {
+      return;
+    }
+
+    setIsOpen(false);
+    setSelectedOptionValue("");
+    setAbilityKey("");
+    setMessage("");
+  }
+
+  function closeRemoval() {
+    if (isSaving) {
+      return;
+    }
+
+    setIsRemoveOpen(false);
+    setRemoveOptionValue("");
+    setMessage("");
+  }
+
+  async function handleRemove() {
+    if (!selectedRemoval) {
+      setMessage(
+        "Escolha qual E.N. deseja remover."
+      );
+      return;
+    }
+
+    setIsSaving(true);
+    setMessage("");
+
+    try {
+      await onRemove?.({
+        styleKey: selectedRemoval.style_key,
+        level: selectedRemoval.level,
+      });
+
+      setMessage(
+        `${selectedRemoval.style_name} ${selectedRemoval.level} removido com sucesso.`
+      );
+
+      setRemoveOptionValue("");
+      setIsRemoveOpen(false);
+    } catch (error) {
+      setMessage(
+        error?.message ||
+        "Não foi possível remover o E.N."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  async function handleAcquire() {
+    if (availableChoices <= 0) {
+      setMessage(
+        "Você ainda não possui um novo E.N. disponível."
+      );
+      return;
+    }
+
+    if (!selectedOption) {
+      setMessage(
+        "Escolha qual Estilo Ninja deseja iniciar ou evoluir."
+      );
+      return;
+    }
+
+    if (!abilityKey) {
+      setMessage(
+        "Escolha uma habilidade para o novo nível."
+      );
+      return;
+    }
+
+    setIsSaving(true);
+    setMessage("");
+
+    try {
+      await onAcquire?.({
+        styleKey:
+          selectedOption.styleKey,
+
+        abilityKey,
+      });
+
+      setMessage(
+        `${selectedStyle?.shortName || selectedStyle?.name || "Estilo Ninja"} ${selectedOption.level} adquirido com sucesso.`
+      );
+
+      setSelectedOptionValue("");
+      setAbilityKey("");
+      setIsOpen(false);
+    } catch (error) {
+      setMessage(
+        error?.message ||
+        "Não foi possível adquirir o novo E.N."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  return (
+    <div className="mn-style-progression-control">
+      <div className="mn-style-progression-status">
+        <div>
+          <span>Novos E.N. disponíveis</span>
+          <strong>{availableChoices}</strong>
+        </div>
+
+        <div className="mn-style-progression-buttons">
+          <button
+            type="button"
+            className="mn-style-acquire-button"
+            disabled={
+              availableChoices <= 0 ||
+              nextOptions.length === 0 ||
+              isSaving
+            }
+            onClick={() => {
+              setIsOpen((current) => !current);
+              setIsRemoveOpen(false);
+              setRemoveOptionValue("");
+              setMessage("");
+            }}
+          >
+            {nextOptions.length === 0
+              ? "Progressão máxima alcançada"
+              : "Adquirir novo E.N."}
+          </button>
+
+          <button
+            type="button"
+            className="mn-style-remove-button"
+            disabled={
+              removableSelections.length === 0 ||
+              isSaving
+            }
+            onClick={() => {
+              setIsRemoveOpen((current) => !current);
+              setIsOpen(false);
+              setSelectedOptionValue("");
+              setAbilityKey("");
+              setMessage("");
+            }}
+          >
+            Remover E.N.
+          </button>
+        </div>
+      </div>
+
+      <p className="mn-style-progression-help">
+        Ao receber um crédito de evolução, você pode iniciar um Estilo no Nível 1
+        ou avançar para o próximo nível de um Estilo que já possui. Não é
+        possível pular níveis.
+      </p>
+
+      {isOpen && (
+        <div className="mn-style-acquisition-form">
+          <label>
+            Estilo e próximo nível
+            <select
+              value={selectedOptionValue}
+              onChange={(event) => {
+                setSelectedOptionValue(
+                  event.target.value
+                );
+                setAbilityKey("");
+                setMessage("");
+              }}
+            >
+              <option value="">
+                Selecione
+              </option>
+
+              {nextOptions.map((option) => (
+                <option
+                  key={`${option.styleKey}-${option.level}`}
+                  value={`${option.styleKey}:${option.level}`}
+                >
+                  {option.styleName} {option.level}
+                  {option.isNewStyle
+                    ? " — iniciar Estilo"
+                    : " — continuar Estilo"}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {selectedOption && (
+            <label>
+              Habilidade de {selectedOption.styleName} {selectedOption.level}
+              <select
+                value={abilityKey}
+                onChange={(event) => {
+                  setAbilityKey(
+                    event.target.value
+                  );
+                  setMessage("");
+                }}
+              >
+                <option value="">
+                  Selecione uma habilidade
+                </option>
+
+                {abilities.map((abilityItem) => (
+                  <option
+                    key={abilityItem.key}
+                    value={abilityItem.key}
+                  >
+                    {abilityItem.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {selectedOption && abilityKey && (
+            <div className="mn-style-ability-preview">
+              <strong>
+                {
+                  abilities.find(
+                    (abilityItem) =>
+                      abilityItem.key === abilityKey
+                  )?.name
+                }
+              </strong>
+
+              <p>
+                {
+                  abilities.find(
+                    (abilityItem) =>
+                      abilityItem.key === abilityKey
+                  )?.summary
+                }
+              </p>
+            </div>
+          )}
+
+          <div className="mn-style-acquisition-actions">
+            <button
+              type="button"
+              className="mn-file-clear"
+              disabled={isSaving}
+              onClick={closeAcquisition}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              className="mn-primary-button"
+              disabled={
+                isSaving ||
+                !selectedOption ||
+                !abilityKey
+              }
+              onClick={handleAcquire}
+            >
+              {isSaving
+                ? "Adquirindo..."
+                : "Confirmar novo E.N."}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isRemoveOpen && (
+        <div className="mn-style-acquisition-form mn-style-removal-form">
+          <label>
+            E.N. que será removido
+            <select
+              value={removeOptionValue}
+              onChange={(event) => {
+                setRemoveOptionValue(event.target.value);
+                setMessage("");
+              }}
+            >
+              <option value="">Selecione</option>
+              {removableSelections.map((selection) => (
+                <option
+                  key={`${selection.style_key}-${selection.level}`}
+                  value={`${selection.style_key}:${selection.level}`}
+                >
+                  {formatNinjaStyleSelection(selection)}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {selectedRemoval && (
+            <div className="mn-style-removal-warning">
+              <strong>Confirme a correção ou anulação</strong>
+              <p>
+                Só o nível mais alto de cada Estilo pode ser removido, evitando
+                intervalos inválidos na progressão.
+              </p>
+              <small>
+                {removalReturnsCredit
+                  ? "Esta remoção devolverá 1 crédito de evolução de E.N."
+                  : selectedRemoval.acquisition_type === "sage_mode"
+                    ? "O registro do Modo Sábio será liberado para correção. Nenhum crédito será criado."
+                    : selectedRemoval.acquisition_type === "fighting_style"
+                      ? "A proficiência do Estilo de Luta será desfeita para poder ser registrada novamente. Nenhum crédito será criado."
+                      : "Nenhum crédito será criado por esta remoção."}
+              </small>
+            </div>
+          )}
+
+          <div className="mn-style-acquisition-actions">
+            <button
+              type="button"
+              className="mn-file-clear"
+              disabled={isSaving}
+              onClick={closeRemoval}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              className="mn-style-remove-confirm"
+              disabled={isSaving || !selectedRemoval}
+              onClick={handleRemove}
+            >
+              {isSaving
+                ? "Removendo..."
+                : "Confirmar remoção"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <p className="mn-style-progression-message">
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function NinjaSheetCard({
+  ninja,
+  onSave,
+  onAcquireNinjaStyle,
+  onRemoveNinjaStyle,
+  onRegisterSageMode,
+  onRegisterFightingStyle,
+}) {
+  const [draft, setDraft] = useState(() => normalizeCharacter(ninja));
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setDraft(
+      normalizeCharacter(ninja)
+    );
+  }, [ninja?.id]);
 
   function updateField(field, value) {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -2364,116 +4103,128 @@ function NinjaSheetCard({ ninja, onSave }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (isSaving) {
-      return;
-    }
-
-    const selectedTraits =
-      Array.isArray(draft.selectedTraits)
-        ? draft.selectedTraits.filter(Boolean)
-        : [];
+    const selectedTraits = Array.isArray(draft.selectedTraits) ? draft.selectedTraits.filter(Boolean) : [];
 
     const required = [
       ["playerName", "Nome do player"],
       ["phone", "Telefone"],
       ["characterName", "Nome do personagem"],
       ["age", "Idade"],
+      ["rank", "Rank Ninja"],
       ["clanOrKinship", "Clã ou Parentesco"],
       ["villageOrOrganization", "Aldeia ou Organização"],
       ["kekkeiGenkaiOrHiden", "Kekkei Genkai ou Hiden"],
+      ["ninjaStyle", "Estilo Ninja atual"],
       ["appearance", "Aparência"],
       ["history", "História"],
       ["equipment", "Equipamentos"],
     ];
 
     for (const [field, label] of required) {
-      if (
-        !String(
-          draft[field] || ""
-        ).trim()
-      ) {
-        setMessage(
-          `Preencha o campo: ${label}.`
-        );
-
+      if (!String(draft[field] || "").trim()) {
+        setMessage(`Preencha o campo: ${label}.`);
         return;
       }
     }
 
-    if (
-      draft.villageOrOrganization === "Outro" &&
-      !String(
-        draft.villageOrOrganizationOther || ""
-      ).trim()
-    ) {
-      setMessage(
-        "Informe a aldeia ou organização em Outro."
-      );
+    if (draft.villageOrOrganization === "Outro" && !String(draft.villageOrOrganizationOther || "").trim()) {
+      setMessage("Informe a aldeia ou organização em Outro.");
+      return;
+    }
 
+    if (!isValidInitialChakraNature(draft.chakraNatures)) {
+      setMessage(
+        "Selecione de 1 a 5 elementos básicos. O primeiro será considerado primário."
+      );
       return;
     }
 
     if (selectedTraits.length === 0) {
-      setMessage(
-        "Selecione ao menos um Traço Único."
-      );
-
+      setMessage("Selecione ao menos um Traço Único.");
       return;
     }
 
-    setIsSaving(true);
-    setMessage(
-      "Salvando e confirmando no Supabase..."
-    );
+    const choicesBefore =
+      getAvailableNinjaStyleChoices(ninja);
 
-    try {
-      const savedCharacter =
-        await onSave({
-          ...draft,
+    const savedCharacter =
+      await onSave({
+        ...draft,
+        rank: normalizeNinjaRank(draft.rank),
+        villageOrOrganization: finalVillage(draft),
+        chakraNatures: normalizeChakraNatures(draft.chakraNatures),
+        chakra_natures: normalizeChakraNatures(draft.chakraNatures),
+        selectedTraits,
+        selected_traits: selectedTraits,
+        uniqueTrait: selectedTraits[0] || "",
+        characterPhotoUrl: draft.characterPhotoUrl || draft.portraitUrl || "",
+        mapIconUrl: draft.mapIconUrl || draft.iconUrl || "",
+      });
 
-          villageOrOrganization:
-            finalVillage(draft),
+    const normalizedSaved =
+      normalizeCharacter(savedCharacter || draft);
 
-          selectedTraits,
-          selected_traits:
-            selectedTraits,
+    setDraft(normalizedSaved);
 
-          uniqueTrait:
-            selectedTraits[0] || "",
+    const choicesAfter =
+      getAvailableNinjaStyleChoices(normalizedSaved);
 
-          characterPhotoUrl:
-            draft.characterPhotoUrl ||
-            draft.portraitUrl ||
-            "",
-
-          mapIconUrl:
-            draft.mapIconUrl ||
-            draft.iconUrl ||
-            "",
-        });
-
-      if (savedCharacter) {
-        setDraft(
-          normalizeCharacter(
-            savedCharacter
-          )
-        );
-      }
-
+    if (choicesAfter > choicesBefore) {
       setMessage(
-        "Ficha salva e confirmada pela releitura da tabela characters."
+        "Ficha salva. Ao alcançar o Rank B ou superior, você recebeu +1 escolha de Estilo Ninja."
       );
-    } catch (error) {
-      setMessage(
-        `Falha ao salvar: ${
-          error?.message ||
-          "erro desconhecido"
-        }`
-      );
-    } finally {
-      setIsSaving(false);
+    } else {
+      setMessage("Ficha salva permanentemente no Supabase.");
     }
   }
+
+  async function handleAcquireNinjaStyleFromSheet(payload) {
+    const savedCharacter =
+      await onAcquireNinjaStyle?.(payload);
+
+    if (savedCharacter) {
+      setDraft(normalizeCharacter(savedCharacter));
+    }
+
+    return savedCharacter;
+  }
+
+  async function handleRemoveNinjaStyleFromSheet(payload) {
+    const savedCharacter =
+      await onRemoveNinjaStyle?.(payload);
+
+    if (savedCharacter) {
+      setDraft(normalizeCharacter(savedCharacter));
+    }
+
+    return savedCharacter;
+  }
+
+  async function handleRegisterSageModeFromSheet(payload) {
+    const savedCharacter =
+      await onRegisterSageMode?.(payload);
+
+    if (savedCharacter) {
+      setDraft(normalizeCharacter(savedCharacter));
+    }
+
+    return savedCharacter;
+  }
+
+  async function handleRegisterFightingStyleFromSheet(payload) {
+    const savedCharacter =
+      await onRegisterFightingStyle?.(payload);
+
+    if (savedCharacter) {
+      setDraft(normalizeCharacter(savedCharacter));
+    }
+
+    return savedCharacter;
+  }
+
+  const selectedChakraNatures = normalizeChakraNatures(
+    draft.chakraNatures
+  );
 
   return (
     <section className="mn-card mn-sheet-card">
@@ -2490,6 +4241,23 @@ function NinjaSheetCard({ ninja, onSave }) {
         <label>Telefone<input type="tel" value={draft.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="(00) 00000-0000" /></label>
         <label>Nome do personagem<input value={draft.characterName} onChange={(e) => updateField("characterName", e.target.value)} /></label>
         <label>Idade<input value={draft.age} onChange={(e) => updateField("age", e.target.value)} /></label>
+        <label className="mn-rank-field">
+          Rank Ninja
+          <select
+            value={normalizeNinjaRank(draft.rank)}
+            onChange={(event) => updateField("rank", event.target.value)}
+          >
+            {NINJA_RANKS.map((rank) => (
+              <option key={rank} value={rank}>
+                Rank {rank}
+              </option>
+            ))}
+          </select>
+          <small>
+            Todo personagem inicia no Rank E. Ao alcançar o Rank B ou qualquer
+            rank superior pela primeira vez, recebe +1 escolha de Estilo Ninja.
+          </small>
+        </label>
         <label>Clã ou Parentesco<input value={draft.clanOrKinship} onChange={(e) => updateField("clanOrKinship", e.target.value)} /></label>
 
         <label>
@@ -2504,6 +4272,138 @@ function NinjaSheetCard({ ninja, onSave }) {
         )}
 
         <label>Kekkei Genkai ou Hiden<input value={draft.kekkeiGenkaiOrHiden} onChange={(e) => updateField("kekkeiGenkaiOrHiden", e.target.value)} /></label>
+
+        <div className="mn-sheet-wide mn-chakra-natures-editor">
+          <div className="mn-style-readonly-heading">
+            <div>
+              <span>Naturezas Elementais</span>
+              <small>
+                Você pode registrar até cinco elementos básicos. O primeiro da lista é sempre o primário; os demais são secundários.
+              </small>
+            </div>
+            <strong>
+              {selectedChakraNatures.length}/{MAX_CHAKRA_NATURES}
+            </strong>
+          </div>
+
+          <div className="mn-chakra-nature-grid">
+            {INITIAL_CHAKRA_ELEMENTS.map((element) => {
+              const selectedIndex = selectedChakraNatures.indexOf(
+                element.name
+              );
+              const selected = selectedIndex >= 0;
+              const limitReached =
+                selectedChakraNatures.length >= MAX_CHAKRA_NATURES;
+
+              return (
+                <button
+                  key={element.key}
+                  type="button"
+                  className={selected ? "is-selected" : ""}
+                  disabled={!selected && limitReached}
+                  onClick={() => {
+                    const nextNatures = selected
+                      ? selectedChakraNatures.filter(
+                          (nature) => nature !== element.name
+                        )
+                      : [...selectedChakraNatures, element.name];
+
+                    updateField(
+                      "chakraNatures",
+                      normalizeChakraNatures(nextNatures)
+                    );
+                  }}
+                  aria-pressed={selected}
+                >
+                  <strong>{element.name}</strong>
+                  <span>{element.label}</span>
+                  <small>
+                    {selected
+                      ? selectedIndex === 0
+                        ? "Primário"
+                        : "Secundário"
+                      : "Adicionar"}
+                  </small>
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="mn-chakra-nature-help">
+            {selectedChakraNatures.length > 0
+              ? `Primário atual: ${getInitialChakraElement(selectedChakraNatures)?.name || "—"}. Ao remover o primário, o próximo elemento da lista assume automaticamente essa posição.`
+              : "Selecione ao menos um elemento antes de salvar a ficha."}
+          </p>
+        </div>
+
+        <div className="mn-sheet-wide mn-sage-mode-panel">
+          <div className="mn-style-readonly-heading">
+            <div>
+              <span>Modo Sábio</span>
+              <small>
+                O personagem começa sem Modo Sábio. Ao conquistar um, registre
+                o tipo e o animal para receber o E.N. correspondente.
+              </small>
+            </div>
+          </div>
+
+          <SageModeControl
+            ninja={draft}
+            onRegister={handleRegisterSageModeFromSheet}
+          />
+        </div>
+
+        <div className="mn-sheet-wide mn-fighting-style-panel">
+          <div className="mn-style-readonly-heading">
+            <div>
+              <span>Estilos de Luta</span>
+              <small>
+                Registre os Estilos aprendidos e, quando conquistar a
+                proficiência, receba o E.N. correspondente ao sistema.
+              </small>
+            </div>
+          </div>
+
+          <FightingStyleControl
+            ninja={draft}
+            onRegister={handleRegisterFightingStyleFromSheet}
+          />
+        </div>
+
+        <div className="mn-sheet-wide mn-style-readonly-panel">
+          <div className="mn-style-readonly-heading">
+            <div>
+              <span>Progressão de Estilos Ninja</span>
+              <small>
+                Os dois primeiros E.N. foram definidos na criação. Novos níveis
+                são adquiridos aqui usando créditos de evolução.
+              </small>
+            </div>
+          </div>
+
+          <ol>
+            {normalizeNinjaStyleSelections(draft.ninjaStyleSelections).length > 0 ? (
+              normalizeNinjaStyleSelections(draft.ninjaStyleSelections).map((selection) => (
+                <li key={`${selection.slot}-${selection.style_key}-${selection.level}`}>
+                  <strong>{formatNinjaStyleSelection(selection)}</strong>
+                  <small>
+                    {getNinjaStyleAcquisitionLabel(selection)}
+                  </small>
+                </li>
+              ))
+            ) : (
+              <li>
+                <strong>{draft.ninjaStyle || "Configuração antiga sem habilidades registradas"}</strong>
+              </li>
+            )}
+          </ol>
+
+          <NinjaStyleProgressionControl
+            ninja={draft}
+            onAcquire={handleAcquireNinjaStyleFromSheet}
+            onRemove={handleRemoveNinjaStyleFromSheet}
+          />
+        </div>
         <label>Alcunha / Epíteto<input value={draft.epithet} onChange={(e) => updateField("epithet", e.target.value)} /></label>
 
         <label>
@@ -2519,21 +4419,7 @@ function NinjaSheetCard({ ninja, onSave }) {
         {message && <p className="mn-sheet-message">{message}</p>}
 
         <div className="mn-sheet-actions">
-          <button
-            type="submit"
-            className="mn-primary-button"
-            disabled={isSaving}
-            aria-busy={isSaving}
-          >
-            <SvgIcon
-              name="save"
-              className="mn-small-icon"
-            />
-
-            {isSaving
-              ? "Salvando..."
-              : "Salvar ficha"}
-          </button>
+          <button type="submit" className="mn-primary-button"><SvgIcon name="save" className="mn-small-icon" />Salvar ficha</button>
         </div>
       </form>
     </section>
@@ -2617,6 +4503,142 @@ export default function MyNinjaCleanPage({
     }
   }
 
+  async function handleAcquireNinjaStyle({
+    styleKey,
+    abilityKey,
+  }) {
+    try {
+      const onlineSaved =
+        await acquireNinjaStyleProgression({
+          styleKey,
+          abilityKey,
+        });
+
+      const finalSaved = persistLocally
+        ? saveLocalCharacter(onlineSaved)
+        : onlineSaved;
+
+      setLocalCharacter(finalSaved);
+
+      await Promise.resolve(
+        onSaveSheet?.(finalSaved)
+      );
+
+      return finalSaved;
+    } catch (error) {
+      console.error(
+        "[LN Digital] Erro ao adquirir novo E.N.:",
+        error
+      );
+
+      throw error;
+    }
+  }
+
+  async function handleRemoveNinjaStyle({
+    styleKey,
+    level,
+  }) {
+    try {
+      const onlineSaved =
+        await removeNinjaStyleProgression({
+          styleKey,
+          level,
+        });
+
+      const finalSaved = persistLocally
+        ? saveLocalCharacter(onlineSaved)
+        : onlineSaved;
+
+      setLocalCharacter(finalSaved);
+
+      await Promise.resolve(
+        onSaveSheet?.(finalSaved)
+      );
+
+      return finalSaved;
+    } catch (error) {
+      console.error(
+        "[LN Digital] Erro ao remover E.N.:",
+        error
+      );
+
+      throw error;
+    }
+  }
+
+  async function handleRegisterSageMode({
+    sageModeType,
+    sageModeKey,
+    styleKey,
+    abilityKey,
+  }) {
+    try {
+      const onlineSaved =
+        await registerSageModeAndAcquireNinjaStyle({
+          sageModeType,
+          sageModeKey,
+          styleKey,
+          abilityKey,
+        });
+
+      const finalSaved = persistLocally
+        ? saveLocalCharacter(onlineSaved)
+        : onlineSaved;
+
+      setLocalCharacter(finalSaved);
+
+      await Promise.resolve(
+        onSaveSheet?.(finalSaved)
+      );
+
+      return finalSaved;
+    } catch (error) {
+      console.error(
+        "[LN Digital] Erro ao registrar Modo Sábio:",
+        error
+      );
+
+      throw error;
+    }
+  }
+
+  async function handleRegisterFightingStyle({
+    fightingStyleKey,
+    gainProficiency,
+    styleKey,
+    abilityKey,
+  }) {
+    try {
+      const onlineSaved =
+        await registerFightingStyleAndMaybeAcquireNinjaStyle({
+          fightingStyleKey,
+          gainProficiency,
+          styleKey,
+          abilityKey,
+        });
+
+      const finalSaved = persistLocally
+        ? saveLocalCharacter(onlineSaved)
+        : onlineSaved;
+
+      setLocalCharacter(finalSaved);
+
+      await Promise.resolve(
+        onSaveSheet?.(finalSaved)
+      );
+
+      return finalSaved;
+    } catch (error) {
+      console.error(
+        "[LN Digital] Erro ao registrar Estilo de Luta:",
+        error
+      );
+
+      throw error;
+    }
+  }
+
   function handleMobileMenuClick(label) {
     setIsMobileMenuOpen(false);
 
@@ -2691,20 +4713,52 @@ export default function MyNinjaCleanPage({
   const headerName = cleanValue(ninja.characterName, "Ninja sem nome");
   const epithet = cleanValue(ninja.epithet, "Ninja sem alcunha definida");
   const traitsSummary = ninja.selectedTraits?.length ? ninja.selectedTraits.join(", ") : "Sem traços únicos";
+  const ninjaStyleSelections = normalizeNinjaStyleSelections(ninja.ninjaStyleSelections);
+
+  const ninjaStyleRows =
+    ninjaStyleSelections.length > 0
+      ? ninjaStyleSelections.map(
+          (selection, index) => [
+            `${index + 1}º E.N.`,
+            formatNinjaStyleSelection(selection),
+          ]
+        )
+      : [[
+          "Estilos Ninja",
+          ninja.ninjaStyle || "Não registrado",
+        ]];
 
   const identityRows = [
     ["Nome do personagem", ninja.characterName],
     ["Nome do player", ninja.playerName],
     ["Telefone", ninja.phone],
     ["Idade", ninja.age],
+    ["Rank Ninja", `Rank ${normalizeNinjaRank(ninja.rank)}`],
     ["Alcunha / Epíteto", ninja.epithet],
     ["Traços Únicos", traitsSummary],
   ];
+
+  const fightingStyleSummary = normalizeFightingStyles(
+    ninja.fightingStyles || ninja.fighting_styles || []
+  );
 
   const originRows = [
     ["Aldeia ou Organização", village],
     ["Clã ou Parentesco", ninja.clanOrKinship],
     ["Kekkei Genkai ou Hiden", ninja.kekkeiGenkaiOrHiden],
+    ["Natureza Elemental", formatChakraNatures(ninja.chakraNatures)],
+    ["Modo Sábio", formatSageMode(ninja)],
+    [
+      "Estilos de Luta",
+      fightingStyleSummary.length > 0
+        ? fightingStyleSummary.map(formatFightingStyle).join(" | ")
+        : "Nenhum registrado",
+    ],
+    ...ninjaStyleRows,
+    [
+      "Novos E.N. disponíveis",
+      ninja.availableNinjaStyleChoices,
+    ],
     ["Pontos de Habilidade", ninja.skillPoints],
   ];
 
@@ -3001,7 +5055,14 @@ export default function MyNinjaCleanPage({
                       </button>
                     </div>
 
-                    <NinjaSheetCard ninja={ninja} onSave={handleSaveNinjaSheet} />
+                    <NinjaSheetCard
+                      ninja={ninja}
+                      onSave={handleSaveNinjaSheet}
+                      onAcquireNinjaStyle={handleAcquireNinjaStyle}
+                      onRemoveNinjaStyle={handleRemoveNinjaStyle}
+                      onRegisterSageMode={handleRegisterSageMode}
+                      onRegisterFightingStyle={handleRegisterFightingStyle}
+                    />
                   </div>
                 </div>
               )}

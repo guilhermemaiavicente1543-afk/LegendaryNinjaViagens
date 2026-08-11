@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import LnSelect from "../ui/LnSelect";
+import AdminWorldMap from "./AdminWorldMap";
 
 const PING_ICONS = [
   {
@@ -262,6 +263,8 @@ export default function MapPingManager() {
 
   return (
     <section className="admin-map-pings">
+      <AdminWorldMap enablePingPicker />
+
       <div className="admin-card admin-card-wide">
         <p className="eyebrow">Cartografia ADM</p>
         <h2>{editingId ? "Editar ping do mapa" : "Criar ping oficial"}</h2>

@@ -860,6 +860,15 @@
   color: #f3ede3;
 }
 
+.mn-rank-field small {
+  color: rgba(232, 226, 214, 0.56);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: normal;
+  line-height: 1.45;
+  text-transform: none;
+}
+
 .mn-sheet-wide,
 .mn-sheet-message,
 .mn-sheet-actions {
@@ -3215,3 +3224,683 @@
   }
 }
 
+
+/* =====================================================
+   MEU NINJA — ESTILOS INICIAIS SOMENTE LEITURA V1
+===================================================== */
+.mn-style-readonly-panel {
+  display: grid;
+  gap: 12px;
+  padding: 14px 15px;
+  border: 1px solid rgba(224, 123, 32, 0.28);
+  border-radius: 13px;
+  background: rgba(224, 123, 32, 0.055);
+}
+
+.mn-style-readonly-panel > div {
+  display: grid;
+  gap: 4px;
+}
+
+.mn-style-readonly-panel > div > span {
+  color: #f0a15c;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mn-style-readonly-panel > div > small {
+  color: rgba(235, 226, 214, 0.58);
+  line-height: 1.45;
+}
+
+.mn-style-readonly-panel ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.mn-style-readonly-panel li {
+  color: rgba(235, 226, 214, 0.7);
+}
+
+.mn-style-readonly-panel li strong {
+  color: #f4ece3;
+  font-weight: 750;
+}
+
+/* =====================================================
+   MEU NINJA — PROGRESSÃO DE ESTILOS NINJA V2
+===================================================== */
+.mn-style-readonly-heading {
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mn-style-readonly-heading > div {
+  display: grid;
+  gap: 4px;
+}
+
+.mn-style-readonly-panel ol {
+  padding-left: 0;
+  list-style: none;
+}
+
+.mn-style-readonly-panel li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.mn-style-readonly-panel li small {
+  color: rgba(235, 226, 214, 0.46);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.mn-style-progression-control {
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(224, 123, 32, 0.2);
+}
+
+.mn-style-progression-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mn-style-progression-status > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mn-style-progression-status span {
+  color: rgba(235, 226, 214, 0.66);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.mn-style-progression-status strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  border: 1px solid rgba(255, 138, 43, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 138, 43, 0.12);
+  color: #ff9a48;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.mn-style-acquire-button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 138, 43, 0.46);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 138, 43, 0.2), rgba(255, 104, 25, 0.08));
+  color: #ffab65;
+  padding: 0.62rem 0.95rem;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mn-style-acquire-button:hover:not(:disabled) {
+  border-color: rgba(255, 138, 43, 0.8);
+  background: linear-gradient(135deg, rgba(255, 138, 43, 0.29), rgba(255, 104, 25, 0.13));
+}
+
+.mn-style-acquire-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.mn-style-progression-help {
+  margin: 0;
+  color: rgba(235, 226, 214, 0.52);
+  font-size: 0.73rem;
+  line-height: 1.55;
+}
+
+.mn-style-acquisition-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid rgba(255, 138, 43, 0.22);
+  border-radius: 12px;
+  background: rgba(5, 5, 5, 0.34);
+}
+
+.mn-style-acquisition-form label {
+  display: grid;
+  gap: 7px;
+  color: rgba(235, 226, 214, 0.67);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.mn-style-acquisition-form select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  background: #161616;
+  color: #f4ece3;
+  padding: 0 38px 0 12px;
+  outline: none;
+}
+
+.mn-style-acquisition-form select:focus {
+  border-color: rgba(255, 138, 43, 0.62);
+  box-shadow: 0 0 0 3px rgba(255, 138, 43, 0.08);
+}
+
+.mn-style-ability-preview {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 5px;
+  padding: 11px 12px;
+  border-left: 3px solid rgba(255, 138, 43, 0.7);
+  border-radius: 8px;
+  background: rgba(255, 138, 43, 0.07);
+}
+
+.mn-style-ability-preview strong {
+  color: #ffab65;
+  font-size: 0.78rem;
+}
+
+.mn-style-ability-preview p {
+  margin: 0;
+  color: rgba(235, 226, 214, 0.62);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.mn-style-acquisition-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.mn-style-progression-message {
+  margin: 0;
+  color: #ffab65;
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+@media (max-width: 720px) {
+  .mn-style-readonly-panel li {
+    grid-template-columns: 1fr;
+  }
+
+  .mn-style-readonly-panel li small {
+    text-align: left;
+  }
+
+  .mn-style-progression-status {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mn-style-progression-status > div {
+    justify-content: space-between;
+  }
+
+  .mn-style-acquire-button {
+    width: 100%;
+  }
+
+  .mn-style-acquisition-form {
+    grid-template-columns: 1fr;
+  }
+
+  .mn-style-acquisition-actions {
+    flex-direction: column-reverse;
+  }
+
+  .mn-style-acquisition-actions button {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   MEU NINJA — MODO SÁBIO
+===================================================== */
+.mn-sage-mode-panel {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid rgba(255, 138, 43, 0.2);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255, 138, 43, 0.055), rgba(0, 0, 0, 0.22));
+}
+
+.mn-sage-mode-control {
+  display: grid;
+  gap: 12px;
+}
+
+.mn-sage-mode-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mn-sage-mode-status > div,
+.mn-sage-mode-registered {
+  display: grid;
+  gap: 4px;
+}
+
+.mn-sage-mode-status span,
+.mn-sage-mode-registered span {
+  color: rgba(235, 226, 214, 0.56);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mn-sage-mode-status strong,
+.mn-sage-mode-registered strong {
+  color: #f4ece3;
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.mn-sage-mode-registered small {
+  color: rgba(235, 226, 214, 0.5);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.mn-sage-mode-add-button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 138, 43, 0.46);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 138, 43, 0.2), rgba(255, 104, 25, 0.08));
+  color: #ffab65;
+  padding: 0.62rem 0.95rem;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mn-sage-mode-add-button:hover:not(:disabled) {
+  border-color: rgba(255, 138, 43, 0.8);
+  background: linear-gradient(135deg, rgba(255, 138, 43, 0.29), rgba(255, 104, 25, 0.13));
+}
+
+.mn-sage-mode-add-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.mn-sage-mode-help {
+  margin: 0;
+  color: rgba(235, 226, 214, 0.52);
+  font-size: 0.73rem;
+  line-height: 1.55;
+}
+
+.mn-sage-mode-form {
+  margin-top: 2px;
+}
+
+.mn-sage-mode-control.is-registered {
+  padding: 12px;
+  border: 1px solid rgba(255, 138, 43, 0.18);
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 720px) {
+  .mn-sage-mode-status {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mn-sage-mode-add-button {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   MEU NINJA — ESTILOS DE LUTA
+===================================================== */
+.mn-fighting-style-panel {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid rgba(255, 138, 43, 0.2);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255, 138, 43, 0.05), rgba(0, 0, 0, 0.24));
+}
+
+.mn-fighting-style-control {
+  display: grid;
+  gap: 12px;
+}
+
+.mn-fighting-style-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mn-fighting-style-summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.mn-fighting-style-summary span {
+  color: rgba(235, 226, 214, 0.58);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mn-fighting-style-summary strong {
+  color: #ffab65;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.mn-fighting-style-list {
+  display: grid;
+  gap: 9px;
+}
+
+.mn-fighting-style-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.mn-fighting-style-item > div {
+  display: grid;
+  gap: 3px;
+}
+
+.mn-fighting-style-item strong {
+  color: #f4ece3;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.mn-fighting-style-item small {
+  color: rgba(235, 226, 214, 0.5);
+  font-size: 0.68rem;
+}
+
+.mn-fighting-style-item > span {
+  color: #ffab65;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.mn-fighting-style-empty {
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(235, 226, 214, 0.48);
+  font-size: 0.73rem;
+}
+
+.mn-fighting-style-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.mn-fighting-style-form {
+  margin-top: 2px;
+}
+
+.mn-fighting-style-requirements {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-left: 3px solid rgba(255, 138, 43, 0.56);
+  border-radius: 8px;
+  background: rgba(255, 138, 43, 0.055);
+}
+
+.mn-fighting-style-requirements strong {
+  color: #ffab65;
+  font-size: 0.72rem;
+}
+
+.mn-fighting-style-requirements p {
+  margin: 0;
+  color: rgba(235, 226, 214, 0.58);
+  font-size: 0.71rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .mn-fighting-style-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .mn-fighting-style-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .mn-fighting-style-item > span {
+    text-align: left;
+  }
+
+  .mn-fighting-style-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .mn-fighting-style-actions button {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   MEU NINJA — CORREÇÃO E REMOÇÃO DE ESTILOS NINJA
+===================================================== */
+.mn-style-progression-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.mn-style-remove-button,
+.mn-style-remove-confirm {
+  min-height: 38px;
+  border: 1px solid rgba(194, 72, 57, 0.5);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(194, 72, 57, 0.18), rgba(92, 22, 18, 0.14));
+  color: #e9a099;
+  padding: 0.62rem 0.95rem;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mn-style-remove-button:hover:not(:disabled),
+.mn-style-remove-confirm:hover:not(:disabled) {
+  border-color: rgba(220, 91, 74, 0.85);
+  background: linear-gradient(135deg, rgba(220, 91, 74, 0.27), rgba(112, 28, 22, 0.2));
+}
+
+.mn-style-remove-button:disabled,
+.mn-style-remove-confirm:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.mn-style-removal-form > label:first-child {
+  grid-column: 1 / -1;
+}
+
+.mn-style-removal-warning {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 5px;
+  padding: 11px 12px;
+  border-left: 3px solid rgba(220, 91, 74, 0.78);
+  border-radius: 8px;
+  background: rgba(132, 35, 27, 0.11);
+}
+
+.mn-style-removal-warning strong {
+  color: #edaaa3;
+  font-size: 0.78rem;
+}
+
+.mn-style-removal-warning p,
+.mn-style-removal-warning small {
+  margin: 0;
+  color: rgba(235, 226, 214, 0.62);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .mn-style-progression-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .mn-style-progression-buttons button,
+  .mn-style-remove-confirm {
+    width: 100%;
+  }
+}
+
+
+/* LN MEU NINJA — ELEMENTO PRIMÁRIO V1 */
+.mn-sheet-form label > small {
+  color: rgba(232, 226, 214, 0.56);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: normal;
+  line-height: 1.45;
+  text-transform: none;
+}
+
+
+/* LN MEU NINJA — NATUREZAS ELEMENTAIS 1–5 V2 */
+.mn-chakra-natures-editor {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(7, 8, 10, 0.42);
+}
+
+.mn-chakra-nature-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.mn-chakra-nature-grid button {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 13px;
+  background: rgba(4, 5, 7, 0.58);
+  color: #f7efe7;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mn-chakra-nature-grid button.is-selected {
+  border-color: rgba(239, 141, 62, 0.72);
+  background: rgba(239, 141, 62, 0.1);
+}
+
+.mn-chakra-nature-grid button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.mn-chakra-nature-grid strong {
+  font-size: 0.84rem;
+}
+
+.mn-chakra-nature-grid span {
+  color: rgba(239, 147, 72, 0.88);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.mn-chakra-nature-grid small {
+  color: rgba(232, 226, 214, 0.58);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.mn-chakra-nature-help {
+  margin: 0;
+  color: rgba(232, 226, 214, 0.62);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .mn-chakra-nature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .mn-chakra-nature-grid {
+    grid-template-columns: 1fr;
+  }
+}
